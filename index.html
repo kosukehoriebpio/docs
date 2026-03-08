@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BPIO ドキュメントポータル</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color: #1a1a1a;
+  background: #fff;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+.page-header {
+  border-bottom: 2px solid #1a1a1a;
+  padding: 40px 48px 20px;
+  max-width: 920px;
+  margin: 0 auto;
+}
+.page-header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.page-header .subtitle {
+  font-size: 0.9rem;
+  color: #555;
+}
+#main {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 32px 48px 80px;
+}
+.section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #777;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  margin-top: 32px;
+}
+.section-label:first-child { margin-top: 0; }
+.doc-list {
+  margin-bottom: 8px;
+}
+.doc-item {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  padding: 16px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+.doc-item:last-child { border-bottom: none; }
+.doc-item:hover .doc-title { text-decoration: underline; }
+.doc-title {
+  font-size: 1.0rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #1a1a1a;
+}
+.doc-desc {
+  font-size: 0.82rem;
+  color: #555;
+  line-height: 1.5;
+}
+.doc-links {
+  margin-top: 8px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.doc-link {
+  font-size: 0.78rem;
+  color: #555;
+  text-decoration: none;
+  font-weight: 600;
+}
+.doc-link:hover { color: #1a1a1a; text-decoration: underline; }
+.doc-link::before { content: "\2192  "; }
+.tag {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #777;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 1px 6px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.page-footer {
+  border-top: 1px solid #999;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 16px 48px;
+  font-size: 0.72rem;
+  color: #777;
+}
+@media (max-width: 640px) {
+  .page-header { padding: 24px 20px 16px; }
+  #main { padding: 24px 20px 60px; }
+  .page-footer { padding: 16px 20px; }
+  .page-header h1 { font-size: 1.3rem; }
+}
+</style>
+</head>
+<body>
+<header class="page-header">
+  <h1>BPIO ドキュメントポータル</h1>
+  <p class="subtitle">社内共有用ドキュメント・マニュアル</p>
+</header>
+<div id="main">
+  <div class="section-label">ワークフロー・マニュアル</div>
+  <div class="doc-list">
+    <a href="p010-bpo-knowledge-manual/" class="doc-item">
+      <div class="doc-title">ナレッジ自動蓄積ワークフロー マニュアル <span class="tag">p010</span></div>
+      <div class="doc-desc">Meet録画・Gemini議事録・Drop Zoneを活用したナレッジ自動蓄積の利用手順。3つの入力ルートの使い方、効果的なナレッジ蓄積のコツを解説。</div>
+    </a>
+  </div>
+  <div class="section-label">リサーチ・レポート</div>
+  <div class="doc-list">
+    <div class="doc-item">
+      <div class="doc-title">レセプトBPOサービス リサーチレポート <span class="tag">p012</span></div>
+      <div class="doc-desc">レセプトBPOサービスに関する市場調査・ステークホルダー分析・事業戦略レポート。</div>
+      <div class="doc-links">
+        <a href="p012-receipt-bpo-reports/" class="doc-link">市場調査レポート</a>
+        <a href="p012-receipt-bpo-reports/research-conclusion.html" class="doc-link">調査結論レポート</a>
+        <a href="p012-receipt-bpo-reports/stakeholder-flowchart.html" class="doc-link">ステークホルダーフローチャート</a>
+      </div>
+    </div>
+  </div>
+</div>
+<footer class="page-footer">
+  BPIO — 社内ドキュメント共有ポータル
+</footer>
+</body>
+</html>

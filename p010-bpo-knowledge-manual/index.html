@@ -3,640 +3,593 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BPOナレッジ自動蓄積ワークフロー マニュアル</title>
+<title>ナレッジ自動蓄積ワークフロー マニュアル — BPIO</title>
 <style>
-  :root {
-    --primary: #2563eb;
-    --primary-light: #dbeafe;
-    --primary-dark: #1e40af;
-    --accent: #f59e0b;
-    --accent-light: #fef3c7;
-    --success: #10b981;
-    --success-light: #d1fae5;
-    --gray-50: #f9fafb;
-    --gray-100: #f3f4f6;
-    --gray-200: #e5e7eb;
-    --gray-300: #d1d5db;
-    --gray-500: #6b7280;
-    --gray-700: #374151;
-    --gray-900: #111827;
-  }
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color: #1a1a1a;
+  background: #fff;
+  line-height: 1.7;
+  min-height: 100vh;
+}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+/* ===== Sticky Pill Navigation ===== */
+#sticky-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.97);
+  border-bottom: 1px solid #ccc;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+#sticky-nav .nav-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #777;
+  letter-spacing: 0.05em;
+  margin-right: 4px;
+  white-space: nowrap;
+}
+.pill {
+  display: inline-block;
+  padding: 5px 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #555;
+  text-decoration: none;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.pill:hover {
+  background: #1a1a1a;
+  color: #fff;
+  border-color: #1a1a1a;
+}
 
-  body {
-    font-family: 'Segoe UI', 'Hiragino Sans', 'Meiryo', sans-serif;
-    color: var(--gray-900);
-    line-height: 1.7;
-    background: var(--gray-50);
-  }
+/* ===== Main Content ===== */
+#main {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 40px 48px 80px;
+}
 
-  /* Hero */
-  .hero {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    color: white;
-    padding: 3rem 1.5rem;
-    text-align: center;
-  }
-  .hero h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.75rem; }
-  .hero p { font-size: 1.1rem; opacity: 0.9; max-width: 640px; margin: 0 auto; }
-  .hero .badge {
-    display: inline-block;
-    background: rgba(255,255,255,0.2);
-    padding: 0.25rem 0.75rem;
-    border-radius: 999px;
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-  }
+/* ===== Header ===== */
+.report-header {
+  border-bottom: 2px solid #1a1a1a;
+  padding-bottom: 20px;
+  margin-bottom: 32px;
+}
+.report-header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.report-header .subtitle {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 16px;
+}
+.report-header .summary-box {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 16px 20px;
+  margin-top: 16px;
+}
+.report-header .summary-box h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.report-header .summary-box ul {
+  padding-left: 20px;
+  font-size: 0.82rem;
+}
+.report-header .summary-box li {
+  margin-bottom: 4px;
+}
 
-  /* Container */
-  .container { max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem; }
+/* ===== Section Headings ===== */
+h2.section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-bottom: 1px solid #999;
+  padding-bottom: 6px;
+  margin-top: 48px;
+  margin-bottom: 20px;
+}
+h3.subsection-title {
+  font-size: 1.0rem;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  padding-left: 10px;
+  border-left: 3px solid #555;
+}
+h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
 
-  /* TOC */
-  .toc {
-    background: white;
-    border: 1px solid var(--gray-200);
-    border-radius: 12px;
-    padding: 1.5rem 2rem;
-    margin-bottom: 2.5rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-  }
-  .toc h2 { font-size: 1rem; color: var(--gray-500); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
-  .toc ol { padding-left: 1.25rem; }
-  .toc li { margin-bottom: 0.35rem; }
-  .toc a { color: var(--primary); text-decoration: none; font-weight: 500; }
-  .toc a:hover { text-decoration: underline; }
+/* ===== Tables ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 20px;
+  font-size: 0.82rem;
+}
+table th, table td {
+  border: 1px solid #bbb;
+  padding: 7px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+table th {
+  background: #f0f0f0;
+  font-weight: 700;
+  white-space: nowrap;
+}
+table td {
+  background: #fff;
+}
+table tr:nth-child(even) td {
+  background: #fafafa;
+}
 
-  /* Sections */
-  section { margin-bottom: 3rem; }
-  section h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 3px solid var(--primary);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  section h2 .num {
-    background: var(--primary);
-    color: white;
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-    flex-shrink: 0;
-  }
-  h3 { font-size: 1.15rem; font-weight: 600; margin: 1.5rem 0 0.75rem; color: var(--gray-700); }
-  p { margin-bottom: 0.75rem; }
+/* ===== Paragraphs & Lists ===== */
+p { margin-bottom: 10px; font-size: 0.88rem; }
+ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+ul li, ol li { margin-bottom: 3px; }
 
-  /* Cards */
-  .card {
-    background: white;
-    border: 1px solid var(--gray-200);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-  }
-  .card-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.5rem; }
+/* ===== Highlight box (grey) ===== */
+.highlight-box {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 14px 18px;
+  margin: 12px 0 20px;
+  font-size: 0.85rem;
+}
+.highlight-box strong { color: #1a1a1a; }
 
-  /* Flow diagram */
-  .flow {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    align-items: center;
-    margin: 1.5rem 0;
-  }
-  .flow-step {
-    background: white;
-    border: 2px solid var(--primary);
-    border-radius: 12px;
-    padding: 1rem 1.5rem;
-    text-align: center;
-    width: 100%;
-    max-width: 480px;
-    position: relative;
-  }
-  .flow-step.highlight {
-    background: var(--primary-light);
-    border-color: var(--primary);
-  }
-  .flow-step.auto {
-    background: var(--success-light);
-    border-color: var(--success);
-  }
-  .flow-step .label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.25rem;
-  }
-  .flow-step .label.manual { color: var(--accent); }
-  .flow-step .label.auto { color: var(--success); }
-  .flow-arrow {
-    font-size: 1.5rem;
-    color: var(--gray-300);
-    padding: 0.25rem 0;
-  }
+/* ===== Note box (yellow) ===== */
+.note-box {
+  background: #fffbeb;
+  border-left: 4px solid #f59e0b;
+  padding: 10px 16px;
+  margin: 12px 0 20px;
+  font-size: 0.82rem;
+  color: #78350f;
+}
 
-  /* Steps */
-  .steps { counter-reset: step; list-style: none; padding: 0; }
-  .steps li {
-    counter-increment: step;
-    padding: 0.75rem 0 0.75rem 3rem;
-    position: relative;
-    border-left: 2px solid var(--gray-200);
-    margin-left: 1rem;
-  }
-  .steps li:last-child { border-left-color: transparent; }
-  .steps li::before {
-    content: counter(step);
-    position: absolute;
-    left: -14px;
-    top: 0.7rem;
-    width: 26px; height: 26px;
-    background: var(--primary);
-    color: white;
-    border-radius: 50%;
-    font-size: 0.8rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .steps li strong { display: block; margin-bottom: 0.25rem; }
+/* ===== Info box (blue) ===== */
+.info-box {
+  background: #eff6ff;
+  border-left: 4px solid #3b82f6;
+  padding: 10px 16px;
+  margin: 12px 0 20px;
+  font-size: 0.82rem;
+  color: #1e3a5f;
+}
 
-  /* Highlight box */
-  .highlight-box {
-    background: var(--accent-light);
-    border-left: 4px solid var(--accent);
-    padding: 1rem 1.25rem;
-    border-radius: 0 8px 8px 0;
-    margin: 1rem 0;
-  }
-  .info-box {
-    background: var(--primary-light);
-    border-left: 4px solid var(--primary);
-    padding: 1rem 1.25rem;
-    border-radius: 0 8px 8px 0;
-    margin: 1rem 0;
-  }
-  .success-box {
-    background: var(--success-light);
-    border-left: 4px solid var(--success);
-    padding: 1rem 1.25rem;
-    border-radius: 0 8px 8px 0;
-    margin: 1rem 0;
-  }
+/* ===== Flow diagram ===== */
+.flow-diagram {
+  background: #f7f7f7;
+  border: 1px solid #ccc;
+  padding: 16px 20px;
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  white-space: pre;
+  overflow-x: auto;
+  margin: 12px 0 20px;
+}
 
-  /* Table */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1rem 0;
-    font-size: 0.95rem;
-  }
-  th, td {
-    padding: 0.65rem 0.85rem;
-    text-align: left;
-    border-bottom: 1px solid var(--gray-200);
-  }
-  th {
-    background: var(--gray-100);
-    font-weight: 600;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    color: var(--gray-500);
-  }
-  tr:hover td { background: var(--gray-50); }
+/* ===== Numbered step list ===== */
+.step-list {
+  counter-reset: stepcount;
+  list-style: none;
+  padding-left: 0;
+  margin: 12px 0 20px;
+}
+.step-list li {
+  counter-increment: stepcount;
+  position: relative;
+  padding: 10px 0 10px 36px;
+  font-size: 0.88rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+.step-list li:last-child { border-bottom: none; }
+.step-list li::before {
+  content: counter(stepcount);
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 24px;
+  height: 24px;
+  background: #1a1a1a;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  /* Inline icons (emoji-based) */
-  .icon { font-size: 1.2em; margin-right: 0.25rem; }
+/* ===== Quote/speech block ===== */
+.quote-block {
+  border-left: 3px solid #bbb;
+  padding: 6px 14px;
+  margin: 6px 0;
+  font-size: 0.82rem;
+  color: #555;
+  font-style: italic;
+}
 
-  /* Badge */
-  .tag {
-    display: inline-block;
-    background: var(--gray-100);
-    color: var(--gray-700);
-    padding: 0.15rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    margin-right: 0.25rem;
-  }
-  .tag.blue { background: var(--primary-light); color: var(--primary-dark); }
-  .tag.green { background: var(--success-light); color: #065f46; }
-  .tag.yellow { background: var(--accent-light); color: #92400e; }
+/* ===== Inline code ===== */
+code {
+  background: #f0f0f0;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 0.85em;
+  font-family: "Consolas", "Courier New", monospace;
+}
 
-  /* Code */
-  code {
-    background: var(--gray-100);
-    padding: 0.15rem 0.4rem;
-    border-radius: 4px;
-    font-size: 0.9em;
-    font-family: 'Consolas', 'Menlo', monospace;
-  }
+/* ===== Two-column grid ===== */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 12px 0 20px;
+}
+.two-col-item {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 12px 16px;
+  font-size: 0.85rem;
+}
+.two-col-item h4 {
+  margin-top: 0;
+  margin-bottom: 6px;
+}
 
-  /* Responsive */
-  @media (max-width: 640px) {
-    .hero h1 { font-size: 1.5rem; }
-    .container { padding: 1.5rem 1rem; }
-    section h2 { font-size: 1.25rem; }
-  }
+/* ===== Q&A ===== */
+.qa-item {
+  border-bottom: 1px solid #e0e0e0;
+  padding: 16px 0;
+}
+.qa-item:last-child { border-bottom: none; }
+.qa-q {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.qa-a {
+  font-size: 0.85rem;
+  color: #333;
+  padding-left: 16px;
+}
 
-  /* Footer */
-  footer {
-    text-align: center;
-    padding: 2rem 1rem;
-    color: var(--gray-500);
-    font-size: 0.85rem;
-    border-top: 1px solid var(--gray-200);
-  }
+/* ===== Footer ===== */
+.report-footer {
+  border-top: 1px solid #999;
+  margin-top: 48px;
+  padding-top: 16px;
+  font-size: 0.78rem;
+  color: #777;
+}
 
-  /* Speech bubble for tips */
-  .speech {
-    background: white;
-    border: 1px solid var(--gray-200);
-    border-radius: 12px;
-    padding: 0.85rem 1.15rem;
-    margin: 0.5rem 0;
-    position: relative;
-    font-style: italic;
-    color: var(--gray-700);
-  }
-  .speech::before {
-    content: '\201C';
-    font-size: 2rem;
-    color: var(--primary);
-    position: absolute;
-    top: -0.1rem;
-    left: 0.5rem;
-    line-height: 1;
-  }
-  .speech { padding-left: 2rem; }
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+  #main { padding: 24px 20px 60px; }
+  .report-header h1 { font-size: 1.3rem; }
+  h2.section-title { font-size: 1.05rem; }
+  table { font-size: 0.78rem; }
+  table th, table td { padding: 5px 7px; }
+  #sticky-nav { padding: 10px 12px; gap: 6px; }
+  .pill { padding: 4px 12px; font-size: 0.72rem; }
+  .two-col { grid-template-columns: 1fr; }
+}
 
-  /* Two column layout */
-  .two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin: 1rem 0;
+/* ===== Print ===== */
+@media print {
+  #sticky-nav { display: none; }
+  #main { padding: 0; max-width: 100%; }
+  body { font-size: 10pt; }
+  .report-header h1 { font-size: 16pt; }
+  h2.section-title { font-size: 13pt; page-break-after: avoid; }
+  h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+  table { font-size: 8pt; page-break-inside: avoid; }
+  table th, table td { padding: 3px 5px; }
+  .highlight-box, .note-box, .info-box {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
-  @media (max-width: 640px) {
-    .two-col { grid-template-columns: 1fr; }
+  table th {
+    background: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
+}
 </style>
 </head>
 <body>
 
-<!-- Hero -->
-<div class="hero">
-  <div class="badge">BPIO DXチーム</div>
-  <h1>ナレッジ自動蓄積ワークフロー<br>利用マニュアル</h1>
-  <p>普段の業務をするだけで、ナレッジが自動的にNotionに蓄積される仕組みです。<br>あなたがやることは <strong>たった2クリック</strong> だけ。</p>
+<!-- ===== Navigation ===== -->
+<nav id="sticky-nav">
+  <span class="nav-label">CONTENTS</span>
+  <a href="#overview" class="pill">概要</a>
+  <a href="#flow" class="pill">全体フロー</a>
+  <a href="#route-a" class="pill">経路A: 会議</a>
+  <a href="#route-b" class="pill">経路B: 1人作業</a>
+  <a href="#route-c" class="pill">経路C: ドロップ</a>
+  <a href="#tips" class="pill">コツ</a>
+  <a href="#notion" class="pill">確認方法</a>
+  <a href="#faq" class="pill">FAQ</a>
+</nav>
+
+<!-- ===== Main Content ===== -->
+<div id="main">
+
+<header class="report-header">
+  <h1>ナレッジ自動蓄積ワークフロー マニュアル</h1>
+  <p class="subtitle">BPIO DXチーム / 2026年3月</p>
+  <div class="summary-box">
+    <h3>このマニュアルについて</h3>
+    <ul>
+      <li>BPO業務で発生するナレッジを、追加の手間をほぼかけずにNotionへ自動蓄積する仕組みの利用マニュアル</li>
+      <li><strong>3つの入力経路</strong>: 会議録画（経路A）、1人作業録画（経路B）、ファイルドロップ（経路C）</li>
+      <li>人間がNotionに「書く」操作はゼロ — Google Driveにデータが入ればAIが構造化してNotionに登録する</li>
+    </ul>
+  </div>
+</header>
+
+
+<!-- ===== 1. 概要 ===== -->
+<h2 class="section-title" id="overview">1. このシステムでできること</h2>
+
+<p>BPO業務（経理・労務）で得られるナレッジ — ツールの設定手順、トラブル対処法、業務パターン、ヒアリングで判明した知見 — を、<strong>追加の手間をほとんどかけずに</strong>Notionデータベースに蓄積します。</p>
+
+<table>
+  <thead><tr><th>項目</th><th>内容</th></tr></thead>
+  <tbody>
+    <tr><td>目標</td><td>1案件あたりの追加作業 <strong>5分以内</strong>、月間20件以上のナレッジを自然に蓄積</td></tr>
+    <tr><td>使用ツール</td><td>Google Meet + Gemini + Google Drive + Notion</td></tr>
+    <tr><td>追加コスト</td><td>なし（既存のGoogle Workspace + Notion契約内で完結）</td></tr>
+  </tbody>
+</table>
+
+<div class="highlight-box">
+  <strong>ポイント:</strong> 人間がNotionに「書く」行為はゼロ。Google Driveにデータが入る → AIが構造化 → Notionに自動蓄積、という流れです。
 </div>
 
-<div class="container">
 
-  <!-- TOC -->
-  <nav class="toc">
-    <h2>目次</h2>
-    <ol>
-      <li><a href="#overview">このシステムでできること</a></li>
-      <li><a href="#flow">全体の流れ</a></li>
-      <li><a href="#route-a">経路A: 会議・ヒアリングでのキャプチャ</a></li>
-      <li><a href="#route-b">経路B: 1人作業のキャプチャ（1人Meet）</a></li>
-      <li><a href="#route-c">経路C: ファイルのドロップ投入</a></li>
-      <li><a href="#tips">効果的なナレッジ蓄積のコツ</a></li>
-      <li><a href="#notion">蓄積されたナレッジの確認方法</a></li>
-      <li><a href="#faq">よくある質問</a></li>
-    </ol>
-  </nav>
+<!-- ===== 2. 全体フロー ===== -->
+<h2 class="section-title" id="flow">2. 全体の流れ</h2>
 
-  <!-- 1. Overview -->
-  <section id="overview">
-    <h2><span class="num">1</span> このシステムでできること</h2>
+<div class="flow-diagram">【あなたの操作（2クリック）】
+  会議開始時に「録画ON」「GeminiメモON」をクリック
+     ↓
+【自動】Geminiが議事録を自動生成
+  （要約・詳細・アクションアイテム・全文書き起こし）
+     ↓
+【自動】Google Drive（Meet Recordings）に保存
+     ↓
+【AI処理】Claude Codeがナレッジを構造化
+  （カテゴリ分類・タグ付け・重要度判定）
+     ↓
+【蓄積完了】Notion ナレッジDBに自動登録
+  （検索・フィルター・共有可能な状態で蓄積）</div>
 
-    <p>BPO業務（経理・労務）の中で得られるナレッジ — ツールの設定手順、トラブル対処法、業務パターン、ヒアリングで判明した知見 — を、<strong>追加の手間をほとんどかけずに</strong>Notionデータベースに蓄積します。</p>
+<p>上記が基本の流れです。入力の方法によって3つの経路があり、いずれもGeminiまたはDrop Zoneを経由してAI処理に繋がります。</p>
 
-    <div class="two-col">
-      <div class="card">
-        <div class="card-title"><span class="icon">&#x1F3AF;</span> ゴール</div>
-        <p>1案件あたりの追加作業 <strong>5分以内</strong>で<br>月間20件以上のナレッジを自然に蓄積</p>
-      </div>
-      <div class="card">
-        <div class="card-title"><span class="icon">&#x1F6E0;</span> ツール</div>
-        <p>Google Meet + Gemini + Google Drive + Notion<br><span class="tag green">追加コスト なし</span></p>
-      </div>
-    </div>
 
-    <div class="success-box">
-      <strong>ポイント:</strong> 人間がNotionに「書く」行為はゼロ。Google Driveにデータが入る → AIが構造化 → Notionに自動蓄積、という流れです。
-    </div>
-  </section>
+<!-- ===== 3. 経路A ===== -->
+<h2 class="section-title" id="route-a">3. 経路A: 会議・ヒアリングでのキャプチャ</h2>
 
-  <!-- 2. Flow -->
-  <section id="flow">
-    <h2><span class="num">2</span> 全体の流れ</h2>
+<p>クライアントとのMTG、社内打ち合わせ、ヒアリングなど、<strong>Google Meetで行うすべての会議</strong>が対象です。</p>
 
-    <div class="flow">
-      <div class="flow-step highlight">
-        <div class="label manual">あなたの操作（2クリック）</div>
-        <strong>会議開始時に「録画ON」「GeminiメモON」をクリック</strong>
-      </div>
-      <div class="flow-arrow">&#x25BC;</div>
-      <div class="flow-step auto">
-        <div class="label auto">自動</div>
-        <strong>Geminiが議事録を自動生成</strong>
-        <div style="font-size:0.9rem;color:var(--gray-500)">要約・詳細・アクションアイテム・全文書き起こし</div>
-      </div>
-      <div class="flow-arrow">&#x25BC;</div>
-      <div class="flow-step auto">
-        <div class="label auto">自動</div>
-        <strong>Google Drive（Meet Recordings）に保存</strong>
-      </div>
-      <div class="flow-arrow">&#x25BC;</div>
-      <div class="flow-step auto">
-        <div class="label auto">AI処理</div>
-        <strong>Claude Codeがナレッジを構造化</strong>
-        <div style="font-size:0.9rem;color:var(--gray-500)">カテゴリ分類・タグ付け・重要度判定</div>
-      </div>
-      <div class="flow-arrow">&#x25BC;</div>
-      <div class="flow-step" style="background:var(--primary-light);border-color:var(--primary-dark)">
-        <div class="label" style="color:var(--primary-dark)">蓄積完了</div>
-        <strong>Notion ナレッジDBに自動登録</strong>
-        <div style="font-size:0.9rem;color:var(--gray-500)">検索・フィルター・共有可能な状態で蓄積</div>
-      </div>
-    </div>
-  </section>
+<h3 class="subsection-title">手順</h3>
 
-  <!-- 3. Route A -->
-  <section id="route-a">
-    <h2><span class="num">3</span> 経路A: 会議・ヒアリングでのキャプチャ</h2>
+<ol class="step-list">
+  <li><strong>Google Meetで会議を開始</strong><br>通常通りMeetに参加します。</li>
+  <li><strong>「録画」をONにする</strong><br>画面下部の「アクティビティ」→「録画」→「録画を開始」をクリック。</li>
+  <li><strong>「Geminiでメモを取る」をONにする</strong><br>画面下部の「Geminiでメモを取る」→「メモの作成を開始」をクリック。</li>
+  <li><strong>通常通り会議を進行</strong><br>特別なことは何もしなくてOKです。普通に話してください。</li>
+  <li><strong>会議終了</strong><br>録画・メモは自動的に停止し、Google Driveに保存されます。</li>
+</ol>
 
-    <p>クライアントとのMTG、社内打ち合わせ、ヒアリングなど、<strong>Google Meetで行うすべての会議</strong>が対象です。</p>
-
-    <h3>手順</h3>
-    <ol class="steps">
-      <li>
-        <strong>Google Meetで会議を開始</strong>
-        通常通りMeetに参加します。
-      </li>
-      <li>
-        <strong>「録画」をONにする</strong>
-        画面下部の「アクティビティ」→「録画」→「録画を開始」をクリック。
-      </li>
-      <li>
-        <strong>「Geminiでメモを取る」をONにする</strong>
-        画面下部の「Geminiでメモを取る」→「メモの作成を開始」をクリック。
-      </li>
-      <li>
-        <strong>通常通り会議を進行</strong>
-        特別なことは何もしなくてOKです。普通に話してください。
-      </li>
-      <li>
-        <strong>会議終了</strong>
-        録画・メモは自動的に停止し、Google Driveに保存されます。
-      </li>
-    </ol>
-
-    <div class="highlight-box">
-      <strong><span class="icon">&#x26A1;</span> これだけです！</strong> 会議開始時の2クリック以外、追加の作業はありません。あとはAIが自動的にナレッジを抽出・構造化してNotionに登録します。
-    </div>
-
-    <h3>対象となる会議の例</h3>
-    <table>
-      <thead>
-        <tr><th>業務フェーズ</th><th>会議の例</th><th>蓄積されるナレッジ</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><span class="tag blue">ヒアリング</span></td>
-          <td>初回ヒアリング、現状把握MTG</td>
-          <td>業界特有の業務パターン、課題パターン</td>
-        </tr>
-        <tr>
-          <td><span class="tag blue">設計</span></td>
-          <td>設計打合せ、ツール選定MTG</td>
-          <td>判断理由、機能マッピング、設計方針</td>
-        </tr>
-        <tr>
-          <td><span class="tag blue">設定</span></td>
-          <td>画面共有での設定作業MTG</td>
-          <td>設定手順、ハマりポイント、エラー対処</td>
-        </tr>
-        <tr>
-          <td><span class="tag blue">オンボード</span></td>
-          <td>操作説明会、引き渡しMTG</td>
-          <td>よくある質問、つまずきポイント</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
-
-  <!-- 4. Route B -->
-  <section id="route-b">
-    <h2><span class="num">4</span> 経路B: 1人作業のキャプチャ（1人Meet）</h2>
-
-    <p>SaaSツールの設定やデータ移行など、<strong>1人で行う作業</strong>もナレッジとして記録できます。<br>方法は簡単 — 1人でGoogle Meetを開いて、画面共有しながら作業するだけ。</p>
-
-    <h3>どんな時に使う？</h3>
-    <div class="two-col">
-      <div class="card">
-        <div class="card-title"><span class="icon">&#x2699;</span> SaaS設定作業</div>
-        <p>freee、SmartHR、King of Time等の初期設定・変更作業</p>
-      </div>
-      <div class="card">
-        <div class="card-title"><span class="icon">&#x1F4CA;</span> データ移行</div>
-        <p>CSVインポート、マスタデータ登録、API連携設定</p>
-      </div>
-      <div class="card">
-        <div class="card-title"><span class="icon">&#x1F527;</span> トラブル対応</div>
-        <p>エラー調査、設定修正、原因調査</p>
-      </div>
-      <div class="card">
-        <div class="card-title"><span class="icon">&#x1F50D;</span> 調査・検証</div>
-        <p>新ツールの機能確認、設定可能範囲の検証</p>
-      </div>
-    </div>
-
-    <h3>手順</h3>
-    <ol class="steps">
-      <li>
-        <strong>Google Meetを新規作成</strong>
-        ブラウザで <code>meet.new</code> と入力 → 1人で参加。
-      </li>
-      <li>
-        <strong>録画ON + GeminiメモON + 画面共有</strong>
-        経路Aと同じ手順で録画とメモを開始し、作業するウィンドウを画面共有します。
-      </li>
-      <li>
-        <strong>口頭で説明しながら作業する</strong>
-        <em>これが最も重要なポイントです。</em><br>
-        何をしているか、なぜそうしているかを声に出しながら作業してください。
-      </li>
-      <li>
-        <strong>作業完了 → 録画停止 → Meet退出</strong>
-      </li>
-    </ol>
-
-    <div class="info-box">
-      <strong><span class="icon">&#x1F4A1;</span> Geminiの品質は口頭説明の明確さに比例します。</strong><br>
-      無言で作業するとナレッジが薄くなります。以下の例を参考に話しながら作業してください。
-    </div>
-
-    <h3>口頭説明の例</h3>
-
-    <div class="speech">今からfreeeの勤怠設定を変更します。対象はXXクライアントのアカウントです。</div>
-    <div class="speech">Step 1として、まず管理者設定画面を開きます。</div>
-    <div class="speech">「権限エラー」が出ました。管理者権限が必要みたいなので、権限設定を確認します。</div>
-    <div class="speech">ここで設定Aと設定Bの選択肢がありますが、クライアントの従業員数が50名以下なのでAを選びます。</div>
-    <div class="speech">以上で勤怠設定の変更が完了しました。</div>
-
-    <div class="highlight-box">
-      <strong>目安:</strong> 1セッション30〜60分。長時間作業の場合は区切りごとにMeetを分けてもOKです。
-    </div>
-  </section>
-
-  <!-- 5. Route C -->
-  <section id="route-c">
-    <h2><span class="num">5</span> 経路C: ファイルのドロップ投入</h2>
-
-    <p>会議以外で発生したナレッジ（メモ、参考資料、調査結果など）は、<strong>共有ドライブの「Drop Zone」フォルダにドラッグ&amp;ドロップ</strong>するだけでナレッジ化できます。</p>
-
-    <h3>手順</h3>
-    <ol class="steps">
-      <li>
-        <strong>Google Driveで共有ドライブ「BPOナレッジ」を開く</strong>
-      </li>
-      <li>
-        <strong>「Drop Zone」フォルダにファイルをドラッグ&amp;ドロップ</strong>
-        <div style="margin-top:0.5rem">
-          <span class="tag">Google Doc</span>
-          <span class="tag">PDF</span>
-          <span class="tag">テキストメモ</span>
-          <span class="tag">スプレッドシート</span>
-        </div>
-      </li>
-      <li>
-        <strong>完了！</strong>
-        AIが自動的にファイルを読み取り、ナレッジを抽出してNotionに登録します。
-      </li>
-    </ol>
-
-    <h3>こんなファイルを投入できます</h3>
-    <table>
-      <thead>
-        <tr><th>ファイル種別</th><th>例</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>テキストメモ</td><td>作業中に気づいたTips、ハマりポイントのメモ</td></tr>
-        <tr><td>Google Doc</td><td>クライアントからの質問まとめ、手順書ドラフト</td></tr>
-        <tr><td>参考資料（PDF）</td><td>SaaSツールのマニュアル抜粋、設定画面のスクショ入り資料</td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <!-- 6. Tips -->
-  <section id="tips">
-    <h2><span class="num">6</span> 効果的なナレッジ蓄積のコツ</h2>
-
-    <div class="card">
-      <div class="card-title"><span class="icon">&#x2705;</span> やってほしいこと</div>
-      <ul style="padding-left:1.25rem;margin-top:0.5rem">
-        <li><strong>すべての会議で録画+GeminiメモをON</strong> — 有用なナレッジが含まれるかは後でAIが判断します</li>
-        <li><strong>判断理由を口頭で説明</strong> — 「何をしたか」だけでなく「なぜそうしたか」が最も価値のあるナレッジです</li>
-        <li><strong>エラーが出たら記録チャンス</strong> — トラブルシュートの知見は最も再利用価値が高いナレッジです</li>
-        <li><strong>1人作業でも1人Meetを活用</strong> — SaaS設定、データ移行は特にナレッジになりやすいです</li>
-      </ul>
-    </div>
-
-    <div class="card" style="margin-top:1rem">
-      <div class="card-title"><span class="icon">&#x274C;</span> やらなくていいこと</div>
-      <ul style="padding-left:1.25rem;margin-top:0.5rem">
-        <li>Notionに手動で何かを書く</li>
-        <li>議事録を整理する</li>
-        <li>ナレッジの分類やタグ付けを考える</li>
-        <li>特別なフォーマットで記録する</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- 7. Notion -->
-  <section id="notion">
-    <h2><span class="num">7</span> 蓄積されたナレッジの確認方法</h2>
-
-    <p>蓄積されたナレッジは、Notionの「<strong>DXチームナレッジ自動蓄積</strong>」ページ内のナレッジDBで確認できます。</p>
-
-    <h3>ナレッジDBのプロパティ</h3>
-    <table>
-      <thead>
-        <tr><th>プロパティ</th><th>内容</th><th>例</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><strong>タイトル</strong></td><td>ナレッジの名前</td><td>資金繰り表の作成ワークフロー</td></tr>
-        <tr><td><strong>カテゴリ</strong></td><td>分類</td><td><span class="tag">ツール設定</span> <span class="tag">業務パターン</span> <span class="tag">FAQ</span></td></tr>
-        <tr><td><strong>対象ツール</strong></td><td>関連するSaaS</td><td><span class="tag blue">freee</span> <span class="tag blue">SmartHR</span></td></tr>
-        <tr><td><strong>領域</strong></td><td>業務領域</td><td><span class="tag green">経理</span> <span class="tag green">労務</span></td></tr>
-        <tr><td><strong>重要度</strong></td><td>高・中・低</td><td><span class="tag yellow">高</span></td></tr>
-        <tr><td><strong>ソース</strong></td><td>どの会議から</td><td>ルズ様定例MTG 2026/03/05</td></tr>
-      </tbody>
-    </table>
-
-    <div class="info-box">
-      <strong>検索のコツ:</strong> ナレッジDBのフィルター機能を使って、対象ツール・領域・カテゴリで絞り込めます。例えば「freee × 経理 × トラブルシュート」で、freeeの経理関連エラー対処法を一覧できます。
-    </div>
-  </section>
-
-  <!-- 8. FAQ -->
-  <section id="faq">
-    <h2><span class="num">8</span> よくある質問</h2>
-
-    <div class="card">
-      <div class="card-title">Q: クライアントとの会議で録画してもいい？</div>
-      <p>事前にクライアントの許可を取ってください。「社内のナレッジ蓄積のため、録画させていただいてよろしいですか？」と一言伝えればOKです。録画データはGoogle Workspace内で完結し、外部に流出しません。</p>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Q: Geminiの日本語精度は大丈夫？</div>
-      <p>実運用テストの結果、ビジネス会議の内容は正確に記録されており<strong>実用レベル</strong>です。固有名詞（ツール名等）は稀に誤認識がありますが、文脈から判断可能な範囲です。</p>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Q: ナレッジの品質が心配。変なものが登録されない？</div>
-      <p>AIが構造化する際にノイズは除外されます。また、Notionの「ステータス」プロパティで「要確認」フラグを立てることもできるので、定期的なレビューも可能です。</p>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Q: 録画を忘れてしまった場合は？</div>
-      <p>後からナレッジ化したいメモやファイルがあれば、Drop Zone（共有ドライブ「BPOナレッジ」）にドロップしてください。テキストメモでもOKです。</p>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Q: 機密情報が含まれる会議は？</div>
-      <p>録画データはGoogle Workspace内に保管され、外部サービスへのデータ流出はありません。ただし、パスワードなどの機密情報が画面に映る場合は、1人Meet時に画面共有の範囲（ウィンドウ単位）で制御してください。</p>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Q: 既存のナレッジと重複したらどうなる？</div>
-      <p>AI処理の段階で既存ナレッジとの重複チェックを行い、新規性のある部分のみを抽出します。同じトピックでも新しい知見が含まれていれば、既存ナレッジの補足として登録されます。</p>
-    </div>
-  </section>
-
+<div class="highlight-box">
+  <strong>これだけです。</strong> 会議開始時の2クリック以外、追加の作業はありません。あとはAIが自動的にナレッジを抽出・構造化してNotionに登録します。
 </div>
 
-<footer>
-  <p>BPOナレッジ自動蓄積ワークフロー マニュアル v1.0<br>
+<h3 class="subsection-title">対象となる会議の例</h3>
+
+<table>
+  <thead><tr><th>業務フェーズ</th><th>会議の例</th><th>蓄積されるナレッジ</th></tr></thead>
+  <tbody>
+    <tr><td>ヒアリング</td><td>初回ヒアリング、現状把握MTG</td><td>業界特有の業務パターン、課題パターン</td></tr>
+    <tr><td>設計</td><td>設計打合せ、ツール選定MTG</td><td>判断理由、機能マッピング、設計方針</td></tr>
+    <tr><td>設定</td><td>画面共有での設定作業MTG</td><td>設定手順、ハマりポイント、エラー対処</td></tr>
+    <tr><td>オンボード</td><td>操作説明会、引き渡しMTG</td><td>よくある質問、つまずきポイント</td></tr>
+  </tbody>
+</table>
+
+
+<!-- ===== 4. 経路B ===== -->
+<h2 class="section-title" id="route-b">4. 経路B: 1人作業のキャプチャ（1人Meet）</h2>
+
+<p>SaaSツールの設定やデータ移行など、<strong>1人で行う作業</strong>もナレッジとして記録できます。方法は簡単 — 1人でGoogle Meetを開いて、画面共有しながら作業するだけです。</p>
+
+<h3 class="subsection-title">どんな時に使うか</h3>
+
+<div class="two-col">
+  <div class="two-col-item">
+    <h4>SaaS設定作業</h4>
+    <p>freee、SmartHR、King of Time等の初期設定・変更作業</p>
+  </div>
+  <div class="two-col-item">
+    <h4>データ移行</h4>
+    <p>CSVインポート、マスタデータ登録、API連携設定</p>
+  </div>
+  <div class="two-col-item">
+    <h4>トラブル対応</h4>
+    <p>エラー調査、設定修正、原因調査</p>
+  </div>
+  <div class="two-col-item">
+    <h4>調査・検証</h4>
+    <p>新ツールの機能確認、設定可能範囲の検証</p>
+  </div>
+</div>
+
+<h3 class="subsection-title">手順</h3>
+
+<ol class="step-list">
+  <li><strong>Google Meetを新規作成</strong><br>ブラウザで <code>meet.new</code> と入力 → 1人で参加。</li>
+  <li><strong>録画ON + GeminiメモON + 画面共有</strong><br>経路Aと同じ手順で録画とメモを開始し、作業するウィンドウを画面共有します。</li>
+  <li><strong>口頭で説明しながら作業する</strong><br>何をしているか、なぜそうしているかを声に出しながら作業してください。<em>（これが最も重要なポイント）</em></li>
+  <li><strong>作業完了 → 録画停止 → Meet退出</strong></li>
+</ol>
+
+<div class="note-box">
+  <strong>重要:</strong> Geminiの品質は口頭説明の明確さに比例します。無言で作業するとナレッジが薄くなります。以下の例を参考に話しながら作業してください。
+</div>
+
+<h3 class="subsection-title">口頭説明の例</h3>
+
+<div class="quote-block">「今からfreeeの勤怠設定を変更します。対象はXXクライアントのアカウントです。」</div>
+<div class="quote-block">「Step 1として、まず管理者設定画面を開きます。」</div>
+<div class="quote-block">「権限エラーが出ました。管理者権限が必要みたいなので、権限設定を確認します。」</div>
+<div class="quote-block">「ここで設定Aと設定Bの選択肢がありますが、クライアントの従業員数が50名以下なのでAを選びます。」</div>
+<div class="quote-block">「以上で勤怠設定の変更が完了しました。」</div>
+
+<div class="info-box">
+  <strong>目安:</strong> 1セッション30〜60分。長時間作業の場合は区切りごとにMeetを分けてもOKです。画面共有は「ウィンドウ」単位がおすすめ（「画面全体」だと他の通知も映ります）。
+</div>
+
+
+<!-- ===== 5. 経路C ===== -->
+<h2 class="section-title" id="route-c">5. 経路C: ファイルのドロップ投入</h2>
+
+<p>会議以外で発生したナレッジ（メモ、参考資料、調査結果など）は、<strong>共有ドライブの「Drop Zone」フォルダにドラッグ&amp;ドロップ</strong>するだけでナレッジ化できます。</p>
+
+<h3 class="subsection-title">手順</h3>
+
+<ol class="step-list">
+  <li><strong>Google Driveで共有ドライブ「BPOナレッジ」を開く</strong></li>
+  <li><strong>「Drop Zone」フォルダにファイルをドラッグ&amp;ドロップ</strong><br>対応形式: Google Doc / PDF / テキストメモ / スプレッドシート</li>
+  <li><strong>完了</strong><br>AIが自動的にファイルを読み取り、ナレッジを抽出してNotionに登録します。</li>
+</ol>
+
+<h3 class="subsection-title">投入できるファイルの例</h3>
+
+<table>
+  <thead><tr><th>ファイル種別</th><th>例</th></tr></thead>
+  <tbody>
+    <tr><td>テキストメモ</td><td>作業中に気づいたTips、ハマりポイントのメモ</td></tr>
+    <tr><td>Google Doc</td><td>クライアントからの質問まとめ、手順書ドラフト</td></tr>
+    <tr><td>参考資料（PDF）</td><td>SaaSツールのマニュアル抜粋、設定画面のスクショ入り資料</td></tr>
+  </tbody>
+</table>
+
+
+<!-- ===== 6. コツ ===== -->
+<h2 class="section-title" id="tips">6. 効果的なナレッジ蓄積のコツ</h2>
+
+<h3 class="subsection-title">やってほしいこと</h3>
+<ul>
+  <li><strong>すべての会議で録画+GeminiメモをON</strong> — 有用なナレッジが含まれるかは後でAIが判断します</li>
+  <li><strong>判断理由を口頭で説明</strong> — 「何をしたか」だけでなく「なぜそうしたか」が最も価値のあるナレッジです</li>
+  <li><strong>エラーが出たら記録チャンス</strong> — トラブルシュートの知見は最も再利用価値が高いナレッジです</li>
+  <li><strong>1人作業でも1人Meetを活用</strong> — SaaS設定、データ移行は特にナレッジになりやすいです</li>
+</ul>
+
+<h3 class="subsection-title">やらなくていいこと</h3>
+<ul>
+  <li>Notionに手動で何かを書く</li>
+  <li>議事録を整理する</li>
+  <li>ナレッジの分類やタグ付けを考える</li>
+  <li>特別なフォーマットで記録する</li>
+</ul>
+
+
+<!-- ===== 7. 確認方法 ===== -->
+<h2 class="section-title" id="notion">7. 蓄積されたナレッジの確認方法</h2>
+
+<p>蓄積されたナレッジは、Notionの「<strong>DXチームナレッジ自動蓄積</strong>」ページ内のナレッジDBで確認できます。</p>
+
+<h3 class="subsection-title">ナレッジDBのプロパティ</h3>
+
+<table>
+  <thead><tr><th>プロパティ</th><th>内容</th><th>例</th></tr></thead>
+  <tbody>
+    <tr><td>タイトル</td><td>ナレッジの名前</td><td>資金繰り表の作成ワークフロー</td></tr>
+    <tr><td>カテゴリ</td><td>分類</td><td>ツール設定 / 業務パターン / FAQ</td></tr>
+    <tr><td>対象ツール</td><td>関連するSaaS</td><td>freee / SmartHR / King of Time</td></tr>
+    <tr><td>領域</td><td>業務領域</td><td>経理 / 労務 / 総務</td></tr>
+    <tr><td>重要度</td><td>高・中・低</td><td>高</td></tr>
+    <tr><td>ソース</td><td>どの会議・ファイルから</td><td>ルズ様定例MTG 2026/03/05</td></tr>
+  </tbody>
+</table>
+
+<div class="info-box">
+  <strong>検索のコツ:</strong> ナレッジDBのフィルター機能を使って、対象ツール・領域・カテゴリで絞り込めます。例えば「freee × 経理 × トラブルシュート」で、freeeの経理関連エラー対処法を一覧できます。
+</div>
+
+
+<!-- ===== 8. FAQ ===== -->
+<h2 class="section-title" id="faq">8. よくある質問</h2>
+
+<div class="qa-item">
+  <div class="qa-q">Q. クライアントとの会議で録画してもいい？</div>
+  <div class="qa-a">事前にクライアントの許可を取ってください。「社内のナレッジ蓄積のため、録画させていただいてよろしいですか？」と一言伝えればOKです。録画データはGoogle Workspace内で完結し、外部に流出しません。</div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">Q. Geminiの日本語精度は大丈夫？</div>
+  <div class="qa-a">実運用テストの結果、ビジネス会議の内容は正確に記録されており実用レベルです。固有名詞（ツール名等）は稀に誤認識がありますが、文脈から判断可能な範囲です。</div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">Q. ナレッジの品質が心配。変なものが登録されない？</div>
+  <div class="qa-a">AIが構造化する際にノイズは除外されます。また、Notionの「ステータス」プロパティで「要確認」フラグを立てることもできるので、定期的なレビューも可能です。</div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">Q. 録画を忘れてしまった場合は？</div>
+  <div class="qa-a">後からナレッジ化したいメモやファイルがあれば、共有ドライブ「BPOナレッジ」のDrop Zoneにドロップしてください。テキストメモでもOKです。</div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">Q. 機密情報が含まれる会議は？</div>
+  <div class="qa-a">録画データはGoogle Workspace内に保管され、外部サービスへのデータ流出はありません。ただし、パスワードなどの機密情報が画面に映る場合は、1人Meet時に画面共有の範囲（ウィンドウ単位）で制御してください。</div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">Q. 既存のナレッジと重複したらどうなる？</div>
+  <div class="qa-a">AI処理の段階で既存ナレッジとの重複チェックを行い、新規性のある部分のみを抽出します。同じトピックでも新しい知見が含まれていれば、既存ナレッジの補足として登録されます。</div>
+</div>
+
+
+<div class="report-footer">
+  ナレッジ自動蓄積ワークフロー マニュアル v1.0<br>
   DXチーム / BPIO<br>
-  最終更新: 2026年3月</p>
-</footer>
+  最終更新: 2026年3月
+</div>
 
+</div>
 </body>
 </html>
