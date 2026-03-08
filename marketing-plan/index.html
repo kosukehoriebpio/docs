@@ -48,29 +48,49 @@
     margin-top: 1rem;
   }
 
-  /* Navigation */
-  nav {
+  /* Tab Navigation */
+  .tab-nav {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
     position: sticky;
     top: 0;
-    background: var(--surface);
+    z-index: 200;
+  }
+  .tab-nav a {
+    padding: 1rem 2rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+  .tab-nav a:hover { color: var(--accent); background: var(--surface2); }
+  .tab-nav a.active { color: var(--accent); border-bottom-color: var(--accent); background: rgba(56,189,248,0.08); }
+
+  /* Section Navigation */
+  nav {
+    background: var(--surface2);
     border-bottom: 1px solid var(--border);
-    z-index: 100;
-    padding: 0.8rem 2rem;
+    padding: 0.6rem 2rem;
     display: flex;
-    gap: 1.5rem;
+    gap: 1.2rem;
     overflow-x: auto;
     flex-wrap: wrap;
   }
   nav a {
     color: var(--text-muted);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     white-space: nowrap;
-    padding: 0.3rem 0.8rem;
+    padding: 0.3rem 0.6rem;
     border-radius: 6px;
     transition: all 0.2s;
   }
-  nav a:hover { color: var(--accent); background: var(--surface2); }
+  nav a:hover { color: var(--accent); background: var(--surface); }
 
   /* Sections */
   section { margin: 3rem 0; }
@@ -326,6 +346,11 @@
   <p>データモデル設計 & システムアーキテクチャ</p>
   <span class="badge">Draft v0.1 — 2026-03-08</span>
 </header>
+
+<div class="tab-nav">
+  <a href="index.html" class="active">📊 データモデル設計</a>
+  <a href="impact.html">🚀 導入効果（ビフォーアフター）</a>
+</div>
 
 <nav>
   <a href="#architecture">システム構成</a>

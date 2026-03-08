@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BPIO デジタルマーケティング計画 — 導入効果（ビフォーアフター）</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface2: #334155;
+    --border: #475569;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #38bdf8;
+    --accent2: #818cf8;
+    --green: #4ade80;
+    --yellow: #fbbf24;
+    --orange: #fb923c;
+    --red: #f87171;
+    --pink: #f472b6;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+  .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+  header { text-align: center; padding: 3rem 2rem; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-bottom: 1px solid var(--border); }
+  header h1 { font-size: 2rem; color: var(--accent); margin-bottom: 0.5rem; }
+  header p { color: var(--text-muted); font-size: 1.1rem; }
+  header .badge { display: inline-block; background: var(--surface2); color: var(--yellow); padding: 0.3rem 1rem; border-radius: 999px; font-size: 0.85rem; margin-top: 1rem; }
+
+  /* Tab Navigation */
+  .tab-nav {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 200;
+  }
+  .tab-nav a {
+    padding: 1rem 2rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+  .tab-nav a:hover { color: var(--accent); background: var(--surface2); }
+  .tab-nav a.active { color: var(--accent); border-bottom-color: var(--accent); background: rgba(56,189,248,0.08); }
+
+  /* Section nav */
+  nav {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 2rem;
+    display: flex;
+    gap: 1.2rem;
+    overflow-x: auto;
+    flex-wrap: wrap;
+  }
+  nav a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; padding: 0.3rem 0.6rem; border-radius: 6px; transition: all 0.2s; }
+  nav a:hover { color: var(--accent); background: var(--surface); }
+
+  section { margin: 3rem 0; }
+  h2 { font-size: 1.5rem; color: var(--accent); margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--surface2); }
+  h3 { font-size: 1.15rem; color: var(--accent2); margin: 2rem 0 1rem; }
+
+  /* Before/After Cards */
+  .ba-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin: 1.5rem 0;
+  }
+  .ba-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .ba-card-header {
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .ba-card-header h4 { font-size: 1.1rem; }
+  .ba-card-header .tag {
+    margin-left: auto;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.8rem;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+  .tag-critical { background: rgba(248,113,113,0.2); color: var(--red); }
+  .tag-high { background: rgba(251,146,60,0.2); color: var(--orange); }
+  .tag-medium { background: rgba(251,191,36,0.2); color: var(--yellow); }
+  .ba-card-body { padding: 1.5rem; }
+  .ba-row {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr;
+    gap: 1rem;
+    align-items: start;
+    margin-bottom: 0;
+  }
+  .ba-before, .ba-after {
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
+  .ba-before {
+    background: rgba(248,113,113,0.08);
+    border: 1px solid rgba(248,113,113,0.2);
+  }
+  .ba-after {
+    background: rgba(74,222,128,0.08);
+    border: 1px solid rgba(74,222,128,0.2);
+  }
+  .ba-before h5 { color: var(--red); font-size: 0.85rem; margin-bottom: 0.5rem; }
+  .ba-after h5 { color: var(--green); font-size: 0.85rem; margin-bottom: 0.5rem; }
+  .ba-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    padding-top: 1rem;
+  }
+  .ba-impact {
+    margin-top: 1rem;
+    padding: 0.8rem 1rem;
+    background: rgba(56,189,248,0.08);
+    border: 1px solid rgba(56,189,248,0.2);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--accent);
+  }
+  .ba-impact strong { color: var(--green); }
+
+  /* Scenario Cards */
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .scenario-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: relative;
+  }
+  .scenario-card h4 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--surface2);
+  }
+  .scenario-card .metric {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(71,85,105,0.3);
+  }
+  .scenario-card .metric:last-child { border-bottom: none; }
+  .scenario-card .metric .label { color: var(--text-muted); }
+  .scenario-card .metric .value { font-weight: 600; }
+  .scenario-card .highlight {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    background: var(--surface2);
+    border-radius: 8px;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+  .scenario-card .highlight .big {
+    font-size: 1.8rem;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+    margin: 1.5rem 0;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.5rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--surface2);
+  }
+  .timeline-item {
+    position: relative;
+    padding: 1rem 0 1.5rem;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -1.65rem;
+    top: 1.3rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+  }
+  .timeline-item .period {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .timeline-item .title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0.3rem 0;
+  }
+  .timeline-item .desc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+  .timeline-item .effects {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+  .timeline-item .effect-tag {
+    background: var(--surface2);
+    color: var(--green);
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+  }
+
+  /* Comparison Table */
+  .cmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin: 1rem 0;
+  }
+  .cmp-table th {
+    background: var(--surface2);
+    padding: 0.8rem 1rem;
+    text-align: left;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  .cmp-table th.before-col { color: var(--red); }
+  .cmp-table th.after-col { color: var(--green); }
+  .cmp-table td {
+    padding: 0.7rem 1rem;
+    border-top: 1px solid var(--surface2);
+    vertical-align: top;
+  }
+  .cmp-table tr:hover td { background: rgba(56,189,248,0.04); }
+  .cmp-table .q-col { color: var(--accent); font-weight: 600; min-width: 200px; }
+  .cmp-table .before-td { color: var(--red); opacity: 0.9; }
+  .cmp-table .after-td { color: var(--green); }
+
+  /* Summary Stats */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .stat-card .stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .stat-card .stat-label {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+  }
+  .stat-card .stat-detail {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--surface2);
+  }
+
+  /* Risk row */
+  .risk-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  .risk-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem;
+  }
+  .risk-card h5 { color: var(--orange); font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .risk-card p { color: var(--text-muted); font-size: 0.85rem; }
+  .risk-card .mitigation { color: var(--green); font-size: 0.85rem; margin-top: 0.5rem; }
+
+  @media (max-width: 768px) {
+    .ba-row { grid-template-columns: 1fr; }
+    .ba-arrow { transform: rotate(90deg); padding: 0; }
+    .tab-nav a { padding: 0.8rem 1rem; font-size: 0.85rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>BPIO デジタルマーケティング計画</h1>
+  <p>導入効果シミュレーション（ビフォーアフター）</p>
+  <span class="badge">Draft v0.1 — 2026-03-08</span>
+</header>
+
+<div class="tab-nav">
+  <a href="index.html">データモデル設計</a>
+  <a href="impact.html" class="active">導入効果（ビフォーアフター）</a>
+</div>
+
+<nav>
+  <a href="#summary">サマリー</a>
+  <a href="#questions">意思決定の変化</a>
+  <a href="#scenarios">収益シミュレーション</a>
+  <a href="#ba-detail">領域別ビフォーアフター</a>
+  <a href="#timeline">効果の発現タイムライン</a>
+  <a href="#risks">リスクと前提条件</a>
+</nav>
+
+<div class="container">
+
+<!-- ============ Summary ============ -->
+<section id="summary">
+  <h2>導入効果サマリー</h2>
+  <p style="color:var(--text-muted);margin-bottom:1.5rem;">
+    Notion + Supabase + HubSpot + Looker Studio の4層構成により、以下の変化が期待できます。<br>
+    数値はBPIOの事業規模（60名超、クライアント数十社、BtoB BPO）をベースにした仮説です。
+  </p>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value" style="color:var(--red)">0%</div>
+      <div class="stat-label">現在のデータ可視化率</div>
+      <div class="stat-detail">リード〜成約のファネルデータが存在しない</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="color:var(--green)">100%</div>
+      <div class="stat-label">導入後のデータ可視化率</div>
+      <div class="stat-detail">全ファネルの数値がリアルタイムで把握可能</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="color:var(--red)">?</div>
+      <div class="stat-label">現在のチャネル別ROI</div>
+      <div class="stat-detail">どのチャネルが効率的か不明</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="color:var(--green)">10ch</div>
+      <div class="stat-label">導入後の追跡チャネル数</div>
+      <div class="stat-detail">全チャネルのROIを比較可能</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="color:var(--red)">感覚</div>
+      <div class="stat-label">現在の施策判断</div>
+      <div class="stat-detail">「なんとなく紹介が多い」レベル</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="color:var(--green)">数値</div>
+      <div class="stat-label">導入後の施策判断</div>
+      <div class="stat-detail">SQL + ダッシュボードで即座にエビデンス</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Questions BA ============ -->
+<section id="questions">
+  <h2>「答えられなかった問い」に答えられるようになる</h2>
+  <p style="color:var(--text-muted);margin-bottom:1.5rem;">
+    経営会議・社内稟議で聞かれる以下の問いに、データで即答できるようになります。
+  </p>
+
+  <table class="cmp-table">
+    <thead>
+      <tr>
+        <th>経営・マーケ上の問い</th>
+        <th class="before-col">Before（現在）</th>
+        <th class="after-col">After（導入後）</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="q-col">新規顧客はどこから来ているか？</td>
+        <td class="before-td">「紹介が多い気がする」（感覚）</td>
+        <td class="after-td">「バクラク紹介が38%、グループ紹介が27%、HP経由が15%」（Looker Studioで即表示）</td>
+      </tr>
+      <tr>
+        <td class="q-col">HPの問い合わせの質が悪いのはなぜか？</td>
+        <td class="before-td">「コストが合わない顧客が多い」（印象）</td>
+        <td class="after-td">「HP経由リードの72%が売上1億円未満。ターゲット外の流入が原因。フォームにスクリーニング項目を追加すべき」（leads分析）</td>
+      </tr>
+      <tr>
+        <td class="q-col">展示会に出展する意味はあるか？</td>
+        <td class="before-td">「名刺は取れるけど成果は不明」</td>
+        <td class="after-td">「展示会リードの商談化率8%、成約率2%。CACは紹介チャネルの4倍。費用対効果は低い」（channels × deals分析）</td>
+      </tr>
+      <tr>
+        <td class="q-col">広告を出すべきか？予算はいくらが妥当か？</td>
+        <td class="before-td">「出したことがないので判断できない」</td>
+        <td class="after-td">「紹介チャネルのCACが15万円なので、CPA3万円×成約率20%=目標CAC15万円。月間広告予算30万円で月2件の成約が損益分岐」（LTV/CAC分析）</td>
+      </tr>
+      <tr>
+        <td class="q-col">MRR（月次経常収益）はいくらか？</td>
+        <td class="before-td">「Notionの報酬カラムを見れば分かるが集計が面倒」</td>
+        <td class="after-td">「現在のMRRは〇〇万円。経理BPOが65%、労務BPOが30%、DXが5%」（contracts集計 → ダッシュボード常時表示）</td>
+      </tr>
+      <tr>
+        <td class="q-col">顧客の解約率はどれくらいか？</td>
+        <td class="before-td">「把握していない」</td>
+        <td class="after-td">「月次チャーンレート1.5%。主な理由は社内体制変更（40%）とコスト（25%）」（accounts分析）</td>
+      </tr>
+      <tr>
+        <td class="q-col">どの規模・業種の顧客が最もLTVが高いか？</td>
+        <td class="before-td">「分からない」</td>
+        <td class="after-td">「売上5-10億円のIT企業が最もLTVが高い（平均36ヶ月継続、月額40万円）。ターゲティングをこの層に集中すべき」</td>
+      </tr>
+      <tr>
+        <td class="q-col">営業リソースは足りているか？</td>
+        <td class="before-td">「忙しいとは感じるが定量化できない」</td>
+        <td class="after-td">「現在の商談中案件15件に対し担当者2名。1人あたり7.5件で、業界平均の10件を下回っている。ただしリードタイムが平均45日と長め」</td>
+      </tr>
+      <tr>
+        <td class="q-col">失注の原因は何か？改善できるか？</td>
+        <td class="before-td">「ケースバイケース」</td>
+        <td class="after-td">「失注理由の1位は"価格"（35%）、2位は"既存体制維持"（25%）。価格失注のうち60%は見積段階で発生→ヒアリング段階での予算確認を標準化すべき」</td>
+      </tr>
+      <tr>
+        <td class="q-col">来月の売上見込みは？</td>
+        <td class="before-td">「商談中の案件はあるが数字にできない」</td>
+        <td class="after-td">「パイプライン上の加重売上予測: 来月180万円（成約確度×想定月額の合計）」（deals.win_probability × expected_monthly_revenue）</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ Scenarios ============ -->
+<section id="scenarios">
+  <h2>収益インパクト シミュレーション（仮説）</h2>
+  <p style="color:var(--text-muted);margin-bottom:1.5rem;">
+    BPIOの事業特性（ストック型BPO、平均月額報酬30-50万円、紹介主体）をベースに、3つのシナリオで効果を試算します。
+  </p>
+
+  <div class="scenario-grid">
+    <div class="scenario-card" style="border-color:var(--text-muted)">
+      <h4 style="color:var(--text-muted)">📉 保守シナリオ（データ基盤のみ）</h4>
+      <div class="metric"><span class="label">前提</span><span class="value">データ蓄積・可視化のみ。新規施策なし</span></div>
+      <div class="metric"><span class="label">リード管理漏れ削減</span><span class="value" style="color:var(--green)">月+1件 成約</span></div>
+      <div class="metric"><span class="label">想定月額報酬</span><span class="value">35万円/月</span></div>
+      <div class="metric"><span class="label">年間追加MRR</span><span class="value" style="color:var(--green)">+420万円</span></div>
+      <div class="highlight">
+        <span class="big" style="color:var(--green)">+420万円/年</span>
+        <span style="color:var(--text-muted)">フォロー漏れの防止だけで回収</span>
+      </div>
+    </div>
+
+    <div class="scenario-card" style="border-color:var(--accent)">
+      <h4 style="color:var(--accent)">📊 標準シナリオ（データ活用+HP改善）</h4>
+      <div class="metric"><span class="label">前提</span><span class="value">HP改善+コンテンツ強化+リード品質向上</span></div>
+      <div class="metric"><span class="label">HP CVR改善</span><span class="value" style="color:var(--green)">問い合わせ数 月+3件</span></div>
+      <div class="metric"><span class="label">リード→成約率</span><span class="value">20%（質向上により改善）</span></div>
+      <div class="metric"><span class="label">新規成約</span><span class="value" style="color:var(--green)">月+1.6件</span></div>
+      <div class="metric"><span class="label">年間追加MRR</span><span class="value" style="color:var(--green)">+672万円</span></div>
+      <div class="highlight" style="border:1px solid var(--accent)">
+        <span class="big" style="color:var(--accent)">+672万円/年</span>
+        <span style="color:var(--text-muted)">HP改善でターゲット層からの流入増</span>
+      </div>
+    </div>
+
+    <div class="scenario-card" style="border-color:var(--green)">
+      <h4 style="color:var(--green)">🚀 積極シナリオ（全チャネル最適化）</h4>
+      <div class="metric"><span class="label">前提</span><span class="value">広告+セミナー+ナーチャリング+紹介強化</span></div>
+      <div class="metric"><span class="label">新規リード</span><span class="value" style="color:var(--green)">月+15件（全チャネル合計）</span></div>
+      <div class="metric"><span class="label">成約率</span><span class="value">15%（チャネルミックスにより）</span></div>
+      <div class="metric"><span class="label">新規成約</span><span class="value" style="color:var(--green)">月+2.25件</span></div>
+      <div class="metric"><span class="label">年間追加MRR</span><span class="value" style="color:var(--green)">+945万円</span></div>
+      <div class="metric"><span class="label">広告費等コスト</span><span class="value" style="color:var(--red)">-240万円/年</span></div>
+      <div class="highlight" style="border:1px solid var(--green)">
+        <span class="big" style="color:var(--green)">+705万円/年</span>
+        <span style="color:var(--text-muted)">（コスト差引後の純増MRR）</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-top:1rem;">
+    <h4 style="color:var(--yellow);margin-bottom:0.8rem;">⚠ 仮説の前提条件</h4>
+    <ul style="color:var(--text-muted);font-size:0.9rem;padding-left:1.5rem;">
+      <li>平均月額報酬: 35万円/月（新規契約の平均値として保守的に設定）</li>
+      <li>MRRは成約月から発生し、解約まで継続（ストック型）</li>
+      <li>上記はMRRの「年間累計追加分」。2年目以降はさらに積み上がる</li>
+      <li>保守シナリオは「今まで追えていなかったリードのフォロー漏れを防ぐ」だけの効果</li>
+      <li>紹介チャネルの成約率は30-40%と想定（実績ベースで要検証）</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ BA Detail ============ -->
+<section id="ba-detail">
+  <h2>領域別 ビフォーアフター</h2>
+
+  <div class="ba-grid">
+
+    <!-- 1. Lead Management -->
+    <div class="ba-card">
+      <div class="ba-card-header">
+        <span style="font-size:1.3rem">🎯</span>
+        <h4>リード管理</h4>
+        <span class="tag tag-critical">最重要</span>
+      </div>
+      <div class="ba-card-body">
+        <div class="ba-row">
+          <div class="ba-before">
+            <h5>❌ Before</h5>
+            <ul style="font-size:0.85rem;padding-left:1rem;color:var(--text-muted)">
+              <li>リードの一元管理なし</li>
+              <li>展示会の名刺が個人の引き出しに眠っている</li>
+              <li>BOXILリードのフォローアップが属人的</li>
+              <li>HP問い合わせの対応状況が不透明</li>
+              <li>「誰が」「いつ」「何をした」が追えない</li>
+              <li>リードがどのチャネルから来たか記録なし</li>
+            </ul>
+          </div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-after">
+            <h5>✅ After</h5>
+            <ul style="font-size:0.85rem;padding-left:1rem;color:var(--text-muted)">
+              <li>HubSpotで全リードを一元管理</li>
+              <li>HPフォーム送信→自動でリード登録</li>
+              <li>展示会・BOXIL・紹介を含め全チャネルを記録</li>
+              <li>リードの対応状況をカンバンで可視化</li>
+              <li>活動履歴が自動記録（メール送受信、電話等）</li>
+              <li>フォロー漏れアラートが自動通知</li>
+            </ul>
+          </div>
+        </div>
+        <div class="ba-impact">
+          <strong>期待効果:</strong> フォロー漏れによる機会損失を月1-2件防止。年間追加MRR <strong>+420〜840万円</strong>（仮説）
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Pipeline -->
+    <div class="ba-card">
+      <div class="ba-card-header">
+        <span style="font-size:1.3rem">📊</span>
+        <h4>商談パイプライン管理</h4>
+        <span class="tag tag-critical">最重要</span>
+      </div>
+      <div class="ba-card-body">
+        <div class="ba-row">
+          <div class="ba-before">
+            <h5>❌ Before</h5>
+            <ul style="font-size:0.85rem;padding-left:1rem;color:var(--text-muted)">
+              <li>商談の進捗が担当者の頭の中にある</li>
+              <li>「今月成約しそうな案件は？」に即答できない</li>
+              <li>売上予測（フォーキャスト）ができない</li>
+              <li>ボトルネック（どの段階で止まるか）が不明</li>
+              <li>失注理由が蓄積されず、同じ失敗を繰り返す</li>
+            </ul>
+          </div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-after">
+            <h5>✅ After</h5>
+            <ul style="font-size:0.85rem;padding-left:1rem;color:var(--text-muted)">
+              <li>8段階のステージで全商談を可視化</li>
+              <li>加重パイプライン（確度×金額）で売上予測</li>
+              <li>ステージ別の滞留時間を計測→ボトルネック特定</li>
+              <li>失注理由をenum管理→パターン分析が可能</li>
+              <li>競合情報を蓄積→差別化ポイントの強化</li>
+            </ul>
+          </div>
+        </div>
+        <div class="ba-impact">
+          <strong>期待効果:</strong> 成約率の5-10%改善（失注パターンへの対策による）。提案・見積段階での取りこぼし削減
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Channel ROI -->
+    <div class="ba-card">
+      <div class="ba-card-header">
+        <span style="font-size:1.3rem">💰</span>
+        <h4>チャネル別ROI分析</h4>
+        <span class="tag tag-high">高</span>
+      </div>
+      <div class="ba-card-body">
+        <div class="ba-row">
+          <div class="ba-before">
+            <h5>❌ Before</h5>
+            <ul style="font-size:0.85rem;padding-left:1rem;color:var(--text-muted)">
+              <li>「紹介が多い」は分かるが比率は不明</li>
+              <li>展示会の費用対効果が算出できない</li>
+              <li>BOXILの掲載費に見合うリードが来ているか不明</li>
+              <li>バクラク紹介の貢献度を定量化できない</li>
+              <li>「広告を出すべきか？」に根拠を持って答えられない</li>
+            </ul>
+          </div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-after">
+            <h5>✅ After</h5>
+            <ul style="font-size:0.85rem;padding-left:1rem;color:var(--text-muted)">
+              <li>10チャネルのCPA（リード獲得単価）を自動算出</li>
+              <li>チャネル別のCAC（顧客獲得コスト）を比較</li>
+              <li>チャネル別のLTV/CAC比率→投資判断の根拠</li>
+              <li>非効率チャネルの特定→予算の再配分</li>
+              <li>「バクラク紹介のLTVはHP経由の2.3倍」等の分析</li>
+            </ul>
+          </div>
+        </div>
+        <div class="ba-impact">
+          <strong>期待効果:</strong> マーケティング予算の最適配分。非効率チャネルへの投資削減 + 高効率チャネルへの集中投資
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. HP Improvement -->
+    <div class="ba-card">
+      <div class="ba-card-header">
+        <span style="font-size:1.3rem">🌐</span>
+        <h4>HP・コンテンツマーケティング</h4>
+        <span class="tag tag-high">高</span>
+      </div>
+      <div class="ba-card-body">
+        <div class="ba-row">
+          <div class="ba-before">
+            <h5>❌ Before</h5>
+            <ul style="font-size:0.85rem;padding-left:1rem;color:var(--text-muted)">
+              <li>HPからの問い合わせは月数件、質が低い</li>
+              <li>GA4のデータを見ていない（見方が分からない）</li>
+              <li>どのページが見られているか不明</li>
+              <li>ブログ記事の効果測定をしていない</li>
+              <li>費用帯が合わない問い合わせが多い</li>
+            </ul>
+          </div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-after">
+            <h5>✅ After</h5>
+            <ul style="font-size:0.85rem;padding-left:1rem;color:var(--text-muted)">
+              <li>GA4 → Looker Studioでセッション・CVR・流入経路を常時モニタリング</li>
+              <li>フォームにスクリーニング項目追加→ターゲット外の自然フィルタリング</li>
+              <li>UTMパラメータで流入元を正確に計測</li>
+              <li>ブログ記事ごとのリード獲得貢献度を把握</li>
+              <li>SEO施策の効果をデータで評価</li>
+            </ul>
+          </div>
+        </div>
+        <div class="ba-impact">
+          <strong>期待効果:</strong> HPリードの質改善（不適格リード率を50%以上削減）。営業の無駄な対応工数を削減。中長期ではSEO経由の自然流入増
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Customer Management -->
+    <div class="ba-card">
+      <div class="ba-card-header">
+        <span style="font-size:1.3rem">🤝</span>
+        <h4>既存顧客管理・LTV最大化</h4>
+        <span class="tag tag-medium">中</span>
+      </div>
+      <div class="ba-card-body">
+        <div class="ba-row">
+          <div class="ba-before">
+            <h5>❌ Before</h5>
+            <ul style="font-size:0.85rem;padding-left:1rem;color:var(--text-muted)">
+              <li>解約率を把握していない</li>
+              <li>解約の予兆を検知できない</li>
+              <li>アップセル機会（経理→労務BPO追加等）を体系的に追えていない</li>
+              <li>顧客別の収益性が見えない</li>
+              <li>顧客満足度を定量的に測っていない</li>
+            </ul>
+          </div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-after">
+            <h5>✅ After</h5>
+            <ul style="font-size:0.85rem;padding-left:1rem;color:var(--text-muted)">
+              <li>月次チャーンレートをダッシュボードで常時監視</li>
+              <li>解約理由をenum管理→防止策を打てる</li>
+              <li>アップセル商談をdealsテーブルで管理（account_id連携）</li>
+              <li>Net Revenue Retentionで既存顧客からの成長力を計測</li>
+              <li>NPS調査の結果をaccountsに蓄積→相関分析</li>
+            </ul>
+          </div>
+        </div>
+        <div class="ba-impact">
+          <strong>期待効果:</strong> 解約率0.5%改善 → 年間MRR維持効果 <strong>数百万円</strong>。アップセル機会の発見→既存顧客からの追加収益
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Reporting -->
+    <div class="ba-card">
+      <div class="ba-card-header">
+        <span style="font-size:1.3rem">📋</span>
+        <h4>レポーティング・社内稟議</h4>
+        <span class="tag tag-medium">中</span>
+      </div>
+      <div class="ba-card-body">
+        <div class="ba-row">
+          <div class="ba-before">
+            <h5>❌ Before</h5>
+            <ul style="font-size:0.85rem;padding-left:1rem;color:var(--text-muted)">
+              <li>月次レポートが作れない（データがない）</li>
+              <li>施策の効果を定量的に説明できない</li>
+              <li>マーケティング投資の社内稟議に根拠がない</li>
+              <li>経営層への報告が定性的になる</li>
+              <li>数字の集計に毎回工数がかかる</li>
+            </ul>
+          </div>
+          <div class="ba-arrow">→</div>
+          <div class="ba-after">
+            <h5>✅ After</h5>
+            <ul style="font-size:0.85rem;padding-left:1rem;color:var(--text-muted)">
+              <li>Looker Studioで常時更新のダッシュボードが見られる</li>
+              <li>月次マーケティングレポートが自動生成（marketing_metricsテーブル）</li>
+              <li>「広告費30万円で月2件成約（CAC15万円）、LTV/CAC=7倍」で稟議が通る</li>
+              <li>グラフ・チャートで視覚的に報告</li>
+              <li>過去データとのトレンド比較が即座に可能</li>
+            </ul>
+          </div>
+        </div>
+        <div class="ba-impact">
+          <strong>期待効果:</strong> レポート作成工数を月5-10時間削減。データに基づく施策承認→実行速度の向上
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ Timeline ============ -->
+<section id="timeline">
+  <h2>効果の発現タイムライン</h2>
+  <p style="color:var(--text-muted);margin-bottom:1rem;">いつ・何が・どの程度効果を出すかの見通し</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="period">Week 1-2（4月前半）</div>
+      <div class="title">計測基盤の構築 — 「見える化」の開始</div>
+      <div class="desc">Supabaseセットアップ、NotionDB同期、HubSpot無料CRM開始、GA4設定確認</div>
+      <div class="effects">
+        <span class="effect-tag">既存データの一元化</span>
+        <span class="effect-tag">MRR/顧客数の即時把握</span>
+        <span class="effect-tag">リード記録の開始</span>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="period">Week 3-4（4月後半）</div>
+      <div class="title">運用開始 — 「使う」フェーズ</div>
+      <div class="desc">HubSpotでリード管理運用開始、HPフォーム改善、Looker Studioダッシュボード構築</div>
+      <div class="effects">
+        <span class="effect-tag">フォロー漏れ防止</span>
+        <span class="effect-tag">リードの質スクリーニング</span>
+        <span class="effect-tag">初回ダッシュボード公開</span>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="period">Month 2（5月）</div>
+      <div class="title">データ蓄積 — 「分析」が始まる</div>
+      <div class="desc">1ヶ月分のファネルデータが貯まり、初めてのチャネル別分析が可能に</div>
+      <div class="effects">
+        <span class="effect-tag">チャネル別リード数の把握</span>
+        <span class="effect-tag">商談化率の初計測</span>
+        <span class="effect-tag">HPのCVR把握</span>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="period">Month 3-4（6-7月）</div>
+      <div class="title">最適化 — 「改善」サイクルが回り始める</div>
+      <div class="desc">データに基づく施策判断が可能に。コンテンツ効果、広告テスト、ナーチャリングの検討</div>
+      <div class="effects">
+        <span class="effect-tag">成約率の改善傾向</span>
+        <span class="effect-tag">非効率チャネルの特定</span>
+        <span class="effect-tag">社内稟議にデータ活用</span>
+      </div>
+    </div>
+    <div class="timeline-item" style="">
+      <div class="period">Month 6+（9月以降）</div>
+      <div class="title">成熟 — 「予測」と「戦略」のフェーズ</div>
+      <div class="desc">半年分のデータでLTV算出、チャーン予測、年間マーケティング計画の策定</div>
+      <div class="effects">
+        <span class="effect-tag">LTV/CACに基づく投資判断</span>
+        <span class="effect-tag">売上予測の精度向上</span>
+        <span class="effect-tag">年間マーケ予算の最適配分</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Risks ============ -->
+<section id="risks">
+  <h2>リスクと前提条件</h2>
+
+  <div class="risk-grid">
+    <div class="risk-card">
+      <h5>データ入力の定着リスク</h5>
+      <p>HubSpotへのリード登録が習慣化しない場合、データが不完全になり分析精度が低下</p>
+      <div class="mitigation">→ 対策: HPフォーム→自動登録で手動入力を最小化。紹介案件は営業会議で登録をルール化</div>
+    </div>
+    <div class="risk-card">
+      <h5>過去データの不在</h5>
+      <p>過去のリード・商談データが蓄積されていないため、初期は比較分析ができない</p>
+      <div class="mitigation">→ 対策: 可能な範囲で過去のリードを遡及入力。3ヶ月後から有意なデータ分析が可能</div>
+    </div>
+    <div class="risk-card">
+      <h5>同期の信頼性</h5>
+      <p>Notion↔Supabase↔HubSpotの同期に障害が発生するとデータ不整合が起きる</p>
+      <div class="mitigation">→ 対策: 同期エラー通知の設定。Supabaseを正とし、不整合時の修正手順を文書化</div>
+    </div>
+    <div class="risk-card">
+      <h5>リソース制約</h5>
+      <p>マーケティング担当1-3名で運用しきれるか</p>
+      <div class="mitigation">→ 対策: Phase分けで段階的に機能追加。Claude Codeでレポート生成・分析を自動化</div>
+    </div>
+    <div class="risk-card">
+      <h5>効果の発現に時間がかかる</h5>
+      <p>ストック型ビジネスのため、データ蓄積→分析→施策→成約まで数ヶ月のタイムラグ</p>
+      <div class="mitigation">→ 対策: 保守シナリオ（フォロー漏れ防止）は即効性あり。短期成果と中長期投資を分けて評価</div>
+    </div>
+    <div class="risk-card">
+      <h5>仮説の検証が必要</h5>
+      <p>本ページの数値はすべて仮説。実データで検証が必要</p>
+      <div class="mitigation">→ 対策: 3ヶ月後に仮説と実績を比較し、シミュレーションを更新。PDCAサイクルで精度向上</div>
+    </div>
+  </div>
+</section>
+
+<footer style="text-align:center;padding:3rem;color:var(--text-muted);font-size:0.85rem;border-top:1px solid var(--border);margin-top:3rem;">
+  <p>BPIO Digital Marketing Plan — Impact Analysis</p>
+  <p>Draft v0.1 | 2026-03-08 | Generated with Claude Code</p>
+</footer>
+
+</div>
+</body>
+</html>
