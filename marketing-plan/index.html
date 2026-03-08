@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BPIO デジタルマーケティング計画 — データモデル設計</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface2: #334155;
+    --border: #475569;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #38bdf8;
+    --accent2: #818cf8;
+    --green: #4ade80;
+    --yellow: #fbbf24;
+    --orange: #fb923c;
+    --red: #f87171;
+    --pink: #f472b6;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+  }
+  .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+
+  /* Header */
+  header {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  header h1 { font-size: 2rem; color: var(--accent); margin-bottom: 0.5rem; }
+  header p { color: var(--text-muted); font-size: 1.1rem; }
+  header .badge {
+    display: inline-block;
+    background: var(--surface2);
+    color: var(--yellow);
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    margin-top: 1rem;
+  }
+
+  /* Navigation */
+  nav {
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+    padding: 0.8rem 2rem;
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    flex-wrap: wrap;
+  }
+  nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  nav a:hover { color: var(--accent); background: var(--surface2); }
+
+  /* Sections */
+  section { margin: 3rem 0; }
+  h2 {
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--surface2);
+  }
+  h3 {
+    font-size: 1.15rem;
+    color: var(--accent2);
+    margin: 1.5rem 0 1rem;
+  }
+
+  /* Architecture Diagram */
+  .arch-diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 1.5rem 0;
+  }
+  .arch-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 2rem 0;
+  }
+  .arch-box {
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 200px;
+    max-width: 280px;
+    flex: 1;
+  }
+  .arch-box.notion { border-color: var(--text-muted); }
+  .arch-box.supabase { border-color: var(--green); }
+  .arch-box.hubspot { border-color: var(--orange); }
+  .arch-box.bi { border-color: var(--accent); }
+  .arch-box h4 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+  .arch-box .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .arch-box ul { list-style: none; text-align: left; font-size: 0.85rem; color: var(--text-muted); }
+  .arch-box ul li { padding: 0.15rem 0; }
+  .arch-box ul li::before { content: "• "; color: var(--accent); }
+  .arch-arrow {
+    font-size: 2rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  /* Sync Flow */
+  .sync-flow {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .sync-item {
+    background: var(--surface);
+    border-left: 4px solid var(--accent);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .sync-item .num {
+    background: var(--accent);
+    color: var(--bg);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+  .sync-item .direction {
+    font-family: monospace;
+    color: var(--green);
+    min-width: 200px;
+    font-size: 0.9rem;
+  }
+
+  /* ER Diagram */
+  .er-diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    overflow-x: auto;
+  }
+  .er-svg { width: 100%; max-width: 1100px; margin: 0 auto; display: block; }
+
+  /* Table Schema Cards */
+  .table-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin: 1.5rem 0;
+  }
+  .table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .table-card-header {
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .table-card-header .ticon {
+    font-size: 1.5rem;
+  }
+  .table-card-header h4 {
+    font-size: 1.1rem;
+  }
+  .table-card-header .purpose {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-left: auto;
+  }
+  .table-card-body { padding: 0; }
+  .schema-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  .schema-table th {
+    background: var(--surface2);
+    padding: 0.6rem 1rem;
+    text-align: left;
+    color: var(--text-muted);
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+  }
+  .schema-table td {
+    padding: 0.5rem 1rem;
+    border-top: 1px solid var(--surface2);
+    vertical-align: top;
+  }
+  .schema-table tr:hover td { background: rgba(56,189,248,0.05); }
+  .col-name { color: var(--accent); font-family: 'Consolas', monospace; font-weight: 600; }
+  .col-type { color: var(--yellow); font-family: 'Consolas', monospace; font-size: 0.8rem; }
+  .col-req { text-align: center; }
+  .col-req .yes { color: var(--green); }
+  .col-req .no { color: var(--text-muted); }
+  .col-purpose { color: var(--pink); font-size: 0.8rem; font-style: italic; }
+
+  /* Funnel */
+  .funnel-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin: 2rem 0;
+  }
+  .funnel-step {
+    text-align: center;
+    padding: 1rem 2rem;
+    color: #fff;
+    font-weight: 600;
+    position: relative;
+    clip-path: polygon(5% 0%, 95% 0%, 100% 100%, 0% 100%);
+  }
+  .funnel-step .label { font-size: 1rem; }
+  .funnel-step .sub { font-size: 0.75rem; font-weight: 400; opacity: 0.85; }
+
+  /* KPI Cards */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem;
+  }
+  .kpi-card h5 {
+    color: var(--accent);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+  .kpi-card .formula {
+    font-family: 'Consolas', monospace;
+    color: var(--green);
+    font-size: 0.8rem;
+    background: var(--bg);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    margin: 0.5rem 0;
+  }
+  .kpi-card .usage {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+
+  /* Channel Table */
+  .channel-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin: 1rem 0;
+  }
+  .channel-table th {
+    background: var(--surface2);
+    padding: 0.7rem 1rem;
+    text-align: left;
+    color: var(--text-muted);
+  }
+  .channel-table td {
+    padding: 0.6rem 1rem;
+    border-top: 1px solid var(--surface2);
+  }
+  .channel-table code {
+    background: var(--bg);
+    color: var(--accent);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+  }
+  .cat-inbound { color: var(--green); }
+  .cat-outbound { color: var(--orange); }
+  .cat-referral { color: var(--accent2); }
+  .cat-partner { color: var(--pink); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .arch-flow { flex-direction: column; }
+    .arch-arrow { transform: rotate(90deg); }
+    .sync-item { flex-direction: column; align-items: flex-start; }
+    .sync-item .direction { min-width: auto; }
+    nav { gap: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>BPIO デジタルマーケティング計画</h1>
+  <p>データモデル設計 & システムアーキテクチャ</p>
+  <span class="badge">Draft v0.1 — 2026-03-08</span>
+</header>
+
+<nav>
+  <a href="#architecture">システム構成</a>
+  <a href="#sync">同期フロー</a>
+  <a href="#er">ER図</a>
+  <a href="#funnel">ファネル</a>
+  <a href="#tables">テーブル設計</a>
+  <a href="#channels">チャネル定義</a>
+  <a href="#kpi">KPI一覧</a>
+</nav>
+
+<div class="container">
+
+<!-- ============ 1. Architecture ============ -->
+<section id="architecture">
+  <h2>1. システム構成（3層アーキテクチャ）</h2>
+  <div class="arch-diagram">
+    <div class="arch-flow">
+      <div class="arch-box notion">
+        <div class="icon">📝</div>
+        <h4 style="color:var(--text-muted)">Notion</h4>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.8rem">業務オペレーションUI</p>
+        <ul>
+          <li>顧客DB（既存）</li>
+          <li>議事録DB</li>
+          <li>マニュアルDB</li>
+          <li>タスクDB</li>
+          <li>ナレッジDB</li>
+        </ul>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.8rem">利用者: BPIOメンバー全員</p>
+      </div>
+      <div class="arch-arrow">⇄</div>
+      <div class="arch-box supabase">
+        <div class="icon">🗄️</div>
+        <h4 style="color:var(--green)">Supabase</h4>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.8rem">データ基盤（PostgreSQL）</p>
+        <ul>
+          <li>全データの正規化DB</li>
+          <li>SQL分析・集計</li>
+          <li>BIツール接続用</li>
+          <li>API提供</li>
+          <li>リアルタイム同期</li>
+        </ul>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.8rem">利用者: システム（裏方）</p>
+      </div>
+      <div class="arch-arrow">⇄</div>
+      <div class="arch-box hubspot">
+        <div class="icon">📊</div>
+        <h4 style="color:var(--orange)">HubSpot</h4>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.8rem">マーケティング / CRM</p>
+        <ul>
+          <li>リード管理</li>
+          <li>パイプライン管理</li>
+          <li>フォーム・LP作成</li>
+          <li>メール配信</li>
+          <li>広告管理</li>
+        </ul>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.8rem">利用者: マーケ担当 1-3名</p>
+      </div>
+      <div class="arch-arrow">←</div>
+      <div class="arch-box bi">
+        <div class="icon">📈</div>
+        <h4 style="color:var(--accent)">Looker Studio</h4>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.8rem">BIダッシュボード</p>
+        <ul>
+          <li>ファネル分析</li>
+          <li>チャネル別ROI</li>
+          <li>MRR/LTV推移</li>
+          <li>解約率分析</li>
+          <li>GA4連携</li>
+        </ul>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.8rem">利用者: 経営・マーケ担当</p>
+      </div>
+    </div>
+    <p style="text-align:center;color:var(--text-muted);font-size:0.85rem;margin-top:1rem">
+      Notionは「業務UI」、Supabaseは「データ基盤」、HubSpotは「マーケツール」、Looker Studioは「可視化」<br>
+      それぞれ得意な役割に集中させ、Supabaseをハブとして同期する
+    </p>
+  </div>
+</section>
+
+<!-- ============ 2. Sync Flow ============ -->
+<section id="sync">
+  <h2>2. データ同期フロー</h2>
+  <div class="sync-flow">
+    <div class="sync-item" style="border-left-color:var(--text-muted)">
+      <div class="num" style="background:var(--text-muted)">1</div>
+      <div class="direction">Notion → Supabase</div>
+      <div>定期同期（10-30分ごと）：顧客情報・契約ステータス・報酬データをNotionから取得しSupabaseに反映</div>
+    </div>
+    <div class="sync-item" style="border-left-color:var(--orange)">
+      <div class="num" style="background:var(--orange)">2</div>
+      <div class="direction">HubSpot → Supabase</div>
+      <div>Webhook（リアルタイム）：リード登録・ステータス変更・メール開封などのイベントをSupabaseに記録</div>
+    </div>
+    <div class="sync-item" style="border-left-color:var(--green)">
+      <div class="num" style="background:var(--green)">3</div>
+      <div class="direction">Supabase → Notion</div>
+      <div>イベント駆動：HubSpotで成約 → Supabase更新 → Notion顧客DBに新規クライアントとして自動追加</div>
+    </div>
+    <div class="sync-item" style="border-left-color:var(--accent2)">
+      <div class="num" style="background:var(--accent2)">4</div>
+      <div class="direction">Supabase → HubSpot</div>
+      <div>必要時のみ：既存顧客情報をHubSpotに渡す（アップセル管理・既存顧客のリエンゲージメント）</div>
+    </div>
+    <div class="sync-item" style="border-left-color:var(--accent)">
+      <div class="num" style="background:var(--accent)">5</div>
+      <div class="direction">Supabase → Looker Studio</div>
+      <div>PostgreSQL直接接続：リアルタイムでダッシュボードに反映。SQLクエリで自由にKPIを算出</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. ER Diagram ============ -->
+<section id="er">
+  <h2>3. ER図（テーブル間リレーション）</h2>
+  <div class="er-diagram">
+    <svg class="er-svg" viewBox="0 0 1100 620" xmlns="http://www.w3.org/2000/svg">
+      <!-- Arrows / lines -->
+      <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8"/>
+        </marker>
+      </defs>
+
+      <!-- channels -> leads -->
+      <line x1="170" y1="130" x2="350" y2="130" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrowhead)"/>
+      <!-- leads -> deals -->
+      <line x1="530" y1="130" x2="620" y2="130" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrowhead)"/>
+      <!-- deals -> contracts -->
+      <line x1="800" y1="130" x2="880" y2="130" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrowhead)"/>
+      <!-- leads -> activities -->
+      <line x1="440" y1="200" x2="440" y2="340" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrowhead)"/>
+      <!-- deals -> activities -->
+      <line x1="710" y1="200" x2="540" y2="340" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6,3" marker-end="url(#arrowhead)"/>
+      <!-- deals -> accounts -->
+      <line x1="710" y1="200" x2="440" y2="460" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <!-- contracts -> accounts -->
+      <line x1="960" y1="200" x2="540" y2="460" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrowhead)"/>
+      <!-- accounts -> activities -->
+      <line x1="380" y1="460" x2="380" y2="420" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6,3"/>
+
+      <!-- marketing_metrics (standalone) -->
+      <rect x="750" y="350" width="280" height="80" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+      <text x="890" y="385" fill="#38bdf8" text-anchor="middle" font-size="15" font-weight="bold">marketing_metrics</text>
+      <text x="890" y="410" fill="#94a3b8" text-anchor="middle" font-size="12">HP・広告・コンテンツの月次KPI</text>
+      <text x="890" y="425" fill="#94a3b8" text-anchor="middle" font-size="11">（独立テーブル）</text>
+
+      <!-- channels -->
+      <rect x="20" y="70" width="150" height="120" rx="10" fill="#1e293b" stroke="#fbbf24" stroke-width="2"/>
+      <text x="95" y="105" fill="#fbbf24" text-anchor="middle" font-size="15" font-weight="bold">channels</text>
+      <text x="95" y="125" fill="#94a3b8" text-anchor="middle" font-size="11">チャネルマスタ</text>
+      <text x="95" y="145" fill="#94a3b8" text-anchor="middle" font-size="10">id, name, category</text>
+      <text x="95" y="160" fill="#94a3b8" text-anchor="middle" font-size="10">monthly_cost</text>
+
+      <!-- leads -->
+      <rect x="350" y="50" width="180" height="150" rx="10" fill="#1e293b" stroke="#4ade80" stroke-width="2"/>
+      <text x="440" y="85" fill="#4ade80" text-anchor="middle" font-size="15" font-weight="bold">leads</text>
+      <text x="440" y="105" fill="#94a3b8" text-anchor="middle" font-size="11">リード</text>
+      <text x="440" y="125" fill="#94a3b8" text-anchor="middle" font-size="10">company, contact, channel</text>
+      <text x="440" y="140" fill="#94a3b8" text-anchor="middle" font-size="10">industry, revenue_range</text>
+      <text x="440" y="155" fill="#94a3b8" text-anchor="middle" font-size="10">status, score, utm_*</text>
+      <text x="440" y="170" fill="#94a3b8" text-anchor="middle" font-size="10">first_touch_at</text>
+
+      <!-- deals -->
+      <rect x="620" y="50" width="180" height="150" rx="10" fill="#1e293b" stroke="#fb923c" stroke-width="2"/>
+      <text x="710" y="85" fill="#fb923c" text-anchor="middle" font-size="15" font-weight="bold">deals</text>
+      <text x="710" y="105" fill="#94a3b8" text-anchor="middle" font-size="11">商談</text>
+      <text x="710" y="125" fill="#94a3b8" text-anchor="middle" font-size="10">stage, services</text>
+      <text x="710" y="140" fill="#94a3b8" text-anchor="middle" font-size="10">expected_monthly_revenue</text>
+      <text x="710" y="155" fill="#94a3b8" text-anchor="middle" font-size="10">competitor, lost_reason</text>
+      <text x="710" y="170" fill="#94a3b8" text-anchor="middle" font-size="10">win_probability</text>
+
+      <!-- contracts -->
+      <rect x="880" y="50" width="180" height="150" rx="10" fill="#1e293b" stroke="#f472b6" stroke-width="2"/>
+      <text x="970" y="85" fill="#f472b6" text-anchor="middle" font-size="15" font-weight="bold">contracts</text>
+      <text x="970" y="105" fill="#94a3b8" text-anchor="middle" font-size="11">契約</text>
+      <text x="970" y="125" fill="#94a3b8" text-anchor="middle" font-size="10">service_type, status</text>
+      <text x="970" y="140" fill="#94a3b8" text-anchor="middle" font-size="10">monthly_revenue</text>
+      <text x="970" y="155" fill="#94a3b8" text-anchor="middle" font-size="10">start_date, end_date</text>
+      <text x="970" y="170" fill="#94a3b8" text-anchor="middle" font-size="10">pm, pl, members</text>
+
+      <!-- activities -->
+      <rect x="300" y="340" width="250" height="80" rx="10" fill="#1e293b" stroke="#818cf8" stroke-width="2"/>
+      <text x="425" y="370" fill="#818cf8" text-anchor="middle" font-size="15" font-weight="bold">activities</text>
+      <text x="425" y="390" fill="#94a3b8" text-anchor="middle" font-size="11">活動履歴（メール・電話・商談etc）</text>
+      <text x="425" y="405" fill="#94a3b8" text-anchor="middle" font-size="10">→ leads / deals / accounts に紐付く</text>
+
+      <!-- accounts -->
+      <rect x="300" y="460" width="250" height="120" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+      <text x="425" y="495" fill="#38bdf8" text-anchor="middle" font-size="15" font-weight="bold">accounts</text>
+      <text x="425" y="515" fill="#94a3b8" text-anchor="middle" font-size="11">顧客（成約後）</text>
+      <text x="425" y="535" fill="#94a3b8" text-anchor="middle" font-size="10">notion_page_id（Notion同期キー）</text>
+      <text x="425" y="550" fill="#94a3b8" text-anchor="middle" font-size="10">source_channel, churn_reason</text>
+      <text x="425" y="565" fill="#94a3b8" text-anchor="middle" font-size="10">first_contract_date, status</text>
+
+      <!-- Relation labels -->
+      <text x="260" y="120" fill="#fbbf24" font-size="10">1:N</text>
+      <text x="575" y="120" fill="#4ade80" font-size="10">1:N</text>
+      <text x="845" y="120" fill="#fb923c" font-size="10">1:N</text>
+      <text x="455" y="280" fill="#818cf8" font-size="10">N</text>
+      <text x="600" y="500" fill="#f472b6" font-size="10">1:N</text>
+
+      <!-- Flow labels -->
+      <text x="95" y="50" fill="#fbbf24" text-anchor="middle" font-size="11" font-weight="600">マスタ</text>
+      <text x="440" y="35" fill="#4ade80" text-anchor="middle" font-size="11" font-weight="600">リード獲得</text>
+      <text x="710" y="35" fill="#fb923c" text-anchor="middle" font-size="11" font-weight="600">商談中</text>
+      <text x="970" y="35" fill="#f472b6" text-anchor="middle" font-size="11" font-weight="600">契約済</text>
+    </svg>
+  </div>
+</section>
+
+<!-- ============ 4. Funnel ============ -->
+<section id="funnel">
+  <h2>4. マーケティングファネル</h2>
+  <div class="funnel-container">
+    <div class="funnel-step" style="width:90%;background:linear-gradient(90deg,#1d4ed8,#3b82f6);border-radius:8px 8px 0 0;">
+      <div class="label">認知（Awareness）</div>
+      <div class="sub">HP訪問 / 展示会来場 / BOXIL閲覧 / 記事閲覧</div>
+    </div>
+    <div class="funnel-step" style="width:75%;background:linear-gradient(90deg,#0d9488,#14b8a6);">
+      <div class="label">リード獲得（Lead）</div>
+      <div class="sub">問い合わせ / 資料DL / 名刺交換 / 紹介 → leads テーブル</div>
+    </div>
+    <div class="funnel-step" style="width:60%;background:linear-gradient(90deg,#d97706,#f59e0b);">
+      <div class="label">商談化（Opportunity）</div>
+      <div class="sub">初回商談 / ヒアリング / 提案 → deals テーブル</div>
+    </div>
+    <div class="funnel-step" style="width:45%;background:linear-gradient(90deg,#db2777,#ec4899);">
+      <div class="label">成約（Close）</div>
+      <div class="sub">契約締結 → contracts テーブル + accounts テーブル</div>
+    </div>
+    <div class="funnel-step" style="width:35%;background:linear-gradient(90deg,#7c3aed,#8b5cf6);border-radius:0 0 8px 8px;">
+      <div class="label">拡大（Expand）</div>
+      <div class="sub">アップセル（労務BPO追加等）/ クロスセル / 紹介</div>
+    </div>
+  </div>
+  <p style="text-align:center;color:var(--text-muted);font-size:0.9rem;">各段階の数値を追跡し、ボトルネックを特定 → 施策を打つ</p>
+</section>
+
+<!-- ============ 5. Table Schemas ============ -->
+<section id="tables">
+  <h2>5. テーブル設計（全7テーブル）</h2>
+  <div class="table-grid">
+
+    <!-- leads -->
+    <div class="table-card">
+      <div class="table-card-header" style="background:rgba(74,222,128,0.1)">
+        <span class="ticon">🟢</span>
+        <h4>leads（リード）</h4>
+        <span class="purpose">BPIOを知った/興味を持った全ての接点を記録</span>
+      </div>
+      <div class="table-card-body">
+        <table class="schema-table">
+          <thead><tr><th>カラム</th><th>型</th><th>必須</th><th>説明</th><th>活用意図</th></tr></thead>
+          <tbody>
+            <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-req"><span class="yes">◎</span></td><td>リードID</td><td></td></tr>
+            <tr><td class="col-name">company_name</td><td class="col-type">text</td><td class="col-req"><span class="yes">◎</span></td><td>会社名</td><td></td></tr>
+            <tr><td class="col-name">contact_name</td><td class="col-type">text</td><td class="col-req"><span class="yes">◎</span></td><td>担当者名</td><td></td></tr>
+            <tr><td class="col-name">contact_title</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>役職</td><td class="col-purpose">決裁者判定</td></tr>
+            <tr><td class="col-name">contact_email</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>メールアドレス</td><td class="col-purpose">ナーチャリング配信</td></tr>
+            <tr><td class="col-name">contact_phone</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>電話番号</td><td></td></tr>
+            <tr><td class="col-name">channel</td><td class="col-type">enum</td><td class="col-req"><span class="yes">◎</span></td><td>獲得チャネル</td><td class="col-purpose">チャネル別ROI分析の核</td></tr>
+            <tr><td class="col-name">channel_detail</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>チャネル詳細（展示会名、紹介者名等）</td><td class="col-purpose">チャネル内の細分化</td></tr>
+            <tr><td class="col-name">referrer_name</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>紹介者名</td><td class="col-purpose">紹介元の貢献度</td></tr>
+            <tr><td class="col-name">referrer_company</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>紹介元企業名</td><td class="col-purpose">グループ会社別分析</td></tr>
+            <tr><td class="col-name">industry</td><td class="col-type">enum</td><td class="col-req"><span class="no">-</span></td><td>業種</td><td class="col-purpose">ターゲット業種の検証</td></tr>
+            <tr><td class="col-name">employee_count</td><td class="col-type">int</td><td class="col-req"><span class="no">-</span></td><td>従業員数</td><td class="col-purpose">規模別の成約率分析</td></tr>
+            <tr><td class="col-name">revenue_range</td><td class="col-type">enum</td><td class="col-req"><span class="no">-</span></td><td>売上規模</td><td class="col-purpose">ターゲットレンジ検証</td></tr>
+            <tr><td class="col-name">interested_services</td><td class="col-type">enum[]</td><td class="col-req"><span class="no">-</span></td><td>関心サービス</td><td class="col-purpose">サービス別リード傾向</td></tr>
+            <tr><td class="col-name">initial_needs</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>初回ヒアリングで把握したニーズ</td><td class="col-purpose">提案精度向上</td></tr>
+            <tr><td class="col-name">status</td><td class="col-type">enum</td><td class="col-req"><span class="yes">◎</span></td><td>新規/コンタクト済/商談化/失注/保留/不適格</td><td class="col-purpose">ファネル分析の核</td></tr>
+            <tr><td class="col-name">disqualify_reason</td><td class="col-type">enum</td><td class="col-req"><span class="no">-</span></td><td>不適格理由</td><td class="col-purpose">HPリード質改善</td></tr>
+            <tr><td class="col-name">score</td><td class="col-type">int</td><td class="col-req"><span class="no">-</span></td><td>リードスコア</td><td class="col-purpose">優先順位付け</td></tr>
+            <tr><td class="col-name">utm_source</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>UTMパラメータ</td><td class="col-purpose">広告ROI計測</td></tr>
+            <tr><td class="col-name">utm_medium</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td></td><td></td></tr>
+            <tr><td class="col-name">utm_campaign</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td></td><td></td></tr>
+            <tr><td class="col-name">first_touch_at</td><td class="col-type">timestamp</td><td class="col-req"><span class="yes">◎</span></td><td>初回接触日時</td><td class="col-purpose">リードタイム分析</td></tr>
+            <tr><td class="col-name">last_activity_at</td><td class="col-type">timestamp</td><td class="col-req"><span class="no">-</span></td><td>最終活動日時</td><td class="col-purpose">休眠リード検出</td></tr>
+            <tr><td class="col-name">assigned_to</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>担当者（社内）</td><td class="col-purpose">担当者別商談化率</td></tr>
+            <tr><td class="col-name">notes</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>メモ</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- deals -->
+    <div class="table-card">
+      <div class="table-card-header" style="background:rgba(251,146,60,0.1)">
+        <span class="ticon">🟠</span>
+        <h4>deals（商談）</h4>
+        <span class="purpose">商談化〜成約/失注までのプロセスを追跡</span>
+      </div>
+      <div class="table-card-body">
+        <table class="schema-table">
+          <thead><tr><th>カラム</th><th>型</th><th>必須</th><th>説明</th><th>活用意図</th></tr></thead>
+          <tbody>
+            <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-req"><span class="yes">◎</span></td><td>商談ID</td><td></td></tr>
+            <tr><td class="col-name">lead_id</td><td class="col-type">FK→leads</td><td class="col-req"><span class="yes">◎</span></td><td>元リード</td><td></td></tr>
+            <tr><td class="col-name">account_id</td><td class="col-type">FK→accounts</td><td class="col-req"><span class="no">-</span></td><td>既存顧客のアップセル時</td><td></td></tr>
+            <tr><td class="col-name">deal_name</td><td class="col-type">text</td><td class="col-req"><span class="yes">◎</span></td><td>商談名</td><td></td></tr>
+            <tr><td class="col-name">stage</td><td class="col-type">enum</td><td class="col-req"><span class="yes">◎</span></td><td>初回商談/ヒアリング/提案/見積/交渉/内諾/成約/失注</td><td class="col-purpose">パイプライン分析</td></tr>
+            <tr><td class="col-name">services</td><td class="col-type">enum[]</td><td class="col-req"><span class="yes">◎</span></td><td>対象サービス</td><td class="col-purpose">サービス別商談分析</td></tr>
+            <tr><td class="col-name">expected_monthly_revenue</td><td class="col-type">decimal</td><td class="col-req"><span class="no">-</span></td><td>想定月額報酬</td><td class="col-purpose">売上予測（フォーキャスト）</td></tr>
+            <tr><td class="col-name">expected_close_date</td><td class="col-type">date</td><td class="col-req"><span class="no">-</span></td><td>成約見込み日</td><td class="col-purpose">パイプライン管理</td></tr>
+            <tr><td class="col-name">actual_close_date</td><td class="col-type">date</td><td class="col-req"><span class="no">-</span></td><td>実際の成約/失注日</td><td class="col-purpose">リードタイム計測</td></tr>
+            <tr><td class="col-name">win_probability</td><td class="col-type">int</td><td class="col-req"><span class="no">-</span></td><td>成約確度（%）</td><td class="col-purpose">加重パイプライン</td></tr>
+            <tr><td class="col-name">competitor</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>競合サービス名</td><td class="col-purpose">競合分析</td></tr>
+            <tr><td class="col-name">lost_reason</td><td class="col-type">enum</td><td class="col-req"><span class="no">-</span></td><td>失注理由</td><td class="col-purpose">失注パターン分析→提案改善</td></tr>
+            <tr><td class="col-name">lost_detail</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>失注理由の詳細</td><td></td></tr>
+            <tr><td class="col-name">decision_factors</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>意思決定要因</td><td class="col-purpose">営業トーク改善</td></tr>
+            <tr><td class="col-name">proposal_doc_url</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>提案資料URL</td><td></td></tr>
+            <tr><td class="col-name">assigned_to</td><td class="col-type">text</td><td class="col-req"><span class="yes">◎</span></td><td>商談担当者</td><td class="col-purpose">担当者別成約率</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- accounts -->
+    <div class="table-card">
+      <div class="table-card-header" style="background:rgba(56,189,248,0.1)">
+        <span class="ticon">🔵</span>
+        <h4>accounts（顧客/企業）</h4>
+        <span class="purpose">成約後の顧客情報。Notion顧客DBの正規化版</span>
+      </div>
+      <div class="table-card-body">
+        <table class="schema-table">
+          <thead><tr><th>カラム</th><th>型</th><th>必須</th><th>説明</th><th>活用意図</th></tr></thead>
+          <tbody>
+            <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-req"><span class="yes">◎</span></td><td>顧客ID</td><td></td></tr>
+            <tr><td class="col-name">notion_page_id</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>Notion顧客DBのページID</td><td class="col-purpose">Notion同期キー</td></tr>
+            <tr><td class="col-name">customer_code</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>既存の顧客ID</td><td></td></tr>
+            <tr><td class="col-name">company_name</td><td class="col-type">text</td><td class="col-req"><span class="yes">◎</span></td><td>会社名</td><td></td></tr>
+            <tr><td class="col-name">industry</td><td class="col-type">enum</td><td class="col-req"><span class="no">-</span></td><td>業種</td><td class="col-purpose">業種別解約率分析</td></tr>
+            <tr><td class="col-name">employee_count</td><td class="col-type">int</td><td class="col-req"><span class="no">-</span></td><td>従業員数</td><td></td></tr>
+            <tr><td class="col-name">revenue_range</td><td class="col-type">enum</td><td class="col-req"><span class="no">-</span></td><td>売上規模</td><td></td></tr>
+            <tr><td class="col-name">source_channel</td><td class="col-type">enum</td><td class="col-req"><span class="no">-</span></td><td>獲得チャネル</td><td class="col-purpose">チャネル別LTV分析</td></tr>
+            <tr><td class="col-name">referrer</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>紹介元</td><td></td></tr>
+            <tr><td class="col-name">group_company</td><td class="col-type">boolean</td><td class="col-req"><span class="no">-</span></td><td>SRGグループ企業か</td><td class="col-purpose">グループ内外の分析</td></tr>
+            <tr><td class="col-name">first_contract_date</td><td class="col-type">date</td><td class="col-req"><span class="no">-</span></td><td>初回契約日</td><td class="col-purpose">顧客年齢分析</td></tr>
+            <tr><td class="col-name">status</td><td class="col-type">enum</td><td class="col-req"><span class="yes">◎</span></td><td>アクティブ/休止/解約</td><td></td></tr>
+            <tr><td class="col-name">churned_at</td><td class="col-type">date</td><td class="col-req"><span class="no">-</span></td><td>解約日</td><td class="col-purpose">解約率分析</td></tr>
+            <tr><td class="col-name">churn_reason</td><td class="col-type">enum</td><td class="col-req"><span class="no">-</span></td><td>解約理由</td><td class="col-purpose">解約防止策立案</td></tr>
+            <tr><td class="col-name">nps_score</td><td class="col-type">int</td><td class="col-req"><span class="no">-</span></td><td>顧客満足度</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- contracts -->
+    <div class="table-card">
+      <div class="table-card-header" style="background:rgba(244,114,182,0.1)">
+        <span class="ticon">🩷</span>
+        <h4>contracts（契約）</h4>
+        <span class="purpose">1顧客 × 複数サービスの契約を正規化管理</span>
+      </div>
+      <div class="table-card-body">
+        <table class="schema-table">
+          <thead><tr><th>カラム</th><th>型</th><th>必須</th><th>説明</th><th>活用意図</th></tr></thead>
+          <tbody>
+            <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-req"><span class="yes">◎</span></td><td>契約ID</td><td></td></tr>
+            <tr><td class="col-name">account_id</td><td class="col-type">FK→accounts</td><td class="col-req"><span class="yes">◎</span></td><td>顧客</td><td></td></tr>
+            <tr><td class="col-name">deal_id</td><td class="col-type">FK→deals</td><td class="col-req"><span class="no">-</span></td><td>元商談</td><td></td></tr>
+            <tr><td class="col-name">service_type</td><td class="col-type">enum</td><td class="col-req"><span class="yes">◎</span></td><td>経理BPO/労務BPO/総務BPO/DX支援/RPO</td><td></td></tr>
+            <tr><td class="col-name">status</td><td class="col-type">enum</td><td class="col-req"><span class="yes">◎</span></td><td>継続中/スポット/終了/失注/未契約</td><td></td></tr>
+            <tr><td class="col-name">monthly_revenue</td><td class="col-type">decimal</td><td class="col-req"><span class="no">-</span></td><td>月額報酬</td><td class="col-purpose">MRR・LTV計算</td></tr>
+            <tr><td class="col-name">contract_start_date</td><td class="col-type">date</td><td class="col-req"><span class="no">-</span></td><td>契約開始日</td><td></td></tr>
+            <tr><td class="col-name">contract_end_date</td><td class="col-type">date</td><td class="col-req"><span class="no">-</span></td><td>契約終了日</td><td></td></tr>
+            <tr><td class="col-name">pm</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>PM担当</td><td></td></tr>
+            <tr><td class="col-name">pl</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>PL担当</td><td></td></tr>
+            <tr><td class="col-name">members</td><td class="col-type">text[]</td><td class="col-req"><span class="no">-</span></td><td>担当メンバー</td><td></td></tr>
+            <tr><td class="col-name">revenue_changes</td><td class="col-type">jsonb</td><td class="col-req"><span class="no">-</span></td><td>報酬変更履歴</td><td class="col-purpose">単価推移分析</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- activities -->
+    <div class="table-card">
+      <div class="table-card-header" style="background:rgba(129,140,248,0.1)">
+        <span class="ticon">🟣</span>
+        <h4>activities（活動履歴）</h4>
+        <span class="purpose">リード・商談・顧客への全活動を時系列記録</span>
+      </div>
+      <div class="table-card-body">
+        <table class="schema-table">
+          <thead><tr><th>カラム</th><th>型</th><th>必須</th><th>説明</th><th>活用意図</th></tr></thead>
+          <tbody>
+            <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-req"><span class="yes">◎</span></td><td></td><td></td></tr>
+            <tr><td class="col-name">lead_id</td><td class="col-type">FK→leads</td><td class="col-req"><span class="no">-</span></td><td></td><td></td></tr>
+            <tr><td class="col-name">deal_id</td><td class="col-type">FK→deals</td><td class="col-req"><span class="no">-</span></td><td></td><td></td></tr>
+            <tr><td class="col-name">account_id</td><td class="col-type">FK→accounts</td><td class="col-req"><span class="no">-</span></td><td></td><td></td></tr>
+            <tr><td class="col-name">activity_type</td><td class="col-type">enum</td><td class="col-req"><span class="yes">◎</span></td><td>メール送信/受信/電話/商談(対面)/商談(オンライン)/資料送付/フォーム受信/展示会接触/セミナー参加</td><td class="col-purpose">活動量と成約の相関</td></tr>
+            <tr><td class="col-name">subject</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>件名・概要</td><td></td></tr>
+            <tr><td class="col-name">description</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>詳細内容</td><td></td></tr>
+            <tr><td class="col-name">performed_by</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>実行者</td><td class="col-purpose">担当者別活動量</td></tr>
+            <tr><td class="col-name">performed_at</td><td class="col-type">timestamp</td><td class="col-req"><span class="yes">◎</span></td><td>実行日時</td><td></td></tr>
+            <tr><td class="col-name">duration_minutes</td><td class="col-type">int</td><td class="col-req"><span class="no">-</span></td><td>所要時間</td><td class="col-purpose">営業工数の可視化</td></tr>
+            <tr><td class="col-name">outcome</td><td class="col-type">text</td><td class="col-req"><span class="no">-</span></td><td>結果・次アクション</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- channels -->
+    <div class="table-card">
+      <div class="table-card-header" style="background:rgba(251,191,36,0.1)">
+        <span class="ticon">🟡</span>
+        <h4>channels（チャネルマスタ）</h4>
+        <span class="purpose">リード獲得チャネルの定義とコスト管理</span>
+      </div>
+      <div class="table-card-body">
+        <table class="schema-table">
+          <thead><tr><th>カラム</th><th>型</th><th>必須</th><th>説明</th><th>活用意図</th></tr></thead>
+          <tbody>
+            <tr><td class="col-name">id</td><td class="col-type">text</td><td class="col-req"><span class="yes">◎</span></td><td>チャネルコード</td><td></td></tr>
+            <tr><td class="col-name">name</td><td class="col-type">text</td><td class="col-req"><span class="yes">◎</span></td><td>チャネル名</td><td></td></tr>
+            <tr><td class="col-name">category</td><td class="col-type">enum</td><td class="col-req"><span class="yes">◎</span></td><td>インバウンド/アウトバウンド/紹介/パートナー</td><td></td></tr>
+            <tr><td class="col-name">monthly_cost</td><td class="col-type">decimal</td><td class="col-req"><span class="no">-</span></td><td>月間コスト</td><td class="col-purpose">チャネル別CPA・ROI</td></tr>
+            <tr><td class="col-name">is_active</td><td class="col-type">boolean</td><td class="col-req"><span class="yes">◎</span></td><td>現在稼働中か</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- marketing_metrics -->
+    <div class="table-card">
+      <div class="table-card-header" style="background:rgba(56,189,248,0.1)">
+        <span class="ticon">📊</span>
+        <h4>marketing_metrics（マーケティング月次指標）</h4>
+        <span class="purpose">HP・広告・コンテンツの月次KPIを蓄積</span>
+      </div>
+      <div class="table-card-body">
+        <table class="schema-table">
+          <thead><tr><th>カラム</th><th>型</th><th>必須</th><th>説明</th><th>活用意図</th></tr></thead>
+          <tbody>
+            <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-req"><span class="yes">◎</span></td><td></td><td></td></tr>
+            <tr><td class="col-name">month</td><td class="col-type">date</td><td class="col-req"><span class="yes">◎</span></td><td>対象月</td><td></td></tr>
+            <tr><td class="col-name">hp_sessions</td><td class="col-type">int</td><td class="col-req"><span class="no">-</span></td><td>HP月間セッション数</td><td class="col-purpose">トレンド分析</td></tr>
+            <tr><td class="col-name">hp_unique_users</td><td class="col-type">int</td><td class="col-req"><span class="no">-</span></td><td>HP月間UU</td><td></td></tr>
+            <tr><td class="col-name">hp_inquiries</td><td class="col-type">int</td><td class="col-req"><span class="no">-</span></td><td>HP問い合わせ数</td><td class="col-purpose">CVR算出</td></tr>
+            <tr><td class="col-name">hp_cvr</td><td class="col-type">decimal</td><td class="col-req"><span class="no">-</span></td><td>HP問い合わせ率（%）</td><td></td></tr>
+            <tr><td class="col-name">blog_posts_published</td><td class="col-type">int</td><td class="col-req"><span class="no">-</span></td><td>ブログ公開本数</td><td class="col-purpose">コンテンツ投資量</td></tr>
+            <tr><td class="col-name">email_sent</td><td class="col-type">int</td><td class="col-req"><span class="no">-</span></td><td>メール配信数</td><td></td></tr>
+            <tr><td class="col-name">email_open_rate</td><td class="col-type">decimal</td><td class="col-req"><span class="no">-</span></td><td>メール開封率</td><td></td></tr>
+            <tr><td class="col-name">ad_spend</td><td class="col-type">decimal</td><td class="col-req"><span class="no">-</span></td><td>広告費合計</td><td></td></tr>
+            <tr><td class="col-name">ad_clicks</td><td class="col-type">int</td><td class="col-req"><span class="no">-</span></td><td>広告クリック数</td><td></td></tr>
+            <tr><td class="col-name">ad_leads</td><td class="col-type">int</td><td class="col-req"><span class="no">-</span></td><td>広告経由リード数</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ 6. Channels ============ -->
+<section id="channels">
+  <h2>6. チャネル定義（初期マスタデータ）</h2>
+  <table class="channel-table">
+    <thead><tr><th>コード</th><th>チャネル名</th><th>カテゴリ</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td><code>hp_organic</code></td><td>HP自然検索</td><td class="cat-inbound">インバウンド</td><td>Google等の自然検索からHP訪問→問い合わせ</td></tr>
+      <tr><td><code>hp_paid</code></td><td>HP広告経由</td><td class="cat-inbound">インバウンド</td><td>リスティング広告・ディスプレイ広告経由</td></tr>
+      <tr><td><code>exhibition</code></td><td>展示会</td><td class="cat-outbound">アウトバウンド</td><td>年2回の展示会出展で獲得した名刺・リード</td></tr>
+      <tr><td><code>boxil</code></td><td>BOXIL</td><td class="cat-inbound">インバウンド</td><td>BOXIL SaaS掲載経由のリード</td></tr>
+      <tr><td><code>seminar</code></td><td>セミナー/ウェビナー</td><td class="cat-inbound">インバウンド</td><td>自社開催セミナー・共催ウェビナー参加者</td></tr>
+      <tr><td><code>ref_group</code></td><td>グループ会社紹介</td><td class="cat-referral">紹介</td><td>セブンリッチグループ30-40社からの紹介</td></tr>
+      <tr><td><code>ref_bakuraku</code></td><td>バクラク（LayerX）紹介</td><td class="cat-partner">パートナー</td><td>LayerXベストパートナー賞受賞。最大の紹介元</td></tr>
+      <tr><td><code>ref_bank</code></td><td>銀行紹介</td><td class="cat-partner">パートナー</td><td>提携銀行からの紹介・JV</td></tr>
+      <tr><td><code>ref_other</code></td><td>その他紹介</td><td class="cat-referral">紹介</td><td>個人紹介・既存顧客からの紹介等</td></tr>
+      <tr><td><code>outbound</code></td><td>アウトバウンド営業</td><td class="cat-outbound">アウトバウンド</td><td>テレアポ・ダイレクトメール等</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 7. KPIs ============ -->
+<section id="kpi">
+  <h2>7. 算出可能なKPI一覧</h2>
+
+  <h3>ファネル系KPI</h3>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <h5>チャネル別リード数</h5>
+      <div class="formula">SELECT channel, COUNT(*) FROM leads GROUP BY channel</div>
+      <div class="usage">→ どのチャネルに投資すべきか判断</div>
+    </div>
+    <div class="kpi-card">
+      <h5>チャネル別商談化率</h5>
+      <div class="formula">商談化リード数 / 全リード数 × 100 GROUP BY channel</div>
+      <div class="usage">→ チャネルの「質」を評価</div>
+    </div>
+    <div class="kpi-card">
+      <h5>チャネル別成約率</h5>
+      <div class="formula">成約deals / 全deals GROUP BY source_channel</div>
+      <div class="usage">→ 最終的にどのチャネルが成果を出しているか</div>
+    </div>
+    <div class="kpi-card">
+      <h5>チャネル別CPA（リード獲得単価）</h5>
+      <div class="formula">channels.monthly_cost / リード数</div>
+      <div class="usage">→ コスト効率の比較</div>
+    </div>
+    <div class="kpi-card">
+      <h5>チャネル別CAC（顧客獲得コスト）</h5>
+      <div class="formula">channels.monthly_cost / 成約数</div>
+      <div class="usage">→ 1顧客を獲得するのにいくらかかるか</div>
+    </div>
+    <div class="kpi-card">
+      <h5>平均リードタイム</h5>
+      <div class="formula">AVG(deals.actual_close_date - leads.first_touch_at)</div>
+      <div class="usage">→ 営業プロセスの速度評価</div>
+    </div>
+  </div>
+
+  <h3>収益系KPI</h3>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <h5>MRR（月次経常収益）</h5>
+      <div class="formula">SUM(contracts.monthly_revenue) WHERE status='継続中'</div>
+      <div class="usage">→ 事業の健全性指標</div>
+    </div>
+    <div class="kpi-card">
+      <h5>サービス別MRR</h5>
+      <div class="formula">SUM(monthly_revenue) GROUP BY service_type</div>
+      <div class="usage">→ サービスポートフォリオの評価</div>
+    </div>
+    <div class="kpi-card">
+      <h5>平均契約単価</h5>
+      <div class="formula">AVG(contracts.monthly_revenue)</div>
+      <div class="usage">→ 価格戦略の検討材料</div>
+    </div>
+    <div class="kpi-card">
+      <h5>LTV（顧客生涯価値）</h5>
+      <div class="formula">平均月額 × 平均契約月数</div>
+      <div class="usage">→ チャネル別ROIの最終判断に使用</div>
+    </div>
+    <div class="kpi-card">
+      <h5>LTV/CAC比率</h5>
+      <div class="formula">LTV / CAC（3以上が理想）</div>
+      <div class="usage">→ マーケティング投資の回収効率</div>
+    </div>
+    <div class="kpi-card">
+      <h5>Net Revenue Retention</h5>
+      <div class="formula">前月MRR + アップセル - ダウングレード - 解約</div>
+      <div class="usage">→ 既存顧客からの成長力（100%超が理想）</div>
+    </div>
+  </div>
+
+  <h3>顧客健全性KPI</h3>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <h5>月次解約率（Churn Rate）</h5>
+      <div class="formula">当月解約数 / 前月末アクティブ顧客数 × 100</div>
+      <div class="usage">→ 顧客維持の健全性指標</div>
+    </div>
+    <div class="kpi-card">
+      <h5>解約理由分布</h5>
+      <div class="formula">SELECT churn_reason, COUNT(*) FROM accounts WHERE churned_at IS NOT NULL GROUP BY churn_reason</div>
+      <div class="usage">→ 解約防止策の優先順位付け</div>
+    </div>
+    <div class="kpi-card">
+      <h5>規模別・業種別の成約率</h5>
+      <div class="formula">成約数 / リード数 GROUP BY revenue_range, industry</div>
+      <div class="usage">→ ターゲティング精度の検証・改善</div>
+    </div>
+  </div>
+</section>
+
+<footer style="text-align:center;padding:3rem;color:var(--text-muted);font-size:0.85rem;border-top:1px solid var(--border);margin-top:3rem;">
+  <p>BPIO Digital Marketing Plan — Data Model Design</p>
+  <p>Draft v0.1 | 2026-03-08 | Generated with Claude Code</p>
+</footer>
+
+</div>
+</body>
+</html>
