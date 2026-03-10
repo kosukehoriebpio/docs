@@ -393,6 +393,91 @@ code {
   max-width: 100%;
 }
 
+/* ===== Architecture flow (CSS-based) ===== */
+.arch-flow {
+  margin: 20px 0 28px;
+  font-size: 0.82rem;
+}
+.arch-phase {
+  border: 1px solid #ccc;
+  padding: 16px 20px;
+  margin-bottom: 0;
+  position: relative;
+}
+.arch-phase-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #777;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.arch-trigger {
+  background: #1a1a1a;
+  color: #fff;
+  text-align: center;
+  padding: 10px 20px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.arch-arrow {
+  text-align: center;
+  padding: 4px 0;
+  color: #999;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+.arch-steps {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.arch-step {
+  flex: 1;
+  min-width: 120px;
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  text-align: center;
+  font-size: 0.78rem;
+}
+.arch-step strong {
+  display: block;
+  font-size: 0.8rem;
+  margin-bottom: 2px;
+}
+.arch-step .arch-sub {
+  color: #777;
+  font-size: 0.72rem;
+}
+.arch-outputs {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+.arch-output {
+  flex: 1;
+  max-width: 200px;
+  border: 1px solid #999;
+  padding: 10px 14px;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.arch-phase-inner {
+  background: #fafafa;
+  border: 1px dashed #ccc;
+  padding: 12px 16px;
+  margin-top: 8px;
+}
+.arch-phase-inner .arch-phase-label {
+  margin-bottom: 8px;
+}
+@media (max-width: 640px) {
+  .arch-steps { flex-direction: column; }
+  .arch-outputs { flex-direction: column; align-items: center; }
+}
+
 /* ===== Footer ===== */
 .report-footer {
   border-top: 1px solid #999;
@@ -485,7 +570,7 @@ code {
   </li>
   <li>
     <span class="benefit-title">過去の文脈が自動で付与される</span>
-    <span class="benefit-desc">社外MTGなら顧客情報と直近5回分の打ち合わせ記録、1on1なら直近3回分のメモが自動で記載</span>
+    <span class="benefit-desc">社外MTGなら顧客情報と直近5回分の打ち合わせ記録を自動記載。新規企業はWeb検索で事業概要を自動調査。1on1なら直近3回分のメモが付与</span>
   </li>
   <li>
     <span class="benefit-title">議事録の書き場所が統一される</span>
@@ -523,6 +608,7 @@ code {
     <div class="cat-detail">
       顧客DBから企業情報（契約状況・担当者等）を自動取得。
       過去5回分の打ち合わせタイトルを一覧表示。
+      顧客DB未登録の新規企業はWeb検索で事業内容・業界・規模を自動調査。
       アジェンダ雛形（前回確認・議題整理・資料準備）を記載。
     </div>
   </div>
@@ -580,7 +666,9 @@ flowchart TD
     E -- Yes --> OO["1on1 one_on_one"]
     E -- No --> IN["社内MTG internal"]
 
-    EX --> EX_D["企業名を抽出し顧客DBから情報取得 + 過去5件の議事録"]
+    EX --> EX_D{"顧客DBに登録あり?"}
+    EX_D -- Yes --> EX_F["顧客情報 + 過去5件の議事録を取得"]
+    EX_D -- No --> EX_W["Web検索で企業情報を自動調査"]
     IR --> IR_D["キーワードで過去3件の議事録を取得"]
     OO --> OO_D["相手名で過去3件の議事録を取得"]
     IN --> IN_D["キーワードで過去3件の議事録を取得"]
@@ -590,7 +678,9 @@ flowchart TD
     style IR fill:#1a1a1a,stroke:#1a1a1a,color:#fff
     style OO fill:#1a1a1a,stroke:#1a1a1a,color:#fff
     style IN fill:#1a1a1a,stroke:#1a1a1a,color:#fff
-    style EX_D fill:#f7f7f7,stroke:#bbb,color:#555
+    style EX_D fill:#fff,stroke:#555,color:#1a1a1a
+    style EX_F fill:#f7f7f7,stroke:#bbb,color:#555
+    style EX_W fill:#f7f7f7,stroke:#bbb,color:#555
     style IR_D fill:#f7f7f7,stroke:#bbb,color:#555
     style OO_D fill:#f7f7f7,stroke:#bbb,color:#555
     style IN_D fill:#f7f7f7,stroke:#bbb,color:#555
@@ -655,36 +745,66 @@ flowchart TD
 
 <h3 class="subsection-title">全体アーキテクチャ</h3>
 
-<div class="mermaid">
-flowchart TD
-    SCHED["Task Scheduler - 毎朝 7:00"] --> SYNC
+<div class="arch-flow">
+  <!-- Trigger -->
+  <div class="arch-trigger">Task Scheduler — 毎朝 7:00 自動起動</div>
+  <div class="arch-arrow">&#9660;</div>
 
-    subgraph "前処理: Notion同期"
-        SYNC["notion-sync.ts"] --> S1["顧客DB同期 - 約290件"]
-        SYNC --> S2["議事録DB同期 - 約1,800件"]
-        S1 --> IDX["knowledge-brain-index.ts"]
-        S2 --> IDX
-        IDX --> IDXOUT["_index.json 再生成 - 約3,200件"]
-    end
+  <!-- Phase 1: Notion sync -->
+  <div class="arch-phase">
+    <div class="arch-phase-label">Phase 1 &#8212; 前処理: Notion同期</div>
+    <div class="arch-steps">
+      <div class="arch-step">
+        <strong>顧客DB同期</strong>
+        <span class="arch-sub">Notion API → ローカルMD<br>約290件</span>
+      </div>
+      <div class="arch-step">
+        <strong>議事録DB同期</strong>
+        <span class="arch-sub">Notion API → ローカルMD<br>約1,800件</span>
+      </div>
+      <div class="arch-step">
+        <strong>インデックス再生成</strong>
+        <span class="arch-sub">全MD → _index.json<br>約3,200件</span>
+      </div>
+    </div>
+  </div>
+  <div class="arch-arrow">&#9660;</div>
 
-    IDXOUT --> MAIN
+  <!-- Phase 2: Main pipeline -->
+  <div class="arch-phase">
+    <div class="arch-phase-label">Phase 2 &#8212; 本体: meeting-prep-auto.ts</div>
+    <p style="font-size:0.78rem;color:#555;margin-bottom:12px;">当日 / +1日 / +2日 / +3日 の4日間を順にループ処理</p>
 
-    subgraph "本体: meeting-prep-auto.ts"
-        MAIN["日付ループ - 当日 / +1 / +2 / +3"] --> CF
-        CF["Cloud Function 呼び出し"] --> |"Calendar API"| CLASS["イベント分類 + 重複排除"]
-        CLASS --> PRE["事前計算"]
-        PRE --> |"_index.json"| CTX["顧客情報 + 過去議事録を付与"]
-        CTX --> CLI["Claude CLI headless"]
-    end
+    <div class="arch-phase-inner">
+      <div class="arch-phase-label">日付ごとの処理（x4回）</div>
+      <div class="arch-steps">
+        <div class="arch-step">
+          <strong>CF呼び出し</strong>
+          <span class="arch-sub">Calendar API<br>イベント取得+分類</span>
+        </div>
+        <div class="arch-step">
+          <strong>事前計算</strong>
+          <span class="arch-sub">_index.json検索<br>顧客情報+過去議事録</span>
+        </div>
+        <div class="arch-step">
+          <strong>Claude CLI</strong>
+          <span class="arch-sub">Sonnet / headless<br>Notionページ生成</span>
+        </div>
+        <div class="arch-step">
+          <strong>Slack通知</strong>
+          <span class="arch-sub">結果一覧<br>@mention+リンク</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="arch-arrow">&#9660;</div>
 
-    CLI --> NOTION["Notion 議事録ページ作成"]
-    CLI --> CAL["Google Calendar リンク追記"]
-    CLI --> SLACK["Slack 通知送信"]
-
-    style SCHED fill:#1a1a1a,stroke:#1a1a1a,color:#fff
-    style NOTION fill:#f7f7f7,stroke:#999,color:#1a1a1a
-    style CAL fill:#f7f7f7,stroke:#999,color:#1a1a1a
-    style SLACK fill:#f7f7f7,stroke:#999,color:#1a1a1a
+  <!-- Outputs -->
+  <div class="arch-outputs">
+    <div class="arch-output">Notion<br><span style="font-weight:400;font-size:0.75rem;color:#555;">議事録ページ作成</span></div>
+    <div class="arch-output">Google Calendar<br><span style="font-weight:400;font-size:0.75rem;color:#555;">リンク追記</span></div>
+    <div class="arch-output">Slack<br><span style="font-weight:400;font-size:0.75rem;color:#555;">準備完了通知</span></div>
+  </div>
 </div>
 
 <h3 class="subsection-title">Slack通知のイメージ</h3>
@@ -855,7 +975,7 @@ Notionページ 3件作成済み | カレンダーにリンク追記済み</div>
   <tbody>
     <tr><td>起動方法</td><td>毎朝7:00 タスクスケジューラ</td><td><code>/meeting-prep [日付]</code></td></tr>
     <tr><td>DB検索</td><td>TypeScript事前計算（30ms）</td><td>knowledge-brainサブエージェント</td></tr>
-    <tr><td>Web調査</td><td>なし</td><td>researcherサブエージェント</td></tr>
+    <tr><td>Web調査</td><td>WebSearch（未登録企業のみ）</td><td>researcherサブエージェント</td></tr>
     <tr><td>実行時間</td><td>約70秒</td><td>約15分</td></tr>
   </tbody>
 </table>
