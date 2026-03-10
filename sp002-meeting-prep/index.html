@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>会議準備自動化パイプライン — BPIO</title>
+<style>
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color: #1a1a1a;
+  background: #fff;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ===== Sticky Pill Navigation ===== */
+#sticky-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.97);
+  border-bottom: 1px solid #ccc;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+#sticky-nav .nav-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #777;
+  letter-spacing: 0.05em;
+  margin-right: 4px;
+  white-space: nowrap;
+}
+.pill {
+  display: inline-block;
+  padding: 5px 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #555;
+  text-decoration: none;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.pill:hover, .pill.active {
+  background: #1a1a1a;
+  color: #fff;
+  border-color: #1a1a1a;
+}
+
+/* ===== Main Content ===== */
+#main {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 40px 48px 80px;
+}
+
+/* ===== Header ===== */
+.report-header {
+  border-bottom: 2px solid #1a1a1a;
+  padding-bottom: 20px;
+  margin-bottom: 32px;
+}
+.report-header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.report-header .subtitle {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 16px;
+}
+.report-header .summary-box {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 16px 20px;
+  margin-top: 16px;
+}
+.report-header .summary-box h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.report-header .summary-box ul,
+.report-header .summary-box ol {
+  padding-left: 20px;
+  font-size: 0.82rem;
+}
+.report-header .summary-box li {
+  margin-bottom: 4px;
+}
+
+/* ===== Section Headings ===== */
+h2.section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-bottom: 1px solid #999;
+  padding-bottom: 6px;
+  margin-top: 48px;
+  margin-bottom: 20px;
+}
+h3.subsection-title {
+  font-size: 1.0rem;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  padding-left: 10px;
+  border-left: 3px solid #555;
+}
+h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+
+/* ===== Tables ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 20px;
+  font-size: 0.82rem;
+}
+table th, table td {
+  border: 1px solid #bbb;
+  padding: 7px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+table th {
+  background: #f0f0f0;
+  font-weight: 700;
+  white-space: nowrap;
+}
+table td {
+  background: #fff;
+}
+table tr:nth-child(even) td {
+  background: #fafafa;
+}
+
+/* ===== Paragraphs & Lists ===== */
+p { margin-bottom: 10px; font-size: 0.88rem; }
+ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+ul li, ol li { margin-bottom: 3px; }
+
+/* ===== Highlight box (grey) ===== */
+.highlight-box {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 14px 18px;
+  margin: 12px 0 20px;
+  font-size: 0.85rem;
+}
+.highlight-box strong {
+  color: #1a1a1a;
+}
+
+/* ===== Note box (yellow, border-left) ===== */
+.note-box {
+  background: #fffbeb;
+  border-left: 4px solid #f59e0b;
+  padding: 10px 16px;
+  margin: 12px 0 20px;
+  font-size: 0.82rem;
+  color: #78350f;
+}
+
+/* ===== Info box (blue, border-left) ===== */
+.info-box {
+  background: #eff6ff;
+  border-left: 4px solid #3b82f6;
+  padding: 10px 16px;
+  margin: 12px 0 20px;
+  font-size: 0.82rem;
+  color: #1e3a5f;
+}
+
+/* ===== Flow diagram (pre block) ===== */
+.flow-diagram {
+  background: #f7f7f7;
+  border: 1px solid #ccc;
+  padding: 16px 20px;
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  white-space: pre;
+  overflow-x: auto;
+  margin: 12px 0 20px;
+}
+
+/* ===== Numbered steps (ordered list variant) ===== */
+.step-list {
+  counter-reset: stepcount;
+  list-style: none;
+  padding-left: 0;
+}
+.step-list li {
+  counter-increment: stepcount;
+  position: relative;
+  padding: 8px 0 8px 36px;
+  font-size: 0.88rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+.step-list li:last-child { border-bottom: none; }
+.step-list li::before {
+  content: counter(stepcount);
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 24px;
+  height: 24px;
+  background: #1a1a1a;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== Inline code ===== */
+code {
+  background: #f0f0f0;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 0.85em;
+  font-family: "Consolas", "Courier New", monospace;
+}
+
+/* ===== Flowchart styles ===== */
+.flowchart {
+  margin: 16px 0 24px;
+  overflow-x: auto;
+}
+.flowchart svg {
+  max-width: 100%;
+}
+.fc-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: 16px 0;
+}
+.fc-node {
+  padding: 10px 24px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+  min-width: 200px;
+}
+.fc-start {
+  background: #1a1a1a;
+  color: #fff;
+  border-radius: 24px;
+}
+.fc-process {
+  background: #f7f7f7;
+  border: 1px solid #bbb;
+}
+.fc-decision {
+  background: #fff;
+  border: 2px solid #555;
+  transform: rotate(0deg);
+  position: relative;
+  padding: 12px 20px;
+}
+.fc-decision::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: -1px; right: -1px; bottom: -1px;
+}
+.fc-result {
+  background: #f0f0f0;
+  border: 1px solid #999;
+  border-radius: 4px;
+}
+.fc-arrow {
+  width: 2px;
+  height: 20px;
+  background: #555;
+  position: relative;
+}
+.fc-arrow::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: -4px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #555;
+}
+.fc-label {
+  font-size: 0.72rem;
+  color: #777;
+  margin: 2px 0;
+}
+.fc-branch {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+}
+.fc-branch-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  flex: 1;
+  max-width: 220px;
+}
+
+/* ===== Category cards ===== */
+.category-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 16px 0 24px;
+}
+.category-item {
+  border: 1px solid #ccc;
+  padding: 16px;
+}
+.category-item h4 {
+  margin-top: 0;
+  margin-bottom: 6px;
+  font-size: 0.88rem;
+}
+.category-item .cat-label {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #555;
+  border: 1px solid #bbb;
+  padding: 1px 8px;
+  border-radius: 3px;
+  margin-bottom: 8px;
+}
+.category-item p {
+  font-size: 0.82rem;
+  margin-bottom: 6px;
+}
+.category-item .cat-detail {
+  font-size: 0.78rem;
+  color: #555;
+}
+
+/* ===== Benefit items ===== */
+.benefit-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 12px 0 20px;
+}
+.benefit-list li {
+  padding: 10px 0 10px 0;
+  font-size: 0.88rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+.benefit-list li:last-child { border-bottom: none; }
+.benefit-list .benefit-title {
+  font-weight: 700;
+  display: block;
+  margin-bottom: 2px;
+}
+.benefit-list .benefit-desc {
+  font-size: 0.82rem;
+  color: #555;
+}
+
+/* ===== Footer ===== */
+.report-footer {
+  border-top: 1px solid #999;
+  margin-top: 48px;
+  padding-top: 16px;
+  font-size: 0.78rem;
+  color: #777;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+  #main { padding: 24px 20px 60px; }
+  .report-header h1 { font-size: 1.3rem; }
+  h2.section-title { font-size: 1.05rem; }
+  table { font-size: 0.78rem; }
+  table th, table td { padding: 5px 7px; }
+  #sticky-nav { padding: 10px 12px; gap: 6px; }
+  .pill { padding: 4px 12px; font-size: 0.72rem; }
+  .category-grid { grid-template-columns: 1fr; }
+}
+
+/* ===== Print ===== */
+@media print {
+  #sticky-nav { display: none; }
+  #main { padding: 0; max-width: 100%; }
+  body { font-size: 10pt; }
+  .report-header h1 { font-size: 16pt; }
+  h2.section-title { font-size: 13pt; page-break-after: avoid; }
+  h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+  table { font-size: 8pt; page-break-inside: avoid; }
+  table th, table td { padding: 3px 5px; }
+  .highlight-box, .note-box, .info-box {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  table th {
+    background: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Pill Navigation ===== -->
+<nav id="sticky-nav">
+  <span class="nav-label">CONTENTS</span>
+  <a href="#overview" class="pill">概要</a>
+  <a href="#what-it-does" class="pill">できること</a>
+  <a href="#classification" class="pill">会議分類</a>
+  <a href="#flow" class="pill">処理フロー</a>
+  <a href="#join" class="pill">利用開始</a>
+  <a href="#technical" class="pill">技術詳細</a>
+  <a href="#operations" class="pill">運用情報</a>
+</nav>
+
+<!-- ===== Main Content ===== -->
+<div id="main">
+
+<header class="report-header">
+  <h1>会議準備自動化パイプライン</h1>
+  <p class="subtitle">SP-002 / BPIO / 2026年3月</p>
+  <div class="summary-box">
+    <h3>このツールでできること</h3>
+    <ul>
+      <li>毎朝自動で、当日〜3日後の会議に対して<strong>Notion議事録ページを事前作成</strong></li>
+      <li>過去の打ち合わせ履歴や顧客情報を<strong>自動で収集・整理</strong>してページに記載</li>
+      <li>Google Calendarのイベントに<strong>議事録ページへのリンクを自動追記</strong></li>
+      <li>準備完了をSlackで通知。会議前に開くだけで準備完了の状態に</li>
+    </ul>
+  </div>
+</header>
+
+<!-- ===== 1. 概要 ===== -->
+<h2 class="section-title" id="overview">1. 概要 — 何が便利になるのか</h2>
+
+<p>
+  会議のたびに「過去のやり取りは？」「前回の決定事項は？」と調べていませんか。
+  このツールは、毎朝自動的にあなたのカレンダーをチェックし、
+  4日分の会議に対して議事録テンプレートを事前作成します。
+</p>
+
+<h3 class="subsection-title">利用者のメリット</h3>
+
+<ul class="benefit-list">
+  <li>
+    <span class="benefit-title">会議前の準備時間がゼロに</span>
+    <span class="benefit-desc">Calendarを開くと議事録リンクが既にある。クリックすれば準備済みのNotionページへ直行</span>
+  </li>
+  <li>
+    <span class="benefit-title">過去の文脈が自動で付与される</span>
+    <span class="benefit-desc">社外MTGなら顧客情報と直近5回分の打ち合わせ記録、1on1なら直近3回分のメモが自動で記載</span>
+  </li>
+  <li>
+    <span class="benefit-title">議事録の書き場所が統一される</span>
+    <span class="benefit-desc">Notion議事録DBに全メンバーの会議記録が集約。検索・振り返りが容易に</span>
+  </li>
+  <li>
+    <span class="benefit-title">あなたがやることは何もない</span>
+    <span class="benefit-desc">登録さえすれば、毎朝7時に全自動で実行。Slackに通知が届きます</span>
+  </li>
+</ul>
+
+<h3 class="subsection-title">実行タイミングとパフォーマンス</h3>
+
+<table>
+  <thead><tr><th>項目</th><th>内容</th></tr></thead>
+  <tbody>
+    <tr><td>実行タイミング</td><td>毎朝 7:00（自動）</td></tr>
+    <tr><td>対象期間</td><td>当日・明日・明後日・3日後の4日間</td></tr>
+    <tr><td>処理時間</td><td>会議3件あたり約70秒</td></tr>
+    <tr><td>通知先</td><td>Slack（チャンネル通知 + メンション）</td></tr>
+  </tbody>
+</table>
+
+
+<!-- ===== 2. できること ===== -->
+<h2 class="section-title" id="what-it-does">2. 具体的に何をしてくれるのか</h2>
+
+<p>会議の種類によって、自動で作成される議事録の内容が変わります。</p>
+
+<div class="category-grid">
+  <div class="category-item">
+    <span class="cat-label">external</span>
+    <h4>社外MTG</h4>
+    <p>取引先・顧客との会議</p>
+    <div class="cat-detail">
+      顧客DBから企業情報（契約状況・担当者等）を自動取得。
+      過去5回分の打ち合わせタイトルを一覧表示。
+      アジェンダ雛形（前回確認・議題整理・資料準備）を記載。
+    </div>
+  </div>
+  <div class="category-item">
+    <span class="cat-label">internal_regular</span>
+    <h4>社内定例</h4>
+    <p>繰り返しルールのある定期会議</p>
+    <div class="cat-detail">
+      議事録DBからキーワード検索で直近3回分を取得。
+      定例向けアジェンダ（前回アクション確認・各自報告・議題・次回アクション）を記載。
+    </div>
+  </div>
+  <div class="category-item">
+    <span class="cat-label">one_on_one</span>
+    <h4>1on1</h4>
+    <p>2名のみの社内ミーティング</p>
+    <div class="cat-detail">
+      相手の名前で議事録DBの参加者フィールドを検索し、直近3回分を取得。
+      1on1向けトピック（進捗・困りごと・フィードバック・次のアクション）を記載。
+    </div>
+  </div>
+  <div class="category-item">
+    <span class="cat-label">internal</span>
+    <h4>社内MTG</h4>
+    <p>上記以外の社内会議全般</p>
+    <div class="cat-detail">
+      タイトルキーワードで議事録DBを検索し、関連する直近3件を表示。
+      汎用アジェンダ（議題リスト + 議事録欄）を記載。
+    </div>
+  </div>
+</div>
+
+<div class="info-box">
+  <strong>個人予定（参加者が自分のみ・終日イベント等）は自動的に対象外</strong>となります。業務に関係のない予定に対してページが作られることはありません。
+</div>
+
+
+<!-- ===== 3. 会議分類 ===== -->
+<h2 class="section-title" id="classification">3. 会議はどう分類されるのか</h2>
+
+<p>
+  Google Calendarのイベント情報（参加者・繰り返しルール・ドメイン）から、
+  自動的に以下のフローで判定されます。
+</p>
+
+<div class="flow-diagram">カレンダーイベント取得
+        |
+        v
+ 参加者が自分のみ？ ──── Yes ──→ [personal] 対象外
+        |
+       No
+        |
+        v
+ 社外ドメインの参加者あり？ ── Yes ──→ [external] 社外MTG
+        |                                   |
+       No                           企業名を抽出して
+        |                           顧客DBから情報取得
+        v                           過去5件の議事録取得
+ 繰り返しルールあり？ ── Yes ──→ [internal_regular] 社内定例
+        |                                   |
+       No                           キーワードで
+        |                           過去3件の議事録取得
+        v
+ 参加者が2名のみ？ ──── Yes ──→ [one_on_one] 1on1
+        |                                   |
+       No                           相手名で
+        |                           過去3件の議事録取得
+        v
+ [internal] 社内MTG
+        |
+  キーワードで
+  過去3件の議事録取得</div>
+
+<h3 class="subsection-title">社内ドメインの定義</h3>
+
+<p>以下のドメインからのメールアドレスを「社内」と判定します。これ以外のドメインの参加者がいる会議は「社外MTG」に分類されます。</p>
+
+<table>
+  <thead><tr><th>ドメイン</th><th>備考</th></tr></thead>
+  <tbody>
+    <tr><td><code>sevenrich.jp</code></td><td>セブンリッチグループ</td></tr>
+    <tr><td><code>re-bridge.jp</code></td><td>Re-Bridge</td></tr>
+    <tr><td><code>box-hr.co.jp</code></td><td>Box-HR</td></tr>
+  </tbody>
+</table>
+
+<h3 class="subsection-title">企業名の自動抽出</h3>
+
+<p>社外MTGでは、イベントタイトルから企業名を自動的に推定し、Notion顧客DBと照合します。以下のパターンに対応しています。</p>
+
+<table>
+  <thead><tr><th>パターン</th><th>タイトル例</th><th>抽出結果</th></tr></thead>
+  <tbody>
+    <tr><td>【Company】...</td><td>【LayerX】定例MTG</td><td>LayerX</td></tr>
+    <tr><td>Company様...</td><td>A社様ご訪問</td><td>A社</td></tr>
+    <tr><td>A x B ...</td><td>SR x LayerX 合同会議</td><td>SR</td></tr>
+    <tr><td>Company_topic</td><td>LayerX_月次報告</td><td>LayerX</td></tr>
+    <tr><td>Company + 会議系ワード</td><td>LayerX定例</td><td>LayerX</td></tr>
+  </tbody>
+</table>
+
+
+<!-- ===== 4. 処理フロー ===== -->
+<h2 class="section-title" id="flow">4. 全体の処理フロー</h2>
+
+<p>毎朝7:00にタスクスケジューラから自動起動され、以下の順序で処理が進みます。</p>
+
+<ol class="step-list">
+  <li>
+    <strong>Notion同期（前処理）</strong><br>
+    顧客DB（約290件）と議事録DB（約1,800件）の最新データをNotionから同期し、検索用インデックスを再生成
+  </li>
+  <li>
+    <strong>カレンダーイベント取得</strong><br>
+    当日〜3日後の4日間について、対象メンバー全員のGoogle Calendarイベントを取得。会議の種類（社外・社内定例・1on1・社内）を自動分類
+  </li>
+  <li>
+    <strong>過去情報の事前計算</strong><br>
+    ローカルインデックスを使い、各会議に関連する顧客情報・過去議事録を30ms以内で高速検索
+  </li>
+  <li>
+    <strong>Notion議事録ページ作成 + Calendar更新</strong><br>
+    AIが会議種別に応じたテンプレートでNotionページを作成。Google Calendarのイベントに議事録リンクを自動追記
+  </li>
+  <li>
+    <strong>Slack通知</strong><br>
+    処理結果をSlackに投稿。参加メンバーへの@メンション付きで、Notionページへのリンクを含む通知
+  </li>
+</ol>
+
+<h3 class="subsection-title">全体アーキテクチャ</h3>
+
+<div class="flow-diagram">Windows タスクスケジューラ（毎朝 7:00）
+│
+├─ [前処理] Notion同期
+│   ├─ 顧客DB同期        (Notion API → ローカルMarkdown)
+│   ├─ 議事録DB同期       (Notion API → ローカルMarkdown)
+│   └─ インデックス再生成  (Markdown → _index.json)
+│
+└─ [本体] meeting-prep-auto.ts
+    │
+    └─ 日付ごとにループ（当日, +1日, +2日, +3日）
+        ├─ CF呼び出し     (Calendar API → イベント分類)
+        ├─ 事前計算        (_index.json → 顧客情報・議事録検索)
+        ├─ claude CLI      (Notionページ作成 + Calendar更新)
+        └─ Slack通知       (結果一覧 + @mention + リンク)</div>
+
+<h3 class="subsection-title">Slack通知のイメージ</h3>
+
+<div class="flow-diagram">会議準備完了 — 2026-03-13 (木)
+
+社外MTG
+  *LayerX様 定例MTG*
+  参加: @堀江 @川島
+  議事録ページ: https://notion.so/...
+
+社内定例
+  *BPO定例*
+  参加: @堀江
+  議事録ページ: https://notion.so/...
+
+1on1
+  *堀江 x 佐藤 1on1*
+  参加: @堀江
+  議事録ページ: https://notion.so/...
+
+Notionページ 3件作成済み | カレンダーにリンク追記済み</div>
+
+<h3 class="subsection-title">重複実行の防止</h3>
+
+<p>
+  一度処理されたイベントは<strong>ステートファイル</strong>に記録され、
+  同日に再実行しても重複してNotionページが作られることはありません。
+  7日以上経過した記録は自動的にクリーンアップされます。
+</p>
+
+<div class="info-box">
+  <strong>途中で失敗した場合:</strong>
+  成功した分はステートに記録されるため、再実行時にはスキップされます。
+  失敗した会議のみ再処理されるフォールトトレラント設計です。
+</div>
+
+
+<!-- ===== 5. 利用開始 ===== -->
+<h2 class="section-title" id="join">5. 利用を開始するには</h2>
+
+<p>
+  このツールは<strong>挙手制</strong>です。
+  利用を希望するBPIOメンバーは、堀江にSlackで連絡してください。
+</p>
+
+<ol class="step-list">
+  <li>
+    <strong>利用希望を連絡</strong><br>
+    堀江にSlackで「会議準備自動化を使いたい」と連絡
+  </li>
+  <li>
+    <strong>設定追加（堀江が対応）</strong><br>
+    BPIO名簿であなたの<code>calendarEnabled</code>を有効化し、パイプライン対象に追加
+  </li>
+  <li>
+    <strong>動作確認</strong><br>
+    翌朝の実行結果を確認。Slackに通知が届き、Calendarイベントに議事録リンクが追記されていれば完了
+  </li>
+</ol>
+
+<h3 class="subsection-title">対象メンバー</h3>
+
+<p>
+  BPIOメンバー（65名）のうち、挙手したメンバーが対象となります。
+  組織内のGoogle Calendarの共有設定を利用するため、
+  利用者側での追加の認証設定は不要です。
+</p>
+
+<div class="note-box">
+  <strong>カレンダーの閲覧について:</strong>
+  このツールは、組織内カレンダー共有の仕組みを利用して動作しています。
+  取得するのは会議のタイトル・参加者・時刻のみで、
+  カレンダーの詳細な内容（メモ等）を読み取ることはありません。
+</div>
+
+
+<!-- ===== 6. 技術詳細 ===== -->
+<h2 class="section-title" id="technical">6. 技術詳細</h2>
+
+<h3 class="subsection-title">ファイル構成</h3>
+
+<table>
+  <thead><tr><th>ファイル</th><th>役割</th></tr></thead>
+  <tbody>
+    <tr><td><code>integrations/meeting-prep-auto.ts</code></td><td>パイプライン本体</td></tr>
+    <tr><td><code>.claude/skills/meeting-prep-auto/SKILL.md</code></td><td>自動実行専用の軽量スキル（約1.5KB）</td></tr>
+    <tr><td><code>.claude/skills/meeting-prep/SKILL.md</code></td><td>手動実行スキル（/meeting-prep）</td></tr>
+    <tr><td><code>scripts/meeting-prep-auto.bat</code></td><td>タスクスケジューラ用バッチファイル</td></tr>
+    <tr><td><code>data/.meta/member-directory.json</code></td><td>パイプライン対象メンバー定義</td></tr>
+    <tr><td><code>data/.meta/bpio-roster.json</code></td><td>BPIO全メンバー名簿（65名）</td></tr>
+    <tr><td><code>data/.state/meeting-prep-state.json</code></td><td>処理済みイベント記録（重複防止用）</td></tr>
+    <tr><td><code>data/inbox/notion/_index.json</code></td><td>Notionインデックス（約2.2MB）</td></tr>
+  </tbody>
+</table>
+
+<h3 class="subsection-title">外部サービス依存</h3>
+
+<table>
+  <thead><tr><th>サービス</th><th>用途</th><th>認証</th></tr></thead>
+  <tbody>
+    <tr><td>Google Calendar API</td><td>イベント取得・更新</td><td>OAuth2（組織内共有）</td></tr>
+    <tr><td>Notion API</td><td>議事録ページ作成</td><td>MCP経由</td></tr>
+    <tr><td>Slack API</td><td>通知送信・ユーザーID解決</td><td>Bot Token</td></tr>
+    <tr><td>Cloud Functions</td><td>カレンダーイベント分類</td><td>HTTPエンドポイント</td></tr>
+    <tr><td>Claude CLI</td><td>議事録テンプレート生成</td><td>ローカルサブスクリプション</td></tr>
+  </tbody>
+</table>
+
+<h3 class="subsection-title">事前計算によるパフォーマンス最適化</h3>
+
+<p>
+  会議に関連する顧客情報や過去議事録は、AI（Claude CLI）に渡す前にTypeScript側で事前計算しています。
+  Notionインデックス（約2.2MB・3,200レコード）をメモリ上のMap構造に変換し、約30msで全検索を完了します。
+</p>
+
+<table>
+  <thead><tr><th>項目</th><th>最適化前</th><th>最適化後</th></tr></thead>
+  <tbody>
+    <tr><td>サブエージェント起動</td><td>会議数 x 1〜2回</td><td>0回</td></tr>
+    <tr><td>Notion検索</td><td>Claude経由MCP呼び出し</td><td>TypeScript in-process（30ms以下）</td></tr>
+    <tr><td>AIへの許可ツール数</td><td>9個</td><td>4個</td></tr>
+    <tr><td>実行時間</td><td>約15分</td><td>約70秒</td></tr>
+  </tbody>
+</table>
+
+<h3 class="subsection-title">Claude CLI headless実行</h3>
+
+<table>
+  <thead><tr><th>パラメータ</th><th>値</th></tr></thead>
+  <tbody>
+    <tr><td>モデル</td><td>Claude Sonnet</td></tr>
+    <tr><td>タイムアウト</td><td>8分</td></tr>
+    <tr><td>セッション保持</td><td>なし</td></tr>
+    <tr><td>許可ツール</td><td>Read, Write, notion-create-pages, calendar_events_patch</td></tr>
+  </tbody>
+</table>
+
+<p>
+  <code>Agent</code>ツールを許可リストから除外することで、
+  Claude CLIがサブエージェントを起動することを構造的に防止しています。
+  これにより会議数に比例するトークン消費（1回あたり約35,000トークン）を排除しました。
+</p>
+
+<h3 class="subsection-title">エラーハンドリング</h3>
+
+<table>
+  <thead><tr><th>障害パターン</th><th>対応</th></tr></thead>
+  <tbody>
+    <tr><td>特定メンバーのCF呼び出し失敗</td><td>該当メンバーをスキップ、他メンバーは続行</td></tr>
+    <tr><td>特定日付のClaude CLI失敗</td><td>Slackエラー通知、他の日付は続行</td></tr>
+    <tr><td>Notion同期失敗</td><td>古いインデックスで続行（フォールトトレラント）</td></tr>
+    <tr><td>Slack送信失敗</td><td>ログ記録のみ（パイプライン自体は正常完了）</td></tr>
+    <tr><td>ステートファイル破損</td><td>新規作成して続行（重複処理の可能性あり）</td></tr>
+  </tbody>
+</table>
+
+
+<!-- ===== 7. 運用情報 ===== -->
+<h2 class="section-title" id="operations">7. 運用情報</h2>
+
+<h3 class="subsection-title">手動実行との違い</h3>
+
+<p>自動実行（本ツール）とは別に、Claude Codeセッション内で <code>/meeting-prep</code> コマンドを使った手動実行も可能です。</p>
+
+<table>
+  <thead><tr><th>項目</th><th>自動実行</th><th>手動実行</th></tr></thead>
+  <tbody>
+    <tr><td>起動方法</td><td>毎朝7:00 タスクスケジューラ</td><td><code>/meeting-prep [日付]</code></td></tr>
+    <tr><td>DB検索</td><td>TypeScript事前計算（30ms）</td><td>knowledge-brainサブエージェント</td></tr>
+    <tr><td>Web調査</td><td>なし</td><td>researcherサブエージェント</td></tr>
+    <tr><td>実行時間</td><td>約70秒</td><td>約15分</td></tr>
+  </tbody>
+</table>
+
+<h3 class="subsection-title">主要な設定値</h3>
+
+<table>
+  <thead><tr><th>設定</th><th>値</th></tr></thead>
+  <tbody>
+    <tr><td>CF エンドポイント</td><td><code>asia-northeast1-desk-secretary.cloudfunctions.net/meetingPrep</code></td></tr>
+    <tr><td>タイムアウト</td><td>8分</td></tr>
+    <tr><td>ステート保持期間</td><td>7日間</td></tr>
+    <tr><td>議事録DB</td><td>データソースID: <code>113f0eb3-d4a5-80f3-a984-df8449c58562</code></td></tr>
+    <tr><td>社内ドメイン</td><td>sevenrich.jp / re-bridge.jp / box-hr.co.jp</td></tr>
+    <tr><td>カレンダードメイン</td><td>7rich.jp</td></tr>
+    <tr><td>ログ出力先</td><td><code>~/.config/desk/meeting-prep-auto.log</code></td></tr>
+  </tbody>
+</table>
+
+<h3 class="subsection-title">今後の拡張計画</h3>
+
+<ul>
+  <li><strong>マルチメンバー展開</strong> — BPIOメンバーから挙手制で募集中（2026年3月〜）</li>
+  <li><strong>大人数対応（30名以上）</strong> — CF呼び出しを5並列化し、90秒 → 18秒に短縮予定</li>
+  <li><strong>Slack通知チャンネル</strong> — テストチャンネルから本番チャンネルへ切替</li>
+  <li><strong>個別通知</strong> — メンバーごとに自分の会議だけ通知する機能</li>
+</ul>
+
+
+<div class="report-footer">
+  SP-002 会議準備自動化パイプライン v1.0 / BPIO<br>
+  最終更新: 2026年3月
+</div>
+
+</div>
+
+<!-- ===== Active Pill Highlight ===== -->
+<script>
+(function() {
+  const pills = document.querySelectorAll('.pill');
+  const sections = [];
+  pills.forEach(p => {
+    const id = p.getAttribute('href')?.replace('#', '');
+    if (id) {
+      const el = document.getElementById(id);
+      if (el) sections.push({ pill: p, el: el });
+    }
+  });
+  function update() {
+    let current = sections[0];
+    const scrollY = window.scrollY + 80;
+    for (const s of sections) {
+      if (s.el.offsetTop <= scrollY) current = s;
+    }
+    pills.forEach(p => p.classList.remove('active'));
+    if (current) current.pill.classList.add('active');
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
+</script>
+</body>
+</html>
