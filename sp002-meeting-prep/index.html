@@ -383,6 +383,16 @@ code {
   color: #555;
 }
 
+/* ===== Mermaid diagrams ===== */
+.mermaid {
+  margin: 16px 0 24px;
+  text-align: center;
+  overflow-x: auto;
+}
+.mermaid svg {
+  max-width: 100%;
+}
+
 /* ===== Footer ===== */
 .report-footer {
   border-top: 1px solid #999;
@@ -558,33 +568,33 @@ code {
   自動的に以下のフローで判定されます。
 </p>
 
-<div class="flow-diagram">カレンダーイベント取得
-        |
-        v
- 参加者が自分のみ？ ──── Yes ──→ [personal] 対象外
-        |
-       No
-        |
-        v
- 社外ドメインの参加者あり？ ── Yes ──→ [external] 社外MTG
-        |                                   |
-       No                           企業名を抽出して
-        |                           顧客DBから情報取得
-        v                           過去5件の議事録取得
- 繰り返しルールあり？ ── Yes ──→ [internal_regular] 社内定例
-        |                                   |
-       No                           キーワードで
-        |                           過去3件の議事録取得
-        v
- 参加者が2名のみ？ ──── Yes ──→ [one_on_one] 1on1
-        |                                   |
-       No                           相手名で
-        |                           過去3件の議事録取得
-        v
- [internal] 社内MTG
-        |
-  キーワードで
-  過去3件の議事録取得</div>
+<div class="mermaid">
+flowchart TD
+    A["Google Calendar イベント取得"] --> B{"参加者が自分のみ?"}
+    B -- Yes --> P["対象外 personal"]
+    B -- No --> C{"社外ドメインの参加者あり?"}
+    C -- Yes --> EX["社外MTG external"]
+    C -- No --> D{"繰り返しルールあり?"}
+    D -- Yes --> IR["社内定例 internal_regular"]
+    D -- No --> E{"参加者が2名のみ?"}
+    E -- Yes --> OO["1on1 one_on_one"]
+    E -- No --> IN["社内MTG internal"]
+
+    EX --> EX_D["企業名を抽出し顧客DBから情報取得 + 過去5件の議事録"]
+    IR --> IR_D["キーワードで過去3件の議事録を取得"]
+    OO --> OO_D["相手名で過去3件の議事録を取得"]
+    IN --> IN_D["キーワードで過去3件の議事録を取得"]
+
+    style P fill:#f5f5f5,stroke:#999,color:#777
+    style EX fill:#1a1a1a,stroke:#1a1a1a,color:#fff
+    style IR fill:#1a1a1a,stroke:#1a1a1a,color:#fff
+    style OO fill:#1a1a1a,stroke:#1a1a1a,color:#fff
+    style IN fill:#1a1a1a,stroke:#1a1a1a,color:#fff
+    style EX_D fill:#f7f7f7,stroke:#bbb,color:#555
+    style IR_D fill:#f7f7f7,stroke:#bbb,color:#555
+    style OO_D fill:#f7f7f7,stroke:#bbb,color:#555
+    style IN_D fill:#f7f7f7,stroke:#bbb,color:#555
+</div>
 
 <h3 class="subsection-title">社内ドメインの定義</h3>
 
@@ -645,20 +655,37 @@ code {
 
 <h3 class="subsection-title">全体アーキテクチャ</h3>
 
-<div class="flow-diagram">Windows タスクスケジューラ（毎朝 7:00）
-│
-├─ [前処理] Notion同期
-│   ├─ 顧客DB同期        (Notion API → ローカルMarkdown)
-│   ├─ 議事録DB同期       (Notion API → ローカルMarkdown)
-│   └─ インデックス再生成  (Markdown → _index.json)
-│
-└─ [本体] meeting-prep-auto.ts
-    │
-    └─ 日付ごとにループ（当日, +1日, +2日, +3日）
-        ├─ CF呼び出し     (Calendar API → イベント分類)
-        ├─ 事前計算        (_index.json → 顧客情報・議事録検索)
-        ├─ claude CLI      (Notionページ作成 + Calendar更新)
-        └─ Slack通知       (結果一覧 + @mention + リンク)</div>
+<div class="mermaid">
+flowchart TD
+    SCHED["Task Scheduler - 毎朝 7:00"] --> SYNC
+
+    subgraph "前処理: Notion同期"
+        SYNC["notion-sync.ts"] --> S1["顧客DB同期 - 約290件"]
+        SYNC --> S2["議事録DB同期 - 約1,800件"]
+        S1 --> IDX["knowledge-brain-index.ts"]
+        S2 --> IDX
+        IDX --> IDXOUT["_index.json 再生成 - 約3,200件"]
+    end
+
+    IDXOUT --> MAIN
+
+    subgraph "本体: meeting-prep-auto.ts"
+        MAIN["日付ループ - 当日 / +1 / +2 / +3"] --> CF
+        CF["Cloud Function 呼び出し"] --> |"Calendar API"| CLASS["イベント分類 + 重複排除"]
+        CLASS --> PRE["事前計算"]
+        PRE --> |"_index.json"| CTX["顧客情報 + 過去議事録を付与"]
+        CTX --> CLI["Claude CLI headless"]
+    end
+
+    CLI --> NOTION["Notion 議事録ページ作成"]
+    CLI --> CAL["Google Calendar リンク追記"]
+    CLI --> SLACK["Slack 通知送信"]
+
+    style SCHED fill:#1a1a1a,stroke:#1a1a1a,color:#fff
+    style NOTION fill:#f7f7f7,stroke:#999,color:#1a1a1a
+    style CAL fill:#f7f7f7,stroke:#999,color:#1a1a1a
+    style SLACK fill:#f7f7f7,stroke:#999,color:#1a1a1a
+</div>
 
 <h3 class="subsection-title">Slack通知のイメージ</h3>
 
@@ -864,6 +891,32 @@ Notionページ 3件作成済み | カレンダーにリンク追記済み</div>
 </div>
 
 </div>
+
+<!-- ===== Mermaid ===== -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'base',
+  themeVariables: {
+    primaryColor: '#f7f7f7',
+    primaryBorderColor: '#999',
+    primaryTextColor: '#1a1a1a',
+    lineColor: '#555',
+    secondaryColor: '#f0f0f0',
+    tertiaryColor: '#fff',
+    fontFamily: '"Noto Sans JP", "Yu Gothic", sans-serif',
+    fontSize: '13px'
+  },
+  flowchart: {
+    htmlLabels: true,
+    curve: 'basis',
+    padding: 12,
+    nodeSpacing: 30,
+    rankSpacing: 40
+  }
+});
+</script>
 
 <!-- ===== Active Pill Highlight ===== -->
 <script>
