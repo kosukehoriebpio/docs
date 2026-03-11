@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>勤怠締め業務 ルール・ワークフロー整理（レビュー用） — BPIO</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color: #1a1a1a;
+  background: #fff;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+#sticky-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.97);
+  border-bottom: 1px solid #ccc;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+#sticky-nav .nav-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #777;
+  letter-spacing: 0.05em;
+  margin-right: 4px;
+  white-space: nowrap;
+}
+.pill {
+  display: inline-block;
+  padding: 5px 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #555;
+  text-decoration: none;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.pill:hover, .pill.active {
+  background: #1a1a1a;
+  color: #fff;
+  border-color: #1a1a1a;
+}
+
+#main {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 40px 48px 80px;
+}
+
+.report-header {
+  border-bottom: 2px solid #1a1a1a;
+  padding-bottom: 20px;
+  margin-bottom: 32px;
+}
+.report-header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.report-header .subtitle {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 16px;
+}
+.report-header .summary-box {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 16px 20px;
+  margin-top: 16px;
+}
+.report-header .summary-box h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.report-header .summary-box ul {
+  padding-left: 20px;
+  font-size: 0.82rem;
+}
+.report-header .summary-box li {
+  margin-bottom: 4px;
+}
+
+h2.section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-bottom: 1px solid #999;
+  padding-bottom: 6px;
+  margin-top: 48px;
+  margin-bottom: 20px;
+}
+h3.subsection-title {
+  font-size: 1.0rem;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  padding-left: 10px;
+  border-left: 3px solid #555;
+}
+h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 20px;
+  font-size: 0.82rem;
+}
+table th, table td {
+  border: 1px solid #bbb;
+  padding: 7px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+table th {
+  background: #f0f0f0;
+  font-weight: 700;
+  white-space: nowrap;
+}
+table td { background: #fff; }
+table tr:nth-child(even) td { background: #fafafa; }
+
+p { margin-bottom: 10px; font-size: 0.88rem; }
+ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+ul li, ol li { margin-bottom: 3px; }
+
+.highlight-box {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 14px 18px;
+  margin: 12px 0 20px;
+  font-size: 0.85rem;
+}
+.highlight-box strong { color: #1a1a1a; }
+
+.note-box {
+  background: #fffbeb;
+  border-left: 4px solid #f59e0b;
+  padding: 10px 16px;
+  margin: 12px 0 20px;
+  font-size: 0.82rem;
+  color: #78350f;
+}
+
+.info-box {
+  background: #eff6ff;
+  border-left: 4px solid #3b82f6;
+  padding: 10px 16px;
+  margin: 12px 0 20px;
+  font-size: 0.82rem;
+  color: #1e3a5f;
+}
+
+.flow-diagram {
+  background: #f7f7f7;
+  border: 1px solid #ccc;
+  padding: 16px 20px;
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  white-space: pre;
+  overflow-x: auto;
+  margin: 12px 0 20px;
+}
+
+code {
+  background: #f0f0f0;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 0.85em;
+  font-family: "Consolas", "Courier New", monospace;
+}
+
+.pot-high { color: #15803d; font-weight: 700; }
+.pot-mid { color: #a16207; font-weight: 700; }
+.pot-low { color: #b91c1c; font-weight: 700; }
+
+.matrix-mark { text-align: center !important; font-weight: 600; }
+.matrix-mark-yes { text-align: center !important; font-weight: 600; }
+.matrix-mark-no { text-align: center !important; color: #bbb; }
+
+.report-footer {
+  border-top: 1px solid #999;
+  margin-top: 48px;
+  padding-top: 16px;
+  font-size: 0.78rem;
+  color: #777;
+}
+
+@media (max-width: 640px) {
+  #main { padding: 24px 20px 60px; }
+  .report-header h1 { font-size: 1.3rem; }
+  h2.section-title { font-size: 1.05rem; }
+  table { font-size: 0.78rem; }
+  table th, table td { padding: 5px 7px; }
+  #sticky-nav { padding: 10px 12px; gap: 6px; }
+  .pill { padding: 4px 12px; font-size: 0.72rem; }
+}
+
+@media print {
+  #sticky-nav { display: none; }
+  #main { padding: 0; max-width: 100%; }
+  body { font-size: 10pt; }
+  .report-header h1 { font-size: 16pt; }
+  h2.section-title { font-size: 13pt; page-break-after: avoid; }
+  h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+  table { font-size: 8pt; page-break-inside: avoid; }
+  table th, table td { padding: 3px 5px; }
+  .highlight-box, .note-box, .info-box {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  table th {
+    background: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+</style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">CONTENTS</span>
+  <a href="#overview" class="pill">概要</a>
+  <a href="#rules" class="pill">ルール一覧</a>
+  <a href="#matrix" class="pill">場合分け</a>
+  <a href="#workflow" class="pill">月次フロー</a>
+  <a href="#summary" class="pill">サマリー</a>
+</nav>
+
+<div id="main">
+
+<header class="report-header">
+  <h1>勤怠締め業務 ルール・条件・ワークフロー整理</h1>
+  <p class="subtitle">p022 グループSR1 労務業務効率化 Phase 1 成果物 / 2026年3月</p>
+  <div class="summary-box">
+    <h3>このドキュメントについて</h3>
+    <ul>
+      <li>月次チェックリスト27項目 + ヒアリング回答16問をもとに、勤怠締めの全ルール・条件を整理しました</li>
+      <li><strong>労務チームの皆さまに内容の正確性をご確認いただくためのレビュー用</strong>です</li>
+      <li>認識違い・不足・変更点がありましたらお知らせください</li>
+    </ul>
+  </div>
+</header>
+
+<!-- ============================================================ -->
+<h2 class="section-title" id="overview">前提情報の整理</h2>
+
+<h3 class="subsection-title">利用システム</h3>
+<table>
+  <thead><tr><th>システム</th><th>用途</th><th>対象事業部</th></tr></thead>
+  <tbody>
+    <tr><td>MF勤怠（マネーフォワード）</td><td>勤怠管理・日次勤怠データ</td><td>歯科・薬局以外の全事業部</td></tr>
+    <tr><td>エアシフト</td><td>勤怠管理（シフト+打刻）</td><td>歯科・薬局のみ</td></tr>
+    <tr><td>MF経費</td><td>経費精算</td><td>全事業部</td></tr>
+    <tr><td>給与計算メモ（スプレッドシート）</td><td>給与計算用の転記先</td><td>全事業部</td></tr>
+    <tr><td>メディカル出勤簿（スプレッドシート）</td><td>歯科・薬局の出勤集計</td><td>歯科・薬局</td></tr>
+  </tbody>
+</table>
+
+<h3 class="subsection-title">事業部と勤怠システムの対応</h3>
+<table>
+  <thead><tr><th>事業部</th><th>勤怠システム</th><th>備考</th></tr></thead>
+  <tbody>
+    <tr><td>DELTA</td><td>MF勤怠</td><td></td></tr>
+    <tr><td>テスティー</td><td>MF勤怠</td><td></td></tr>
+    <tr><td>歯科</td><td>エアシフト</td><td>メディカル出勤簿との突合が必要</td></tr>
+    <tr><td>薬局</td><td>エアシフト</td><td>メディカル出勤簿との突合が必要</td></tr>
+    <tr><td>医科</td><td>MF勤怠</td><td></td></tr>
+    <tr><td>the・</td><td>MF勤怠</td><td></td></tr>
+    <tr><td>b{stoic</td><td>MF勤怠</td><td>（推定）</td></tr>
+    <tr><td>BOX</td><td>MF勤怠</td><td></td></tr>
+    <tr><td>ReBridge</td><td>MF勤怠</td><td></td></tr>
+    <tr><td>ウィメンズ漢方</td><td>MF勤怠</td><td></td></tr>
+  </tbody>
+</table>
+
+<h3 class="subsection-title">運用の前提</h3>
+<ul>
+  <li><strong>締め日</strong>: 毎月末締め、翌月9日頃までにチェック・最終承認完了</li>
+  <li><strong>担当</strong>: グループ労務チーム2名（月合計 約100時間）</li>
+  <li><strong>連絡手段</strong>: Slack（リマインド・上長確認いずれも）</li>
+  <li><strong>処理方針</strong>: チェック項目は並行して進める</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 class="section-title" id="rules">ルール・条件一覧（全27項目）</h2>
+
+<div class="info-box">
+  <strong>見方:</strong> 各項目について「何をチェックするか」「どこでデータを見るか」「結果に応じて何をするか」「誰に確認するか」を整理しています。自動化ポテンシャルは <span class="pot-high">高</span> / <span class="pot-mid">中</span> / <span class="pot-low">低</span> の3段階です。
+</div>
+
+<!-- ===== 共通ルール ===== -->
+<h3 class="subsection-title">A. 共通ルール — リマインド</h3>
+
+<h4>#1 勤怠・経費の提出、有給等の事前申請リマインド</h4>
+<table>
+  <tr><th>判定条件</th><td>月末時点で勤怠未提出・経費下書き残・有給未申請の従業員がいるか</td></tr>
+  <tr><th>情報源</th><td>MF勤怠（提出状況一覧）/ MF経費（下書き・未承認一覧）</td></tr>
+  <tr><th>アクション</th><td>未提出者にSlackでリマインド送信</td></tr>
+  <tr><th>確認先</th><td>なし（自動実行可能）</td></tr>
+  <tr><th>自動化</th><td><span class="pot-high">高</span> — 現状Slack手動投稿。未提出者リスト抽出 → Slack投稿の自動化が可能</td></tr>
+</table>
+
+<h3 class="subsection-title">B. 共通ルール — 有給</h3>
+
+<h4>#2 給与計算メモとMFの有給申請の突合</h4>
+<table>
+  <tr><th>判定条件</th><td>給与計算メモに記載された有給日数 = MFの有給休暇申請件数か</td></tr>
+  <tr><th>情報源</th><td>給与計算メモ（有給日数欄）/ MF勤怠（有給休暇申請一覧）</td></tr>
+  <tr><th>アクション</th><td>不一致があれば差分を特定し修正。一致すれば完了</td></tr>
+  <tr><th>確認先</th><td>不一致時は本人または上長</td></tr>
+  <tr><th>自動化</th><td><span class="pot-high">高</span> — 両方のデータを取得して数値比較するだけ</td></tr>
+</table>
+
+<h4>#3 給与計算メモへ有給日数を記載（アルバイト）</h4>
+<table>
+  <tr><th>判定条件</th><td>アルバイト従業員にMFで有給申請があるか</td></tr>
+  <tr><th>情報源</th><td>MF勤怠（有給休暇申請）/ 給与計算メモ（有給日数欄）</td></tr>
+  <tr><th>アクション</th><td>該当者の有給日数を給与計算メモへ転記</td></tr>
+  <tr><th>確認先</th><td>なし</td></tr>
+  <tr><th>自動化</th><td><span class="pot-high">高</span> — MF → 給与計算メモ転記の自動化</td></tr>
+</table>
+
+<h3 class="subsection-title">C. 共通ルール — 欠勤</h3>
+
+<h4>#4 給与計算メモへ欠勤日数を記載</h4>
+<table>
+  <tr><th>判定条件</th><td>MF勤怠で欠勤が記録されている従業員がいるか</td></tr>
+  <tr><th>情報源</th><td>MF勤怠（日次勤怠データ）/ 給与計算メモ（欠勤日数欄）</td></tr>
+  <tr><th>アクション</th><td>欠勤日数を給与計算メモへ転記</td></tr>
+  <tr><th>確認先</th><td>なし</td></tr>
+  <tr><th>自動化</th><td><span class="pot-high">高</span> — MF → 給与計算メモ転記の自動化</td></tr>
+</table>
+
+<h3 class="subsection-title">D. 共通ルール — 遅刻早退</h3>
+
+<h4>#5 遅刻早退控除を行うか上長へ確認</h4>
+<table>
+  <tr><th>判定条件</th><td>MF勤怠で遅刻または早退が記録されている従業員がいるか</td></tr>
+  <tr><th>情報源</th><td>MF勤怠（日次勤怠データ — 出退勤時刻 vs 所定時刻）</td></tr>
+  <tr><th>アクション</th><td>遅刻早退があれば上長にSlackで控除要否を確認</td></tr>
+  <tr><th>確認先</th><td>各事業部の上長</td></tr>
+  <tr><th>自動化</th><td><span class="pot-mid">中</span> — 検出は自動化可、最終判断は上長。確認送信の自動化で効率化</td></tr>
+</table>
+
+<h4>#6 遅刻早退控除の時間数を給与計算メモへ記載</h4>
+<table>
+  <tr><th>判定条件</th><td>#5で控除と判断された従業員</td></tr>
+  <tr><th>情報源</th><td>MF勤怠（遅刻早退時間）/ 上長の判断結果</td></tr>
+  <tr><th>アクション</th><td>控除時間数を給与計算メモへ転記</td></tr>
+  <tr><th>確認先</th><td>なし（#5の判断結果に従う）</td></tr>
+  <tr><th>自動化</th><td><span class="pot-high">高</span> — #5の判断が得られれば転記は自動化可</td></tr>
+</table>
+
+<h3 class="subsection-title">E. 共通ルール — 割増</h3>
+
+<h4>#7 深夜・みなし越え・休日出勤の上長判断確認</h4>
+<table>
+  <tr><th>判定条件</th><td>MF勤怠で深夜勤務・みなし残業超過・休日出勤が発生しているか</td></tr>
+  <tr><th>情報源</th><td>MF勤怠（日次勤怠データ — 深夜時間帯/休日フラグ/みなし残業枠）</td></tr>
+  <tr><th>アクション</th><td>該当があれば上長にSlackで割増支給の要否を確認</td></tr>
+  <tr><th>確認先</th><td>各事業部の上長</td></tr>
+  <tr><th>自動化</th><td><span class="pot-mid">中</span> — 検出は自動化可、判断は上長。検出 → 通知の自動化で効率化</td></tr>
+</table>
+
+<h3 class="subsection-title">F. 共通ルール — 休憩・休暇</h3>
+
+<h4>#8 休憩・休暇の時間数が正しく反映されているか</h4>
+<table>
+  <tr><th>判定条件</th><td>MF勤怠の休憩時間・休暇時間が所定ルール通りか（例: 6h超 → 45分、8h超 → 60分休憩）</td></tr>
+  <tr><th>情報源</th><td>MF勤怠（日次勤怠データ）</td></tr>
+  <tr><th>アクション</th><td>異常値があれば本人・上長に確認し修正</td></tr>
+  <tr><th>確認先</th><td>本人 / 上長</td></tr>
+  <tr><th>自動化</th><td><span class="pot-mid">中</span> — ルールベースの異常検知は自動化可、修正は手動</td></tr>
+</table>
+
+<h3 class="subsection-title">G. 共通ルール — 通勤手当</h3>
+
+<h4>#9 定期代支給対象者のチェック</h4>
+<table>
+  <tr><th>判定条件</th><td>当月の勤務実績で「1割が有給or欠勤or特別休暇、9割が全て出社」に該当するか</td></tr>
+  <tr><th>情報源</th><td>MF勤怠（日次勤怠データ — 目視確認）</td></tr>
+  <tr><th>アクション</th><td>条件を満たす対象者にチェックを入れる</td></tr>
+  <tr><th>確認先</th><td>なし（ルールベース判定）</td></tr>
+  <tr><th>自動化</th><td><span class="pot-high">高</span> — 出勤日数/有給日数/欠勤日数を集計して割合計算。現状は目視確認</td></tr>
+</table>
+
+<h3 class="subsection-title">H. 共通ルール — 残業</h3>
+
+<h4>#10 残業80h/100h超過の産業医面談案内</h4>
+<table>
+  <tr><th>判定条件</th><td>当月の残業時間が80h以上 or 100h以上か</td></tr>
+  <tr><th>情報源</th><td>MF勤怠（月次集計 — 残業時間）※現状手動計算</td></tr>
+  <tr><th>アクション</th><td>80h以上 → 産業医面談の案内送付 / 100h以上 → 案内 + 面談設定</td></tr>
+  <tr><th>確認先</th><td>産業医（面談設定時）</td></tr>
+  <tr><th>自動化</th><td><span class="pot-high">高</span> — 残業時間集計 → 閾値判定 → 通知の完全自動化可。MF設定調整でも可能だがずれあり</td></tr>
+</table>
+
+<h3 class="subsection-title">I. 共通ルール — 経費</h3>
+
+<h4>#11 経費の下書き・未承認リマインド</h4>
+<table>
+  <tr><th>判定条件</th><td>MF経費に下書き状態 or 未承認の経費申請があるか</td></tr>
+  <tr><th>情報源</th><td>MF経費（申請ステータス一覧）</td></tr>
+  <tr><th>アクション</th><td>該当者および承認者にSlackリマインド</td></tr>
+  <tr><th>確認先</th><td>なし</td></tr>
+  <tr><th>自動化</th><td><span class="pot-high">高</span> — #1と同様のリマインド自動化</td></tr>
+</table>
+
+<h4>#12 経費を締める</h4>
+<table>
+  <tr><th>判定条件</th><td>月末時点で全経費申請が承認済みか</td></tr>
+  <tr><th>情報源</th><td>MF経費</td></tr>
+  <tr><th>アクション</th><td>未処理があればリマインド → 全承認後にMF経費の月次締め操作を実行</td></tr>
+  <tr><th>確認先</th><td>なし</td></tr>
+  <tr><th>自動化</th><td><span class="pot-low">低</span> — 締め操作自体はMF上の手動操作（UI操作が必要）</td></tr>
+</table>
+
+<h3 class="subsection-title">J. 共通ルール — インセンティブ</h3>
+
+<h4>#13 毎月インセンティブの給与計算メモ記載</h4>
+<table>
+  <tr><th>判定条件</th><td>対象事業部（テスティー/医科/歯科/the・/ReBridge/BOX）にインセンティブ支給があるか</td></tr>
+  <tr><th>情報源</th><td>各事業部からの報告 / 給与計算メモ（インセンティブ欄）</td></tr>
+  <tr><th>アクション</th><td>報告された金額を給与計算メモへ転記</td></tr>
+  <tr><th>確認先</th><td>各事業部担当者</td></tr>
+  <tr><th>自動化</th><td><span class="pot-mid">中</span> — 報告の受領は手動、転記は自動化可</td></tr>
+</table>
+
+<!-- ===== 事業部固有ルール ===== -->
+<h3 class="subsection-title">K. DELTA — フレックス</h3>
+
+<h4>#14 フレックス総枠確認・コアタイム勤務確認</h4>
+<table>
+  <tr><th>判定条件</th><td>フレックス総枠を満たしているか。コアタイム内に勤務しているか</td></tr>
+  <tr><th>総枠計算</th><td>時短者 → 所定時間 &times; 日数 / それ以外 → 8h &times; 日数</td></tr>
+  <tr><th>情報源</th><td>MF勤怠（日次勤怠データ）/ 給与計算メモ（時短フラグ確認）</td></tr>
+  <tr><th>アクション</th><td>総枠不足 → 控除の要否を判断。コアタイム違反 → 上長に報告</td></tr>
+  <tr><th>確認先</th><td>上長</td></tr>
+  <tr><th>自動化</th><td><span class="pot-mid">中</span> — 総枠計算・コアタイム判定は自動化可、控除判断は上長</td></tr>
+</table>
+
+<h3 class="subsection-title">L. テスティー — フレックス</h3>
+
+<h4>#15 フレックス総枠確認・コアタイム勤務確認</h4>
+<table>
+  <tr><th>判定条件</th><td>#14と同じ（フレックス総枠 + コアタイム）</td></tr>
+  <tr><th>情報源</th><td>MF勤怠 / 給与計算メモ</td></tr>
+  <tr><th>アクション</th><td>#14と同じ</td></tr>
+  <tr><th>確認先</th><td>上長</td></tr>
+  <tr><th>自動化</th><td><span class="pot-mid">中</span> — #14と同ロジック</td></tr>
+</table>
+
+<h3 class="subsection-title">M. 歯科</h3>
+
+<h4>#16 皆勤手当の給与計算メモ記載</h4>
+<table>
+  <tr><th>判定条件</th><td>当月に欠勤・遅刻・早退がゼロの従業員か</td></tr>
+  <tr><th>情報源</th><td>エアシフト（勤怠実績）/ MF勤怠</td></tr>
+  <tr><th>アクション</th><td>皆勤該当者の手当を給与計算メモへ記載</td></tr>
+  <tr><th>確認先</th><td>なし（ルールベース）</td></tr>
+  <tr><th>自動化</th><td><span class="pot-high">高</span> — 欠勤/遅刻/早退ゼロ判定 → 転記の自動化</td></tr>
+</table>
+
+<h3 class="subsection-title">N. 歯科・薬局 共通</h3>
+
+<h4>#17 メディカル出勤簿とエアシフトの全項目一致確認</h4>
+<table>
+  <tr><th>判定条件</th><td>メディカル出勤簿（スプレッドシート）の各集計値 = エアシフト（CSVエクスポート）の値か</td></tr>
+  <tr><th>情報源</th><td>メディカル出勤簿（スプレッドシート）/ エアシフト（CSVエクスポート）</td></tr>
+  <tr><th>アクション</th><td>不一致があれば差分を特定し修正</td></tr>
+  <tr><th>確認先</th><td>不一致時は現場担当者</td></tr>
+  <tr><th>自動化</th><td><span class="pot-high">高</span> — CSV vs スプレッドシート突合の自動化。手間・ミスが起きやすいとの回答あり</td></tr>
+</table>
+
+<h3 class="subsection-title">O. 医科</h3>
+
+<h4>#18 看護・事務の手当500円の記載確認</h4>
+<table>
+  <tr><th>判定条件</th><td>看護職・事務職に500円手当が記載されているか。勤務なしの月に手当が残っていないか</td></tr>
+  <tr><th>情報源</th><td>MF勤怠（勤務実績）/ 給与計算メモ（手当欄）</td></tr>
+  <tr><th>アクション</th><td>勤務ありの月 → 手当記載を確認。勤務なし → 手当を削除</td></tr>
+  <tr><th>確認先</th><td>なし（ルールベース）</td></tr>
+  <tr><th>自動化</th><td><span class="pot-high">高</span> — 勤務有無 → 手当有無の判定は自動化可</td></tr>
+</table>
+
+<h3 class="subsection-title">P. 医科・薬局 共通</h3>
+
+<h4>#19 年末年始手当</h4>
+<table>
+  <tr><th>判定条件</th><td>12/29〜1/3に勤務実績があるか。4時間超 or 以下か</td></tr>
+  <tr><th>情報源</th><td>MF勤怠 or エアシフト（勤務実績）</td></tr>
+  <tr><th>アクション</th><td>4h超 → 5,000円/日、4h以下 → 2,500円/日を給与計算メモへ記載</td></tr>
+  <tr><th>確認先</th><td>なし（ルールベース）</td></tr>
+  <tr><th>自動化</th><td><span class="pot-high">高</span> — 期間+時間判定 → 金額計算 → 転記の自動化</td></tr>
+  <tr><th>備考</th><td>2025年12月〜全職種対象。季節限定（12月・1月のみ発生）</td></tr>
+</table>
+
+<h3 class="subsection-title">Q. the・</h3>
+
+<h4>#20 1日8時間以上稼働確認・シフト相違確認</h4>
+<table>
+  <tr><th>判定条件</th><td>MF勤怠で1日8h以上稼働しているか。シフト表との相違がないか</td></tr>
+  <tr><th>情報源</th><td>MF勤怠（日次勤怠データ）/ シフト表</td></tr>
+  <tr><th>アクション</th><td>8h未満 or シフト相違があれば高野さんへSlackで確認</td></tr>
+  <tr><th>確認先</th><td>高野さん</td></tr>
+  <tr><th>自動化</th><td><span class="pot-mid">中</span> — 8h判定は自動化可、シフト突合はシフト表フォーマット依存</td></tr>
+</table>
+
+<h3 class="subsection-title">R. b{stoic</h3>
+
+<h4>#21 事業部ルール確認</h4>
+<table>
+  <tr><th>判定条件</th><td>ルール確定済み（詳細は要追加調査）</td></tr>
+  <tr><th>情報源</th><td>未確定</td></tr>
+  <tr><th>アクション</th><td>確定ルールに基づくチェック（詳細TBD）</td></tr>
+  <tr><th>確認先</th><td>事業部担当者</td></tr>
+  <tr><th>自動化</th><td>ルール詳細確認後に評価</td></tr>
+</table>
+<div class="note-box">
+  <strong>要確認:</strong> b{stoicのルールは確定済みとの回答がありましたが、具体的な内容の追加ヒアリングが必要です。
+</div>
+
+<h3 class="subsection-title">S. BOX</h3>
+
+<h4>#22 欠勤・遅刻・早退控除の確認</h4>
+<table>
+  <tr><th>判定条件</th><td>MF勤怠で欠勤・遅刻・早退が発生しているか</td></tr>
+  <tr><th>情報源</th><td>MF勤怠（日次勤怠データ）</td></tr>
+  <tr><th>アクション</th><td>該当があれば長山さん・森さんへSlackで控除要否を確認</td></tr>
+  <tr><th>確認先</th><td>長山さん / 森さん</td></tr>
+  <tr><th>自動化</th><td><span class="pot-mid">中</span> — 検出 → 通知は自動化可、判断は上長</td></tr>
+</table>
+
+<h4>#26 夏季休暇の日付指定</h4>
+<div class="highlight-box">
+  <strong>対応不要</strong> — 廃止予定のため除外。
+</div>
+
+<h4>#27 四半期インセンティブ確認</h4>
+<table>
+  <tr><th>判定条件</th><td>四半期支給月か（1Q: 4/20、上期: 7/20、3Q: 10/20、下期: 1/20）</td></tr>
+  <tr><th>情報源</th><td>事業部からの報告 / 給与計算メモ</td></tr>
+  <tr><th>アクション</th><td>支給月に金額を給与計算メモへ記載</td></tr>
+  <tr><th>確認先</th><td>BOX事業部担当者</td></tr>
+  <tr><th>自動化</th><td><span class="pot-low">低</span> — 四半期に1回、事業部からの報告待ち</td></tr>
+</table>
+
+<h3 class="subsection-title">T. ウィメンズ漢方</h3>
+
+<h4>#23 4週4休の確認</h4>
+<table>
+  <tr><th>判定条件</th><td>4週間で4日以上の休日が確保されているか</td></tr>
+  <tr><th>情報源</th><td>MF勤怠（日次勤怠データ）</td></tr>
+  <tr><th>アクション</th><td>4週4休未達の場合は労基法違反リスクとして報告</td></tr>
+  <tr><th>確認先</th><td>上長</td></tr>
+  <tr><th>自動化</th><td><span class="pot-high">高</span> — 4週間の休日数カウントは自動化可</td></tr>
+</table>
+
+<h4>#24 フレックス総枠不足分控除の確認</h4>
+<table>
+  <tr><th>判定条件</th><td>フレックス総枠（#14と同じ計算方法）に不足があるか</td></tr>
+  <tr><th>情報源</th><td>MF勤怠 / 給与計算メモ</td></tr>
+  <tr><th>アクション</th><td>不足があれば住吉さん・森田さんへ控除要否を確認</td></tr>
+  <tr><th>確認先</th><td>住吉さん / 森田さん</td></tr>
+  <tr><th>自動化</th><td><span class="pot-mid">中</span> — 総枠計算は自動化可、控除判断は上長</td></tr>
+</table>
+
+<h4>#25 みなし0の人の残業承認確認</h4>
+<table>
+  <tr><th>判定条件</th><td>みなし残業0hの従業員に実残業が発生しているか</td></tr>
+  <tr><th>情報源</th><td>MF勤怠（残業時間）/ 給与計算メモ（みなし残業設定）</td></tr>
+  <tr><th>アクション</th><td>残業があれば住吉さん・森田さんへ残業承認の要否を確認・報告</td></tr>
+  <tr><th>確認先</th><td>住吉さん / 森田さん</td></tr>
+  <tr><th>自動化</th><td><span class="pot-mid">中</span> — 検出は自動化可、承認判断は上長</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 class="section-title" id="matrix">場合分けマトリクス</h2>
+
+<p>どの事業部にどのルールが適用されるかの一覧です。共通ルール（#1〜#12）は全事業部に適用されるため、事業部固有ルールのみをマトリクスで示します。</p>
+
+<div class="info-box">
+  <strong>見方:</strong> 「&#x25CF;」= 適用、「&mdash;」= 非適用
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>チェック項目</th>
+      <th>DELTA</th>
+      <th>テスティー</th>
+      <th>歯科</th>
+      <th>薬局</th>
+      <th>医科</th>
+      <th>the・</th>
+      <th>b{stoic</th>
+      <th>BOX</th>
+      <th>ReBridge</th>
+      <th>ウィメンズ漢方</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>13</td><td>毎月インセンティブ</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+    </tr>
+    <tr>
+      <td>14</td><td>フレックス総枠+コアタイム</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+    </tr>
+    <tr>
+      <td>15</td><td>フレックス総枠+コアタイム</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+    </tr>
+    <tr>
+      <td>16</td><td>皆勤手当</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+    </tr>
+    <tr>
+      <td>17</td><td>出勤簿 ↔ エアシフト突合</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+    </tr>
+    <tr>
+      <td>18</td><td>看護・事務500円手当</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+    </tr>
+    <tr>
+      <td>19</td><td>年末年始手当</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+    </tr>
+    <tr>
+      <td>20</td><td>8h稼働+シフト相違確認</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+    </tr>
+    <tr>
+      <td>21</td><td>事業部ルール（TBD）</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+    </tr>
+    <tr>
+      <td>22</td><td>欠勤等控除確認</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+    </tr>
+    <tr>
+      <td>23</td><td>4週4休確認</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+    </tr>
+    <tr>
+      <td>24</td><td>フレックス総枠不足控除</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+    </tr>
+    <tr>
+      <td>25</td><td>みなし0残業承認</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+    </tr>
+    <tr>
+      <td>27</td><td>四半期インセンティブ</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-yes">&#x25CF;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 class="subsection-title">事業部別チェック項目数</h3>
+<table>
+  <thead><tr><th>事業部</th><th>共通</th><th>固有</th><th>合計</th><th>主な確認先</th></tr></thead>
+  <tbody>
+    <tr><td>DELTA</td><td>11</td><td>2（#9, #14）</td><td>13</td><td>上長</td></tr>
+    <tr><td>テスティー</td><td>11</td><td>3（#9, #13, #15）</td><td>14</td><td>上長</td></tr>
+    <tr><td>歯科</td><td>11</td><td>4（#9, #13, #16, #17）</td><td>15</td><td>上長 / 現場担当</td></tr>
+    <tr><td>薬局</td><td>11</td><td>3（#9, #17, #19）</td><td>14</td><td>上長 / 現場担当</td></tr>
+    <tr><td>医科</td><td>11</td><td>4（#9, #13, #18, #19）</td><td>15</td><td>上長</td></tr>
+    <tr><td>the・</td><td>11</td><td>3（#9, #13, #20）</td><td>14</td><td>高野さん</td></tr>
+    <tr><td>b{stoic</td><td>11</td><td>2（#9, #21）</td><td>13</td><td>事業部担当（TBD）</td></tr>
+    <tr><td>BOX</td><td>11</td><td>4（#9, #13, #22, #27）</td><td>15</td><td>長山さん / 森さん</td></tr>
+    <tr><td>ReBridge</td><td>11</td><td>2（#9, #13）</td><td>13</td><td>上長</td></tr>
+    <tr><td>ウィメンズ漢方</td><td>11</td><td>4（#9, #23, #24, #25）</td><td>15</td><td>住吉さん / 森田さん</td></tr>
+  </tbody>
+</table>
+
+<h3 class="subsection-title">確認先一覧</h3>
+<table>
+  <thead><tr><th>確認先</th><th>対象項目</th><th>事業部</th></tr></thead>
+  <tbody>
+    <tr><td>各事業部上長（共通）</td><td>#5, #7</td><td>全事業部</td></tr>
+    <tr><td>高野さん</td><td>#20</td><td>the・</td></tr>
+    <tr><td>長山さん / 森さん</td><td>#22</td><td>BOX</td></tr>
+    <tr><td>住吉さん / 森田さん</td><td>#24, #25</td><td>ウィメンズ漢方</td></tr>
+    <tr><td>産業医</td><td>#10</td><td>全事業部</td></tr>
+    <tr><td>各事業部担当（インセンティブ）</td><td>#13</td><td>テスティー/歯科/医科/the・/ReBridge/BOX</td></tr>
+  </tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2 class="section-title" id="workflow">月次勤怠締めワークフロー</h2>
+
+<p>毎月末〜翌月9日の約10日間で実施する勤怠締め業務の全体フローです。</p>
+
+<div class="flow-diagram">月末5日前                    月末              翌月3日            翌月7日         翌月9日
+    |                        |                  |                  |               |
+    +-- [Phase 1] ----------+                  |                  |               |
+    |  リマインド            |                  |                  |               |
+    |                        |                  |                  |               |
+    |                        +-- [Phase 2] -----+                  |               |
+    |                        |  データ確認・突合 |                  |               |
+    |                        |                  |                  |               |
+    |                        |                  +-- [Phase 3] -----+               |
+    |                        |                  |  上長確認・判断   |               |
+    |                        |                  |                  |               |
+    |                        |                  |                  +-- [Phase 4] --+
+    |                        |                  |                  |  最終チェック  |
+    |                        |                  |                  |  承認完了      |</div>
+
+<h3 class="subsection-title">Phase 1: リマインド（月末5営業日前〜月末）</h3>
+<p>未提出・未申請・未承認を事前に解消し、月末時点でのデータ完備を目指す。</p>
+<table>
+  <thead><tr><th>タスク</th><th>対象</th><th>システム</th><th>アクション</th><th>頻度</th></tr></thead>
+  <tbody>
+    <tr><td>勤怠提出リマインド（#1）</td><td>全従業員</td><td>MF勤怠 / エアシフト</td><td>未提出者リスト抽出 → Slack通知</td><td>月末5日前・3日前・前日</td></tr>
+    <tr><td>有給事前申請リマインド（#1）</td><td>全従業員</td><td>MF勤怠</td><td>未申請の有給使用を検知 → Slack通知</td><td>同上</td></tr>
+    <tr><td>経費リマインド（#11）</td><td>全従業員</td><td>MF経費</td><td>下書き・未承認 → 本人&amp;承認者にSlack通知</td><td>同上</td></tr>
+  </tbody>
+</table>
+<div class="highlight-box">
+  <strong>並行処理:</strong> 勤怠リマインドと経費リマインドは同時に実施可能。MF勤怠系とエアシフト系（歯科・薬局）は別担当で並行可。
+</div>
+
+<h3 class="subsection-title">Phase 2: データ確認・突合（月末〜翌月3日頃）</h3>
+<p>勤怠データの正確性を確認し、給与計算メモへの転記を完了する。</p>
+
+<h4>共通タスク（全事業部）</h4>
+<table>
+  <thead><tr><th>タスク</th><th>システム</th><th>アクション</th></tr></thead>
+  <tbody>
+    <tr><td>有給突合（#2）</td><td>MF/エアシフト ↔ 給与計算メモ</td><td>有給申請数 = 記載数を確認。不一致 → 修正</td></tr>
+    <tr><td>有給日数転記（#3）</td><td>MF/エアシフト → 給与計算メモ</td><td>アルバイトの有給日数を転記</td></tr>
+    <tr><td>欠勤日数転記（#4）</td><td>MF/エアシフト → 給与計算メモ</td><td>欠勤日数を転記</td></tr>
+    <tr><td>休憩・休暇確認（#8）</td><td>MF/エアシフト</td><td>休憩時間・休暇時間の異常値チェック</td></tr>
+    <tr><td>残業時間集計（#10）</td><td>MF勤怠</td><td>残業80h/100h超過者を特定</td></tr>
+    <tr><td>通勤手当判定（#9）</td><td>MF勤怠</td><td>1割有給等・9割出社の判定</td></tr>
+    <tr><td>経費締め（#12）</td><td>MF経費</td><td>全承認確認後に月次締め</td></tr>
+  </tbody>
+</table>
+
+<h4>事業部固有タスク（Phase 2内で並行実施）</h4>
+<table>
+  <thead><tr><th>タスク</th><th>対象事業部</th><th>システム</th></tr></thead>
+  <tbody>
+    <tr><td>フレックス総枠計算 + コアタイム確認（#14, #15）</td><td>DELTA / テスティー</td><td>MF ↔ 給与計算メモ</td></tr>
+    <tr><td>皆勤手当判定（#16）</td><td>歯科</td><td>エアシフト</td></tr>
+    <tr><td>出勤簿 ↔ エアシフト突合（#17）</td><td>歯科・薬局</td><td>エアシフト（CSV）↔ 出勤簿</td></tr>
+    <tr><td>看護・事務手当確認（#18）</td><td>医科</td><td>MF ↔ 給与計算メモ</td></tr>
+    <tr><td>年末年始手当計算（#19）</td><td>医科・薬局</td><td>MF/エアシフト</td></tr>
+    <tr><td>8h稼働確認（#20）</td><td>the・</td><td>MF ↔ シフト表</td></tr>
+    <tr><td>4週4休確認（#23）</td><td>ウィメンズ漢方</td><td>MF勤怠</td></tr>
+    <tr><td>フレックス総枠確認（#24）</td><td>ウィメンズ漢方</td><td>MF ↔ 給与計算メモ</td></tr>
+    <tr><td>みなし0残業検出（#25）</td><td>ウィメンズ漢方</td><td>MF ↔ 給与計算メモ</td></tr>
+  </tbody>
+</table>
+<div class="highlight-box">
+  <strong>並行処理:</strong> 共通チェックと事業部固有チェックは同時に実施可能。MF系とエアシフト系は別担当で並行可。経費締めは他チェックと独立。
+</div>
+
+<h3 class="subsection-title">Phase 3: 上長確認・控除判断・手当計算（翌月3日〜7日頃）</h3>
+<p>Phase 2で検出した要確認事項について上長判断を取得し、給与計算メモを確定する。</p>
+<table>
+  <thead><tr><th>タスク</th><th>内容</th><th>確認先</th></tr></thead>
+  <tbody>
+    <tr><td>遅刻早退控除確認（#5, #6）</td><td>控除要否 → 控除時間をメモへ記載</td><td>各事業部上長</td></tr>
+    <tr><td>割増判断確認（#7）</td><td>深夜/みなし越え/休日出勤の割増支給要否</td><td>各事業部上長</td></tr>
+    <tr><td>残業超過対応（#10）</td><td>80h → 面談案内 / 100h → 面談設定</td><td>産業医</td></tr>
+    <tr><td>インセンティブ記載（#13）</td><td>各事業部からの報告金額を転記</td><td>事業部担当</td></tr>
+    <tr><td>シフト相違確認（#20）</td><td>the・のシフト相違点を確認</td><td>高野さん</td></tr>
+    <tr><td>BOX控除確認（#22）</td><td>欠勤等の控除要否を確認</td><td>長山さん / 森さん</td></tr>
+    <tr><td>ウィメンズ控除確認（#24）</td><td>フレックス総枠不足の控除要否</td><td>住吉さん / 森田さん</td></tr>
+    <tr><td>ウィメンズ残業承認（#25）</td><td>みなし0の残業承認要否</td><td>住吉さん / 森田さん</td></tr>
+    <tr><td>b{stoicチェック（#21）</td><td>事業部ルールに基づくチェック（詳細TBD）</td><td>事業部担当</td></tr>
+  </tbody>
+</table>
+<div class="highlight-box">
+  <strong>並行処理:</strong> 全事業部への確認依頼は一斉送信可能。各事業部からの回答は到着順に処理。上長確認待ちの間にインセンティブ転記等を進行。
+</div>
+
+<h3 class="subsection-title">Phase 4: 最終チェック・承認（翌月7日〜9日）</h3>
+<table>
+  <thead><tr><th>タスク</th><th>内容</th><th>担当</th></tr></thead>
+  <tbody>
+    <tr><td>給与計算メモ最終レビュー</td><td>全事業部のメモを通しチェック。転記漏れ・計算ミスがないか</td><td>グループ労務</td></tr>
+    <tr><td>未回答フォローアップ</td><td>Phase 3で未回答の上長へ再リマインド</td><td>グループ労務</td></tr>
+    <tr><td>クロスチェック</td><td>2名で相互チェック（ダブルチェック）</td><td>グループ労務2名</td></tr>
+    <tr><td>承認</td><td>最終承認を実施</td><td>グループ労務責任者</td></tr>
+    <tr><td>給与計算連携</td><td>確定したメモを給与計算担当へ連携</td><td>グループ労務</td></tr>
+  </tbody>
+</table>
+<div class="highlight-box">
+  <strong>並行処理:</strong> 事業部ごとに準備でき次第、順次最終チェック → 承認可能。全事業部の承認完了を待たずに、完了分から給与計算連携可能。
+</div>
+
+<!-- ============================================================ -->
+<h2 class="section-title" id="summary">サマリー</h2>
+
+<h3 class="subsection-title">自動化ポテンシャル集計</h3>
+<table>
+  <thead><tr><th>レベル</th><th>件数</th><th>該当項目</th></tr></thead>
+  <tbody>
+    <tr><td><span class="pot-high">高</span></td><td>13件</td><td>#1, #2, #3, #4, #6, #9, #10, #11, #16, #17, #18, #19, #23</td></tr>
+    <tr><td><span class="pot-mid">中</span></td><td>9件</td><td>#5, #7, #8, #13, #14, #15, #20, #22, #24, #25</td></tr>
+    <tr><td><span class="pot-low">低</span></td><td>2件</td><td>#12, #27</td></tr>
+    <tr><td>対応不要</td><td>1件</td><td>#26（BOX夏季休暇 — 廃止予定）</td></tr>
+    <tr><td>要調査</td><td>1件</td><td>#21（b{stoic — ルール詳細確認中）</td></tr>
+  </tbody>
+</table>
+
+<h3 class="subsection-title">手間・ミスが起きやすい項目（ヒアリングより）</h3>
+<ol>
+  <li>歯科エアシフトのシフト情報と打刻の照合（#17）</li>
+  <li>通勤手当の定期代支給判定（#9）</li>
+  <li>未提出者へのプッシュ / リマインド（#1）</li>
+  <li>承認者への承認プッシュ（#11）</li>
+  <li>上長への控除判断の確認（#5）</li>
+  <li>インターン生の稼働実態との乖離確認</li>
+</ol>
+
+<h3 class="subsection-title">スケール感</h3>
+<div class="highlight-box">
+  <strong>現在の工数:</strong> グループ労務2名で月合計 約100時間<br>
+  <strong>自動化見込み:</strong> 30%自動化で月30時間削減相当
+</div>
+
+<h3 class="subsection-title">未確定事項</h3>
+<div class="note-box">
+  <strong>以下の点は追加確認が必要です:</strong><br>
+  1. b{stoic（#21）の具体的なルール内容<br>
+  2. インターン生の稼働乖離チェックの具体的な手順（チェックリスト外）<br>
+  3. #9 通勤手当の「1割」「9割」の端数処理（切り上げ/切り捨て）
+</div>
+
+<div class="report-footer">
+  p022 グループSR1 労務業務効率化 Phase 1 レビュー用資料 v1.0 / グループ労務 / BPIO<br>
+  最終更新: 2026年3月
+</div>
+
+</div>
+
+<script>
+// Pill navigation active state
+const pills = document.querySelectorAll('.pill');
+const sections = [];
+pills.forEach(p => {
+  const id = p.getAttribute('href');
+  if (id && id.startsWith('#')) {
+    const el = document.querySelector(id);
+    if (el) sections.push({ el, pill: p });
+  }
+});
+function updateActive() {
+  let current = sections[0];
+  for (const s of sections) {
+    if (s.el.getBoundingClientRect().top <= 80) current = s;
+  }
+  pills.forEach(p => p.classList.remove('active'));
+  if (current) current.pill.classList.add('active');
+}
+window.addEventListener('scroll', updateActive);
+updateActive();
+</script>
+</body>
+</html>
