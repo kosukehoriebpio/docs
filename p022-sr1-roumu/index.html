@@ -1603,6 +1603,19 @@ function showToast(msg) {
 }
 
 // Init
+// Auto-configure webhook from URL parameter (?webhook=https://hooks.slack.com/...)
+(function() {
+  const params = new URLSearchParams(location.search);
+  const wh = params.get('webhook');
+  if (wh && wh.startsWith('https://hooks.slack.com/')) {
+    setWebhookUrl(wh);
+    // Clean URL without reload
+    const clean = location.pathname + location.hash;
+    history.replaceState(null, '', clean);
+    showToast('Slack連携を自動設定しました');
+  }
+})();
+
 initNoteButtons();
 renderSavedNotes();
 updateBadge();
