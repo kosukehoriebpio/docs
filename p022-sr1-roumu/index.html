@@ -486,10 +486,23 @@ code {
   <div class="feedback-btn-wrap">
     <span class="note-badge" id="noteBadge"></span>
     <button class="nav-action-btn secondary" onclick="openImportModal()">メモを読み込む</button>
-    <button class="nav-action-btn primary" onclick="exportNotes()">メモを共有</button>
+    <button class="nav-action-btn primary" onclick="exportNotes()">Slackに送信</button>
   </div>
 </nav>
 <div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="webhookModal">
+  <div class="modal-box">
+    <h3>Slack連携の設定</h3>
+    <p>Slack Incoming Webhook URLを入力してください（初回のみ）</p>
+    <input type="url" id="webhookInput" placeholder="https://hooks.slack.com/services/..." style="width:100%;border:1px solid #ccc;border-radius:4px;padding:10px;font-size:0.82rem;outline:none;font-family:monospace;">
+    <div class="import-result" id="webhookResult"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeWebhookSetup()">キャンセル</button>
+      <button class="btn-confirm" onclick="saveWebhook()">設定する</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal-overlay" id="importModal">
   <div class="modal-box">
@@ -1435,25 +1448,94 @@ function updateBadge() {
   badge.textContent = count > 0 ? `${count}件のメモ` : '';
 }
 
-// Export notes to clipboard (JSON for sharing)
+// Slack Webhook (stored in localStorage, never in source code)
+const WEBHOOK_KEY = 'p022-slack-webhook';
+
+function getWebhookUrl() { return localStorage.getItem(WEBHOOK_KEY) || ''; }
+function setWebhookUrl(url) { localStorage.setItem(WEBHOOK_KEY, url); }
+
+function buildSlackMessage(notes) {
+  const grouped = {};
+  notes.forEach(n => {
+    if (!grouped[n.sectionId]) grouped[n.sectionId] = [];
+    grouped[n.sectionId].push(n);
+  });
+
+  let text = '*p022 勤怠締め業務 レビューフィードバック*\n';
+  text += `_${notes.length}件のメモ — ${new Date().toLocaleDateString('ja-JP')}_\n\n`;
+  for (const [sec, items] of Object.entries(grouped)) {
+    const label = sec.replace(/-/g, ' ');
+    text += `*${label}*\n`;
+    items.forEach(n => {
+      const author = n.author || '(未記名)';
+      text += `> ${author}: ${n.text.trim()}\n`;
+    });
+    text += '\n';
+  }
+  // JSON block for import
+  text += '---\n_以下をコピーして「メモを読み込む」に貼り付けると復元できます:_\n';
+  text += '```' + JSON.stringify(notes) + '```';
+  return text;
+}
+
+function postToSlack(webhookUrl, notes) {
+  const slackText = buildSlackMessage(notes);
+  const payload = JSON.stringify({ text: slackText });
+  fetch(webhookUrl, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'payload=' + encodeURIComponent(payload)
+  }).then(() => {
+    showToast(`${notes.length}件のメモをSlackに送信しました`);
+  }).catch(() => {
+    navigator.clipboard.writeText(JSON.stringify(notes)).catch(() => {});
+    showToast('Slack送信に失敗 — クリップボードにコピーしました');
+  });
+}
+
+// Export notes → post to Slack (or prompt for webhook setup)
 function exportNotes() {
   const notes = loadNotes().filter(n => n.text.trim());
   if (notes.length === 0) {
     showToast('入力済みのメモがありません');
     return;
   }
-  const data = JSON.stringify(notes);
-  navigator.clipboard.writeText(data).then(() => {
-    showToast(`${notes.length}件のメモをコピーしました — Slackで共有してください`);
-  }).catch(() => {
-    const ta = document.createElement('textarea');
-    ta.value = data;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    ta.remove();
-    showToast(`${notes.length}件のメモをコピーしました`);
-  });
+
+  const webhook = getWebhookUrl();
+  if (!webhook) {
+    openWebhookSetup();
+    return;
+  }
+  postToSlack(webhook, notes);
+  navigator.clipboard.writeText(JSON.stringify(notes)).catch(() => {});
+}
+
+// Webhook setup modal
+function openWebhookSetup() {
+  document.getElementById('webhookModal').classList.add('open');
+  document.getElementById('webhookInput').value = getWebhookUrl();
+  document.getElementById('webhookInput').focus();
+}
+function closeWebhookSetup() {
+  document.getElementById('webhookModal').classList.remove('open');
+}
+function saveWebhook() {
+  const url = document.getElementById('webhookInput').value.trim();
+  if (!url.startsWith('https://hooks.slack.com/')) {
+    document.getElementById('webhookResult').textContent = 'Slack Webhook URLの形式が正しくありません';
+    document.getElementById('webhookResult').className = 'import-result';
+    return;
+  }
+  setWebhookUrl(url);
+  closeWebhookSetup();
+  showToast('Slack連携を設定しました');
+  // Retry sending if there are notes
+  const notes = loadNotes().filter(n => n.text.trim());
+  if (notes.length > 0) {
+    postToSlack(url, notes);
+    navigator.clipboard.writeText(JSON.stringify(notes)).catch(() => {});
+  }
 }
 
 // Import modal
@@ -1504,9 +1586,12 @@ function importNotes() {
   showToast(`${added}件のメモを読み込みました`);
 }
 
-// Close modal on overlay click
+// Close modals on overlay click
 document.getElementById('importModal').addEventListener('click', function(e) {
   if (e.target === this) closeImportModal();
+});
+document.getElementById('webhookModal').addEventListener('click', function(e) {
+  if (e.target === this) closeWebhookSetup();
 });
 
 // Toast
