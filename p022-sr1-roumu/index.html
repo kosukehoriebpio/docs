@@ -354,20 +354,94 @@ code {
   color: #777;
   white-space: nowrap;
 }
-.send-feedback-btn {
+.nav-action-btn {
   display: inline-block;
   padding: 5px 14px;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #fff;
-  background: #1a1a1a;
   border: none;
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
 }
-.send-feedback-btn:hover { background: #444; }
+.nav-action-btn.primary {
+  color: #fff;
+  background: #1a1a1a;
+}
+.nav-action-btn.primary:hover { background: #444; }
+.nav-action-btn.secondary {
+  color: #555;
+  background: transparent;
+  border: 1px solid #ccc;
+}
+.nav-action-btn.secondary:hover { background: #f5f5f5; }
+
+/* Import modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 10000;
+  justify-content: center;
+  align-items: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  width: 480px;
+  max-width: 90vw;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+}
+.modal-box h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.modal-box p {
+  font-size: 0.82rem;
+  color: #666;
+  margin-bottom: 12px;
+}
+.modal-box textarea {
+  width: 100%;
+  min-height: 120px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 0.78rem;
+  resize: vertical;
+  outline: none;
+}
+.modal-box textarea:focus { border-color: #888; }
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+.modal-actions button {
+  padding: 6px 18px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+}
+.modal-actions .btn-cancel { background: #eee; color: #555; }
+.modal-actions .btn-cancel:hover { background: #ddd; }
+.modal-actions .btn-confirm { background: #1a1a1a; color: #fff; }
+.modal-actions .btn-confirm:hover { background: #444; }
+.import-result {
+  font-size: 0.78rem;
+  margin-top: 8px;
+  color: #b91c1c;
+}
+.import-result.success { color: #15803d; }
 
 /* Toast */
 .toast {
@@ -395,6 +469,8 @@ code {
   .sticky-note { width: 100%; }
   .add-note-btn { font-size: 0.65rem; padding: 2px 8px; }
   .feedback-btn-wrap { margin-left: 0; width: 100%; justify-content: flex-end; }
+  .nav-action-btn { font-size: 0.68rem; padding: 4px 10px; }
+  .modal-box { padding: 16px; }
 }
 </style>
 </head>
@@ -409,10 +485,24 @@ code {
   <a href="#summary" class="pill">サマリー</a>
   <div class="feedback-btn-wrap">
     <span class="note-badge" id="noteBadge"></span>
-    <button class="send-feedback-btn" id="sendFeedbackBtn" onclick="copyFeedback()">メモをコピー</button>
+    <button class="nav-action-btn secondary" onclick="openImportModal()">メモを読み込む</button>
+    <button class="nav-action-btn primary" onclick="exportNotes()">メモを共有</button>
   </div>
 </nav>
 <div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="importModal">
+  <div class="modal-box">
+    <h3>メモを読み込む</h3>
+    <p>共有されたメモデータを貼り付けてください</p>
+    <textarea id="importTextarea" placeholder="ここにメモデータを貼り付け..."></textarea>
+    <div class="import-result" id="importResult"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeImportModal()">キャンセル</button>
+      <button class="btn-confirm" onclick="importNotes()">読み込む</button>
+    </div>
+  </div>
+</div>
 
 <div id="main">
 
@@ -1345,51 +1435,79 @@ function updateBadge() {
   badge.textContent = count > 0 ? `${count}件のメモ` : '';
 }
 
-// Copy feedback to clipboard
-function copyFeedback() {
-  const notes = loadNotes();
+// Export notes to clipboard (JSON for sharing)
+function exportNotes() {
+  const notes = loadNotes().filter(n => n.text.trim());
   if (notes.length === 0) {
-    showToast('メモがありません');
-    return;
-  }
-
-  // Group by section
-  const grouped = {};
-  notes.forEach(n => {
-    if (!n.text.trim()) return;
-    if (!grouped[n.sectionId]) grouped[n.sectionId] = [];
-    grouped[n.sectionId].push(n);
-  });
-
-  if (Object.keys(grouped).length === 0) {
     showToast('入力済みのメモがありません');
     return;
   }
-
-  let text = '【p022 勤怠締め業務 レビューフィードバック】\n\n';
-  for (const [sec, items] of Object.entries(grouped)) {
-    const label = sec.replace(/-/g, ' ');
-    text += `■ ${label}\n`;
-    items.forEach(n => {
-      const author = n.author || '(未記名)';
-      text += `  - ${author}: ${n.text.trim()}\n`;
-    });
-    text += '\n';
-  }
-
-  navigator.clipboard.writeText(text).then(() => {
-    showToast('メモをクリップボードにコピーしました');
+  const data = JSON.stringify(notes);
+  navigator.clipboard.writeText(data).then(() => {
+    showToast(`${notes.length}件のメモをコピーしました — Slackで共有してください`);
   }).catch(() => {
-    // Fallback
     const ta = document.createElement('textarea');
-    ta.value = text;
+    ta.value = data;
     document.body.appendChild(ta);
     ta.select();
     document.execCommand('copy');
     ta.remove();
-    showToast('クリップボードにコピーしました');
+    showToast(`${notes.length}件のメモをコピーしました`);
   });
 }
+
+// Import modal
+function openImportModal() {
+  document.getElementById('importModal').classList.add('open');
+  document.getElementById('importTextarea').value = '';
+  document.getElementById('importResult').textContent = '';
+  document.getElementById('importTextarea').focus();
+}
+function closeImportModal() {
+  document.getElementById('importModal').classList.remove('open');
+}
+function importNotes() {
+  const raw = document.getElementById('importTextarea').value.trim();
+  const resultEl = document.getElementById('importResult');
+  if (!raw) {
+    resultEl.textContent = 'データを貼り付けてください';
+    resultEl.className = 'import-result';
+    return;
+  }
+  let incoming;
+  try {
+    incoming = JSON.parse(raw);
+    if (!Array.isArray(incoming)) throw new Error();
+  } catch {
+    resultEl.textContent = 'データの形式が正しくありません';
+    resultEl.className = 'import-result';
+    return;
+  }
+  const existing = loadNotes();
+  const existingIds = new Set(existing.map(n => n.id));
+  let added = 0;
+  for (const note of incoming) {
+    if (!note.id || !note.sectionId) continue;
+    if (existingIds.has(note.id)) continue;
+    existing.push(note);
+    existingIds.add(note.id);
+    added++;
+  }
+  saveNotes(existing);
+  // Render newly added notes
+  for (const note of incoming) {
+    if (!document.querySelector(`.sticky-note[data-note-id="${note.id}"]`)) {
+      renderNoteCard(note, note.sectionId);
+    }
+  }
+  closeImportModal();
+  showToast(`${added}件のメモを読み込みました`);
+}
+
+// Close modal on overlay click
+document.getElementById('importModal').addEventListener('click', function(e) {
+  if (e.target === this) closeImportModal();
+});
 
 // Toast
 function showToast(msg) {
