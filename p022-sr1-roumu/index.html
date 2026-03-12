@@ -282,6 +282,8 @@ code {
 <table>
   <thead><tr><th>事業部</th><th>勤怠システム</th><th>備考</th></tr></thead>
   <tbody>
+    <tr><td>BPIO</td><td>MF勤怠</td><td>自社（チェックリスト原本では省略）</td></tr>
+    <tr><td>SRA</td><td>MF勤怠</td><td>自社（チェックリスト原本では省略）</td></tr>
     <tr><td>DELTA</td><td>MF勤怠</td><td></td></tr>
     <tr><td>テスティー</td><td>MF勤怠</td><td></td></tr>
     <tr><td>歯科</td><td>エアシフト</td><td>メディカル出勤簿との突合が必要</td></tr>
@@ -602,6 +604,10 @@ code {
 <p>どの事業部にどのルールが適用されるかの一覧です。共通ルール（#1〜#12）は全事業部に適用されるため、事業部固有ルールのみをマトリクスで示します。</p>
 
 <div class="info-box">
+  <strong>補足:</strong> BPIO・SRAは自社グループのため、労務チームのチェックリスト原本には記載されていませんが、グループSR1の勤怠締め対象範囲には含まれます。共通ルールのみ適用（固有ルールなし）。
+</div>
+
+<div class="info-box">
   <strong>見方:</strong> 「&#x25CF;」= 適用、「&mdash;」= 非適用
 </div>
 
@@ -610,6 +616,8 @@ code {
     <tr>
       <th>#</th>
       <th>チェック項目</th>
+      <th>BPIO</th>
+      <th>SRA</th>
       <th>DELTA</th>
       <th>テスティー</th>
       <th>歯科</th>
@@ -626,6 +634,8 @@ code {
     <tr>
       <td>13</td><td>毎月インセンティブ</td>
       <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-yes">&#x25CF;</td>
       <td class="matrix-mark-yes">&#x25CF;</td>
       <td class="matrix-mark-no">&mdash;</td>
@@ -638,6 +648,8 @@ code {
     </tr>
     <tr>
       <td>14</td><td>フレックス総枠+コアタイム</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-yes">&#x25CF;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
@@ -651,6 +663,8 @@ code {
     </tr>
     <tr>
       <td>15</td><td>フレックス総枠+コアタイム</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-yes">&#x25CF;</td>
       <td class="matrix-mark-no">&mdash;</td>
@@ -666,6 +680,8 @@ code {
       <td>16</td><td>皆勤手当</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-yes">&#x25CF;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
@@ -677,6 +693,8 @@ code {
     </tr>
     <tr>
       <td>17</td><td>出勤簿 ↔ エアシフト突合</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-yes">&#x25CF;</td>
@@ -694,6 +712,8 @@ code {
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-yes">&#x25CF;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
@@ -703,6 +723,8 @@ code {
     </tr>
     <tr>
       <td>19</td><td>年末年始手当</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
@@ -716,6 +738,8 @@ code {
     </tr>
     <tr>
       <td>20</td><td>8h稼働+シフト相違確認</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
@@ -735,6 +759,8 @@ code {
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-yes">&#x25CF;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
@@ -742,6 +768,8 @@ code {
     </tr>
     <tr>
       <td>22</td><td>欠勤等控除確認</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
@@ -764,10 +792,14 @@ code {
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-yes">&#x25CF;</td>
     </tr>
     <tr>
       <td>24</td><td>フレックス総枠不足控除</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
@@ -790,10 +822,14 @@ code {
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-yes">&#x25CF;</td>
     </tr>
     <tr>
       <td>27</td><td>四半期インセンティブ</td>
+      <td class="matrix-mark-no">&mdash;</td>
+      <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
       <td class="matrix-mark-no">&mdash;</td>
@@ -812,6 +848,8 @@ code {
 <table>
   <thead><tr><th>事業部</th><th>共通</th><th>固有</th><th>合計</th><th>主な確認先</th></tr></thead>
   <tbody>
+    <tr><td>BPIO</td><td>11</td><td>1（#9）</td><td>12</td><td>上長</td></tr>
+    <tr><td>SRA</td><td>11</td><td>1（#9）</td><td>12</td><td>上長</td></tr>
     <tr><td>DELTA</td><td>11</td><td>2（#9, #14）</td><td>13</td><td>上長</td></tr>
     <tr><td>テスティー</td><td>11</td><td>3（#9, #13, #15）</td><td>14</td><td>上長</td></tr>
     <tr><td>歯科</td><td>11</td><td>4（#9, #13, #16, #17）</td><td>15</td><td>上長 / 現場担当</td></tr>
@@ -983,8 +1021,8 @@ code {
 </div>
 
 <div class="report-footer">
-  p022 グループSR1 労務業務効率化 Phase 1 レビュー用資料 v1.0 / グループ労務 / BPIO<br>
-  最終更新: 2026年3月
+  p022 グループSR1 労務業務効率化 Phase 1 レビュー用資料 v1.1 / グループ労務 / BPIO<br>
+  最終更新: 2026年3月12日 — BPIO・SRAを対象事業部に追加
 </div>
 
 </div>
