@@ -409,7 +409,7 @@ code {
   <a href="#summary" class="pill">サマリー</a>
   <div class="feedback-btn-wrap">
     <span class="note-badge" id="noteBadge"></span>
-    <button class="send-feedback-btn" id="sendFeedbackBtn" onclick="copyFeedback()">フィードバックを送信</button>
+    <button class="send-feedback-btn" id="sendFeedbackBtn" onclick="copyFeedback()">メモをコピー</button>
   </div>
 </nav>
 <div class="toast" id="toast"></div>
@@ -1378,7 +1378,7 @@ function copyFeedback() {
   }
 
   navigator.clipboard.writeText(text).then(() => {
-    showToast('クリップボードにコピーしました — Slackに貼り付けてください');
+    showToast('メモをクリップボードにコピーしました');
   }).catch(() => {
     // Fallback
     const ta = document.createElement('textarea');
