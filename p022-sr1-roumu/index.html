@@ -234,6 +234,167 @@ code {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+  .feedback-btn-wrap { display: none; }
+}
+
+/* === Feedback sticky notes === */
+.section-heading-wrap {
+  position: relative;
+}
+.add-note-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #999;
+  font-size: 0.72rem;
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.add-note-btn:hover {
+  background: #fff9c4;
+  border-color: #e0d97e;
+  color: #666;
+}
+
+.notes-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 8px 0 16px;
+}
+
+.sticky-note {
+  background: #fff9c4;
+  border: 1px solid #e8e0a0;
+  border-radius: 3px;
+  padding: 12px 14px;
+  width: 280px;
+  box-shadow: 2px 3px 8px rgba(0,0,0,0.08);
+  transform: rotate(-0.4deg);
+  animation: noteIn 0.3s ease-out;
+  position: relative;
+  font-size: 0.82rem;
+}
+.sticky-note:nth-child(even) { transform: rotate(0.3deg); }
+.sticky-note:nth-child(3n) { transform: rotate(-0.2deg); }
+
+@keyframes noteIn {
+  from { opacity: 0; transform: translateY(-8px) rotate(-0.4deg); }
+  to   { opacity: 1; transform: translateY(0) rotate(-0.4deg); }
+}
+
+.sticky-note .note-author {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #888;
+  margin-bottom: 4px;
+}
+.sticky-note .note-time {
+  font-size: 0.65rem;
+  color: #aaa;
+  margin-bottom: 6px;
+}
+.sticky-note textarea {
+  width: 100%;
+  min-height: 50px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+  color: #333;
+}
+.sticky-note .note-delete {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 0.9rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px;
+}
+.sticky-note .note-delete:hover { color: #e53e3e; }
+
+.note-author-input {
+  width: 100%;
+  border: none;
+  border-bottom: 1px dashed #ccc;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #888;
+  outline: none;
+  padding: 0 0 2px;
+  margin-bottom: 4px;
+}
+.note-author-input::placeholder { color: #bbb; }
+
+/* Feedback nav button & badge */
+.feedback-btn-wrap {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.note-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #777;
+  white-space: nowrap;
+}
+.send-feedback-btn {
+  display: inline-block;
+  padding: 5px 14px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  background: #1a1a1a;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.send-feedback-btn:hover { background: #444; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #1a1a1a;
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 9999;
+  pointer-events: none;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 640px) {
+  .sticky-note { width: 100%; }
+  .add-note-btn { font-size: 0.65rem; padding: 2px 8px; }
+  .feedback-btn-wrap { margin-left: 0; width: 100%; justify-content: flex-end; }
 }
 </style>
 </head>
@@ -246,7 +407,12 @@ code {
   <a href="#matrix" class="pill">場合分け</a>
   <a href="#workflow" class="pill">月次フロー</a>
   <a href="#summary" class="pill">サマリー</a>
+  <div class="feedback-btn-wrap">
+    <span class="note-badge" id="noteBadge"></span>
+    <button class="send-feedback-btn" id="sendFeedbackBtn" onclick="copyFeedback()">フィードバックを送信</button>
+  </div>
 </nav>
+<div class="toast" id="toast"></div>
 
 <div id="main">
 
@@ -1030,17 +1196,17 @@ code {
 <script>
 // Pill navigation active state
 const pills = document.querySelectorAll('.pill');
-const sections = [];
+const navSections = [];
 pills.forEach(p => {
   const id = p.getAttribute('href');
   if (id && id.startsWith('#')) {
     const el = document.querySelector(id);
-    if (el) sections.push({ el, pill: p });
+    if (el) navSections.push({ el, pill: p });
   }
 });
 function updateActive() {
-  let current = sections[0];
-  for (const s of sections) {
+  let current = navSections[0];
+  for (const s of navSections) {
     if (s.el.getBoundingClientRect().top <= 80) current = s;
   }
   pills.forEach(p => p.classList.remove('active'));
@@ -1048,6 +1214,195 @@ function updateActive() {
 }
 window.addEventListener('scroll', updateActive);
 updateActive();
+
+// ====== Feedback sticky notes ======
+const NOTES_KEY = 'p022-feedback-notes';
+const AUTHOR_KEY = 'p022-feedback-author';
+
+function loadNotes() {
+  try { return JSON.parse(localStorage.getItem(NOTES_KEY)) || []; }
+  catch { return []; }
+}
+function saveNotes(notes) {
+  localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+  updateBadge();
+}
+function getSavedAuthor() {
+  return localStorage.getItem(AUTHOR_KEY) || '';
+}
+function saveAuthor(name) {
+  if (name.trim()) localStorage.setItem(AUTHOR_KEY, name.trim());
+}
+
+function sectionIdFromEl(el) {
+  return el.textContent.trim().replace(/\s+/g, '-').substring(0, 60);
+}
+
+// Inject "+ メモ" buttons into section headings
+function initNoteButtons() {
+  const headings = document.querySelectorAll('#main h3.subsection-title, #main h4');
+  headings.forEach(h => {
+    const secId = sectionIdFromEl(h);
+    // Wrap heading for positioning
+    const wrap = document.createElement('div');
+    wrap.className = 'section-heading-wrap';
+    h.parentNode.insertBefore(wrap, h);
+    wrap.appendChild(h);
+
+    const btn = document.createElement('button');
+    btn.className = 'add-note-btn';
+    btn.textContent = '+ メモ';
+    btn.onclick = () => addNote(secId, wrap);
+    wrap.appendChild(btn);
+
+    // Notes container
+    const container = document.createElement('div');
+    container.className = 'notes-container';
+    container.dataset.section = secId;
+    wrap.parentNode.insertBefore(container, wrap.nextSibling);
+  });
+}
+
+function addNote(sectionId, wrapEl) {
+  const notes = loadNotes();
+  const note = {
+    id: Date.now().toString(36) + Math.random().toString(36).substr(2, 4),
+    sectionId,
+    author: getSavedAuthor(),
+    text: '',
+    createdAt: new Date().toISOString()
+  };
+  notes.push(note);
+  saveNotes(notes);
+  renderNoteCard(note, sectionId);
+}
+
+function renderNoteCard(note, sectionId) {
+  const container = document.querySelector(`.notes-container[data-section="${CSS.escape(sectionId)}"]`);
+  if (!container) return;
+
+  const card = document.createElement('div');
+  card.className = 'sticky-note';
+  card.dataset.noteId = note.id;
+
+  const time = new Date(note.createdAt);
+  const timeStr = `${time.getMonth()+1}/${time.getDate()} ${time.getHours()}:${String(time.getMinutes()).padStart(2,'0')}`;
+
+  const savedAuthor = getSavedAuthor();
+
+  card.innerHTML = `
+    <button class="note-delete" title="削除">&times;</button>
+    <input class="note-author-input" placeholder="名前を入力" value="${escHtml(note.author || savedAuthor)}">
+    <div class="note-time">${timeStr}</div>
+    <textarea placeholder="メモを入力...">${escHtml(note.text)}</textarea>
+  `;
+
+  const delBtn = card.querySelector('.note-delete');
+  delBtn.onclick = () => {
+    const notes = loadNotes().filter(n => n.id !== note.id);
+    saveNotes(notes);
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.9)';
+    card.style.transition = 'all 0.2s ease';
+    setTimeout(() => card.remove(), 200);
+  };
+
+  const authorInput = card.querySelector('.note-author-input');
+  authorInput.addEventListener('input', () => {
+    const notes = loadNotes();
+    const n = notes.find(x => x.id === note.id);
+    if (n) { n.author = authorInput.value; saveNotes(notes); }
+    saveAuthor(authorInput.value);
+  });
+
+  const textarea = card.querySelector('textarea');
+  textarea.addEventListener('input', () => {
+    const notes = loadNotes();
+    const n = notes.find(x => x.id === note.id);
+    if (n) { n.text = textarea.value; saveNotes(notes); }
+  });
+
+  container.appendChild(card);
+  textarea.focus();
+}
+
+function escHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+// Render all saved notes on load
+function renderSavedNotes() {
+  const notes = loadNotes();
+  notes.forEach(note => renderNoteCard(note, note.sectionId));
+}
+
+// Badge
+function updateBadge() {
+  const count = loadNotes().length;
+  const badge = document.getElementById('noteBadge');
+  badge.textContent = count > 0 ? `${count}件のメモ` : '';
+}
+
+// Copy feedback to clipboard
+function copyFeedback() {
+  const notes = loadNotes();
+  if (notes.length === 0) {
+    showToast('メモがありません');
+    return;
+  }
+
+  // Group by section
+  const grouped = {};
+  notes.forEach(n => {
+    if (!n.text.trim()) return;
+    if (!grouped[n.sectionId]) grouped[n.sectionId] = [];
+    grouped[n.sectionId].push(n);
+  });
+
+  if (Object.keys(grouped).length === 0) {
+    showToast('入力済みのメモがありません');
+    return;
+  }
+
+  let text = '【p022 勤怠締め業務 レビューフィードバック】\n\n';
+  for (const [sec, items] of Object.entries(grouped)) {
+    const label = sec.replace(/-/g, ' ');
+    text += `■ ${label}\n`;
+    items.forEach(n => {
+      const author = n.author || '(未記名)';
+      text += `  - ${author}: ${n.text.trim()}\n`;
+    });
+    text += '\n';
+  }
+
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('クリップボードにコピーしました — Slackに貼り付けてください');
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    showToast('クリップボードにコピーしました');
+  });
+}
+
+// Toast
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// Init
+initNoteButtons();
+renderSavedNotes();
+updateBadge();
 </script>
 </body>
 </html>
