@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>28卒スプリングインターン メンター資料 — BPIO</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans JP',sans-serif;font-size:15px;line-height:1.8;color:#1a1a1a;background:#fff}
+#sticky-nav{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #ddd;padding:10px 24px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pill{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;color:#555;text-decoration:none;border:1px solid #ddd;cursor:pointer;transition:all .2s}
+.pill:hover,.pill.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+#main{max-width:920px;margin:0 auto;padding:40px 48px 80px}
+.confidential{background:#fff3cd;border:1px solid #ffc107;border-radius:6px;padding:10px 16px;font-size:13px;font-weight:700;color:#856404;margin-bottom:32px;text-align:center}
+h1{font-size:26px;font-weight:700;margin-bottom:8px}
+.subtitle{color:#666;font-size:14px;margin-bottom:40px}
+h2.section-title{font-size:20px;font-weight:700;margin:48px 0 20px;padding-bottom:8px;border-bottom:1px solid #999}
+h3.subsection-title{font-size:16px;font-weight:700;margin:24px 0 12px;padding-left:10px;border-left:3px solid #555}
+h4{font-size:15px;font-weight:700;margin:16px 0 8px}
+p{margin-bottom:12px}
+ul,ol{margin:8px 0 12px 20px}
+li{margin-bottom:4px}
+table{border-collapse:collapse;width:100%;margin:12px 0 20px;font-size:14px}
+th{background:#f0f0f0;font-weight:700;padding:8px 12px;border:1px solid #ccc;text-align:left}
+td{padding:8px 12px;border:1px solid #ccc;vertical-align:top}
+tr:nth-child(even) td{background:#fafafa}
+code{background:#f0f0f0;padding:1px 5px;border-radius:3px;font-size:13px;font-family:monospace}
+pre{background:#f5f5f5;padding:16px;border-radius:6px;overflow-x:auto;margin:12px 0;font-size:13px;line-height:1.6;font-family:monospace}
+.highlight-box{background:#f9f9f9;border-left:4px solid #1a1a1a;padding:12px 16px;margin:16px 0;border-radius:0 4px 4px 0}
+.note-box{background:#fff8e1;border-left:4px solid #ffc107;padding:12px 16px;margin:16px 0;border-radius:0 4px 4px 0}
+.info-box{background:#e8f4f8;border-left:4px solid #2196f3;padding:12px 16px;margin:16px 0;border-radius:0 4px 4px 0}
+.warn-box{background:#ffeaea;border-left:4px solid #e53935;padding:12px 16px;margin:16px 0;border-radius:0 4px 4px 0}
+details{margin:12px 0;border:1px solid #e0e0e0;border-radius:6px;overflow:hidden}
+details summary{padding:10px 16px;cursor:pointer;font-weight:700;background:#f7f7f7;list-style:none;display:flex;align-items:center;gap:8px}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:'▶';font-size:11px;transition:transform .2s;display:inline-block}
+details[open] summary::before{transform:rotate(90deg)}
+details[open] summary{border-bottom:1px solid #e0e0e0}
+details .details-content{padding:16px}
+.tag{display:inline-block;background:#e8e8e8;border-radius:4px;padding:2px 8px;font-size:12px;margin-left:6px}
+.section-anchor{display:block;height:0;visibility:hidden;margin-top:-10px}
+</style>
+</head>
+<body>
+<nav id="sticky-nav">
+  <a class="pill" href="#s01">概要</a>
+  <a class="pill" href="#s02">準備</a>
+  <a class="pill" href="#s03">フレームワーク索引</a>
+  <a class="pill" href="#s04">市場分析</a>
+  <a class="pill" href="#s05">BM設計</a>
+  <a class="pill" href="#s06">KPI</a>
+  <a class="pill" href="#s07">PL・財務</a>
+  <a class="pill" href="#s08">実行計画</a>
+  <a class="pill" href="#s09">メンタリング</a>
+  <a class="pill" href="#s10">評価</a>
+  <a class="pill" href="#s11">シミュレーション</a>
+</nav>
+<div id="main">
+<div class="confidential">メンター向け内部資料 — 外部共有不可</div>
+<h1>28卒スプリングインターン メンター資料</h1>
+<div class="subtitle">p021 — 3Days Internship（対面）| 2026年3月 | メンター: 堀江 KosukeHorie</div>
+
+<!-- ===== S01 概要 ===== -->
+<span class="section-anchor" id="s01"></span>
+<h2 class="section-title">概要</h2>
+<h3 class="subsection-title">インターン概要</h3>
+<table>
+<tr><th>形式</th><td>3Days Internship（対面）</td></tr>
+<tr><th>テーマ</th><td>SEVENRICH GROUPのPMとして立ち上げたい事業の事業計画策定</td></tr>
+<tr><th>参加学生</th><td>15名</td></tr>
+<tr><th>メンターの役割</th><td>ワークの盛り上げ・進捗把握・問いを渡して議論促進 / SEVENRICHらしさを伝える / 採用判断（自事業で内定対象/保留/不採用/別事業部推薦）</td></tr>
+</table>
+
+<h3 class="subsection-title">採用ターゲット</h3>
+<ul>
+<li><strong>経企／社長室枠（〜5名）</strong>: 新卒1年目から事業責任者を担うトップ層</li>
+<li><strong>各事業部 幹部候補（5〜10名）</strong>: 将来のリーダーとなるポテンシャル層</li>
+</ul>
+
+<h3 class="subsection-title">ワーク評価観点（4軸）</h3>
+<table>
+<tr><th>#</th><th>軸</th><th>内容</th></tr>
+<tr><td>1</td><td>論理的思考力</td><td>提案内容の論理的一貫性、結論までのプロセスに飛躍がないか</td></tr>
+<tr><td>2</td><td>提案の実現可能性（蓋然性）</td><td>ビジネスモデルや戦略の現実的成功見込み、1次情報・公式データでの裏付け</td></tr>
+<tr><td>3</td><td>プレゼンテーション能力</td><td>聞き手を納得させる構成・情報整理・視覚資料・話し方</td></tr>
+<tr><td>4</td><td>ワークへの取り組み方（プロセス）</td><td>課題解決アプローチ、チーム内コミュニケーション、情報収集の徹底、仕事量 ※学生には非公開</td></tr>
+</table>
+
+<h3 class="subsection-title">タイムライン</h3>
+<table>
+<tr><th>Day</th><th>内容</th></tr>
+<tr><td>DAY1</td><td>事業紹介・質疑 → ワーク（課題定義・市場調査） → FB → 夕食</td></tr>
+<tr><td>DAY2</td><td>ワーク②（BM設計・KPI・中間発表） → ランチ → 中間発表 → ワーク続行</td></tr>
+<tr><td>DAY3</td><td>ワーク⑤（財務・実行計画） → 最終発表 → 振り返り</td></tr>
+</table>
+
+<h3 class="subsection-title">昨年からの変更点</h3>
+<ul>
+<li>DAY1午前に事業紹介／質疑応答セッションを追加</li>
+<li>当日内定なし → 長期インターンor早期選考で採用に繋げる方針</li>
+<li>評価項目がシンプル化（DAY1から自チーム学生の採用可能性のみ提出）</li>
+</ul>
+
+<h3 class="subsection-title">AI活用ルール</h3>
+<div class="note-box">NDA締結済み。PL以外の情報は読み込みOK。PL情報のみ読み込み不可。</div>
+
+<h3 class="subsection-title">参加学生（15名）</h3>
+<table>
+<tr><th>#</th><th>名前</th><th>就活軸（要約）</th><th>興味業界</th><th>長期インターン</th></tr>
+<tr><td>1</td><td>鈴木 隼人</td><td>仮説検証、自分らしく</td><td>広告・マーケ、メガベン、コンサル</td><td>なし</td></tr>
+<tr><td>2</td><td>臼居 航</td><td>新規事業、カルチャーフィット</td><td>事業会社・大手新規事業</td><td>セブンリッチ（週24h）</td></tr>
+<tr><td>3</td><td>吉野 創太郎</td><td>ビジョン共感、変数が大きい</td><td>AI</td><td>自社経営</td></tr>
+<tr><td>4</td><td>乘本 凜也</td><td>社会貢献、裁量権、社風</td><td>コンサル</td><td>なし</td></tr>
+<tr><td>5</td><td>井田 将一</td><td>事業家志向、面白い仕事</td><td>事業系・戦コン・外銀・商社</td><td>青山社中（週10h）</td></tr>
+<tr><td>6</td><td>清水 一蕗</td><td>成長、やりがい、待遇</td><td>金融、商社、メーカー</td><td>オメガキャピタル（週20h）</td></tr>
+<tr><td>7</td><td>山本 大輔</td><td>優秀な周囲</td><td>商社、デベ、成長業界</td><td>AI就活（週60h）</td></tr>
+<tr><td>8</td><td>佐藤 俊翼</td><td>優秀な同期、チャレンジ環境</td><td>コンサル</td><td>ソフトバンクロボティクス（週24h）</td></tr>
+<tr><td>9</td><td>菰田 大翔</td><td>対話で最適解、改善サイクル</td><td>戦コン、メガベン、商社</td><td>AI就活（週20h+）</td></tr>
+<tr><td>10</td><td>五十嵐 大智</td><td>知的好奇心、給料</td><td>金融、コンサル、事業会社</td><td>アクティビスト系ファンド（週70h）</td></tr>
+<tr><td>11</td><td>黒澤 雄樹</td><td>成長環境、裁量権</td><td>ベンチャー事業、コンサル、商社</td><td>継続中（週20-30h）</td></tr>
+<tr><td>12</td><td>吉田 優希</td><td>人に影響を与える仕事</td><td>製薬、事業会社、IT、コンサル</td><td>なし</td></tr>
+<tr><td>13</td><td>須藤 大貴</td><td>社会・都市への長期的価値</td><td>不動産・デベ、コンサル、事業会社</td><td>まちづくり系（週10-15h）</td></tr>
+<tr><td>14</td><td>山田 慶翔</td><td>若手裁量、尊敬できる人</td><td>デベ、商社、コンサル</td><td>ノーコード総研（週20h）</td></tr>
+<tr><td>15</td><td>山田 さくら</td><td>挑戦を後押しする社風</td><td>商社、メガベン、デベ</td><td>継続中（週15h・役員会議議事録）</td></tr>
+</table>
+
+<!-- ===== S02 準備チェックリスト ===== -->
+<span class="section-anchor" id="s02"></span>
+<h2 class="section-title">準備チェックリスト</h2>
+
+<h3 class="subsection-title">メンター事前準備（優先度順）</h3>
+<table>
+<tr><th>優先度</th><th>項目</th><th>目安時間</th><th>完了目安</th></tr>
+<tr><td>🔴 必須</td><td>評価軸4軸を暗記・ルーブリック通読</td><td>1h</td><td>2日前まで</td></tr>
+<tr><td>🔴 必須</td><td>シミュレーション（Well-Ledger）通読</td><td>2h</td><td>2日前まで</td></tr>
+<tr><td>🔴 必須</td><td>メンタリングガイド通読（問いの技法・フェーズ戦略）</td><td>1.5h</td><td>前日まで</td></tr>
+<tr><td>🟡 推奨</td><td>フレームワーク集 第1〜2章（市場分析・BM）通読</td><td>2h</td><td>前日まで</td></tr>
+<tr><td>🟡 推奨</td><td>フレームワーク集 第3〜4章（KPI・PL）通読</td><td>2h</td><td>当日朝まで</td></tr>
+<tr><td>🟡 推奨</td><td>フレームワーク集 第5章（実行計画）通読</td><td>1h</td><td>DAY2前まで</td></tr>
+<tr><td>🟢 任意</td><td>学生プロフィール精読・メモ作成</td><td>30min</td><td>前日まで</td></tr>
+</table>
+
+<h3 class="subsection-title">評価軸別の高評価・低評価行動例</h3>
+<details>
+<summary>軸1: 論理的思考力 — 高評価・低評価の具体的行動</summary>
+<div class="details-content">
+<table>
+<tr><th>評価</th><th>行動例</th></tr>
+<tr><td>高評価（4-5）</td><td>「市場規模3,000億の根拠はこのレポートのp.15の数字で、成長率7%は政府統計を使いました」のように一次情報での定量的裏付けがある</td></tr>
+<tr><td>高評価（4-5）</td><td>「当初の仮説はAでしたが、調査の結果Bと判明したので方針を変えました」と仮説更新のプロセスを明示できる</td></tr>
+<tr><td>低評価（1-2）</td><td>「〜と思います」「〜な気がします」という主観表現のみで根拠なし</td></tr>
+<tr><td>低評価（1-2）</td><td>問い返したときに「調べていません」「なんとなくです」という回答が返ってくる</td></tr>
+</table>
+</div>
+</details>
+<details>
+<summary>軸2: 実現可能性（蓋然性）— 高評価・低評価の具体的行動</summary>
+<div class="details-content">
+<table>
+<tr><th>評価</th><th>行動例</th></tr>
+<tr><td>高評価（4-5）</td><td>競合との差別化を「機能」だけでなく「構造的優位性（特許・独自データ・ネットワーク効果）」で説明できる</td></tr>
+<tr><td>高評価（4-5）</td><td>顧客の実際の声（DAY1の仮説を踏まえた検証）を引用して実現可能性を裏付けている</td></tr>
+<tr><td>低評価（1-2）</td><td>「うちはLINEより使いやすい」「Amazonには勝てないが〜」のように主観的な根拠</td></tr>
+<tr><td>低評価（1-2）</td><td>参入障壁の分析なしに「あとは実行するだけ」という結論</td></tr>
+</table>
+</div>
+</details>
+<details>
+<summary>軸3: プレゼンテーション能力 — 高評価・低評価の具体的行動</summary>
+<div class="details-content">
+<table>
+<tr><th>評価</th><th>行動例</th></tr>
+<tr><td>高評価（4-5）</td><td>「結論→根拠→詳細」の構造で話せる。スライドを見ずに聴衆を見て話せる</td></tr>
+<tr><td>高評価（4-5）</td><td>「一番伝えたいことは〜です」と明確なメッセージを持っている</td></tr>
+<tr><td>低評価（1-2）</td><td>スライドを読み上げるだけ。質問への回答が「スライドに書いてあります」</td></tr>
+<tr><td>低評価（1-2）</td><td>資料の見た目だけが作り込まれており、中身の論理が薄い</td></tr>
+</table>
+</div>
+</details>
+<details>
+<summary>軸4: ワークへの取り組み方（プロセス）— ※学生には非公開</summary>
+<div class="details-content">
+<table>
+<tr><th>評価</th><th>行動例</th></tr>
+<tr><td>高評価（4-5）</td><td>情報の信頼性を判断しながら収集している（「このサイトは公式データではないので確認しました」）</td></tr>
+<tr><td>高評価（4-5）</td><td>チーム内で積極的に意見交換し、他者の意見に論拠を加えて発展させる</td></tr>
+<tr><td>低評価（1-2）</td><td>指示待ち。メンターが問いかけないと動かない</td></tr>
+<tr><td>低評価（1-2）</td><td>チームの場で沈黙が続き、他者への貢献が見えない</td></tr>
+</table>
+</div>
+</details>
+
+<h3 class="subsection-title">当日の携帯物・確認事項</h3>
+<ul>
+<li>評価シート（印刷 or タブレット）</li>
+<li>リアルタイムメモ用紙（学生ごとのエビデンス記録）</li>
+<li>本資料（オフライン参照可能な状態）</li>
+<li>メンター向け事前説明会スライド確認済み</li>
+<li>学生プロフィール・チーム割り当て確認済み</li>
+</ul>
+
+<!-- ===== S03 フレームワーク索引 ===== -->
+<span class="section-anchor" id="s03"></span>
+<h2 class="section-title">フレームワーク集 索引</h2>
+<table>
+<tr><th>章</th><th>タイトル</th><th>主要トピック</th><th>活用日</th></tr>
+<tr><td>1</td><td>市場分析</td><td>TAM/SAM/SOM、5Forces、PEST、SWOT、3C/競合分析</td><td>DAY1</td></tr>
+<tr><td>2</td><td>ビジネスモデル設計</td><td>BMC、VPC、バリューチェーン、収益モデル8類型、プライシング、ユニットエコノミクス</td><td>DAY2</td></tr>
+<tr><td>3</td><td>KPI設計</td><td>KPIツリー、先行/遅行指標、感度分析、AARRR、SaaS/マーケットプレイスメトリクス</td><td>DAY2</td></tr>
+<tr><td>4</td><td>PL・財務計画</td><td>PL構造、固変分解、BEP分析、3年PL作成、キャッシュフロー、財務モデリング</td><td>DAY3</td></tr>
+<tr><td>5</td><td>実行計画</td><td>マイルストーン、リソース計画、MVP5類型、リスク分析、GTM戦略、事業計画書構成</td><td>DAY3</td></tr>
+</table>
+<div class="info-box">
+<strong>学習ゴール（メンター向け）</strong>: 学生が「市場が大きい」と言ったとき「SOMで見ると？」と問い返せる。BMCの矛盾を即座に指摘できる。学生のKPIが「売上だけ」のとき「先行指標は？」と問える。PLに人件費が入っていないことを指摘し作り方を教えられる。MVPが「全部入り」のとき「最小限の検証は？」と問える。
+</div>
+
+<!-- ===== S04 市場分析 ===== -->
+<span class="section-anchor" id="s04"></span>
+<h2 class="section-title">第1章: 市場分析</h2>
+
+<details>
+<summary>TAM / SAM / SOM — 市場規模3段階分解</summary>
+<div class="details-content">
+<h4>定義</h4>
+<table>
+<tr><th>指標</th><th>定義</th><th>投資家の見方</th></tr>
+<tr><td>TAM（Total Addressable Market）</td><td>この問題を持つ全世界・全市場の潜在需要。「天井」</td><td>事業の最大インパクトを示す。1,000億以上が望ましい</td></tr>
+<tr><td>SAM（Serviceable Addressable Market）</td><td>自社が実際にリーチできる顧客層の市場規模。地域・チャネル・製品スペックで絞る</td><td>現実的な戦場。TAMの20-50%が健全</td></tr>
+<tr><td>SOM（Serviceable Obtainable Market）</td><td>3〜5年で実際に獲得できる市場シェア。競合・営業力・資金を考慮</td><td>実行計画と接続。SAMの5-15%が一般的</td></tr>
+</table>
+<h4>計算の2アプローチ</h4>
+<table>
+<tr><th>アプローチ</th><th>方法</th><th>向いている場面</th></tr>
+<tr><td>トップダウン</td><td>業界総市場規模（レポート値）× 自社がカバーできる割合</td><td>既存市場への参入、比較データがある場合</td></tr>
+<tr><td>ボトムアップ</td><td>顧客数 × 購入頻度 × 単価</td><td>新規市場、精度が求められる場合。投資家に好まれる</td></tr>
+</table>
+<h4>業界ワークスルー①: フードデリバリー</h4>
+<ul>
+<li>TAM: 外食産業全体（約26兆円）×デリバリー化可能比率20% = 5.2兆円</li>
+<li>SAM: 都市部（人口カバレッジ40%）× 5.2兆円 = 2.08兆円</li>
+<li>SOM: Y3シェア1% = 208億円</li>
+</ul>
+<h4>業界ワークスルー②: BtoB SaaS（中小企業向け会計）</h4>
+<ul>
+<li>TAM: 中小企業380万社 × 会計ソフト年間利用額6万円 = 2,280億円</li>
+<li>SAM: クラウド移行意向企業30% = 684億円</li>
+<li>SOM: Y3で2,000社獲得 × 月額3万 × 12 = 72億円</li>
+</ul>
+<h4>メンター向け5つのよくある間違いと問い</h4>
+<table>
+<tr><th>間違い</th><th>メンターの問い</th></tr>
+<tr><td>TAMとSAMが同じ</td><td>「地理的・製品的に除外する顧客は誰ですか？」</td></tr>
+<tr><td>成長率の根拠なし</td><td>「その15%成長の出典はどこですか？政府か業界団体か？」</td></tr>
+<tr><td>SOMが楽観的すぎ（SAMの50%超）</td><td>「最初の100人の顧客をどうやって獲得しますか？」</td></tr>
+<tr><td>顧客単価が感覚値</td><td>「似たサービスの価格調査はしましたか？」</td></tr>
+<tr><td>市場縮小を無視</td><td>「5年後この市場はどうなっていると思いますか？」</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>5Forces — 業界の収益性分析</summary>
+<div class="details-content">
+<h4>5つの競争要因</h4>
+<table>
+<tr><th>力</th><th>内容</th><th>高い場合（自社に不利）</th></tr>
+<tr><td>①競合他社との競争</td><td>業界内での価格・機能競争の強度</td><td>多数の競合・差別化困難・コスト競争</td></tr>
+<tr><td>②新規参入の脅威</td><td>新プレイヤーが入ってくる容易さ</td><td>参入障壁が低い・技術要件がない</td></tr>
+<tr><td>③代替品の脅威</td><td>顧客が別の手段で同じニーズを満たせるか</td><td>代替手段が安価・手軽</td></tr>
+<tr><td>④買い手（顧客）の交渉力</td><td>顧客が価格を下げる圧力をかけられるか</td><td>少数・大口・スイッチコスト低</td></tr>
+<tr><td>⑤売り手（供給者）の交渉力</td><td>仕入先が価格を上げられるか</td><td>独占的供給・代替なし</td></tr>
+</table>
+<h4>参入障壁7類型</h4>
+<ol>
+<li>規模の経済（大量生産でコスト低減）</li>
+<li>製品差別化（ブランド・特許・独自性）</li>
+<li>資本要件（設備・開発に巨額資金が必要）</li>
+<li>スイッチングコスト（顧客の乗り換えコスト）</li>
+<li>流通チャネルへのアクセス（棚・代理店）</li>
+<li>コスト優位（特許技術・立地・原材料アクセス）</li>
+<li>政府の政策（規制・免許・認可）</li>
+</ol>
+<h4>5Forces分析ワークスルー: EdTech（オンライン資格学習）</h4>
+<ul>
+<li>競合: 中〜高（Udemy/ストアカ/受験予備校が多数）</li>
+<li>新規参入: 中（コンテンツ制作は容易だがブランド確立が難）</li>
+<li>代替: 高（YouTube/ブログで無料学習可能）</li>
+<li>買い手: 高（個人ユーザー、価格比較が容易）</li>
+<li>売り手: 低（講師は多数、差し替え可能）</li>
+<li>→ 総合: 収益性は低〜中程度。差別化戦略が必須</li>
+</ul>
+<h4>メンターの問い</h4>
+<ul>
+<li>「この業界で最も強い力はどれですか？それはなぜですか？」</li>
+<li>「参入障壁が低いとおっしゃいましたが、2年後も参入障壁は低いままですか？」</li>
+<li>「競合が真似してきたとき、あなたの事業は生き残れますか？」</li>
+</ul>
+</div>
+</details>
+
+<details>
+<summary>PEST分析 — マクロ環境</summary>
+<div class="details-content">
+<table>
+<tr><th>軸</th><th>内容</th><th>2026年日本の例</th></tr>
+<tr><td>Political（政治）</td><td>規制・政策・法律・補助金</td><td>スタートアップ育成策（SBIRなど）、AI規制の国際動向、インボイス制度</td></tr>
+<tr><td>Economic（経済）</td><td>GDP・物価・金利・消費動向</td><td>物価上昇・賃上げ圧力、円安継続、中小企業のDX投資増加</td></tr>
+<tr><td>Social（社会）</td><td>人口動態・ライフスタイル・価値観</td><td>少子高齢化加速、副業普及（700万人超）、Z世代のウェルネス意識</td></tr>
+<tr><td>Technological（技術）</td><td>技術革新・特許・R&D</td><td>生成AI普及（ChatGPT等）、クラウド・SaaS浸透、モバイル決済</td></tr>
+</table>
+<div class="note-box">PESTの使い方: 事業の追い風・向かい風をマッピングし、SWOTの「機会・脅威」の裏付けとして使う。単体では意味が薄い。</div>
+</div>
+</details>
+
+<details>
+<summary>SWOT / クロスSWOT — 自社の強み・弱みと外部環境</summary>
+<div class="details-content">
+<h4>SWOT基本構造</h4>
+<table>
+<tr><th></th><th>内部要因</th><th>外部要因</th></tr>
+<tr><td>プラス</td><td>Strength（強み）</td><td>Opportunity（機会）</td></tr>
+<tr><td>マイナス</td><td>Weakness（弱み）</td><td>Threat（脅威）</td></tr>
+</table>
+<h4>クロスSWOT 4戦略</h4>
+<table>
+<tr><th>組み合わせ</th><th>戦略名</th><th>方針</th></tr>
+<tr><td>S × O</td><td>積極戦略</td><td>強みで機会を最大限活用</td></tr>
+<tr><td>W × O</td><td>改善戦略</td><td>弱みを克服して機会を獲得</td></tr>
+<tr><td>S × T</td><td>差別化戦略</td><td>強みで脅威に対抗</td></tr>
+<tr><td>W × T</td><td>防御戦略</td><td>弱みと脅威が重なる領域を避ける</td></tr>
+</table>
+<h4>よくある失敗パターン</h4>
+<ol>
+<li>SWOTが「思います」レベルの感想集になっている（データで裏付けていない）</li>
+<li>弱みを書きたくない心理で「なし」と記入する</li>
+<li>SWOT止まりでクロス分析まで至っていない</li>
+<li>競合のSWOTを分析していない</li>
+<li>SWOTと戦略が接続していない</li>
+</ol>
+</div>
+</details>
+
+<details>
+<summary>3C / 競合分析 — 顧客・競合・自社</summary>
+<div class="details-content">
+<h4>3C分析</h4>
+<table>
+<tr><th>C</th><th>分析内容</th><th>メンターの問い</th></tr>
+<tr><td>Customer（顧客）</td><td>誰が・なぜ・いくらで・どこで購入するか</td><td>「その顧客の一番の痛みは何ですか？今どうやって解決していますか？」</td></tr>
+<tr><td>Competitor（競合）</td><td>直接競合・間接競合の強み弱みと戦略</td><td>「競合のビジネスモデルはどう稼いでいますか？」</td></tr>
+<tr><td>Company（自社）</td><td>自社の強み・リソース・差別化</td><td>「なぜ競合ではなくあなたの会社が勝てますか？」</td></tr>
+</table>
+<h4>競合4分類</h4>
+<table>
+<tr><th>分類</th><th>定義</th><th>例</th></tr>
+<tr><td>直接競合</td><td>同じ顧客・同じ機能</td><td>同カテゴリのSaaS</td></tr>
+<tr><td>間接競合</td><td>同じ問題を別の方法で解決</td><td>Excelでのマニュアル管理</td></tr>
+<tr><td>代替品</td><td>別の手段でニーズを充足</td><td>外注・内製・やらない選択</td></tr>
+<tr><td>潜在競合</td><td>今は参入していないが将来の可能性</td><td>大手が類似機能をリリース</td></tr>
+</table>
+<h4>ポジショニングマップ</h4>
+<p>X軸・Y軸に重要な競争軸（価格・機能・ターゲット等）を設定し、自社と競合をプロット。「空白地帯」を示せるか？</p>
+<div class="note-box">メンターの問い: 「そのポジションに競合がいない理由は何ですか？先人が試みてうまくいかなかったのではないですか？」</div>
+</div>
+</details>
+
+<!-- ===== S05 ビジネスモデル設計 ===== -->
+<span class="section-anchor" id="s05"></span>
+<h2 class="section-title">第2章: ビジネスモデル設計</h2>
+
+<details>
+<summary>BMC（ビジネスモデルキャンバス）— 9ブロック</summary>
+<div class="details-content">
+<table>
+<tr><th>ブロック</th><th>問い</th><th>よくある間違い</th></tr>
+<tr><td>CS（顧客セグメント）</td><td>誰のための価値か？最初の100人は誰か？</td><td>「誰でも」という回答 → ペルソナを1人に絞らせる</td></tr>
+<tr><td>VP（価値提案）</td><td>顧客のどんな問題を解決するか？既存の解決策と何が違うか？</td><td>機能の羅列 → 「なぜそれが必要か」を問う</td></tr>
+<tr><td>CH（チャネル）</td><td>どうやって顧客に届けるか？</td><td>VPと不整合（オンラインサービスなのにオフライン営業のみ）</td></tr>
+<tr><td>CR（顧客関係）</td><td>どうやって顧客を獲得・維持・拡大するか？</td><td>獲得だけ考えてリテンションが空白</td></tr>
+<tr><td>RS（収益の流れ）</td><td>誰が何に対していくら払うか？</td><td>「売上＝事業」のみ。LTVを考慮していない</td></tr>
+<tr><td>KR（主要リソース）</td><td>価値提供に必要な資産・人材・特許は何か？</td><td>「技術力」「人材」など抽象的すぎる</td></tr>
+<tr><td>KA（主要活動）</td><td>価値提供のために何をする必要があるか？</td><td>全部書こうとする → 最も重要な1〜3つに絞る</td></tr>
+<tr><td>KP（主要パートナー）</td><td>外部に頼る必要があるリソース・活動は何か？</td><td>「なんでもパートナー」と書く → 依存リスクを問う</td></tr>
+<tr><td>CS（コスト構造）</td><td>最も大きなコスト要素は何か？固定費・変動費の割合は？</td><td>人件費を忘れる（最頻出ミス）</td></tr>
+</table>
+<h4>BMC整合性チェックポイント（メンター確認用）</h4>
+<ul>
+<li>VP（価値）とCH（チャネル）は整合しているか？（例: 高齢者向けサービスなのにSNS広告のみ）</li>
+<li>RSとKAのコストは対応しているか？（収益に対してコストが現実的か）</li>
+<li>CSとVPが1対1で対応しているか？（複数セグメントは混乱の元）</li>
+<li>KR（主要リソース）が現時点で調達可能か？</li>
+</ul>
+<h4>ワークスルー: AI請求書SaaS</h4>
+<ul>
+<li>CS: 年商1〜10億の中小企業経営者（経理部なし）</li>
+<li>VP: 紙の請求書をAIでデジタル化→会計ソフト自動連携、月30時間削減</li>
+<li>CH: Web広告→14日無料トライアル→セルフオンボーディング</li>
+<li>CR: 自動チュートリアル + インアプリサポートチャット</li>
+<li>RS: 月額SaaS（Basic 5千/Pro 1.5万/Enterprise 5万）</li>
+<li>KR: AIエンジン（OCR特化）、セキュリティ認証</li>
+<li>KA: AIモデル改善、顧客サクセス、会計ソフト連携開発</li>
+<li>KP: 会計ソフトベンダー（連携先）、AWS（インフラ）</li>
+<li>CS: 開発人件費3名×600万=1,800万、AWS100万、営業100万</li>
+</ul>
+</div>
+</details>
+
+<details>
+<summary>VPC / JTBD — 価値提案の設計</summary>
+<div class="details-content">
+<h4>VPC（Value Proposition Canvas）</h4>
+<table>
+<tr><th>顧客側</th><th>内容</th><th>価値提案側</th><th>内容</th></tr>
+<tr><td>Customer Jobs</td><td>顧客が達成しようとしていること（機能的・感情的・社会的）</td><td>Products &amp; Services</td><td>提供する製品・サービス</td></tr>
+<tr><td>Pains</td><td>仕事をする上での痛み・摩擦・リスク</td><td>Pain Relievers</td><td>痛みをどう取り除くか</td></tr>
+<tr><td>Gains</td><td>顧客が望む成果・メリット</td><td>Gain Creators</td><td>利益をどう創出するか</td></tr>
+</table>
+<h4>JTBD（Jobs To Be Done）理論</h4>
+<p>「顧客は製品を買うのではなく、ある仕事を達成するために製品を『雇用』する」（クレイトン・クリステンセン）</p>
+<p>例: ミルクシェイクの事例 — 朝の通勤者は「長い運転時間を飽きずに過ごし、腹持ちさせる」ためにミルクシェイクを雇用していた</p>
+<h4>PSF → PMF → BMFの3段階</h4>
+<table>
+<tr><th>Fit</th><th>問い</th><th>検証方法</th></tr>
+<tr><td>PSF（Problem-Solution Fit）</td><td>この問題は本当に存在するか？この解決策は機能するか？</td><td>顧客インタビュー10件以上</td></tr>
+<tr><td>PMF（Product-Market Fit）</td><td>顧客は繰り返し使ってくれるか？</td><td>Sean Ellis Test（40%ルール）、リテンション</td></tr>
+<tr><td>BMF（Business Model Fit）</td><td>スケールさせながら利益を出せるか？</td><td>ユニットエコノミクス黒字化</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>収益モデル8類型 — どう稼ぐか</summary>
+<div class="details-content">
+<table>
+<tr><th>類型</th><th>構造</th><th>代表例</th><th>KPI</th></tr>
+<tr><td>サブスクリプション</td><td>定期課金（月次/年次）</td><td>Netflix, Spotify</td><td>MRR, Churn Rate, LTV</td></tr>
+<tr><td>トランザクション</td><td>取引ごとに課金</td><td>PayPay, 決済代行</td><td>TPV, 取引件数, テイクレート</td></tr>
+<tr><td>マーケットプレイス</td><td>売り手・買い手をマッチングし手数料</td><td>メルカリ, Airbnb</td><td>GMV, テイクレート, 流動性</td></tr>
+<tr><td>SaaS（BtoB）</td><td>ビジネス向け定額SaaS</td><td>Salesforce, Freee</td><td>ARR, NDR, Magic Number</td></tr>
+<tr><td>フリーミアム</td><td>基本無料+プレミアム有料</td><td>Slack, Dropbox</td><td>無料→有料転換率, ARPU</td></tr>
+<tr><td>広告</td><td>広告主からの収益、ユーザー無料</td><td>Google, Meta</td><td>DAU, CPM, ARPU</td></tr>
+<tr><td>ライセンス</td><td>知的財産の使用権を販売</td><td>特許ライセンス, フランチャイズ</td><td>ライセンス件数, ロイヤリティ単価</td></tr>
+<tr><td>レベニューシェア</td><td>パートナーの売上の一定割合を受け取る</td><td>App Store, 代理店契約</td><td>パートナー売上, シェア率</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>プライシング — 価格設計の理論と実践</summary>
+<div class="details-content">
+<h4>価格設定3アプローチ</h4>
+<table>
+<tr><th>アプローチ</th><th>方法</th><th>メリット/デメリット</th></tr>
+<tr><td>コストプラス</td><td>コスト + 利益マージン</td><td>簡単だが市場無視。価値を反映しない</td></tr>
+<tr><td>競合ベース</td><td>競合価格を参照して設定</td><td>安全だが差別化できない</td></tr>
+<tr><td>バリューベース</td><td>顧客が得る価値に基づいて設定</td><td>利益率最大化できるが顧客調査が必要</td></tr>
+</table>
+<h4>心理的プライシング</h4>
+<ul>
+<li><strong>アンカリング効果</strong>: 最初に見た価格が基準になる。高い価格を先に見せると、次の価格が安く感じる</li>
+<li><strong>デコイ効果</strong>: 3つのプランの真ん中が選ばれやすい（Lite/Standard/Premium）</li>
+<li><strong>端数効果</strong>: 10,000円より9,800円が安く感じる</li>
+</ul>
+<h4>Van Westendorp法（価格受容範囲の調査）</h4>
+<p>4つの質問で価格帯を特定: 「高すぎて買えない」「高いが許容範囲」「安くて品質に不安」「安すぎておかしい」 → 4曲線の交点が最適価格帯</p>
+<h4>価格弾力性</h4>
+<p>価格弾力性 = 需要量変化率 ÷ 価格変化率。|e| &gt; 1は弾力的（値下げで売上増）、|e| &lt; 1は非弾力的（値上げしても需要維持）</p>
+</div>
+</details>
+
+<details>
+<summary>ユニットエコノミクス — LTV / CAC / Payback</summary>
+<div class="details-content">
+<h4>主要指標</h4>
+<table>
+<tr><th>指標</th><th>計算式</th><th>健全な水準</th></tr>
+<tr><td>LTV（顧客生涯価値）</td><td>ARPU × 粗利率 ÷ Churn Rate</td><td>CACの3倍以上</td></tr>
+<tr><td>CAC（顧客獲得コスト）</td><td>マーケ+営業費 ÷ 新規獲得顧客数</td><td>LTVの1/3以下</td></tr>
+<tr><td>Payback Period</td><td>CAC ÷ 月次粗利</td><td>12ヶ月以内が望ましい</td></tr>
+<tr><td>LTV/CAC比</td><td>LTV ÷ CAC</td><td>3倍以上（SaaSの目安）</td></tr>
+</table>
+<h4>LTVの3つの計算方法</h4>
+<ol>
+<li>シンプル法: ARPU × 平均継続月数 × 粗利率</li>
+<li>チャーンベース: ARPU × 粗利率 ÷ 月次チャーン率</li>
+<li>DCF法: 将来キャッシュフローを現在価値に割引（より精緻）</li>
+</ol>
+<h4>ワークスルー: BtoB SaaS月額3万円</h4>
+<ul>
+<li>ARPU: 3万円/月</li>
+<li>粗利率: 75%（ホスティング・サポート除く）</li>
+<li>月次チャーン率: 2%（年次チャーン約22%）</li>
+<li>LTV = 3万 × 75% ÷ 2% = 112.5万円</li>
+<li>CAC（広告主体）: 200万円 ÷ 20件 = 10万円</li>
+<li>LTV/CAC = 11.25倍（良好）</li>
+<li>Payback = 10万 ÷ (3万×75%) = 4.4ヶ月（優秀）</li>
+</ul>
+<div class="note-box">メンターの問い: 「チャーン率が2倍になったとき、LTVはどう変わりますか？CAC回収できますか？」（感度分析）</div>
+</div>
+</details>
+
+<!-- ===== S06 KPI設計 ===== -->
+<span class="section-anchor" id="s06"></span>
+<h2 class="section-title">第3章: KPI設計</h2>
+
+<details>
+<summary>KPIの本質 — KGI / KPI / OKRの違い</summary>
+<div class="details-content">
+<table>
+<tr><th>概念</th><th>定義</th><th>例</th></tr>
+<tr><td>KGI（Key Goal Indicator）</td><td>最終ゴール指標。ビジネスの成功を定義する数値</td><td>年間売上3億円、黒字化達成</td></tr>
+<tr><td>KPI（Key Performance Indicator）</td><td>KGI達成に直結する中間指標。行動で動かせる先行指標</td><td>月次新規顧客数、解約率、CAC</td></tr>
+<tr><td>OKR（Objectives &amp; Key Results）</td><td>野心的なObjective + 3〜5の定量的KR</td><td>O: 市場リーダーへ / KR1: NPS 50以上, KR2: MAU 10万</td></tr>
+</table>
+<div class="warn-box"><strong>グッドハートの法則</strong>: 「指標がゴールになった瞬間、その指標は良い指標でなくなる」。KPIを達成のためだけに操作する行動（コールセンターの通話時間短縮で問題解決を諦めるなど）に注意。</div>
+<h4>SMARTなKPIの条件</h4>
+<ul>
+<li>Specific（具体的）: 「成長」ではなく「月次10%成長」</li>
+<li>Measurable（測定可能）: データで取得できる</li>
+<li>Achievable（達成可能）: 現実的な水準</li>
+<li>Relevant（関連性）: ビジネスゴールと直結</li>
+<li>Time-bound（期限付き）: いつまでに達成するか</li>
+</ul>
+</div>
+</details>
+
+<details>
+<summary>KPIツリー — 4業態ワークスルー</summary>
+<div class="details-content">
+<h4>KPIツリー①: BtoC EC</h4>
+<pre>売上
+├── 訪問者数
+│   ├── オーガニック流入
+│   └── 有料流入（広告費 × ROAS）
+├── 購入転換率（CVR）
+│   ├── 商品ページ到達率
+│   └── カート放棄率
+└── 客単価
+    ├── 平均購入点数
+    └── 平均商品単価</pre>
+<h4>KPIツリー②: BtoB SaaS</h4>
+<pre>ARR（年次経常収益）
+├── 新規ARR
+│   ├── リード数
+│   ├── リード→商談転換率
+│   ├── 商談→成約率
+│   └── 平均契約単価
+└── 継続・拡張ARR
+    ├── Gross Churn（解約ARR）
+    └── Net Expansion（アップセル+クロスセルARR）</pre>
+<h4>KPIツリー③: マーケットプレイス</h4>
+<pre>GMV（流通総額）
+├── 需要サイド
+│   ├── バイヤー数（アクティブ）
+│   └── 購入頻度
+└── 供給サイド
+    ├── セラー数（アクティブ）
+    ├── 掲載商品数
+    └── 平均取引単価</pre>
+<h4>KPIツリー④: 広告モデル</h4>
+<pre>広告収益
+├── インベントリ（広告枠）
+│   ├── DAU（日次アクティブユーザー）
+│   └── セッションあたりPV数
+└── 収益化効率
+    ├── フィルレート（広告表示率）
+    └── CPM（1,000インプレッション単価）</pre>
+</div>
+</details>
+
+<details>
+<summary>先行指標 / 遅行指標 — 因果関係の特定</summary>
+<div class="details-content">
+<table>
+<tr><th>種類</th><th>定義</th><th>例</th></tr>
+<tr><td>遅行指標（Lagging）</td><td>結果を表す指標。測定時点では既に起きている</td><td>売上、利益、Churn数</td></tr>
+<tr><td>先行指標（Leading）</td><td>将来の結果を予測する指標。今の行動で動かせる</td><td>商談数、サイト訪問数、NPS</td></tr>
+</table>
+<h4>先行指標の特定5ステップ</h4>
+<ol>
+<li>最終KGI（遅行指標）を定義する</li>
+<li>KGIに直接影響するドライバーをリストアップ</li>
+<li>各ドライバーが「今の行動で変えられるか」を検証</li>
+<li>先行期間（Leading Period）を推定（行動→結果まで何週間か）</li>
+<li>相関検証（過去データで先行指標とKGIの相関を確認）</li>
+</ol>
+<h4>業界別 先行指標マップ</h4>
+<table>
+<tr><th>業種</th><th>先行指標</th><th>遅行指標</th><th>先行期間</th></tr>
+<tr><td>BtoB SaaS</td><td>デモ申込数、トライアル登録数</td><td>新規ARR</td><td>30〜90日</td></tr>
+<tr><td>EC</td><td>カート追加率、メールCTR</td><td>月次売上</td><td>7〜14日</td></tr>
+<tr><td>飲食</td><td>予約率、口コミ件数</td><td>来店客数、売上</td><td>1〜2週間</td></tr>
+<tr><td>採用サービス</td><td>求職者登録数、求人掲載数</td><td>成約件数</td><td>30〜60日</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>感度分析 / トルネードチャート — キードライバーの優先順位</summary>
+<div class="details-content">
+<h4>感度分析の手順</h4>
+<ol>
+<li>全変数を±10%変化させたときの売上への影響を計算</li>
+<li>影響の大きい順に並べる（トルネードチャート）</li>
+<li>TOP3のドライバーに集中して改善</li>
+</ol>
+<h4>SaaS感度分析ワークスルー（月次売上 1,000万円ベース）</h4>
+<table>
+<tr><th>変数</th><th>+10%時</th><th>-10%時</th><th>インパクト</th></tr>
+<tr><td>平均単価（3万→3.3万）</td><td>+10% = 1,100万</td><td>-10% = 900万</td><td>±100万（最大）</td></tr>
+<tr><td>Churn率（2%→1.8%）</td><td>+5.6% = 1,056万</td><td>-4.8% = 952万</td><td>±52万</td></tr>
+<tr><td>新規獲得（50→55社）</td><td>+3% = 1,030万</td><td>-3% = 970万</td><td>±30万</td></tr>
+</table>
+<p>→ この事業では「単価維持・向上」が最重要KPI。チャーン管理が次点。</p>
+<div class="note-box">メンターの問い: 「この事業で一番売上に影響するのは何ですか？それを10%改善するために、具体的に何をしますか？」</div>
+</div>
+</details>
+
+<details>
+<summary>AARRR — グロースファネル</summary>
+<div class="details-content">
+<table>
+<tr><th>ステージ</th><th>問い</th><th>主要KPI</th><th>改善レバー</th></tr>
+<tr><td>Acquisition（獲得）</td><td>どこから顧客を獲得するか？</td><td>CAC, チャネル別CVR</td><td>SEO, 広告, PR, 紹介</td></tr>
+<tr><td>Activation（活性化）</td><td>顧客が最初に価値を体験するか？</td><td>初回アクション率, Aha Moment到達率</td><td>オンボーディング改善</td></tr>
+<tr><td>Retention（継続）</td><td>顧客は戻ってくるか？</td><td>DAU/MAU比, Cohort Retention</td><td>エンゲージメント機能, 通知</td></tr>
+<tr><td>Revenue（収益化）</td><td>顧客は支払うか？</td><td>ARPU, 転換率, LTV</td><td>価格設計, アップセル</td></tr>
+<tr><td>Referral（紹介）</td><td>顧客は他の人を連れてくるか？</td><td>NPS, K-factor（バイラル係数）</td><td>紹介プログラム, シェア機能</td></tr>
+</table>
+<h4>Aha Momentの発見方法</h4>
+<p>チャーンせずに継続する顧客と離脱した顧客の行動を比較し、「生存顧客が行った初期アクション」を特定。例: Slackは「チームで2,000メッセージ送信」がAha Momentと特定。</p>
+<h4>PLG（Product-Led Growth）との関係</h4>
+<p>プロダクト自体がAcquisition+Activation+Retentionを担う。フリーミアム・バイラル設計でCACを大幅削減。顧客がプロダクトを使うことで他の顧客を連れてくる。</p>
+</div>
+</details>
+
+<details>
+<summary>SaaSメトリクス / マーケットプレイスメトリクス</summary>
+<div class="details-content">
+<h4>SaaS重要指標</h4>
+<table>
+<tr><th>指標</th><th>定義</th><th>健全値</th></tr>
+<tr><td>MRR（Monthly Recurring Revenue）</td><td>月次経常収益 = 全契約者の月額合計</td><td>MoM 10%+ = 高成長</td></tr>
+<tr><td>ARR</td><td>MRR × 12</td><td>—</td></tr>
+<tr><td>NDR（Net Dollar Retention）</td><td>既存顧客からの収益変化率（解約・縮小・拡張含む）</td><td>100%超 = 良好、120%超 = 優秀</td></tr>
+<tr><td>Magic Number</td><td>新規ARR ÷ (前四半期S&amp;Mコスト) — 営業効率</td><td>0.75以上が目安</td></tr>
+<tr><td>Rule of 40</td><td>収益成長率% + EBITDA率% ≥ 40</td><td>スタートアップのバランス指標</td></tr>
+</table>
+<h4>MRR内訳分解</h4>
+<pre>MRR変動 =
+  + New MRR（新規）
+  + Expansion MRR（アップグレード）
+  - Contraction MRR（ダウングレード）
+  - Churned MRR（解約）</pre>
+<h4>マーケットプレイス重要指標</h4>
+<table>
+<tr><th>指標</th><th>定義</th><th>備考</th></tr>
+<tr><td>GMV（流通総額）</td><td>プラットフォーム上の総取引金額</td><td>NRとは異なる（手数料部分のみがNR）</td></tr>
+<tr><td>テイクレート</td><td>NR ÷ GMV × 100%</td><td>業界別: 決済2-3%, フード15-30%, C2C10-15%</td></tr>
+<tr><td>流動性</td><td>出品から成約までの速度</td><td>マーケットプレイスの健全性の核心指標</td></tr>
+<tr><td>需要/供給バランス</td><td>バイヤー数/セラー数の比率</td><td>どちらかが過剰でも機能しない</td></tr>
+</table>
+</div>
+</details>
+
+<!-- ===== S07 PL・財務計画 ===== -->
+<span class="section-anchor" id="s07"></span>
+<h2 class="section-title">第4章: PL・財務計画</h2>
+
+<details>
+<summary>PL構造 — 損益計算書の読み方</summary>
+<div class="details-content">
+<h4>PL基本構造</h4>
+<pre>売上高（Revenue）
+  − 売上原価（COGS: Cost of Goods Sold）
+= 粗利益（Gross Profit）
+  − 販売費及び一般管理費（SG&A）
+    ├── 人件費（Sales, Marketing, G&A）
+    ├── 広告宣伝費
+    └── その他間接費
+= 営業利益（Operating Income / EBIT）
+  ± 営業外収益/費用（金利等）
+= 経常利益
+  ± 特別損益
+  − 法人税等
+= 当期純利益（Net Income）</pre>
+<h4>業態別 粗利率ベンチマーク（15業種）</h4>
+<table>
+<tr><th>業種</th><th>粗利率目安</th><th>理由</th></tr>
+<tr><td>SaaS / クラウドソフトウェア</td><td>70〜85%</td><td>コストの大半が人件費・インフラ（規模の経済が効く）</td></tr>
+<tr><td>コンサルティング</td><td>60〜75%</td><td>主コストは人件費のみ</td></tr>
+<tr><td>EC（自社製品）</td><td>40〜60%</td><td>製品原価・物流費が発生</td></tr>
+<tr><td>製造業（一般）</td><td>20〜40%</td><td>材料費・製造固定費が重い</td></tr>
+<tr><td>飲食業</td><td>60〜70%（食材原価率）→実質20〜30%</td><td>食材は低いが人件費・家賃が重い</td></tr>
+<tr><td>小売業</td><td>20〜40%</td><td>仕入れコストが大きい</td></tr>
+<tr><td>マーケットプレイス（テイクレート型）</td><td>80〜95%</td><td>流通の手数料のみ</td></tr>
+<tr><td>広告プラットフォーム</td><td>70〜80%</td><td>インフラコストのみ</td></tr>
+</table>
+<h4>3業態PL読解ワークスルー</h4>
+<table>
+<tr><th>業態</th><th>売上高</th><th>粗利</th><th>営業利益</th><th>特記事項</th></tr>
+<tr><td>SaaS（CloudSuite）</td><td>5億</td><td>4億（80%）</td><td>0.5億（10%）</td><td>R&D投資が大きく営業利益率は低め</td></tr>
+<tr><td>製造業</td><td>10億</td><td>3億（30%）</td><td>0.8億（8%）</td><td>在庫リスク・設備投資が重い</td></tr>
+<tr><td>飲食</td><td>2億</td><td>1.3億（65%=食材原価率35%）</td><td>0.1億（5%）</td><td>家賃・人件費で大半を消費</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>固変分解 — コスト構造の理解</summary>
+<div class="details-content">
+<table>
+<tr><th>種類</th><th>定義</th><th>例</th></tr>
+<tr><td>固定費（Fixed Cost）</td><td>売上に関係なく発生するコスト</td><td>家賃、正社員人件費、リース料、保険料</td></tr>
+<tr><td>変動費（Variable Cost）</td><td>売上に比例して発生するコスト</td><td>材料費、外注費、決済手数料、配送費</td></tr>
+<tr><td>準変動費（Mixed Cost）</td><td>固定部分+変動部分を持つ</td><td>電気代（基本料金+使用量）、人件費（基本給+残業）</td></tr>
+</table>
+<h4>高低点法（固変分解の最も簡単な方法）</h4>
+<pre>変動費率 = (最高コスト - 最低コスト) ÷ (最高売上 - 最低売上)
+固定費 = 最高コスト - 変動費率 × 最高売上</pre>
+<h4>コスト構造の戦略的含意</h4>
+<ul>
+<li>固定費比率が高い → 規模が拡大するほど利益率が改善（規模の経済）</li>
+<li>変動費比率が高い → スケールしても利益率が変わらない（コスト管理が容易）</li>
+<li>SaaSは固定費（R&D・人件費）比率が高く、スケールで粗利率が急改善</li>
+</ul>
+</div>
+</details>
+
+<details>
+<summary>BEP分析 — 損益分岐点の計算と戦略</summary>
+<div class="details-content">
+<h4>BEP計算式</h4>
+<pre>BEP（売上高） = 固定費 ÷ (1 - 変動費率)
+BEP（数量） = 固定費 ÷ 限界利益（単価 - 変動費単価）
+安全余裕率 = (実際売上 - BEP売上) ÷ 実際売上 × 100%</pre>
+<h4>BEP改善の3つのレバー</h4>
+<table>
+<tr><th>レバー</th><th>方法</th><th>効果</th></tr>
+<tr><td>単価を上げる</td><td>価格改定、プレミアムプラン追加</td><td>限界利益増加 → BEP低下</td></tr>
+<tr><td>変動費を下げる</td><td>仕入交渉、外注単価削減、自動化</td><td>変動費率低下 → 限界利益率上昇</td></tr>
+<tr><td>固定費を下げる</td><td>家賃交渉、人件費最適化</td><td>BEP売上の分子が小さくなる</td></tr>
+</table>
+<h4>ワークスルー: FitStream（BtoB SaaS）</h4>
+<ul>
+<li>月額単価: 3万円/社</li>
+<li>変動費率: 25%（サポート・インフラ）</li>
+<li>固定費（月次）: 180万円（エンジニア2名 + 営業1名）</li>
+<li>限界利益単価: 3万 × 75% = 2.25万/社</li>
+<li>BEP = 180万 ÷ 2.25万 = <strong>80社</strong></li>
+<li>安全余裕率（100社時）: (100-80) ÷ 100 = <strong>20%</strong></li>
+</ul>
+<div class="note-box">メンターの問い: 「BEP到達時期はいつですか？その時点で何社の顧客を想定していますか？」</div>
+</div>
+</details>
+
+<details>
+<summary>3年PL作成 — ボトムアップ5ステップ</summary>
+<div class="details-content">
+<h4>ボトムアップPL作成の5ステップ</h4>
+<ol>
+<li><strong>Assumptions Sheet作成</strong>: 主要ドライバー（顧客獲得数、単価、Churn率）を明示し、根拠を記載</li>
+<li><strong>月次売上試算</strong>: 月初在庫顧客数 + 新規獲得 - 解約 = 月末顧客数 → 月次MRR計算</li>
+<li><strong>人件費の現実計算</strong>: 月給の実質コストは法定福利費・採用費込みで約1.3〜1.5倍</li>
+<li><strong>間接費の計上</strong>: 家賃・SaaS・会計・弁護士・保険等を漏れなく計上</li>
+<li><strong>3シナリオ分析</strong>: ベースケース / 強気ケース(+30%) / 保守ケース(-30%) で感度を示す</li>
+</ol>
+<h4>人件費の現実コスト（重要）</h4>
+<table>
+<tr><th>項目</th><th>月給30万の場合</th></tr>
+<tr><td>月給（額面）</td><td>300,000円</td></tr>
+<tr><td>法定福利費（会社負担 〜15%）</td><td>+45,000円</td></tr>
+<tr><td>採用コスト（年一発生）</td><td>+30,000円/月換算</td></tr>
+<tr><td>PCなど備品・研修費</td><td>+10,000円/月換算</td></tr>
+<tr><td><strong>実質月次コスト</strong></td><td><strong>385,000円〜</strong></td></tr>
+<tr><td><strong>年次換算（12ヶ月）</strong></td><td><strong>〜464万円/年</strong></td></tr>
+</table>
+<div class="warn-box">最頻出ミス: 学生のPLに人件費が「月給×人数」のみで計上されており、法定福利費・採用費が抜けている。実際のコストは提示された給与の1.3〜1.5倍と指摘すること。</div>
+</div>
+</details>
+
+<details>
+<summary>キャッシュフロー — 黒字倒産と資金管理</summary>
+<div class="details-content">
+<h4>キャッシュフロー計算書の3区分</h4>
+<table>
+<tr><th>区分</th><th>内容</th><th>健全な状態</th></tr>
+<tr><td>営業CF</td><td>本業の現金収支（PLと運転資本の調整）</td><td>プラス（本業で稼げている）</td></tr>
+<tr><td>投資CF</td><td>設備・M&A等への投資・回収</td><td>成長期はマイナスが通常</td></tr>
+<tr><td>財務CF</td><td>借入・返済・増資</td><td>成長期はプラス（外部資金調達）</td></tr>
+</table>
+<h4>黒字倒産のメカニズム</h4>
+<p>PLで利益が出ていても、以下の状況でキャッシュが枯渇して倒産する:</p>
+<ul>
+<li>売掛金の回収が遅い（例: 売上計上は月末、入金は翌々月末）</li>
+<li>在庫投資が先行する（仕入れ支払いが売上入金より先）</li>
+<li>設備投資の減価償却分はPLコストだがキャッシュは既に出ている</li>
+</ul>
+<h4>CCC（Cash Conversion Cycle）</h4>
+<pre>CCC = 売掛金回収日数 + 棚卸資産回転日数 - 買掛金支払日数</pre>
+<p>CCCが短いほど運転資金負担が小さい。Amazonは仕入れより売上入金が先でCCCがマイナス（資金を先に集める）。</p>
+<h4>ランウェイ計算</h4>
+<pre>ランウェイ（月）= 現金残高 ÷ 月次バーンレート（純キャッシュ流出）</pre>
+<p>スタートアップは常に18ヶ月以上のランウェイを確保することが推奨される。</p>
+</div>
+</details>
+
+<details>
+<summary>財務モデリング — Assumptions SheetとドライバーベースPL</summary>
+<div class="details-content">
+<h4>良い財務モデルの要件</h4>
+<ol>
+<li>Assumptions Sheetに全仮定を集約（仮定変更→全自動更新）</li>
+<li>ドライバーベース設計（売上 = 顧客数 × 単価 × 継続率、という積み上げ）</li>
+<li>シナリオ切り替えが容易（セル1つで楽観/中立/悲観を切り替え）</li>
+<li>ストレステスト（最悪ケースでも生き残れるか）</li>
+</ol>
+<h4>ストレステストのポイント</h4>
+<table>
+<tr><th>ストレス変数</th><th>想定幅</th><th>確認事項</th></tr>
+<tr><td>売上が計画の50%</td><td>—</td><td>何ヶ月生存できるか</td></tr>
+<tr><td>主要顧客3社が離脱</td><td>—</td><td>売上へのインパクトは何%か</td></tr>
+<tr><td>CAC2倍</td><td>—</td><td>LTV/CACは依然プラスか</td></tr>
+<tr><td>採用遅延（計画の半分）</td><td>—</td><td>プロダクト開発は遅延するか</td></tr>
+</table>
+</div>
+</details>
+
+<!-- ===== S08 実行計画 ===== -->
+<span class="section-anchor" id="s08"></span>
+<h2 class="section-title">第5章: 実行計画</h2>
+
+<details>
+<summary>マイルストーン設計 — Stage-Gate型とGo/No-Go判定</summary>
+<div class="details-content">
+<h4>Stage-Gate型マイルストーンの特徴</h4>
+<ul>
+<li>各ステージ完了時にゲート（Go/No-Go判断）を設ける</li>
+<li>ゲートを通過するための定量的基準を事前に定義</li>
+<li>失敗を早期検知し、最悪のケースでの損失を最小化</li>
+</ul>
+<h4>12ヶ月マイルストーン ワークスルー（フリーランスエンジニア向けPMツール）</h4>
+<table>
+<tr><th>フェーズ</th><th>期間</th><th>主要アクション</th><th>Go基準</th></tr>
+<tr><td>Phase 0: 仮説検証</td><td>M1-M2</td><td>顧客インタビュー20件、Pain確認</td><td>「今すぐ使いたい」が50%以上</td></tr>
+<tr><td>Phase 1: MVP開発</td><td>M3-M4</td><td>最小機能でのプロトタイプ開発</td><td>テストユーザー10名が週3回使用</td></tr>
+<tr><td>Phase 2: PMF追求</td><td>M5-M8</td><td>ユーザー50名獲得、フィードバック反映</td><td>Sean Ellis Test 40%以上</td></tr>
+<tr><td>Phase 3: スケール</td><td>M9-M12</td><td>有料転換、営業開始、BEP到達</td><td>MoM成長率20%、Churn 5%以下</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>リソース計画 — 人件費の現実とBuild vs Buy</summary>
+<div class="details-content">
+<h4>採用コストの現実</h4>
+<table>
+<tr><th>フェーズ</th><th>典型的な採用コスト</th><th>内訳</th></tr>
+<tr><td>エンジニア採用（Mid-Senior）</td><td>100〜200万円/件</td><td>エージェント料（年収30-35%）or リファラル費</td></tr>
+<tr><td>役員採用</td><td>300〜500万円以上</td><td>ヘッドハンター費用</td></tr>
+<tr><td>採用にかかる時間</td><td>3〜6ヶ月</td><td>求人〜オファー承諾まで</td></tr>
+</table>
+<h4>Build vs Buy vs Partner の判断基準</h4>
+<table>
+<tr><th>選択肢</th><th>向いている場面</th><th>リスク</th></tr>
+<tr><td>Build（自社開発）</td><td>競合優位性の中核機能、秘密情報を扱う</td><td>時間とコストが高い</td></tr>
+<tr><td>Buy（購入・外注）</td><td>汎用機能、スピード重視</td><td>ベンダー依存、スイッチングコスト</td></tr>
+<tr><td>Partner（提携）</td><td>補完的なリソース、相互メリット</td><td>関係管理コスト、利益配分交渉</td></tr>
+</table>
+<h4>資金調達とラウンド別希薄化</h4>
+<table>
+<tr><th>ラウンド</th><th>調達金額目安</th><th>株式希薄化目安</th></tr>
+<tr><td>Seed</td><td>500万〜3,000万円</td><td>15〜25%</td></tr>
+<tr><td>Series A</td><td>1億〜5億円</td><td>20〜30%</td></tr>
+<tr><td>Series B</td><td>5億〜30億円</td><td>15〜25%</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>MVP 5類型 — 最小限の検証</summary>
+<div class="details-content">
+<table>
+<tr><th>MVP類型</th><th>説明</th><th>適した場面</th><th>コスト目安</th></tr>
+<tr><td>LPテスト（Smoke Test）</td><td>製品が存在するかのようなLPを作り、CTRやサインアップ数を測定</td><td>需要の有無を確認したいとき</td><td>数日〜1週間</td></tr>
+<tr><td>コンシェルジュMVP</td><td>自動化なしで人力でサービスを提供し、価値を検証</td><td>プロセスの価値を確認したいとき</td><td>開発費ゼロ</td></tr>
+<tr><td>オズの魔法使いMVP</td><td>バックエンドを手動にして、フロントだけ本物のUIを作る</td><td>技術的に複雑な機能の需要確認</td><td>フロント開発のみ</td></tr>
+<tr><td>プロトタイプMVP</td><td>主要機能のみを実装した動作するプロダクト</td><td>UX・機能設計の検証</td><td>1〜3ヶ月開発</td></tr>
+<tr><td>シングルフィーチャーMVP</td><td>1機能のみ完璧に実装</td><td>PMF達成後のスケール前検証</td><td>機能依存</td></tr>
+</table>
+<h4>MVP→PMFのパス</h4>
+<ol>
+<li>Leap of Faith Assumptions（最も危険な仮定）を特定する</li>
+<li>その仮定を最速で検証できるMVP類型を選ぶ</li>
+<li>PMFの基準を事前に定義する（Sean Ellis Test 40%、D30リテンション20%等）</li>
+<li>基準未達の場合のPivot条件も事前に決めておく</li>
+</ol>
+<div class="note-box">メンターの問い: 「そのMVPで何を検証したいですか？3ヶ月後にどんなデータが得られれば成功と言えますか？」</div>
+</div>
+</details>
+
+<details>
+<summary>リスク分析 — プレモーテムと対策</summary>
+<div class="details-content">
+<h4>5つのリスク類型</h4>
+<table>
+<tr><th>リスク類型</th><th>内容</th><th>事前対策</th></tr>
+<tr><td>市場リスク</td><td>需要がない・市場縮小・タイミング不一致</td><td>顧客インタビュー、MVP検証</td></tr>
+<tr><td>技術リスク</td><td>技術的実現可能性、スケール不能</td><td>PoC（概念実証）、技術顧問</td></tr>
+<tr><td>競合リスク</td><td>大手参入、コピー、価格競争</td><td>参入障壁の構築、スピード</td></tr>
+<tr><td>実行リスク</td><td>採用失敗、キーマン離脱、資金枯渇</td><td>バッファ確保、採用計画前倒し</td></tr>
+<tr><td>規制リスク</td><td>法律変更、許認可取得失敗</td><td>法務顧問、規制動向モニタリング</td></tr>
+</table>
+<h4>プレモーテム分析（Pre-Mortem）</h4>
+<p>「3年後にこの事業が失敗した。なぜ失敗したか？」を逆算で考える手法（ゲーリー・クライン）。</p>
+<ol>
+<li>「失敗した」という前提で考える（心理的安全性が高まり、正直なリスクが出やすい）</li>
+<li>チーム全員が個別に「失敗理由」を書き出す</li>
+<li>共有して上位リスクを特定</li>
+<li>各リスクに対するコンティンジェンシープランを策定</li>
+</ol>
+<h4>リスクマトリクス</h4>
+<table>
+<tr><th>—</th><th>発生確率: 低</th><th>発生確率: 高</th></tr>
+<tr><td>影響度: 高</td><td>対応計画を準備（モニタリング）</td><td>最優先対応（コンティンジェンシープラン必須）</td></tr>
+<tr><td>影響度: 低</td><td>許容（モニタリングのみ）</td><td>軽減策を実施（コスト対効果で判断）</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>GTM戦略と事業計画書構成</summary>
+<div class="details-content">
+<h4>初期顧客100人の獲得（Do Things That Don't Scale）</h4>
+<table>
+<tr><th>方法</th><th>内容</th><th>向き不向き</th></tr>
+<tr><td>ダイレクトアウトリーチ</td><td>創業者自身がSNS・メール・訪問で獲得</td><td>BtoB SaaS、高単価サービス</td></tr>
+<tr><td>コミュニティ活用</td><td>ターゲット顧客が集まるコミュニティに入り込む</td><td>BtoC、ニッチ市場</td></tr>
+<tr><td>パートナー経由</td><td>補完的な事業者と提携し顧客を紹介してもらう</td><td>チャネル確立後のスケール</td></tr>
+<tr><td>コンテンツマーケ</td><td>SEO記事・SNSで有機流入を獲得</td><td>長期的・情報財・比較検討期間長い</td></tr>
+</table>
+<h4>事業計画書構成（Sequoia準拠 10〜15スライド）</h4>
+<ol>
+<li>タイトル / エレベーターピッチ（30秒で事業を説明）</li>
+<li>問題（顧客のPain）— データで示す</li>
+<li>解決策（VP）— "Before/After"で示す</li>
+<li>市場規模（TAM/SAM/SOM）</li>
+<li>プロダクト / デモ</li>
+<li>ビジネスモデル（収益構造）</li>
+<li>競合マップ / 差別化</li>
+<li>KPI・トラクション（既存実績・検証データ）</li>
+<li>チーム</li>
+<li>財務計画（3年PL、BEP、資金使途）</li>
+<li>実行計画（マイルストーン + リスク対策）</li>
+</ol>
+<div class="info-box">3日間インターンの落とし込み: DAY3の最終発表ではスライド7〜10枚程度が現実的。「市場→BM→財務→実行」の流れが必須。</div>
+</div>
+</details>
+
+<!-- ===== S09 メンタリングガイド ===== -->
+<span class="section-anchor" id="s09"></span>
+<h2 class="section-title">メンタリングガイド</h2>
+
+<h3 class="subsection-title">メンターのマインドセット</h3>
+<div class="highlight-box">
+<strong>メンターは「教師」ではなく「伴走者」</strong>。答えを与えることは評価を放棄すること。問いを渡して自分で考えさせる。
+</div>
+<table>
+<tr><th>介入すべき状況</th><th>見守るべき状況</th></tr>
+<tr><td>完全に詰まって5分以上沈黙が続く</td><td>議論が白熱している（たとえ間違った方向でも）</td></tr>
+<tr><td>根本的に間違った前提で進んでいる</td><td>試行錯誤・仮説検証のプロセスにある</td></tr>
+<tr><td>チーム内に深刻なコンフリクトがある</td><td>意見の相違を自分たちで解決しようとしている</td></tr>
+<tr><td>時間切れのリスクが高い（残り30分）</td><td>「遅い」と思っても本人たちは集中している</td></tr>
+</table>
+
+<details>
+<summary>問いの技法 — ソクラテス式5類型</summary>
+<div class="details-content">
+<table>
+<tr><th>類型</th><th>目的</th><th>例</th></tr>
+<tr><td>①定義確認の問い</td><td>曖昧な言葉を具体化させる</td><td>「"多くの人"とは具体的に何人ですか？」「"便利"とはどういう意味ですか？」</td></tr>
+<tr><td>②前提検証の問い</td><td>言外の前提を浮き彫りにする</td><td>「なぜそれを当然だと思うのですか？」「その前提が崩れたらどうなりますか？」</td></tr>
+<tr><td>③根拠追及の問い</td><td>証拠・データの質を問う</td><td>「その根拠は何ですか？」「一次情報ですか？二次情報ですか？」</td></tr>
+<tr><td>④視点転換の問い</td><td>別の角度から考えさせる</td><td>「競合の立場から見るとどうですか？」「顧客がNoと言う理由は何ですか？」</td></tr>
+<tr><td>⑤帰結探索の問い</td><td>論理の到達点を確認する</td><td>「それが正しいとすると、次に何が起きますか？」「最悪のケースは何ですか？」</td></tr>
+</table>
+<h4>仮説検証の問い（場面別）</h4>
+<table>
+<tr><th>場面</th><th>問い</th></tr>
+<tr><td>市場が大きいと言っている</td><td>「SOMで見ると何億円ですか？3年後に何%取れると思いますか？その根拠は？」</td></tr>
+<tr><td>競合がいないと言っている</td><td>「今その問題はどうやって解決されていますか？それが競合になりませんか？」</td></tr>
+<tr><td>PLが黒字になっていない</td><td>「BEP到達時期はいつですか？それまでのキャッシュは確保できていますか？」</td></tr>
+<tr><td>アイデアが漠然としている</td><td>「一文で事業を説明してください。誰が、何の問題を、どう解決するのか」</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>チームダイナミクス — タックマンモデルと介入</summary>
+<div class="details-content">
+<h4>タックマンのチーム発達4段階</h4>
+<table>
+<tr><th>ステージ</th><th>特徴</th><th>メンターの介入</th></tr>
+<tr><td>Forming（形成期）</td><td>礼儀正しく静か、様子見</td><td>心理的安全性を作る。全員が話せる雰囲気を</td></tr>
+<tr><td>Storming（混乱期）</td><td>意見の衝突、役割の不明確さ</td><td>対立を押さえ込まない。意見の違いを歓迎する発言を</td></tr>
+<tr><td>Norming（規範期）</td><td>ルール形成、役割分担が落ち着く</td><td>プロセスを褒める。自発的な分担を強化する</td></tr>
+<tr><td>Performing（実行期）</td><td>高い生産性、相互補完</td><td>見守り。必要なリソース提供に集中</td></tr>
+</table>
+<h4>3タイプの問題学生への対応</h4>
+<table>
+<tr><th>タイプ</th><th>特徴</th><th>推奨アプローチ</th></tr>
+<tr><td>Type A: 1人でやろうとする（支配型）</td><td>議論を独占、他者の意見を退ける</td><td>「〇〇さん、△△さんはどう思いますか？」と他者に振る。1対1で「チームへの貢献」の観点を共有</td></tr>
+<tr><td>Type B: 沈黙型（受動型）</td><td>意見を言わない、発言が単語レベル</td><td>YesNoで答えられない問いを振る。「あなただったらどうする？」と個人見解を求める</td></tr>
+<tr><td>Type C: 迷走型（発散型）</td><td>アイデアは多いが収束できない</td><td>「今一番大事な問いは何ですか？」と優先順位を問う。時間制約を意識させる</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>フィードバックモデル — SBI / フィードフォワード</summary>
+<div class="details-content">
+<h4>SBIモデル（状況→行動→影響）</h4>
+<pre>Situation（状況）: 「DAY1の午後、市場分析のパートで」
+Behavior（行動）: 「TAMの数字に根拠がないまま次に進もうとしていたとき」
+Impact（影響）: 「ビジネスモデル全体の信頼性に影響しています」
+→ 提案: 「公式統計を1つ引用するだけで大幅に改善します」</pre>
+<h4>フィードフォワード（未来向きフィードバック）</h4>
+<p>「過去の失敗の指摘」より「未来の改善提案」の方が受け入れられやすい。</p>
+<ul>
+<li>「なぜできなかった？」 → NG（過去責め）</li>
+<li>「次にこうするともっと良くなる」 → OK（未来提案）</li>
+</ul>
+<h4>フィードバックの3:1ルール</h4>
+<p>改善点1つに対して肯定的フィードバック3つを先に伝える。モチベーション維持と成長促進のバランス。</p>
+<h4>タイミング判断</h4>
+<table>
+<tr><th>状況</th><th>タイミング</th></tr>
+<tr><td>軽微なミス（方向は合っている）</td><td>作業の区切りで</td></tr>
+<tr><td>根本的な方向の誤り</td><td>発見次第、早めに介入</td></tr>
+<tr><td>チームへの貢献に関する問題</td><td>1対1で休憩中に</td></tr>
+<tr><td>最終発表前のフィードバック</td><td>「このままで行く？修正する？」を本人に聞く</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>フェーズ別介入戦略 — DAY1〜DAY3</summary>
+<div class="details-content">
+<h4>DAY1: 課題定義・市場調査フェーズ</h4>
+<table>
+<tr><th>時間</th><th>学生の状態</th><th>メンターのアクション</th></tr>
+<tr><td>開始〜1時間</td><td>緊張・様子見（Forming）</td><td>自己紹介で場を温める。「失敗OK」「アイデア出し放題」の心理安全を作る</td></tr>
+<tr><td>1〜3時間</td><td>アイデア発散</td><td>発散を促す。「もっと突飛なアイデアは？」。広げてから絞らせる</td></tr>
+<tr><td>3〜5時間</td><td>テーマ選定・市場調査</td><td>「その市場はSOMでいくら？」「競合はどこ？」で深堀りを促す</td></tr>
+<tr><td>夕方FB</td><td>DAY1の振り返り</td><td>SBIモデルで各自に1点の改善フィードバック。翌日の課題を明確に伝える</td></tr>
+</table>
+<h4>DAY2: BM設計・KPI・中間発表フェーズ</h4>
+<table>
+<tr><th>時間</th><th>学生の状態</th><th>メンターのアクション</th></tr>
+<tr><td>午前</td><td>BMC作成</td><td>「VPとCSの整合は？」「収益モデルは何型？」で矛盾を指摘</td></tr>
+<tr><td>昼前</td><td>KPI設計</td><td>「北極星指標は何ですか？」「先行指標はどれですか？」</td></tr>
+<tr><td>中間発表前</td><td>プレゼン準備</td><td>「一番伝えたいメッセージは？」「結論から話せてる？」</td></tr>
+<tr><td>中間発表後</td><td>発表への振り返り</td><td>審査員からのFBを整理し、改善優先順位をチームと確認</td></tr>
+</table>
+<h4>DAY3: 財務・実行計画・最終発表フェーズ</h4>
+<table>
+<tr><th>時間</th><th>学生の状態</th><th>メンターのアクション</th></tr>
+<tr><td>午前</td><td>PL・BEP作成</td><td>「人件費は法定福利費込みで計算してますか？」「BEPは何社？何ヶ月？」</td></tr>
+<tr><td>昼</td><td>実行計画・リスク</td><td>「最悪のシナリオは何？それへの対策は？」</td></tr>
+<tr><td>最終発表30分前</td><td>最終確認</td><td>「話す順番は？時間は？一番訴えたいことは？」チェックリスト確認</td></tr>
+<tr><td>発表後</td><td>振り返り</td><td>3日間を通じた成長を伝える。採用見込みを社内で共有</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>ケーススタディ — 8つの場面と推奨対応</summary>
+<div class="details-content">
+<table>
+<tr><th>#</th><th>場面</th><th>推奨対応</th></tr>
+<tr><td>1</td><td>チームが意見対立で止まっている</td><td>「2つの意見、どちらも一理ある。5分でデータを調べて、どちらが顧客に近いか判断しよう」と課題に戻す</td></tr>
+<tr><td>2</td><td>1人の学生が独走して他が黙っている</td><td>「○○さん一度止めて。△△さん、この案についてどう思う？」と強制的に他者を介入させる</td></tr>
+<tr><td>3</td><td>市場調査が表面的（Googleの上位記事だけ）</td><td>「このデータは何年のものですか？政府統計か民間調査か確認しましたか？」で一次情報へ誘導</td></tr>
+<tr><td>4</td><td>PLが黒字なのに現金が足りていない</td><td>「売上はいつ入金されますか？人件費はいつ払いますか？」でCCCの概念を伝える</td></tr>
+<tr><td>5</td><td>MVPが「全機能入り」になっている</td><td>「3ヶ月で検証したい一番重要な仮定は何ですか？それだけを検証するには何があれば十分？」</td></tr>
+<tr><td>6</td><td>競合はいないと主張している</td><td>「今その問題を持つ人はどうやって解決していますか？Excelも競合になりませんか？」</td></tr>
+<tr><td>7</td><td>最終発表で時間が足りなくなりそう</td><td>「残り30分。今一番重要な3スライドはどれですか？その3枚に集中しよう」</td></tr>
+<tr><td>8</td><td>学生が明らかにやる気を失っている</td><td>1対1で「今どんな感じ？正直に教えて」と聞く。評価の話は後回しにして人として話す</td></tr>
+</table>
+</div>
+</details>
+
+<!-- ===== S10 評価ガイド ===== -->
+<span class="section-anchor" id="s10"></span>
+<h2 class="section-title">評価ガイド</h2>
+
+<h3 class="subsection-title">評価の原則</h3>
+<div class="highlight-box">
+<strong>エビデンスベース評価</strong>: 印象ではなく、具体的な発言・行動・成果物で評価する。リアルタイムメモを継続的に取り、3日間のアークで変化を追う。
+</div>
+
+<details>
+<summary>軸1: 論理的思考力 — ルーブリック</summary>
+<div class="details-content">
+<table>
+<tr><th>点数</th><th>評価基準</th></tr>
+<tr><td>5（卓越）</td><td>全ての主張にデータ・一次情報の裏付けがある。仮説更新を明示できる。論理の飛躍がなく、反論への応答も論理的</td></tr>
+<tr><td>4（優秀）</td><td>主要な主張にデータがある。ほぼ論理的だが1〜2箇所に飛躍がある</td></tr>
+<tr><td>3（標準）</td><td>基本的な構造はある。データ引用はあるが一次情報確認不足。問い返すと答えられる</td></tr>
+<tr><td>2（課題あり）</td><td>主観的表現が多い。「〜だと思います」が根拠の多くを占める</td></tr>
+<tr><td>1（不十分）</td><td>結論と根拠のつながりが見えない。問い返しても答えられない</td></tr>
+</table>
+<h4>DAY別 観察ポイント</h4>
+<table>
+<tr><th>Day</th><th>観察対象</th></tr>
+<tr><td>DAY1</td><td>市場定義の根拠、競合分析の深さ、仮説の設定方法</td></tr>
+<tr><td>DAY2</td><td>BMCの内部整合性、KPIと事業モデルの接続</td></tr>
+<tr><td>DAY3</td><td>PLの前提の明確さ、リスク対策の論拠、発表での質疑応答</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>軸2: 実現可能性（蓋然性）— ルーブリック</summary>
+<div class="details-content">
+<table>
+<tr><th>点数</th><th>評価基準</th></tr>
+<tr><td>5（卓越）</td><td>競合優位性が「機能」だけでなく「構造的障壁（特許/データ/NW効果）」で説明できる。財務計画が現実的で根拠がある</td></tr>
+<tr><td>4（優秀）</td><td>差別化が具体的で説明できる。顧客の声を引用できる。財務はほぼ現実的</td></tr>
+<tr><td>3（標準）</td><td>差別化はあるが持続性が不明確。財務は楽観的だが構造はある</td></tr>
+<tr><td>2（課題あり）</td><td>競合との差別化が主観的。「作ればユーザーが来る」という根拠のない楽観</td></tr>
+<tr><td>1（不十分）</td><td>参入障壁の分析なし。財務計画がない</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>軸3: プレゼンテーション能力 — ルーブリック</summary>
+<div class="details-content">
+<table>
+<tr><th>点数</th><th>評価基準</th></tr>
+<tr><td>5（卓越）</td><td>「結論→根拠→詳細」の構造で、聴衆を見ながら話せる。スライドが補助ツールとして機能している。質疑に即座に的確に答えられる</td></tr>
+<tr><td>4（優秀）</td><td>構成が明確。スライドへの依存は若干あるが流れは良い。質疑に答えられる</td></tr>
+<tr><td>3（標準）</td><td>内容は伝わるが構成が最適でない。スライドを読み上げる場面がある</td></tr>
+<tr><td>2（課題あり）</td><td>スライド読み上げが主体。質疑への回答が「スライドに書いてある通りです」</td></tr>
+<tr><td>1（不十分）</td><td>何を伝えたいかが不明確。聴衆との接続がない</td></tr>
+</table>
+<h4>3つの構成要素</h4>
+<ul>
+<li><strong>構成力</strong>: ストーリーの流れ（問題→解決→根拠→実行）</li>
+<li><strong>伝達技術</strong>: 声量・速度・アイコンタクト・間の使い方</li>
+<li><strong>視覚資料</strong>: スライドの情報密度・見やすさ・図表の活用</li>
+</ul>
+</div>
+</details>
+
+<details>
+<summary>軸4: ワークへの取り組み方（プロセス）— ルーブリック ※学生非公開</summary>
+<div class="details-content">
+<div class="warn-box">この軸は学生には非公開。評価観点を学生に伝えないこと。</div>
+<table>
+<tr><th>点数</th><th>評価基準</th></tr>
+<tr><td>5（卓越）</td><td>能動的に情報収集し、チームを牽引する。自分の限界を認識し外部リソースを使う判断ができる。失敗からの学習が早い</td></tr>
+<tr><td>4（優秀）</td><td>積極的にチームに貢献。問いに対して自ら調べて返答。困ったときに質問できる</td></tr>
+<tr><td>3（標準）</td><td>指示があれば動く。チームへの貢献はあるが自発性は限定的</td></tr>
+<tr><td>2（課題あり）</td><td>指示待ち。チームの議論に受動的に参加するのみ</td></tr>
+<tr><td>1（不十分）</td><td>ほぼ沈黙。貢献が見えない</td></tr>
+</table>
+<h4>4つの測定対象</h4>
+<ol>
+<li>情報収集の徹底度（一次情報へのアプローチ、情報の信頼性判断）</li>
+<li>チーム内コミュニケーション（傾聴・発言・他者への働きかけ）</li>
+<li>課題解決アプローチ（仮説→検証サイクル、試行錯誤）</li>
+<li>仕事量・集中度（3日間通じた持続力）</li>
+</ol>
+</div>
+</details>
+
+<details>
+<summary>採用判断基準とスコアリング</summary>
+<div class="details-content">
+<h4>スコアリング（4軸×5点満点 = 最大20点）</h4>
+<table>
+<tr><th>合計点</th><th>採用区分</th><th>対象</th></tr>
+<tr><td>16点以上</td><td>優先推薦</td><td>経企/社長室枠、早期選考最上位</td></tr>
+<tr><td>12〜15点</td><td>通常推薦</td><td>事業部幹部候補、早期選考</td></tr>
+<tr><td>9〜11点</td><td>長期インターン提案</td><td>ポテンシャルあり、実務で見極め</td></tr>
+<tr><td>8点以下</td><td>見送り</td><td>今回のターゲットとは合わない</td></tr>
+</table>
+<h4>採用トラック別ウェイト</h4>
+<table>
+<tr><th>軸</th><th>経企/社長室枠</th><th>事業部幹部候補</th></tr>
+<tr><td>論理的思考力</td><td>× 1.5（重視）</td><td>× 1.0</td></tr>
+<tr><td>実現可能性</td><td>× 1.5（重視）</td><td>× 1.0</td></tr>
+<tr><td>プレゼン</td><td>× 1.0</td><td>× 1.0</td></tr>
+<tr><td>プロセス</td><td>× 1.0</td><td>× 1.5（重視）</td></tr>
+</table>
+<h4>6つのバイアスと対策</h4>
+<table>
+<tr><th>バイアス</th><th>内容</th><th>対策</th></tr>
+<tr><td>ハロー効果</td><td>一つの印象が全体評価に影響</td><td>軸ごとに独立して評価。証拠メモを先に記録</td></tr>
+<tr><td>確証バイアス</td><td>先入観に合う情報を重視</td><td>「この評価に反する証拠はあるか」を自問</td></tr>
+<tr><td>類似性バイアス</td><td>自分に似た学生を高く評価</td><td>評価基準を明示的に使い、感覚値に頼らない</td></tr>
+<tr><td>対比効果</td><td>直前の学生と比較して評価が歪む</td><td>各学生を絶対基準で評価。順番を変えてみる</td></tr>
+<tr><td>中心化傾向</td><td>極端な点をつけるのを避け3に集中</td><td>行動証拠がある場合は5・1をつける勇気を持つ</td></tr>
+<tr><td>厳格化/寛大化</td><td>全員に高い/低い点をつける</td><td>ルーブリックの言葉に照合して評価</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>リアルタイムメモテンプレート</summary>
+<div class="details-content">
+<pre>学生名: ___________  チーム: ___________
+記録者: 堀江  日付: ___________
+
+【論理的思考力】
+- 具体的発言/行動のメモ:
+  □
+  □
+- 仮スコア: _/5
+
+【実現可能性】
+- 具体的発言/行動のメモ:
+  □
+  □
+- 仮スコア: _/5
+
+【プレゼン能力】
+- 具体的発言/行動のメモ:
+  □
+  □
+- 仮スコア: _/5
+
+【プロセス（非公開）】
+- 具体的発言/行動のメモ:
+  □
+  □
+- 仮スコア: _/5
+
+【採用所感（1文）】
+___________________________________________
+
+【採用区分（仮）】 優先推薦 / 通常推薦 / 長期インターン / 見送り
+【最終確認事項】</pre>
+</div>
+</details>
+
+<!-- ===== S11 シミュレーション ===== -->
+<span class="section-anchor" id="s11"></span>
+<h2 class="section-title">シミュレーション: Well-Ledger</h2>
+<div class="info-box">
+<strong>シミュレーション事業</strong>: <strong>Well-Ledger</strong> — AIウェルネスコーチング × 会計BPO融合サービス<br>
+事業内容: 中小企業経営者に「経営数字の可視化（BPO）」と「経営者のウェルビーイング（AIコーチング）」を一体提供。月次会計データを活用したストレス指標の自動生成、AIコーチが経営の悩みに24時間対応。
+</div>
+
+<details>
+<summary>DAY1: 市場定義と課題仮説</summary>
+<div class="details-content">
+<h4>市場規模計算</h4>
+<table>
+<tr><th>指標</th><th>計算根拠</th><th>結果</th></tr>
+<tr><td>TAM</td><td>中小企業主380万社 × ウェルネス投資可能額 年間9万円</td><td>約3,420億円</td></tr>
+<tr><td>SAM</td><td>クラウド会計利用中・従業員5〜50名・年商1〜10億円の層（TAMの30%）</td><td>約1,026億円</td></tr>
+<tr><td>SOM（Y3）</td><td>316社獲得 × 平均年額127万円</td><td>約4億円</td></tr>
+</table>
+<h4>競合ポジショニング</h4>
+<table>
+<tr><th>競合</th><th>ウェルネス機能</th><th>経営数字可視化</th></tr>
+<tr><td>freee / マネフォ</td><td>なし</td><td>高い</td></tr>
+<tr><td>法人向けコーチングサービス</td><td>高い</td><td>なし</td></tr>
+<tr><td>Well-Ledger（自社）</td><td>高い</td><td>高い</td></tr>
+</table>
+<p>「高ウェルネス × 高経営数字可視化」のポジションに競合なし。これが差別化の核心。</p>
+</div>
+</details>
+
+<details>
+<summary>DAY2: BMC・プライシング・ユニットエコノミクス</summary>
+<div class="details-content">
+<h4>BMC（ビジネスモデルキャンバス）</h4>
+<table>
+<tr><th>ブロック</th><th>内容</th></tr>
+<tr><td>CS（顧客）</td><td>年商1〜10億・従業員5〜50名・クラウド会計利用の中小企業経営者（製造業・サービス業）</td></tr>
+<tr><td>VP（価値）</td><td>「孤独な経営の終焉」— 経営数字とウェルビーイングをワンストップ提供。月次決算翌日にAIコーチがストレス指標付きでアドバイスを届ける</td></tr>
+<tr><td>CH（チャネル）</td><td>会計事務所・税理士事務所からのパートナー紹介（初期）、コンテンツマーケ（中長期）</td></tr>
+<tr><td>CR（顧客関係）</td><td>AIコーチによる毎月の自動レポート、四半期に1回の担当者レビュー</td></tr>
+<tr><td>RS（収益）</td><td>月額SaaS（Lite 3万/Standard 10万/Premium 20万）</td></tr>
+<tr><td>KR（リソース）</td><td>AIコーチエンジン、会計データ連携API、BPOオペレーションチーム</td></tr>
+<tr><td>KA（活動）</td><td>AIモデルのファインチューニング、BPO品質管理、パートナー開拓</td></tr>
+<tr><td>KP（パートナー）</td><td>税理士事務所・会計事務所（200社超と連携予定）、クラウド会計ベンダー</td></tr>
+<tr><td>CS（コスト）</td><td>AIエンジン開発人件費、BPOオペレーターコスト、パートナー手数料</td></tr>
+</table>
+<h4>プライシング設計</h4>
+<table>
+<tr><th>プラン</th><th>月額</th><th>内容</th><th>想定顧客</th></tr>
+<tr><td>Lite</td><td>3万円</td><td>月次会計BPO + AIレポート</td><td>年商1〜3億、従業員5〜15名</td></tr>
+<tr><td>Standard</td><td>10万円</td><td>Lite + AIコーチング週1回 + 四半期レビュー</td><td>年商3〜10億、従業員15〜50名</td></tr>
+<tr><td>Premium</td><td>20万円</td><td>Standard + 専任担当者 + 毎月経営会議同席</td><td>年商10億超</td></tr>
+</table>
+<h4>ユニットエコノミクス</h4>
+<table>
+<tr><th>指標</th><th>値</th><th>計算根拠</th></tr>
+<tr><td>ARPU（ミックス）</td><td>17万円/月</td><td>Lite50%×3万 + Standard35%×10万 + Premium15%×20万</td></tr>
+<tr><td>粗利率</td><td>75%</td><td>BPOオペレーターコスト・AIインフラ除く</td></tr>
+<tr><td>Churn率</td><td>月次4%</td><td>BtoB SaaS業界中程度</td></tr>
+<tr><td>LTV</td><td>318.75万円</td><td>17万 × 75% ÷ 4%</td></tr>
+<tr><td>CAC</td><td>11万円/社</td><td>パートナー紹介料（獲得単価低い）</td></tr>
+<tr><td>LTV/CAC</td><td>29倍</td><td>優秀（3倍以上が目安）</td></tr>
+<tr><td>Payback期間</td><td>約0.86ヶ月</td><td>11万 ÷ (17万×75%)</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>DAY3: 3年PL・BEP・実行計画・リスク分析</summary>
+<div class="details-content">
+<h4>3年間 顧客数・ARR推移</h4>
+<table>
+<tr><th>年度</th><th>期末顧客数</th><th>ARR</th><th>MoM成長目安</th></tr>
+<tr><td>Y1（12ヶ月）</td><td>77社</td><td>3,851万円</td><td>月次+7〜10社</td></tr>
+<tr><td>Y2</td><td>183社</td><td>1億5,708万円</td><td>月次+9〜11社</td></tr>
+<tr><td>Y3</td><td>316社</td><td>3億2,964万円</td><td>月次+10〜12社</td></tr>
+</table>
+<h4>年次PL（ベースケース）</h4>
+<table>
+<tr><th>項目</th><th>Y1</th><th>Y2</th><th>Y3</th></tr>
+<tr><td>売上高</td><td>3,851万</td><td>1.57億</td><td>3.30億</td></tr>
+<tr><td>売上原価（BPO+AI、25%）</td><td>963万</td><td>3,927万</td><td>8,241万</td></tr>
+<tr><td>粗利益</td><td>2,889万（75%）</td><td>1.18億（75%）</td><td>2.47億（75%）</td></tr>
+<tr><td>人件費（法定福利費込）</td><td>2,400万（5名）</td><td>5,280万（11名）</td><td>8,640万（18名）</td></tr>
+<tr><td>マーケ・パートナー費</td><td>500万</td><td>1,000万</td><td>1,500万</td></tr>
+<tr><td>間接費（家賃・SaaS等）</td><td>300万</td><td>500万</td><td>700万</td></tr>
+<tr><td>営業利益</td><td>▲311万</td><td>+5,020万</td><td>+1.36億</td></tr>
+<tr><td>営業利益率</td><td>▲8.1%</td><td>32%</td><td>41%</td></tr>
+</table>
+<h4>BEP分析</h4>
+<table>
+<tr><th>項目</th><th>値</th></tr>
+<tr><td>月次固定費（Y1平均）</td><td>285万円</td></tr>
+<tr><td>限界利益単価</td><td>17万×75% = 12.75万/社</td></tr>
+<tr><td>BEP（社数）</td><td>285万 ÷ 12.75万 = 約22社</td></tr>
+<tr><td>BEP到達月</td><td>M7（顧客数22社超見込み）</td></tr>
+<tr><td>Y3安全余裕率</td><td>(316-22) ÷ 316 = 93%（非常に健全）</td></tr>
+</table>
+<h4>実行計画（5フェーズ）</h4>
+<table>
+<tr><th>フェーズ</th><th>期間</th><th>目標</th><th>主要アクション</th></tr>
+<tr><td>Phase 0: 検証</td><td>M1-M2</td><td>10社インタビュー完了</td><td>税理士5社にヒアリング、Painの定量化</td></tr>
+<tr><td>Phase 1: MVP</td><td>M3-M5</td><td>10社パイロット導入</td><td>オズの魔法使いMVP（AI部分は人力）</td></tr>
+<tr><td>Phase 2: PMF</td><td>M6-M9</td><td>30社・Sean Ellis 40%達成</td><td>フィードバック反映、AI自動化開始</td></tr>
+<tr><td>Phase 3: グロース</td><td>M10-M18</td><td>100社・BEP安定突破</td><td>パートナー網拡大、営業1名採用</td></tr>
+<tr><td>Phase 4: スケール</td><td>M19-M36</td><td>316社・Series A調達</td><td>プロダクト機能強化、エンジニア追加採用</td></tr>
+</table>
+<h4>リスク分析（上位5つ）</h4>
+<table>
+<tr><th>リスク</th><th>発生確率</th><th>影響度</th><th>対策</th></tr>
+<tr><td>大手会計ソフトが類似機能追加</td><td>中</td><td>高</td><td>パートナー（税理士）との関係性を参入障壁化。早期にデータ資産を蓄積</td></tr>
+<tr><td>AIコーチングの品質クレーム</td><td>中</td><td>高</td><td>重要アドバイスは人間レビューを挟む。Phase1-2はAI+人手のハイブリッド</td></tr>
+<tr><td>BPO人員確保が遅延</td><td>高</td><td>中</td><td>採用エージェント契約を前倒し。フリーランス活用でピーク対応</td></tr>
+<tr><td>税理士パートナーが競合化</td><td>低</td><td>高</td><td>パートナー向けに「紹介手数料+ホワイトラベル提供」でWin-Win設計</td></tr>
+<tr><td>個人情報・会計データ漏洩</td><td>低</td><td>最高</td><td>SOC2 Type II認証取得、暗号化、アクセスログ監視</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>13スライド構成とメンター質問集</summary>
+<div class="details-content">
+<h4>13スライド構成（DAY3 最終発表）</h4>
+<table>
+<tr><th>#</th><th>スライドタイトル</th><th>ポイント</th></tr>
+<tr><td>1</td><td>タイトル / エレベーターピッチ</td><td>「経営者の孤独を終わらせる、数字×ウェルネスの融合サービス」</td></tr>
+<tr><td>2</td><td>問題（中小企業経営者の孤独とストレス）</td><td>8割が孤独感、7割がメンタル課題</td></tr>
+<tr><td>3</td><td>解決策（Well-Ledgerとは）</td><td>Before（月次報告書のみ）→ After（AIコーチ付き経営ダッシュボード）</td></tr>
+<tr><td>4</td><td>市場規模（TAM/SAM/SOM）</td><td>TAM 3,420億 → SAM 1,026億 → SOM 4億（Y3）</td></tr>
+<tr><td>5</td><td>プロダクト概要 / デモ画面</td><td>ダッシュボードUI + AIコーチングチャット画面</td></tr>
+<tr><td>6</td><td>ビジネスモデル（収益構造）</td><td>3段階プライシング、月額SaaS</td></tr>
+<tr><td>7</td><td>競合マップ / 差別化</td><td>2軸マップで空白ポジション</td></tr>
+<tr><td>8</td><td>ユニットエコノミクス</td><td>LTV/CAC=29倍、Payback 1ヶ月未満</td></tr>
+<tr><td>9</td><td>3年財務計画（PL）</td><td>Y1▲311万 → Y3 +1.36億。M7 BEP到達</td></tr>
+<tr><td>10</td><td>実行計画（ロードマップ）</td><td>5フェーズ、Stage-Gate型</td></tr>
+<tr><td>11</td><td>MVP設計</td><td>オズの魔法使い型、検証仮定と成功基準</td></tr>
+<tr><td>12</td><td>リスクと対策</td><td>Top5リスクとコンティンジェンシープラン</td></tr>
+<tr><td>13</td><td>チームと採用 / Q&amp;A</td><td>必要な人材と採用計画</td></tr>
+</table>
+<h4>メンターが当日使う質問集</h4>
+<p><strong>DAY1</strong>: 「SOMをボトムアップで計算するとどうなりますか？」「最初の100人はどうやって獲得しますか？」「競合の中で今一番成功しているのはどこで、なぜ成功していると思いますか？」</p>
+<p><strong>DAY2</strong>: 「BMCのVPとCSは1対1で対応していますか？」「LTVはChurn率が2倍になったとき半分になりますか？計算してみてください」「この事業の収益モデルは8類型のどれですか？」</p>
+<p><strong>DAY3</strong>: 「PLに計上した人件費は法定福利費込みですか？実際のコストはいくらになりますか？」「BEP到達まで何ヶ月？その間の資金は確保されていますか？」「3年後にこの事業が失敗したとしたら、一番の理由は何だと思いますか？」</p>
+<h4>8つの学生トラップと介入スクリプト</h4>
+<table>
+<tr><th>#</th><th>トラップ</th><th>介入スクリプト</th></tr>
+<tr><td>1</td><td>「市場は無限大」思考</td><td>「最初の100人は誰で、どうやって見つけますか？」</td></tr>
+<tr><td>2</td><td>競合調査不十分</td><td>「Googleで5分調べましょう。どのキーワードで競合を探しますか？」</td></tr>
+<tr><td>3</td><td>PLに人件費なし</td><td>「エンジニアを1人雇うと月いくらかかりますか？法定福利費はご存知ですか？」</td></tr>
+<tr><td>4</td><td>BEP未計算</td><td>「月額3万で固定費回収に何社必要ですか？」（一緒に計算する）</td></tr>
+<tr><td>5</td><td>「リスクはありません」</td><td>「3年後にこの事業が失敗したとしたら、理由は何ですか？（プレモーテム）」</td></tr>
+<tr><td>6</td><td>MVPが「全機能入り」</td><td>「最初の10人のユーザーを獲得するだけなら、何があれば十分ですか？」</td></tr>
+<tr><td>7</td><td>スライドが細かすぎ</td><td>「審査員に一番伝えたいことは何ですか？それを3秒で言えますか？」</td></tr>
+<tr><td>8</td><td>財務が楽観的すぎ</td><td>「Y1で黒字になるには何社が必要ですか？その顧客をどうやって獲得しますか？」</td></tr>
+</table>
+</div>
+</details>
+
+</div><!-- end #main -->
+
+<script>
+const sections = document.querySelectorAll('.section-anchor');
+const pills = document.querySelectorAll('.pill');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      pills.forEach(p => {
+        p.classList.toggle('active', p.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { rootMargin: '-10% 0px -85% 0px' });
+
+sections.forEach(s => observer.observe(s));
+
+document.querySelectorAll('.pill').forEach(pill => {
+  pill.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.querySelector(pill.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+</script>
+</body>
+</html>
