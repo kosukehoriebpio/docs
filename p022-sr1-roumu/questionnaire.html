@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ヒアリング質問シート — 回答まとめ | p022 グループSR1 労務業務効率化</title>
+<style>
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --p1: #2563eb;
+  --p1-bg: #eff6ff;
+  --p1-border: #93c5fd;
+  --p2: #16a34a;
+  --p2-bg: #f0fdf4;
+  --p2-border: #86efac;
+  --p3: #ea580c;
+  --p3-bg: #fff7ed;
+  --p3-border: #fdba74;
+  --p4: #7c3aed;
+  --p4-bg: #f5f3ff;
+  --p4-border: #c4b5fd;
+  --p5: #0e7490;
+  --p5-bg: #ecfeff;
+  --p5-border: #67e8f9;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / .05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / .1), 0 1px 2px -1px rgb(0 0 0 / .1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / .1), 0 2px 4px -2px rgb(0 0 0 / .1);
+  --radius: 8px;
+  --radius-lg: 12px;
+}
+
+body {
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--gray-800);
+  background: var(--gray-50);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Page Header ===== */
+.page-header {
+  background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
+  color: #fff;
+  padding: 28px 32px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.page-header::after {
+  content: "";
+  position: absolute;
+  right: -40px; top: -40px;
+  width: 200px; height: 200px;
+  background: rgba(255,255,255,.05);
+  border-radius: 50%;
+}
+.page-header h1 { font-size: 22px; font-weight: 700; letter-spacing: .02em; }
+.page-header .subtitle { font-size: 13px; color: rgba(255,255,255,.75); margin-top: 4px; }
+.header-meta {
+  display: flex; gap: 24px; margin-top: 16px; flex-wrap: wrap;
+}
+.header-meta span {
+  font-size: 12px; background: rgba(255,255,255,.15);
+  padding: 4px 10px; border-radius: 20px;
+}
+
+/* ===== Nav Banner ===== */
+.nav-banner {
+  background: #fff;
+  border-bottom: 1px solid var(--gray-200);
+  padding: 10px 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+}
+.nav-banner a {
+  color: var(--p1);
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--p1-border);
+  border-radius: var(--radius);
+  background: var(--p1-bg);
+  transition: background .15s;
+}
+.nav-banner a:hover { background: #dbeafe; }
+.nav-banner .sep {
+  color: var(--gray-400);
+}
+.nav-banner .page-label {
+  color: var(--gray-500);
+  font-size: 12px;
+}
+
+/* ===== Layout ===== */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 28px 20px 64px;
+}
+
+/* ===== Category Section ===== */
+.category-section {
+  margin-bottom: 40px;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--gray-200);
+}
+.category-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+.cat-system .category-badge { background: var(--p1); color: #fff; }
+.cat-ops    .category-badge { background: var(--p2); color: #fff; }
+.cat-judge  .category-badge { background: var(--p3); color: #fff; }
+.cat-biz    .category-badge { background: var(--p4); color: #fff; }
+.cat-team   .category-badge { background: var(--p5); color: #fff; }
+
+.category-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+.category-count {
+  font-size: 12px;
+  color: var(--gray-500);
+  margin-left: auto;
+}
+
+/* ===== QA Card ===== */
+.qa-card {
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px 14px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .15s;
+}
+.qa-card:hover { box-shadow: var(--shadow); }
+
+.qa-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.qa-number {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: .05em;
+  margin-top: 1px;
+}
+.cat-system .qa-number { background: var(--p1-bg); color: var(--p1); border: 1px solid var(--p1-border); }
+.cat-ops    .qa-number { background: var(--p2-bg); color: var(--p2); border: 1px solid var(--p2-border); }
+.cat-judge  .qa-number { background: var(--p3-bg); color: var(--p3); border: 1px solid var(--p3-border); }
+.cat-biz    .qa-number { background: var(--p4-bg); color: var(--p4); border: 1px solid var(--p4-border); }
+.cat-team   .qa-number { background: var(--p5-bg); color: var(--p5); border: 1px solid var(--p5-border); }
+
+.qa-body { flex: 1; min-width: 0; }
+
+.qa-question {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 8px;
+}
+
+.qa-answer {
+  font-size: 13px;
+  color: var(--gray-700);
+  background: var(--gray-50);
+  border-left: 3px solid var(--gray-200);
+  padding: 8px 12px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  line-height: 1.7;
+}
+.cat-system .qa-answer { border-left-color: var(--p1-border); background: var(--p1-bg); }
+.cat-ops    .qa-answer { border-left-color: var(--p2-border); background: var(--p2-bg); }
+.cat-judge  .qa-answer { border-left-color: var(--p3-border); background: var(--p3-bg); }
+.cat-biz    .qa-answer { border-left-color: var(--p4-border); background: var(--p4-bg); }
+.cat-team   .qa-answer { border-left-color: var(--p5-border); background: var(--p5-bg); }
+
+.qa-answer ul {
+  padding-left: 18px;
+  margin-top: 4px;
+}
+.qa-answer li { margin-bottom: 2px; }
+.qa-answer strong { color: var(--gray-900); }
+
+/* ===== Memo ===== */
+.qa-memo {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--gray-200);
+}
+
+.memo-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--gray-500);
+  cursor: pointer;
+  user-select: none;
+  padding: 3px 6px;
+  border-radius: 4px;
+  border: none;
+  background: none;
+  transition: color .15s, background .15s;
+}
+.memo-toggle:hover { color: var(--gray-800); background: var(--gray-100); }
+.memo-toggle .memo-icon { font-size: 13px; }
+.memo-toggle .memo-arrow { transition: transform .2s; }
+.memo-toggle.open .memo-arrow { transform: rotate(90deg); }
+.memo-toggle .has-content { color: var(--p3); font-size: 11px; }
+
+.memo-body {
+  display: none;
+  margin-top: 8px;
+}
+.memo-body.open { display: block; }
+
+.memo-input {
+  width: 100%;
+  min-height: 72px;
+  padding: 8px 10px;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--gray-800);
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  resize: vertical;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.memo-input:focus {
+  border-color: var(--p1-border);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+}
+.memo-input::placeholder { color: var(--gray-400); }
+
+/* ===== Feedback Section ===== */
+.feedback-section {
+  margin-bottom: 40px;
+}
+
+.feedback-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--gray-200);
+}
+.feedback-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: #4f46e5;
+  color: #fff;
+}
+.feedback-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+.feedback-date {
+  font-size: 12px;
+  color: var(--gray-500);
+  margin-left: auto;
+}
+
+.feedback-card {
+  background: #fff;
+  border: 1px solid #c7d2fe;
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-sm);
+  border-left: 4px solid #4f46e5;
+}
+
+.feedback-num {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #4f46e5;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  padding: 2px 7px;
+  border-radius: 5px;
+  margin-bottom: 6px;
+}
+
+.feedback-text {
+  font-size: 13px;
+  color: var(--gray-700);
+  line-height: 1.7;
+}
+.feedback-text strong { color: var(--gray-900); }
+
+.feedback-subsection {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-700);
+  margin: 18px 0 8px;
+  padding-left: 8px;
+  border-left: 3px solid #c7d2fe;
+}
+
+/* ===== Copy Button ===== */
+.copy-section {
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.copy-section .copy-info {
+  font-size: 13px;
+  color: var(--gray-600);
+}
+.copy-section .copy-info strong {
+  color: var(--gray-900);
+  font-size: 14px;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.btn-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #1e40af;
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background .15s;
+  white-space: nowrap;
+}
+.btn-copy:hover { background: #1d4ed8; }
+.btn-copy.copied { background: var(--p2); }
+
+/* ===== Insights Box ===== */
+.insights-box {
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin-bottom: 28px;
+}
+.insights-box h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.insights-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.insights-table th {
+  background: var(--gray-100);
+  color: var(--gray-700);
+  font-weight: 700;
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--gray-200);
+  font-size: 12px;
+}
+.insights-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--gray-100);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.insights-table tr:last-child td { border-bottom: none; }
+.priority-high { font-weight: 700; color: var(--p2); }
+.priority-mid  { font-weight: 700; color: var(--p3); }
+.priority-low  { font-weight: 700; color: var(--gray-500); }
+
+/* ===== Print ===== */
+@media print {
+  body { background: #fff; font-size: 12px; }
+  .page-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 16px 20px; }
+  .nav-banner { display: none; }
+  .container { padding: 16px 0; max-width: 100%; }
+  .qa-card { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+  .memo-body { display: block !important; }
+  .memo-toggle { display: none; }
+  .memo-input { border: 1px solid #ddd; min-height: 48px; font-size: 11px; }
+  .btn-copy, .copy-section .copy-info { display: none; }
+  .category-section { break-inside: avoid; }
+  .feedback-card { break-inside: avoid; }
+}
+
+@media (max-width: 640px) {
+  .page-header { padding: 20px 16px 16px; }
+  .page-header h1 { font-size: 18px; }
+  .nav-banner { padding: 8px 16px; flex-wrap: wrap; }
+  .container { padding: 20px 12px 48px; }
+  .copy-section { flex-direction: column; align-items: flex-start; }
+  .insights-table { font-size: 12px; }
+  .insights-table td, .insights-table th { padding: 7px 8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Page Header ===== -->
+<header class="page-header">
+  <h1>ヒアリング質問シート — 回答まとめ</h1>
+  <div class="subtitle">p022（グループSR1 労務業務効率化）</div>
+  <div class="header-meta">
+    <span>ソース: Google スプレッドシート</span>
+    <span>全16問回答済み</span>
+    <span>取得: 2026-03-16</span>
+  </div>
+</header>
+
+<!-- ===== Nav Banner ===== -->
+<nav class="nav-banner">
+  <a href="workflow-diagram-v2.html">← ワークフローページに戻る</a>
+  <span class="sep">|</span>
+  <span class="page-label">月次勤怠締めワークフロー</span>
+</nav>
+
+<!-- ===== Main Container ===== -->
+<main class="container">
+
+  <!-- ===== Insights Box ===== -->
+  <div class="insights-box">
+    <h3>自動化優先候補（効果 × 実現性）</h3>
+    <table class="insights-table">
+      <thead>
+        <tr>
+          <th>優先度</th>
+          <th>項目</th>
+          <th>根拠</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="priority-high">高</span></td>
+          <td>リマインド自動化（未提出・未承認プッシュ）</td>
+          <td>Slack手動投稿 → Bot化で即効果。Q16で痛みポイント</td>
+        </tr>
+        <tr>
+          <td><span class="priority-high">高</span></td>
+          <td>残業80h/100h超過アラート</td>
+          <td>手動計算中。MF設定調整 or データ取得→自動集計で解決可能</td>
+        </tr>
+        <tr>
+          <td><span class="priority-high">高</span></td>
+          <td>通勤手当の定期代支給判定</td>
+          <td>MF日次勤怠を目視 → 条件判定を自動化可能。Q16で痛みポイント</td>
+        </tr>
+        <tr>
+          <td><span class="priority-mid">中</span></td>
+          <td>エアシフト ⇔ 出勤簿突合</td>
+          <td>CSV出力可 + SS形式 → データ突合は自動化しやすい。Q16で最も手間</td>
+        </tr>
+        <tr>
+          <td><span class="priority-mid">中</span></td>
+          <td>フレックス総枠チェック</td>
+          <td>MF日次 + 給与計算メモ → 判定ロジック明確なら自動化可能</td>
+        </tr>
+        <tr>
+          <td><span class="priority-mid">中</span></td>
+          <td>上長への控除判断確認の自動送信</td>
+          <td>Slack確認 → テンプレ送信の自動化</td>
+        </tr>
+        <tr>
+          <td><span class="priority-low">低</span></td>
+          <td>インターン生の稼働乖離チェック</td>
+          <td>カレンダー確認含む複合判断。半自動化（異常値検知）が現実的</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px; font-size:12px; color:var(--gray-600);">
+      スケール感: <strong>月100時間（2人合計）</strong> — 仮に30%自動化で月30時間削減相当 / 締め期間: 月末〜翌月9日の約10日間に集中
+    </div>
+  </div>
+
+  <!-- ===== Category 1: システム・データ ===== -->
+  <section class="category-section cat-system">
+    <div class="category-header">
+      <span class="category-badge">システム・データ</span>
+      <span class="category-title">Q1〜Q5</span>
+      <span class="category-count">5問</span>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-card-top">
+        <span class="qa-number">Q1</span>
+        <div class="qa-body">
+          <div class="qa-question">給与計算メモの形式と保管場所</div>
+          <div class="qa-answer">形式はスプレッドシート、保管場所はグループ労務共有フォルダ</div>
+        </div>
+      </div>
+      <div class="qa-memo">
+        <button class="memo-toggle" onclick="toggleMemo('q1', this)" aria-expanded="false">
+          <span class="memo-icon">✏️</span>
+          <span class="memo-arrow">▶</span>
+          メモ
+          <span class="has-content" id="has-q1" style="display:none">● 入力済み</span>
+        </button>
+        <div class="memo-body" id="memo-body-q1">
+          <textarea class="memo-input" id="memo-q1" placeholder="この質問に関するメモ・追加確認事項..." oninput="saveMemo('q1', this.value)"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-card-top">
+        <span class="qa-number">Q2</span>
+        <div class="qa-body">
+          <div class="qa-question">勤怠システムは全事業部統一か</div>
+          <div class="qa-answer">事業部によって異なる。<strong>歯科・薬局のみエアシフト</strong>、それ以外は<strong>MF勤怠</strong>。</div>
+        </div>
+      </div>
+      <div class="qa-memo">
+        <button class="memo-toggle" onclick="toggleMemo('q2', this)" aria-expanded="false">
+          <span class="memo-icon">✏️</span>
+          <span class="memo-arrow">▶</span>
+          メモ
+          <span class="has-content" id="has-q2" style="display:none">● 入力済み</span>
+        </button>
+        <div class="memo-body" id="memo-body-q2">
+          <textarea class="memo-input" id="memo-q2" placeholder="この質問に関するメモ・追加確認事項..." oninput="saveMemo('q2', this.value)"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-card-top">
+        <span class="qa-number">Q3</span>
+        <div class="qa-body">
+          <div class="qa-question">MFとの有給突合の方法</div>
+          <div class="qa-answer">有給休暇申請（で突合）</div>
+        </div>
+      </div>
+      <div class="qa-memo">
+        <button class="memo-toggle" onclick="toggleMemo('q3', this)" aria-expanded="false">
+          <span class="memo-icon">✏️</span>
+          <span class="memo-arrow">▶</span>
+          メモ
+          <span class="has-content" id="has-q3" style="display:none">● 入力済み</span>
+        </button>
+        <div class="memo-body" id="memo-body-q3">
+          <textarea class="memo-input" id="memo-q3" placeholder="この質問に関するメモ・追加確認事項..." oninput="saveMemo('q3', this.value)"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-card-top">
+        <span class="qa-number">Q4</span>
+        <div class="qa-body">
+          <div class="qa-question">エアシフトからのデータ取得方法</div>
+          <div class="qa-answer">CSVエクスポート</div>
+        </div>
+      </div>
+      <div class="qa-memo">
+        <button class="memo-toggle" onclick="toggleMemo('q4', this)" aria-expanded="false">
+          <span class="memo-icon">✏️</span>
+          <span class="memo-arrow">▶</span>
+          メモ
+          <span class="has-content" id="has-q4" style="display:none">● 入力済み</span>
+        </button>
+        <div class="memo-body" id="memo-body-q4">
+          <textarea class="memo-input" id="memo-q4" placeholder="この質問に関するメモ・追加確認事項..." oninput="saveMemo('q4', this.value)"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-card-top">
+        <span class="qa-number">Q5</span>
+        <div class="qa-body">
+          <div class="qa-question">メディカル出勤簿の形式</div>
+          <div class="qa-answer">スプレッドシート</div>
+        </div>
+      </div>
+      <div class="qa-memo">
+        <button class="memo-toggle" onclick="toggleMemo('q5', this)" aria-expanded="false">
+          <span class="memo-icon">✏️</span>
+          <span class="memo-arrow">▶</span>
+          メモ
+          <span class="has-content" id="has-q5" style="display:none">● 入力済み</span>
+        </button>
+        <div class="memo-body" id="memo-body-q5">
+          <textarea class="memo-input" id="memo-q5" placeholder="この質問に関するメモ・追加確認事項..." oninput="saveMemo('q5', this.value)"></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Category 2: 運用フロー ===== -->
+  <section class="category-section cat-ops">
+    <div class="category-header">
+      <span class="category-badge">運用フロー</span>
+      <span class="category-title">Q6〜Q9</span>
+      <span class="category-count">4問</span>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-card-top">
+        <span class="qa-number">Q6</span>
+        <div class="qa-body">
+          <div class="qa-question">月次の締め日</div>
+          <div class="qa-answer"><strong>毎月末締め、翌月9日頃までにすべてのチェック・最終承認完了</strong></div>
+        </div>
+      </div>
+      <div class="qa-memo">
+        <button class="memo-toggle" onclick="toggleMemo('q6', this)" aria-expanded="false">
+          <span class="memo-icon">✏️</span>
+          <span class="memo-arrow">▶</span>
+          メモ
+          <span class="has-content" id="has-q6" style="display:none">● 入力済み</span>
+        </button>
+        <div class="memo-body" id="memo-body-q6">
+          <textarea class="memo-input" id="memo-q6" placeholder="この質問に関するメモ・追加確認事項..." oninput="saveMemo('q6', this.value)"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-card-top">
+        <span class="qa-number">Q7</span>
+        <div class="qa-body">
+          <div class="qa-question">チェックリストの処理順序</div>
+          <div class="qa-answer"><strong>並行して進める</strong></div>
+        </div>
+      </div>
+      <div class="qa-memo">
+        <button class="memo-toggle" onclick="toggleMemo('q7', this)" aria-expanded="false">
+          <span class="memo-icon">✏️</span>
+          <span class="memo-arrow">▶</span>
+          メモ
+          <span class="has-content" id="has-q7" style="display:none">● 入力済み</span>
+        </button>
+        <div class="memo-body" id="memo-body-q7">
+          <textarea class="memo-input" id="memo-q7" placeholder="この質問に関するメモ・追加確認事項..." oninput="saveMemo('q7', this.value)"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-card-top">
+        <span class="qa-number">Q8</span>
+        <div class="qa-body">
+          <div class="qa-question">リマインドの方法</div>
+          <div class="qa-answer"><strong>Slack手動投稿</strong></div>
+        </div>
+      </div>
+      <div class="qa-memo">
+        <button class="memo-toggle" onclick="toggleMemo('q8', this)" aria-expanded="false">
+          <span class="memo-icon">✏️</span>
+          <span class="memo-arrow">▶</span>
+          メモ
+          <span class="has-content" id="has-q8" style="display:none">● 入力済み</span>
+        </button>
+        <div class="memo-body" id="memo-body-q8">
+          <textarea class="memo-input" id="memo-q8" placeholder="この質問に関するメモ・追加確認事項..." oninput="saveMemo('q8', this.value)"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-card-top">
+        <span class="qa-number">Q9</span>
+        <div class="qa-body">
+          <div class="qa-question">上長への確認方法</div>
+          <div class="qa-answer"><strong>Slack</strong></div>
+        </div>
+      </div>
+      <div class="qa-memo">
+        <button class="memo-toggle" onclick="toggleMemo('q9', this)" aria-expanded="false">
+          <span class="memo-icon">✏️</span>
+          <span class="memo-arrow">▶</span>
+          メモ
+          <span class="has-content" id="has-q9" style="display:none">● 入力済み</span>
+        </button>
+        <div class="memo-body" id="memo-body-q9">
+          <textarea class="memo-input" id="memo-q9" placeholder="この質問に関するメモ・追加確認事項..." oninput="saveMemo('q9', this.value)"></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Category 3: 判定ルール ===== -->
+  <section class="category-section cat-judge">
+    <div class="category-header">
+      <span class="category-badge">判定ルール</span>
+      <span class="category-title">Q10〜Q11</span>
+      <span class="category-count">2問</span>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-card-top">
+        <span class="qa-number">Q10</span>
+        <div class="qa-body">
+          <div class="qa-question">通勤手当の判定データ</div>
+          <div class="qa-answer"><strong>マネーフォワードの日次勤怠を目視確認</strong></div>
+        </div>
+      </div>
+      <div class="qa-memo">
+        <button class="memo-toggle" onclick="toggleMemo('q10', this)" aria-expanded="false">
+          <span class="memo-icon">✏️</span>
+          <span class="memo-arrow">▶</span>
+          メモ
+          <span class="has-content" id="has-q10" style="display:none">● 入力済み</span>
+        </button>
+        <div class="memo-body" id="memo-body-q10">
+          <textarea class="memo-input" id="memo-q10" placeholder="この質問に関するメモ・追加確認事項..." oninput="saveMemo('q10', this.value)"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-card-top">
+        <span class="qa-number">Q11</span>
+        <div class="qa-body">
+          <div class="qa-question">残業80h/100h超過の集計方法</div>
+          <div class="qa-answer"><strong>手動計算。</strong>MFの設定をもっと細かく分ければ自動集計で正しい数値が上がると思うが、少しずれがあるため手動計算。</div>
+        </div>
+      </div>
+      <div class="qa-memo">
+        <button class="memo-toggle" onclick="toggleMemo('q11', this)" aria-expanded="false">
+          <span class="memo-icon">✏️</span>
+          <span class="memo-arrow">▶</span>
+          メモ
+          <span class="has-content" id="has-q11" style="display:none">● 入力済み</span>
+        </button>
+        <div class="memo-body" id="memo-body-q11">
+          <textarea class="memo-input" id="memo-q11" placeholder="この質問に関するメモ・追加確認事項..." oninput="saveMemo('q11', this.value)"></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Category 4: 事業部ルール ===== -->
+  <section class="category-section cat-biz">
+    <div class="category-header">
+      <span class="category-badge">事業部ルール</span>
+      <span class="category-title">Q12〜Q14</span>
+      <span class="category-count">3問</span>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-card-top">
+        <span class="qa-number">Q12</span>
+        <div class="qa-body">
+          <div class="qa-question">b{stoicのルール</div>
+          <div class="qa-answer"><strong>確定済み</strong></div>
+        </div>
+      </div>
+      <div class="qa-memo">
+        <button class="memo-toggle" onclick="toggleMemo('q12', this)" aria-expanded="false">
+          <span class="memo-icon">✏️</span>
+          <span class="memo-arrow">▶</span>
+          メモ
+          <span class="has-content" id="has-q12" style="display:none">● 入力済み</span>
+        </button>
+        <div class="memo-body" id="memo-body-q12">
+          <textarea class="memo-input" id="memo-q12" placeholder="この質問に関するメモ・追加確認事項..." oninput="saveMemo('q12', this.value)"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-card-top">
+        <span class="qa-number">Q13</span>
+        <div class="qa-body">
+          <div class="qa-question">フレックス総枠の確認データと判定基準</div>
+          <div class="qa-answer">
+            マネーフォワードの日次勤怠を目視確認＋給与計算メモ。
+            <ul>
+              <li>時短の記載がある人 → <strong>その所定時間 × 日数</strong></li>
+              <li>それ以外 → <strong>8h × 日数</strong>を基準に確認</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="qa-memo">
+        <button class="memo-toggle" onclick="toggleMemo('q13', this)" aria-expanded="false">
+          <span class="memo-icon">✏️</span>
+          <span class="memo-arrow">▶</span>
+          メモ
+          <span class="has-content" id="has-q13" style="display:none">● 入力済み</span>
+        </button>
+        <div class="memo-body" id="memo-body-q13">
+          <textarea class="memo-input" id="memo-q13" placeholder="この質問に関するメモ・追加確認事項..." oninput="saveMemo('q13', this.value)"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-card-top">
+        <span class="qa-number">Q14</span>
+        <div class="qa-body">
+          <div class="qa-question">BOXの夏季休暇</div>
+          <div class="qa-answer"><strong>今後日付指定なくなる予定のため対応不要</strong></div>
+        </div>
+      </div>
+      <div class="qa-memo">
+        <button class="memo-toggle" onclick="toggleMemo('q14', this)" aria-expanded="false">
+          <span class="memo-icon">✏️</span>
+          <span class="memo-arrow">▶</span>
+          メモ
+          <span class="has-content" id="has-q14" style="display:none">● 入力済み</span>
+        </button>
+        <div class="memo-body" id="memo-body-q14">
+          <textarea class="memo-input" id="memo-q14" placeholder="この質問に関するメモ・追加確認事項..." oninput="saveMemo('q14', this.value)"></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Category 5: 体制・課題 ===== -->
+  <section class="category-section cat-team">
+    <div class="category-header">
+      <span class="category-badge">体制・課題</span>
+      <span class="category-title">Q15〜Q16</span>
+      <span class="category-count">2問</span>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-card-top">
+        <span class="qa-number">Q15</span>
+        <div class="qa-body">
+          <div class="qa-question">チェックリスト処理にかかる時間</div>
+          <div class="qa-answer"><strong>グループ労務2人合計で月100時間</strong></div>
+        </div>
+      </div>
+      <div class="qa-memo">
+        <button class="memo-toggle" onclick="toggleMemo('q15', this)" aria-expanded="false">
+          <span class="memo-icon">✏️</span>
+          <span class="memo-arrow">▶</span>
+          メモ
+          <span class="has-content" id="has-q15" style="display:none">● 入力済み</span>
+        </button>
+        <div class="memo-body" id="memo-body-q15">
+          <textarea class="memo-input" id="memo-q15" placeholder="この質問に関するメモ・追加確認事項..." oninput="saveMemo('q15', this.value)"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="qa-card">
+      <div class="qa-card-top">
+        <span class="qa-number">Q16</span>
+        <div class="qa-body">
+          <div class="qa-question">手間がかかる・ミスが起きやすい項目</div>
+          <div class="qa-answer">
+            <ul>
+              <li><strong>歯科エアシフトのシフト情報と打刻の照合</strong></li>
+              <li><strong>通勤手当の定期代支給判定</strong></li>
+              <li><strong>未提出者へのプッシュ（リマインド）</strong></li>
+              <li><strong>承認者への承認プッシュ</strong></li>
+              <li><strong>上長への控除判断の確認</strong></li>
+              <li><strong>インターン生の稼働実態との乖離確認</strong>（総労働時間多め、深夜勤務発生している人は上長に確認、カレンダーのチェック等）</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="qa-memo">
+        <button class="memo-toggle" onclick="toggleMemo('q16', this)" aria-expanded="false">
+          <span class="memo-icon">✏️</span>
+          <span class="memo-arrow">▶</span>
+          メモ
+          <span class="has-content" id="has-q16" style="display:none">● 入力済み</span>
+        </button>
+        <div class="memo-body" id="memo-body-q16">
+          <textarea class="memo-input" id="memo-q16" placeholder="この質問に関するメモ・追加確認事項..." oninput="saveMemo('q16', this.value)"></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Feedback Section ===== -->
+  <section class="feedback-section">
+    <div class="feedback-header">
+      <span class="feedback-badge">レビューFB</span>
+      <span class="feedback-title">労務チームからのフィードバック</span>
+      <span class="feedback-date">2026-03-12 Slack経由 / 12件</span>
+    </div>
+
+    <div class="feedback-subsection">利用システム追加情報</div>
+
+    <div class="feedback-card">
+      <div class="feedback-num">FB#1</div>
+      <div class="feedback-text"><strong>有給管理</strong>: 薬局はスプレッドシート、歯科はkintone</div>
+    </div>
+    <div class="feedback-card">
+      <div class="feedback-num">FB#2</div>
+      <div class="feedback-text"><strong>昇給賞与</strong>: 各事業部からスプレッドシートで情報がくるため、会社ごとに整理が必要</div>
+    </div>
+
+    <div class="feedback-subsection">運用の前提（補足）</div>
+
+    <div class="feedback-card">
+      <div class="feedback-num">FB#3</div>
+      <div class="feedback-text">リマインドや経費内容チェックなど、<strong>BPIO 4名</strong>が補助している</div>
+    </div>
+
+    <div class="feedback-subsection">項目別フィードバック</div>
+
+    <div class="feedback-card">
+      <div class="feedback-num">FB#4 — #1 リマインド</div>
+      <div class="feedback-text">アルバイトの最終出勤日問題 — 月末前退職の場合、最終出勤日以降が空欄だと承認不可。月末まで「休日(アルバイト/インターンシフト制用)申請」を提出させる運用が必要</div>
+    </div>
+    <div class="feedback-card">
+      <div class="feedback-num">FB#5 — #9 定期代支給チェック</div>
+      <div class="feedback-text">忌引休暇は1割に含めない。ただしMF上では忌引も結婚休暇も「慶弔休暇」扱いのため日次勤怠だけでは判定不可。<strong>SmartHRの慶弔休暇付与申請と併せて判定</strong></div>
+    </div>
+    <div class="feedback-card">
+      <div class="feedback-num">FB#6 — #10 残業超過</div>
+      <div class="feedback-text">社会保険の加入要件を超える人のピックアップもしたい</div>
+    </div>
+    <div class="feedback-card">
+      <div class="feedback-num">FB#7 — #11 経費リマインド</div>
+      <div class="feedback-text">下書きはリマインド不要。<strong>上長未承認と差戻中のみ</strong>リマインド</div>
+    </div>
+    <div class="feedback-card">
+      <div class="feedback-num">FB#8 — #17 出勤簿↔AS突合</div>
+      <div class="feedback-text">CSVエクスポートにシフトの所定時間が含まれないため、エアシフト画面を確認しながら修正点をメディカル出勤簿に入力 → 集計結果・申し送りを給与計算メモに記載という手作業フロー</div>
+    </div>
+    <div class="feedback-card">
+      <div class="feedback-num">FB#9 — #23 4週4休</div>
+      <div class="feedback-text"><strong>1月1日起算の4週4休</strong>で運用</div>
+    </div>
+    <div class="feedback-card">
+      <div class="feedback-num">FB#10 — #26 夏季休暇（訂正）</div>
+      <div class="feedback-text">「対応不要」から訂正。<strong>夏季休暇付与は必要</strong>で事業部ごとに付与数が異なる。年末年始休暇も事業部ごとに異なる。誕生日休暇がある事業部もある。慶弔休暇の付与も含む。異動時は変更が必要</div>
+    </div>
+    <div class="feedback-card">
+      <div class="feedback-num">FB#11 — M. 歯科</div>
+      <div class="feedback-text">所定内残業と所定外残業の確認が必要（新規項目 #16-b）</div>
+    </div>
+    <div class="feedback-card">
+      <div class="feedback-num">FB#12 — K. DELTA フレックス</div>
+      <div class="feedback-text">PTXもフレックス制を適用。<strong>昇給タイミングがPTXだけ異なる</strong></div>
+    </div>
+  </section>
+
+  <!-- ===== Copy Button Section ===== -->
+  <div class="copy-section">
+    <div class="copy-info">
+      <strong>メモを一括コピー（Slack送信用）</strong>
+      メモが入力されている質問のみ出力されます
+    </div>
+    <button class="btn-copy" id="copyBtn" onclick="copyAllMemos()">
+      📋 メモをコピー
+    </button>
+  </div>
+
+</main>
+
+<script>
+// ===== Memo Toggle =====
+function toggleMemo(id, btn) {
+  const body = document.getElementById('memo-body-' + id);
+  const isOpen = body.classList.contains('open');
+  if (isOpen) {
+    body.classList.remove('open');
+    btn.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+  } else {
+    body.classList.add('open');
+    btn.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+  }
+}
+
+// ===== LocalStorage Save/Load =====
+function saveMemo(id, value) {
+  const key = 'p022-qa-memo-' + id;
+  if (value.trim()) {
+    localStorage.setItem(key, value);
+  } else {
+    localStorage.removeItem(key);
+  }
+  updateHasContentIndicator(id, value);
+}
+
+function updateHasContentIndicator(id, value) {
+  const indicator = document.getElementById('has-' + id);
+  if (indicator) {
+    indicator.style.display = value.trim() ? 'inline' : 'none';
+  }
+}
+
+function loadAllMemos() {
+  const qIds = ['q1','q2','q3','q4','q5','q6','q7','q8','q9','q10','q11','q12','q13','q14','q15','q16'];
+  qIds.forEach(function(id) {
+    const key = 'p022-qa-memo-' + id;
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      const textarea = document.getElementById('memo-' + id);
+      if (textarea) {
+        textarea.value = saved;
+        updateHasContentIndicator(id, saved);
+      }
+    }
+  });
+}
+
+// ===== Copy All Memos =====
+const qLabels = {
+  q1:  '給与計算メモの形式と保管場所',
+  q2:  '勤怠システムは全事業部統一か',
+  q3:  'MFとの有給突合の方法',
+  q4:  'エアシフトからのデータ取得方法',
+  q5:  'メディカル出勤簿の形式',
+  q6:  '月次の締め日',
+  q7:  'チェックリストの処理順序',
+  q8:  'リマインドの方法',
+  q9:  '上長への確認方法',
+  q10: '通勤手当の判定データ',
+  q11: '残業80h/100h超過の集計方法',
+  q12: 'b{stoicのルール',
+  q13: 'フレックス総枠の確認データと判定基準',
+  q14: 'BOXの夏季休暇',
+  q15: 'チェックリスト処理にかかる時間',
+  q16: '手間がかかる・ミスが起きやすい項目'
+};
+
+function copyAllMemos() {
+  const qIds = ['q1','q2','q3','q4','q5','q6','q7','q8','q9','q10','q11','q12','q13','q14','q15','q16'];
+  const lines = [];
+  lines.push('📋 p022 ヒアリング質問シート — メモまとめ');
+  lines.push('');
+
+  let hasMemo = false;
+  qIds.forEach(function(id) {
+    const key = 'p022-qa-memo-' + id;
+    const val = localStorage.getItem(key);
+    if (val && val.trim()) {
+      hasMemo = true;
+      const num = id.toUpperCase();
+      lines.push('[' + num + '] ' + qLabels[id]);
+      lines.push('→ メモ: ' + val.trim());
+      lines.push('');
+    }
+  });
+
+  if (!hasMemo) {
+    alert('メモが入力されていません。');
+    return;
+  }
+
+  lines.push('---');
+  const now = new Date();
+  const jst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+  const dateStr = jst.toISOString().replace('T', ' ').substring(0, 16);
+  lines.push('更新: ' + dateStr);
+
+  const text = lines.join('\n');
+  navigator.clipboard.writeText(text).then(function() {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✓ コピーしました';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.innerHTML = '📋 メモをコピー';
+      btn.classList.remove('copied');
+    }, 2500);
+  }).catch(function() {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✓ コピーしました';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.innerHTML = '📋 メモをコピー';
+      btn.classList.remove('copied');
+    }, 2500);
+  });
+}
+
+// ===== Init =====
+document.addEventListener('DOMContentLoaded', loadAllMemos);
+</script>
+</body>
+</html>

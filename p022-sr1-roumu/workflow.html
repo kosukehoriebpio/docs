@@ -1,0 +1,2743 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>月次勤怠締めワークフロー v2 — グループSR1 労務</title>
+<style>
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --p1: #2563eb;
+  --p1-bg: #eff6ff;
+  --p1-border: #93c5fd;
+  --p2: #16a34a;
+  --p2-bg: #f0fdf4;
+  --p2-border: #86efac;
+  --p3: #ea580c;
+  --p3-bg: #fff7ed;
+  --p3-border: #fdba74;
+  --p4: #7c3aed;
+  --p4-bg: #f5f3ff;
+  --p4-border: #c4b5fd;
+  --auto-high: #16a34a;
+  --auto-mid: #ca8a04;
+  --auto-low: #dc2626;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / .05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / .1), 0 1px 2px -1px rgb(0 0 0 / .1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / .1), 0 2px 4px -2px rgb(0 0 0 / .1);
+  --radius: 8px;
+  --radius-lg: 12px;
+}
+
+body {
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--gray-800);
+  background: var(--gray-50);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Layout ===== */
+.page-header {
+  background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
+  color: #fff;
+  padding: 28px 32px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.page-header::after {
+  content: "";
+  position: absolute;
+  right: -40px; top: -40px;
+  width: 200px; height: 200px;
+  background: rgba(255,255,255,.05);
+  border-radius: 50%;
+}
+.page-header h1 { font-size: 22px; font-weight: 700; letter-spacing: .02em; }
+.page-header .subtitle { font-size: 13px; color: rgba(255,255,255,.75); margin-top: 4px; }
+.header-meta {
+  display: flex; gap: 24px; margin-top: 16px; flex-wrap: wrap;
+}
+.header-meta span {
+  font-size: 12px; background: rgba(255,255,255,.15);
+  padding: 4px 10px; border-radius: 20px;
+}
+
+.container { max-width: 1400px; margin: 0 auto; padding: 24px 20px 48px; }
+
+/* ===== Legend ===== */
+.legend-bar {
+  display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+  background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius);
+  padding: 12px 16px; margin-bottom: 20px;
+}
+.legend-bar .label { font-size: 12px; font-weight: 600; color: var(--gray-600); margin-right: 4px; }
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px;
+  white-space: nowrap;
+}
+.badge-high { background: #dcfce7; color: #15803d; }
+.badge-mid  { background: #fef9c3; color: #854d0e; }
+.badge-low  { background: #fee2e2; color: #b91c1c; }
+.badge-survey { background: #f3f4f6; color: #6b7280; }
+
+/* ===== Timeline ===== */
+.timeline-wrapper { position: relative; }
+
+.timeline-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.timeline-phase-header {
+  padding: 10px 14px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.timeline-phase-header .phase-num { font-size: 10px; font-weight: 600; opacity: .7; letter-spacing: .05em; text-transform: uppercase; }
+.timeline-phase-header .phase-period { font-size: 11px; font-weight: 500; margin-top: 2px; }
+
+.ph1-header { background: var(--p1); color: #fff; }
+.ph2-header { background: var(--p2); color: #fff; }
+.ph3-header { background: var(--p3); color: #fff; }
+.ph4-header { background: var(--p4); color: #fff; }
+
+/* ===== Phase columns ===== */
+.phase-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 8px;
+  align-items: start;
+}
+
+.phase-col {
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  padding: 12px;
+  min-height: 300px;
+}
+.ph1-col { background: var(--p1-bg); border: 1.5px solid var(--p1-border); border-top: none; }
+.ph2-col { background: var(--p2-bg); border: 1.5px solid var(--p2-border); border-top: none; }
+.ph3-col { background: var(--p3-bg); border: 1.5px solid var(--p3-border); border-top: none; }
+.ph4-col { background: var(--p4-bg); border: 1.5px solid var(--p4-border); border-top: none; }
+
+/* ===== Cards ===== */
+.card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  box-shadow: var(--shadow-sm);
+  border-left: 3px solid transparent;
+  transition: box-shadow .15s;
+}
+.card:hover { box-shadow: var(--shadow-md); }
+.card:last-child { margin-bottom: 0; }
+
+.ph1-col .card { border-left-color: var(--p1); }
+.ph2-col .card { border-left-color: var(--p2); }
+.ph3-col .card { border-left-color: var(--p3); }
+.ph4-col .card { border-left-color: var(--p4); }
+
+.card-title {
+  font-size: 12.5px; font-weight: 700; color: var(--gray-800);
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 6px; line-height: 1.4;
+}
+.card-id {
+  font-size: 10px; font-weight: 600; color: var(--gray-400);
+  background: var(--gray-100); padding: 1px 6px; border-radius: 10px;
+  white-space: nowrap; flex-shrink: 0; margin-top: 1px;
+}
+
+/* ===== Step-by-step detail ===== */
+.card-steps {
+  margin-top: 8px;
+  padding: 7px 8px;
+  background: #f8fafc;
+  border-radius: 6px;
+  border: 1px solid var(--gray-200);
+}
+.card-steps-title {
+  font-size: 10px; font-weight: 700; color: var(--gray-500);
+  letter-spacing: .05em; text-transform: uppercase;
+  margin-bottom: 5px;
+  display: flex; align-items: center; gap: 4px;
+}
+.step-list {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.step-item {
+  display: flex; align-items: flex-start; gap: 5px;
+  font-size: 11px; color: var(--gray-700); line-height: 1.5;
+}
+.step-num {
+  flex-shrink: 0;
+  font-size: 10px; font-weight: 700;
+  background: var(--gray-200); color: var(--gray-600);
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+}
+.step-text { flex: 1; }
+.step-text .sys { /* system name inline */ }
+
+/* ===== System badges in steps ===== */
+.sys-badge {
+  display: inline;
+  font-size: 10px; font-weight: 600;
+  background: #dbeafe; color: #1e40af;
+  padding: 1px 5px; border-radius: 3px;
+  white-space: nowrap;
+}
+.sys-badge.green { background: #dcfce7; color: #166534; }
+.sys-badge.amber { background: #fef9c3; color: #713f12; }
+.sys-badge.purple { background: #ede9fe; color: #5b21b6; }
+.sys-badge.pink { background: #fce7f3; color: #9d174d; }
+.sys-badge.gray { background: var(--gray-100); color: var(--gray-600); }
+
+/* ===== IO row ===== */
+.io-row {
+  margin-top: 7px;
+  display: flex; gap: 4px; align-items: center; flex-wrap: wrap;
+  font-size: 10.5px;
+}
+.io-label {
+  font-size: 10px; font-weight: 700; color: var(--gray-500);
+  letter-spacing: .03em; flex-shrink: 0;
+}
+.io-item {
+  font-size: 10.5px; color: var(--gray-600);
+  background: var(--gray-100); padding: 1px 6px; border-radius: 4px;
+  white-space: nowrap;
+}
+.io-arrow { font-size: 10px; color: var(--gray-400); flex-shrink: 0; }
+
+/* ===== card-flow (legacy, kept for compatibility) ===== */
+.card-flow {
+  margin-top: 7px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 3px;
+}
+.flow-item {
+  font-size: 11px; color: var(--gray-600);
+  background: var(--gray-100); padding: 2px 7px; border-radius: 4px;
+  white-space: nowrap;
+}
+.flow-arrow {
+  font-size: 10px; color: var(--gray-400); flex-shrink: 0;
+}
+
+.card-meta {
+  margin-top: 7px; display: flex; gap: 5px; flex-wrap: wrap; align-items: center;
+}
+.approver-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 10px; background: #fef3c7; color: #92400e;
+  padding: 2px 7px; border-radius: 10px;
+}
+.system-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 10px; background: #e0f2fe; color: #0369a1;
+  padding: 2px 7px; border-radius: 10px;
+}
+.note-text {
+  font-size: 10.5px; color: var(--gray-600); margin-top: 5px;
+  padding: 4px 7px; background: #fffbeb; border-radius: 4px;
+  border-left: 2px solid #fbbf24;
+}
+
+/* ===== Section labels ===== */
+.section-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--gray-400); margin: 10px 0 5px; padding: 0 2px;
+}
+.section-label:first-child { margin-top: 0; }
+
+/* ===== Accordion ===== */
+.accordion {
+  background: #fff; border-radius: var(--radius); margin-bottom: 8px;
+  box-shadow: var(--shadow-sm); overflow: hidden;
+  border-left: 3px solid var(--p2-border);
+}
+.ph3-col .accordion { border-left-color: var(--p3-border); }
+
+.accordion-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 12px; cursor: pointer;
+  background: var(--gray-50); border: none; width: 100%;
+  text-align: left; gap: 6px;
+}
+.accordion-header:hover { background: var(--gray-100); }
+.accordion-title { font-size: 12px; font-weight: 700; color: var(--gray-700); }
+.accordion-subtitle { font-size: 10.5px; color: var(--gray-500); margin-top: 1px; }
+.accordion-chevron {
+  flex-shrink: 0; font-size: 11px; color: var(--gray-400);
+  transition: transform .2s; display: inline-block;
+}
+.accordion.open .accordion-chevron { transform: rotate(180deg); }
+.accordion-body { display: none; padding: 0 12px 10px; }
+.accordion.open .accordion-body { display: block; }
+
+.accordion-item {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 6px 0; border-bottom: 1px solid var(--gray-100);
+  font-size: 11.5px;
+}
+.accordion-item:last-child { border-bottom: none; }
+.accordion-dept {
+  font-size: 10px; font-weight: 600; background: var(--gray-100);
+  color: var(--gray-600); padding: 1px 6px; border-radius: 4px;
+  white-space: nowrap; flex-shrink: 0; margin-top: 1px;
+}
+.accordion-item-steps {
+  flex: 1;
+}
+.accordion-item-title {
+  font-weight: 600; color: var(--gray-700); margin-bottom: 4px;
+}
+.accordion-step-list {
+  list-style: none; display: flex; flex-direction: column; gap: 3px;
+}
+.accordion-step-item {
+  display: flex; align-items: flex-start; gap: 4px;
+  font-size: 10.5px; color: var(--gray-600); line-height: 1.4;
+}
+.accordion-step-num {
+  flex-shrink: 0;
+  font-size: 9px; font-weight: 700;
+  background: var(--gray-200); color: var(--gray-500);
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+}
+
+/* ===== Systems section ===== */
+.systems-section {
+  margin-top: 24px;
+  background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-lg);
+  padding: 16px 20px;
+}
+.systems-section h2 { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--gray-700); }
+.systems-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px;
+}
+.system-card {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--gray-50); border: 1px solid var(--gray-200);
+  border-radius: var(--radius); padding: 8px 12px;
+}
+.system-icon { font-size: 18px; flex-shrink: 0; }
+.system-name { font-size: 12px; font-weight: 600; color: var(--gray-700); }
+.system-desc { font-size: 10.5px; color: var(--gray-500); margin-top: 1px; }
+
+/* ===== Dept section ===== */
+.depts-section {
+  margin-top: 16px;
+  background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-lg);
+  padding: 16px 20px;
+}
+.depts-section h2 { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: var(--gray-700); }
+.dept-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.dept-pill {
+  font-size: 12px; font-weight: 500; padding: 4px 12px;
+  background: var(--gray-100); color: var(--gray-700); border-radius: 20px;
+  border: 1px solid var(--gray-200);
+}
+
+/* ===== Summary ===== */
+.summary-section {
+  margin-top: 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+}
+.summary-card {
+  background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-lg);
+  padding: 14px 16px; text-align: center;
+}
+.summary-card .num { font-size: 28px; font-weight: 800; line-height: 1; }
+.summary-card .num-label { font-size: 11px; color: var(--gray-500); margin-top: 4px; }
+.s-blue .num { color: var(--p1); }
+.s-green .num { color: var(--p2); }
+.s-orange .num { color: var(--p3); }
+
+/* ===== Automation section ===== */
+.auto-section {
+  margin-top: 16px;
+  background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-lg);
+  padding: 16px 20px;
+}
+.auto-section h2 { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--gray-700); }
+.auto-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.auto-group { border-radius: var(--radius); padding: 10px 12px; }
+.auto-high-bg { background: #f0fdf4; border: 1px solid #bbf7d0; }
+.auto-mid-bg  { background: #fefce8; border: 1px solid #fde68a; }
+.auto-low-bg  { background: #fef2f2; border: 1px solid #fecaca; }
+.auto-survey-bg { background: var(--gray-50); border: 1px solid var(--gray-200); }
+.auto-group-title { font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+.auto-high-bg .auto-group-title { color: #15803d; }
+.auto-mid-bg  .auto-group-title { color: #854d0e; }
+.auto-low-bg  .auto-group-title { color: #b91c1c; }
+.auto-survey-bg .auto-group-title { color: var(--gray-600); }
+.auto-items { display: flex; flex-wrap: wrap; gap: 4px; }
+.auto-tag {
+  font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 500;
+}
+.auto-high-bg .auto-tag { background: #dcfce7; color: #166534; }
+.auto-mid-bg  .auto-tag { background: #fef9c3; color: #713f12; }
+.auto-low-bg  .auto-tag { background: #fee2e2; color: #991b1b; }
+.auto-survey-bg .auto-tag { background: #f3f4f6; color: #6b7280; }
+
+/* ===== Figma Banner ===== */
+.figma-banner {
+  display: flex; align-items: center; gap: 16px;
+  background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius);
+  padding: 14px 20px; margin: 16px 32px 0;
+}
+.figma-icon {
+  font-size: 22px; color: #7c3aed; flex-shrink: 0;
+}
+.figma-banner > div { flex: 1; }
+.figma-title { font-size: 13px; font-weight: 700; color: var(--gray-800); }
+.figma-desc { font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+.figma-link {
+  display: inline-block; flex-shrink: 0;
+  background: #7c3aed; color: #fff;
+  font-size: 12px; font-weight: 600;
+  padding: 8px 16px; border-radius: 6px;
+  text-decoration: none; white-space: nowrap;
+  transition: background .15s;
+}
+.figma-link:hover { background: #6d28d9; }
+
+/* ===== Checklist Section ===== */
+.checklist-section {
+  margin: 24px 0 0;
+  background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-lg);
+  padding: 20px;
+}
+.checklist-section h2 {
+  font-size: 14px; font-weight: 700; color: var(--gray-800);
+  margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;
+}
+.checklist-reset-btn {
+  font-size: 11px; font-weight: 500; color: var(--gray-500);
+  background: var(--gray-100); border: 1px solid var(--gray-200);
+  padding: 4px 10px; border-radius: 4px; cursor: pointer;
+}
+.checklist-reset-btn:hover { background: var(--gray-200); }
+.checklist-group { margin-bottom: 16px; }
+.checklist-group:last-child { margin-bottom: 0; }
+.checklist-group-title {
+  font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  padding: 4px 8px; border-radius: 4px; margin-bottom: 8px; display: inline-block;
+}
+.cg-p1 .checklist-group-title { background: var(--p1-bg); color: var(--p1); }
+.cg-p2 .checklist-group-title { background: var(--p2-bg); color: var(--p2); }
+.cg-p3 .checklist-group-title { background: var(--p3-bg); color: var(--p3); }
+.cg-p4 .checklist-group-title { background: var(--p4-bg); color: var(--p4); }
+.checklist-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 6px 8px; border-radius: 4px; cursor: pointer;
+  margin-bottom: 2px; transition: background .1s;
+}
+.checklist-item:hover { background: var(--gray-50); }
+.checklist-item input[type="checkbox"] {
+  margin-top: 2px; flex-shrink: 0;
+  width: 15px; height: 15px; cursor: pointer;
+  accent-color: var(--p2);
+}
+.cg-p1 .checklist-item input[type="checkbox"] { accent-color: var(--p1); }
+.cg-p3 .checklist-item input[type="checkbox"] { accent-color: var(--p3); }
+.cg-p4 .checklist-item input[type="checkbox"] { accent-color: var(--p4); }
+.checklist-item label {
+  font-size: 12.5px; color: var(--gray-700); cursor: pointer; line-height: 1.5;
+}
+.checklist-item.checked label { text-decoration: line-through; color: var(--gray-400); }
+
+/* ===== Memo Section ===== */
+.memo-section { margin-top: 16px; }
+.memo-toggle {
+  background: none; border: 1px solid var(--gray-200); border-radius: var(--radius);
+  padding: 7px 14px; font-size: 12px; color: var(--gray-500); cursor: pointer;
+  width: 100%; text-align: left; transition: background .1s;
+}
+.memo-toggle:hover { background: var(--gray-50); }
+.memo-body { margin-top: 8px; }
+.memo-input {
+  width: 100%; padding: 10px 12px;
+  border-radius: var(--radius); border: 1.5px solid var(--gray-200);
+  font-size: 12.5px; font-family: inherit; resize: vertical;
+  color: var(--gray-700); line-height: 1.6;
+  transition: border-color .15s;
+}
+.memo-input:focus { outline: none; border-color: var(--p1); }
+.ph1-col .memo-input:focus { border-color: var(--p1); }
+.ph2-col .memo-input:focus { border-color: var(--p2); }
+.ph3-col .memo-input:focus { border-color: var(--p3); }
+.ph4-col .memo-input:focus { border-color: var(--p4); }
+.memo-actions {
+  display: flex; align-items: center; gap: 10px; margin-top: 6px;
+}
+.memo-save {
+  font-size: 11.5px; font-weight: 600;
+  background: var(--p1); color: #fff;
+  border: none; border-radius: 4px; padding: 5px 14px; cursor: pointer;
+}
+.memo-save:hover { opacity: .85; }
+.memo-saved-at { font-size: 10.5px; color: var(--gray-400); }
+
+/* ===== Slack Section ===== */
+.slack-section {
+  margin-top: 24px;
+  background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-lg);
+  padding: 20px 24px;
+}
+.slack-section h2 { font-size: 14px; font-weight: 700; color: var(--gray-800); margin-bottom: 6px; }
+.slack-section p { font-size: 12.5px; color: var(--gray-500); margin-bottom: 14px; }
+.slack-btn {
+  display: inline-block;
+  background: #4A154B; color: #fff;
+  font-size: 13px; font-weight: 700;
+  padding: 10px 22px; border-radius: 6px; border: none; cursor: pointer;
+  transition: background .15s;
+}
+.slack-btn:hover { background: #3d1040; }
+.slack-preview {
+  margin-top: 14px; padding: 12px 14px;
+  background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius);
+  font-size: 11.5px; color: var(--gray-600); font-family: monospace; line-height: 1.7;
+  white-space: pre-wrap; display: none;
+}
+.slack-preview.visible { display: block; }
+.slack-btns { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.slack-btn-secondary {
+  display: inline-block;
+  background: var(--gray-100); color: var(--gray-600);
+  font-size: 12px; font-weight: 600;
+  padding: 8px 16px; border-radius: 6px; border: 1px solid var(--gray-200); cursor: pointer;
+  transition: background .15s;
+}
+.slack-btn-secondary:hover { background: var(--gray-200); }
+.slack-webhook-status {
+  font-size: 11px; color: var(--gray-400); margin-left: 4px;
+}
+.slack-webhook-status.connected { color: #15803d; }
+
+/* Webhook Modal */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 1000;
+  display: none; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: #fff; border-radius: var(--radius-lg); padding: 24px;
+  width: 440px; max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,.2);
+}
+.modal-box h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.modal-box p { font-size: 12px; color: var(--gray-500); margin-bottom: 14px; line-height: 1.6; }
+.modal-input {
+  width: 100%; padding: 8px 10px; border: 1.5px solid var(--gray-200); border-radius: 5px;
+  font-size: 12px; font-family: inherit; color: var(--gray-700); margin-bottom: 6px;
+}
+.modal-input:focus { outline: none; border-color: var(--p1); }
+.modal-result { font-size: 11px; color: #b91c1c; min-height: 16px; margin-bottom: 10px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.modal-btn-primary {
+  background: #4A154B; color: #fff; font-size: 12px; font-weight: 600;
+  padding: 7px 18px; border-radius: 5px; border: none; cursor: pointer;
+}
+.modal-btn-primary:hover { background: #3d1040; }
+.modal-btn-cancel {
+  background: var(--gray-100); color: var(--gray-600); font-size: 12px; font-weight: 500;
+  padding: 7px 14px; border-radius: 5px; border: 1px solid var(--gray-200); cursor: pointer;
+}
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: #1f2937; color: #fff; font-size: 13px; font-weight: 500;
+  padding: 10px 20px; border-radius: 8px; z-index: 1100;
+  box-shadow: 0 4px 16px rgba(0,0,0,.2);
+  opacity: 0; transition: opacity .3s; pointer-events: none;
+}
+.toast.visible { opacity: 1; }
+
+/* ===== Review bar ===== */
+.review-bar {
+  margin-top: 8px;
+  padding: 6px 0 0;
+  border-top: 1px dashed var(--gray-200);
+  display: flex; flex-direction: column; gap: 5px;
+}
+.review-btns {
+  display: flex; gap: 4px; align-items: center;
+}
+.review-btn {
+  font-size: 10.5px; font-weight: 600; border: none; border-radius: 4px;
+  padding: 3px 10px; cursor: pointer; transition: opacity .15s;
+}
+.review-btn:hover { opacity: .8; }
+.review-btn-ok { background: #dcfce7; color: #15803d; }
+.review-btn-ng { background: #fee2e2; color: #b91c1c; }
+.review-btn-ok.active { background: #15803d; color: #fff; }
+.review-btn-ng.active { background: #b91c1c; color: #fff; }
+.review-btn-clear { background: var(--gray-100); color: var(--gray-500); font-size: 10px; padding: 3px 6px; }
+.review-status-label {
+  font-size: 10px; color: var(--gray-400); margin-left: auto;
+}
+.review-comment-area { display: none; margin-top: 4px; }
+.review-comment-area.visible { display: block; }
+.review-comment {
+  width: 100%; padding: 6px 8px;
+  border: 1.5px solid var(--gray-200); border-radius: 5px;
+  font-size: 11px; font-family: inherit; resize: vertical;
+  color: var(--gray-700); line-height: 1.5;
+}
+.review-comment:focus { outline: none; border-color: #b91c1c; }
+.review-comment-hint {
+  font-size: 9.5px; color: var(--gray-400); margin-top: 2px;
+}
+.card.review-ok { border-left-color: #15803d !important; }
+.card.review-ng { border-left-color: #b91c1c !important; }
+.accordion.review-ok { border-left-color: #15803d !important; }
+.accordion.review-ng { border-left-color: #b91c1c !important; }
+
+/* ===== Review dashboard ===== */
+.review-dashboard {
+  background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-lg);
+  padding: 16px 20px; margin-bottom: 20px;
+}
+.review-dashboard h2 {
+  font-size: 14px; font-weight: 700; color: var(--gray-800); margin-bottom: 4px;
+}
+.review-dashboard .review-subtitle {
+  font-size: 12px; color: var(--gray-500); margin-bottom: 14px;
+}
+.review-progress-bar {
+  height: 8px; background: var(--gray-100); border-radius: 4px;
+  overflow: hidden; margin-bottom: 10px;
+  display: flex;
+}
+.review-progress-ok { background: #15803d; transition: width .3s; }
+.review-progress-ng { background: #b91c1c; transition: width .3s; }
+.review-stats {
+  display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
+}
+.review-stat {
+  font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 5px;
+}
+.review-stat .dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.dot-pending { background: var(--gray-300, #d1d5db); }
+.dot-ok { background: #15803d; }
+.dot-ng { background: #b91c1c; }
+.review-name-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+}
+.review-name-input {
+  padding: 5px 10px; border: 1.5px solid var(--gray-200); border-radius: 5px;
+  font-size: 12px; font-family: inherit; color: var(--gray-700); width: 180px;
+}
+.review-name-input:focus { outline: none; border-color: var(--p1); }
+.review-name-label { font-size: 11.5px; font-weight: 600; color: var(--gray-600); }
+
+/* ===== Print ===== */
+@media print {
+  body { background: #fff; font-size: 11px; }
+  .page-header { background: #1e3a5f !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .container { padding: 12px; }
+  .card, .accordion, .system-card { break-inside: avoid; }
+  .phase-cols { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .accordion-body { display: block !important; }
+  .accordion-chevron { display: none; }
+  .summary-section { grid-template-columns: repeat(3, 1fr); }
+  .auto-grid { grid-template-columns: repeat(2, 1fr); }
+  .figma-banner, .slack-section, .memo-section, .checklist-section { display: none; }
+  .review-bar .review-btns, .review-bar .review-btn-clear { display: none; }
+  .review-comment-area.visible { display: block; }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1100px) {
+  .timeline-header,
+  .phase-cols { grid-template-columns: 1fr 1fr; }
+  .ph3-header { border-radius: var(--radius) var(--radius) 0 0; }
+  .ph4-header { border-radius: var(--radius) var(--radius) 0 0; }
+  /* Flowchart stays horizontal on all screen sizes */
+}
+@media (max-width: 700px) {
+  .timeline-header,
+  .phase-cols { grid-template-columns: 1fr; }
+  .ph2-header, .ph3-header, .ph4-header { border-radius: var(--radius) var(--radius) 0 0; margin-top: 12px; }
+  .summary-section { grid-template-columns: 1fr; }
+  .auto-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>月次勤怠締めワークフロー v2</h1>
+  <div class="subtitle">p022（グループSR1 労務業務効率化） — 手順詳細付き月次定例業務フロー図</div>
+  <div class="header-meta">
+    <span>担当: グループ労務チーム 2名 + BPIO 4名補助</span>
+    <span>月合計: 約100時間</span>
+    <span>対象事業部: 13部門</span>
+    <span>チェック項目: 27項目</span>
+    <span>v2: 各項目に具体的操作手順追加</span>
+  </div>
+  <div class="figma-banner">
+    <span class="figma-icon">&#9670;</span>
+    <div>
+      <div class="figma-title">フローチャート（Figma）</div>
+      <div class="figma-desc">ビジュアルフロー図はFigJamで確認できます</div>
+    </div>
+    <a href="https://www.figma.com/online-whiteboard/create-diagram/18386ebd-124d-4743-9290-49d8526eff50?utm_source=other&utm_content=edit_in_figjam" target="_blank" class="figma-link">FigJamで開く &rarr;</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Review Dashboard -->
+  <div class="review-dashboard" id="reviewDashboard">
+    <h2>ワークフロー レビュー状況</h2>
+    <div class="review-subtitle">ヒアリングをもとに作成したワークフローが正しいか確認してください。各項目の「OK」または「要修正」を選択し、修正が必要な場合はコメントを残してください。</div>
+    <div class="review-name-row">
+      <span class="review-name-label">レビュアー名:</span>
+      <input type="text" class="review-name-input" id="reviewerName" placeholder="名前を入力" oninput="saveReviewerName()">
+    </div>
+    <div class="review-progress-bar">
+      <div class="review-progress-ok" id="progOk" style="width:0"></div>
+      <div class="review-progress-ng" id="progNg" style="width:0"></div>
+    </div>
+    <div class="review-stats">
+      <div class="review-stat"><span class="dot dot-pending"></span> <span id="statPending">0</span> 未レビュー</div>
+      <div class="review-stat"><span class="dot dot-ok"></span> <span id="statOk">0</span> OK</div>
+      <div class="review-stat"><span class="dot dot-ng"></span> <span id="statNg">0</span> 要修正</div>
+      <div class="review-stat" style="margin-left:auto; color:var(--gray-400); font-weight:500;"><span id="statTotal">0</span> 項目中</div>
+    </div>
+  </div>
+
+  <!-- Checklist Section -->
+  <div class="checklist-section">
+    <h2>確認ポイント一覧 <button class="checklist-reset-btn" onclick="resetChecklist()">リセット</button></h2>
+    <div class="checklist-group cg-p1">
+      <div class="checklist-group-title">Phase 1: リマインド</div>
+      <div class="checklist-item" id="ci-0"><input type="checkbox" id="chk-0" onchange="saveChecklist()"><label for="chk-0">全従業員の勤怠提出が完了しているか</label></div>
+      <div class="checklist-item" id="ci-1"><input type="checkbox" id="chk-1" onchange="saveChecklist()"><label for="chk-1">経費の上長未承認・差戻が解消されているか</label></div>
+    </div>
+    <div class="checklist-group cg-p2">
+      <div class="checklist-group-title">Phase 2: データ確認・突合</div>
+      <div class="checklist-item" id="ci-2"><input type="checkbox" id="chk-2" onchange="saveChecklist()"><label for="chk-2">MF有給件数とSS記載数が一致しているか</label></div>
+      <div class="checklist-item" id="ci-3"><input type="checkbox" id="chk-3" onchange="saveChecklist()"><label for="chk-3">アルバイトの有給日数がSSに転記されているか</label></div>
+      <div class="checklist-item" id="ci-4"><input type="checkbox" id="chk-4" onchange="saveChecklist()"><label for="chk-4">欠勤日数がSSに転記されているか</label></div>
+      <div class="checklist-item" id="ci-5"><input type="checkbox" id="chk-5" onchange="saveChecklist()"><label for="chk-5">休憩時間に異常値がないか</label></div>
+      <div class="checklist-item" id="ci-6"><input type="checkbox" id="chk-6" onchange="saveChecklist()"><label for="chk-6">残業80h/100h超過者がいないか</label></div>
+      <div class="checklist-item" id="ci-7"><input type="checkbox" id="chk-7" onchange="saveChecklist()"><label for="chk-7">通勤手当対象者を正しく判定できているか（忌引除外）</label></div>
+      <div class="checklist-item" id="ci-8"><input type="checkbox" id="chk-8" onchange="saveChecklist()"><label for="chk-8">歯科・薬局の出勤簿&#8596;AS突合に不一致がないか</label></div>
+      <div class="checklist-item" id="ci-9"><input type="checkbox" id="chk-9" onchange="saveChecklist()"><label for="chk-9">事業部固有チェック（フレックス/皆勤/手当等）が完了しているか</label></div>
+      <div class="checklist-item" id="ci-10"><input type="checkbox" id="chk-10" onchange="saveChecklist()"><label for="chk-10">経費が全件承認済みで月次締め可能か</label></div>
+    </div>
+    <div class="checklist-group cg-p3">
+      <div class="checklist-group-title">Phase 3: 上長確認・控除判断</div>
+      <div class="checklist-item" id="ci-11"><input type="checkbox" id="chk-11" onchange="saveChecklist()"><label for="chk-11">全上長から遅刻早退控除・割増判断の回答が得られたか</label></div>
+      <div class="checklist-item" id="ci-12"><input type="checkbox" id="chk-12" onchange="saveChecklist()"><label for="chk-12">インセンティブ金額が全事業部から報告されたか</label></div>
+      <div class="checklist-item" id="ci-13"><input type="checkbox" id="chk-13" onchange="saveChecklist()"><label for="chk-13">個別担当者（高野/長山/住吉等）からの回答が完了したか</label></div>
+    </div>
+    <div class="checklist-group cg-p4">
+      <div class="checklist-group-title">Phase 4: 最終チェック・承認</div>
+      <div class="checklist-item" id="ci-14"><input type="checkbox" id="chk-14" onchange="saveChecklist()"><label for="chk-14">ダブルチェックで差異が解消されたか</label></div>
+      <div class="checklist-item" id="ci-15"><input type="checkbox" id="chk-15" onchange="saveChecklist()"><label for="chk-15">全事業部の承認が完了し給与計算連携可能か</label></div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend-bar">
+    <span class="label">自動化ポテンシャル:</span>
+    <span class="badge badge-high">高</span>
+    <span class="badge badge-mid">中</span>
+    <span class="badge badge-low">低</span>
+    <span class="badge badge-survey">要調査</span>
+    <span style="width:1px;height:16px;background:var(--gray-200);margin:0 4px;"></span>
+    <span class="label">表記:</span>
+    <span style="font-size:11px;"><span class="sys-badge">MF勤怠</span> = システム名バッジ</span>
+    <span style="font-size:11px;"><span class="sys-badge purple">SS</span> = 給与計算メモSS</span>
+    <span style="font-size:11px;"><span class="sys-badge green">AS</span> = エアシフト</span>
+    <span style="font-size:11px;"><span class="approver-badge">担当者名</span> = 確認先</span>
+  </div>
+
+  <!-- Summary cards -->
+  <div class="summary-section">
+    <div class="summary-card s-blue">
+      <div class="num">4</div>
+      <div class="num-label">フェーズ（月末前〜翌月9日）</div>
+    </div>
+    <div class="summary-card s-green">
+      <div class="num">27</div>
+      <div class="num-label">チェック項目</div>
+    </div>
+    <div class="summary-card s-orange">
+      <div class="num">100h</div>
+      <div class="num-label">月合計工数（目安）</div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline-wrapper" style="margin-top:24px;">
+
+    <div class="timeline-header">
+      <div class="timeline-phase-header ph1-header">
+        <span class="phase-num">Phase 1</span>
+        <span>リマインド</span>
+        <span class="phase-period">月末 5営業日前 〜 月末</span>
+      </div>
+      <div class="timeline-phase-header ph2-header">
+        <span class="phase-num">Phase 2</span>
+        <span>データ確認・突合</span>
+        <span class="phase-period">月末 〜 翌月 3日頃</span>
+      </div>
+      <div class="timeline-phase-header ph3-header">
+        <span class="phase-num">Phase 3</span>
+        <span>上長確認・控除判断</span>
+        <span class="phase-period">翌月 3日 〜 7日頃</span>
+      </div>
+      <div class="timeline-phase-header ph4-header">
+        <span class="phase-num">Phase 4</span>
+        <span>最終チェック・承認</span>
+        <span class="phase-period">翌月 7日 〜 9日</span>
+      </div>
+    </div>
+
+    <div class="phase-cols">
+
+      <!-- ===== PHASE 1 ===== -->
+      <div class="phase-col ph1-col">
+
+        <!-- #1 勤怠リマインド -->
+        <div class="card">
+          <div class="card-title">
+            <span>勤怠提出リマインド</span>
+            <span class="card-id">#1</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text"><span class="sys-badge">MF勤怠</span> &gt; 勤怠一覧 &gt; 提出状況で「未提出」フィルタ &gt; 未提出者リストを確認</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text"><span class="sys-badge green">AS</span>（エアシフト）でも歯科・薬局の未提出者を同様に確認</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text">未提出者リストを事業部ごとに整理</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">4</span>
+                <span class="step-text"><span class="sys-badge amber">Slack</span> &gt; 各事業部チャンネル &gt; 未提出者名を記載してリマインド送信</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">5</span>
+                <span class="step-text">月末5日前・3日前・前日の3回繰り返す</span>
+              </li>
+            </ol>
+          </div>
+          <div class="io-row">
+            <span class="io-label">入力:</span>
+            <span class="io-item">MF勤怠 提出状況</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">出力:</span>
+            <span class="io-item">Slack通知</span>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-high">高</span>
+            <span class="system-badge">MF勤怠</span>
+            <span class="system-badge">AS</span>
+          </div>
+          <div class="note-text">アルバイト月末前退職: 最終出勤日以降も「休日(アルバイト/インターンシフト制用)申請」を月末まで提出させること</div>
+        </div>
+
+        <!-- #1 有給リマインド -->
+        <div class="card">
+          <div class="card-title">
+            <span>有給事前申請リマインド</span>
+            <span class="card-id">#1</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text"><span class="sys-badge">MF勤怠</span> &gt; 有給休暇申請一覧 &gt; 当月内の有給申請状況を確認</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text">実際に有給取得している日があるのに申請が出ていない従業員を特定</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text"><span class="sys-badge amber">Slack</span> &gt; 対象者に「有給申請が未提出です」とリマインド送信</span>
+              </li>
+            </ol>
+          </div>
+          <div class="io-row">
+            <span class="io-label">入力:</span>
+            <span class="io-item">MF勤怠 有給申請一覧</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">出力:</span>
+            <span class="io-item">Slack通知</span>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-high">高</span>
+            <span class="system-badge">MF勤怠</span>
+          </div>
+        </div>
+
+        <!-- #11 経費リマインド -->
+        <div class="card">
+          <div class="card-title">
+            <span>経費リマインド</span>
+            <span class="card-id">#11</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text"><span class="sys-badge">MF経費</span> &gt; 申請ステータス一覧 &gt; 「上長未承認」と「差戻中」のみ抽出（下書きは対象外）</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text">上長未承認の場合 → <span class="sys-badge amber">Slack</span> で承認者にリマインド送信</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text">差戻中の場合 → <span class="sys-badge amber">Slack</span> で申請者本人にリマインド送信</span>
+              </li>
+            </ol>
+          </div>
+          <div class="io-row">
+            <span class="io-label">入力:</span>
+            <span class="io-item">MF経費 申請ステータス</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">出力:</span>
+            <span class="io-item">Slack通知（承認者/申請者）</span>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-high">高</span>
+            <span class="system-badge">MF経費</span>
+          </div>
+          <div class="note-text">下書きはリマインド不要。上長未承認・差戻中のみ対象</div>
+        </div>
+
+        <!-- Phase 1 Memo -->
+        <div class="memo-section">
+          <button class="memo-toggle" onclick="toggleMemo('p1')">メモを追加 &#9660;</button>
+          <div class="memo-body" id="memo-p1" style="display:none;">
+            <textarea class="memo-input" id="memo-text-p1" placeholder="Phase 1に関するメモ・修正ポイント..." rows="3"></textarea>
+            <div class="memo-actions">
+              <button class="memo-save" onclick="saveMemo('p1')">保存</button>
+              <span class="memo-saved-at" id="memo-saved-p1"></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== PHASE 2 ===== -->
+      <div class="phase-col ph2-col">
+
+        <div class="section-label">共通チェック</div>
+
+        <!-- #2 有給突合 -->
+        <div class="card">
+          <div class="card-title">
+            <span>有給突合</span>
+            <span class="card-id">#2</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text"><span class="sys-badge">MF勤怠</span> &gt; 有給休暇申請一覧 &gt; 月内の有給申請件数を集計</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text"><span class="sys-badge purple">SS</span>（給与計算メモ） &gt; 有給日数欄 &gt; 記載数を確認</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text">MF件数 = SS記載数 → OK（チェック完了）</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">4</span>
+                <span class="step-text">不一致 → 差分を特定 → 本人または上長に確認 → SSを修正</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">5</span>
+                <span class="step-text"><span class="sys-badge green">AS</span>（歯科・薬局）も同様に確認（MFとASで別々に突合）</span>
+              </li>
+            </ol>
+          </div>
+          <div class="io-row">
+            <span class="io-label">入力:</span>
+            <span class="io-item">MF勤怠 有給申請一覧</span>
+            <span class="io-arrow">+</span>
+            <span class="io-item">AS（歯科・薬局）</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">出力:</span>
+            <span class="io-item">SS 有給日数欄 修正</span>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-high">高</span>
+            <span class="system-badge">MF勤怠</span>
+            <span class="system-badge">AS</span>
+          </div>
+        </div>
+
+        <!-- #3 有給日数転記 -->
+        <div class="card">
+          <div class="card-title">
+            <span>有給日数転記（アルバイト）</span>
+            <span class="card-id">#3</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text"><span class="sys-badge">MF勤怠</span> &gt; 有給休暇申請 &gt; 雇用区分「アルバイト」でフィルタ &gt; 有給取得件数を確認</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text">対象者の有給日数を<span class="sys-badge purple">SS</span> &gt; 有給日数欄に転記</span>
+              </li>
+            </ol>
+          </div>
+          <div class="io-row">
+            <span class="io-label">入力:</span>
+            <span class="io-item">MF勤怠 / AS（アルバイト有給）</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">出力:</span>
+            <span class="io-item">SS 有給日数欄</span>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-high">高</span>
+          </div>
+        </div>
+
+        <!-- #4 欠勤日数転記 -->
+        <div class="card">
+          <div class="card-title">
+            <span>欠勤日数転記</span>
+            <span class="card-id">#4</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text"><span class="sys-badge">MF勤怠</span> &gt; 日次勤怠データ &gt; 「欠勤」記録がある従業員を抽出</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text">月内の欠勤日数を集計</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text">欠勤日数を<span class="sys-badge purple">SS</span> &gt; 欠勤日数欄に転記</span>
+              </li>
+            </ol>
+          </div>
+          <div class="io-row">
+            <span class="io-label">入力:</span>
+            <span class="io-item">MF勤怠 日次データ（欠勤）</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">出力:</span>
+            <span class="io-item">SS 欠勤日数欄</span>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-high">高</span>
+          </div>
+        </div>
+
+        <!-- #8 休憩・休暇確認 -->
+        <div class="card">
+          <div class="card-title">
+            <span>休憩・休暇確認</span>
+            <span class="card-id">#8</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text"><span class="sys-badge">MF勤怠</span> &gt; 日次勤怠データ &gt; 各日の休憩時間を確認</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text">ルール確認: 労働6h超 → 45分以上休憩 / 8h超 → 60分以上休憩</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text">休憩時間が所定ルール未満の日があれば異常値としてリスト化</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">4</span>
+                <span class="step-text">異常値がある場合 → 本人または上長に確認し、MF上で修正</span>
+              </li>
+            </ol>
+          </div>
+          <div class="io-row">
+            <span class="io-label">入力:</span>
+            <span class="io-item">MF勤怠 日次データ</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">出力:</span>
+            <span class="io-item">異常値は本人/上長へ確認 → MF修正</span>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-mid">中</span>
+            <span class="system-badge">MF勤怠</span>
+          </div>
+        </div>
+
+        <!-- #10 残業時間集計 -->
+        <div class="card">
+          <div class="card-title">
+            <span>残業時間集計</span>
+            <span class="card-id">#10</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text"><span class="sys-badge">MF勤怠</span> &gt; 月次集計 &gt; 全従業員の残業時間を確認</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text">残業80h以上の従業員をリスト化 → Phase 3で産業医面談案内</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text">残業100h以上の従業員をリスト化 → Phase 3で産業医面談の設定まで行う</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">4</span>
+                <span class="step-text">社会保険の加入要件超過者（月88h以上等）も同時にピックアップ</span>
+              </li>
+            </ol>
+          </div>
+          <div class="io-row">
+            <span class="io-label">入力:</span>
+            <span class="io-item">MF勤怠 月次集計</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">出力:</span>
+            <span class="io-item">80h/100h超過リスト（Phase 3へ）</span>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-high">高</span>
+            <span class="system-badge">MF勤怠</span>
+          </div>
+        </div>
+
+        <!-- #9 通勤手当判定 -->
+        <div class="card">
+          <div class="card-title">
+            <span>通勤手当判定</span>
+            <span class="card-id">#9</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text"><span class="sys-badge">MF勤怠</span> &gt; 日次勤怠データ &gt; 月内の出勤・有給・欠勤・特別休暇の日数を目視確認</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text"><span class="sys-badge pink">SmartHR</span> &gt; 慶弔休暇付与申請 &gt; 当月の忌引該当者を特定（忌引は1割判定から除外）</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text">判定: 「有給・欠勤・特別休暇（忌引除く）が1割以下、かつ出社が9割以上」の場合 → 通勤手当支給対象</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">4</span>
+                <span class="step-text">対象者に<span class="sys-badge purple">SS</span> &gt; 通勤手当欄にチェックを入れる</span>
+              </li>
+            </ol>
+          </div>
+          <div class="io-row">
+            <span class="io-label">入力:</span>
+            <span class="io-item">MF勤怠 日次データ</span>
+            <span class="io-arrow">+</span>
+            <span class="io-item">SmartHR 慶弔休暇申請</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">出力:</span>
+            <span class="io-item">SS 通勤手当欄</span>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-mid">中</span>
+            <span class="system-badge">MF勤怠</span>
+            <span class="system-badge">SmartHR</span>
+          </div>
+          <div class="note-text">忌引は1割判定に含めない。MF上では「慶弔休暇」として処理されるため、SmartHRと照合が必須</div>
+        </div>
+
+        <!-- #17 出勤簿↔AS突合 -->
+        <div class="card">
+          <div class="card-title">
+            <span>出勤簿 ↔ AS 突合</span>
+            <span class="card-id">#17</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順（歯科・薬局）</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text"><span class="sys-badge green">AS</span>（エアシフト） &gt; CSVエクスポート &gt; 月次勤怠データを取得</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text"><span class="sys-badge green">AS</span> 画面で各スタッフのシフト所定時間を確認（CSVに未含のため画面確認必須）</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text"><span class="sys-badge gray">メディカル出勤簿（SS）</span> の各集計値（出勤日数・労働時間等）とCSVを比較</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">4</span>
+                <span class="step-text">不一致があれば → 差分を特定 → メディカル出勤簿に修正入力</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">5</span>
+                <span class="step-text">集計結果と申し送り事項を<span class="sys-badge purple">SS</span>（給与計算メモ）に記載</span>
+              </li>
+            </ol>
+          </div>
+          <div class="io-row">
+            <span class="io-label">入力:</span>
+            <span class="io-item">AS CSVエクスポート + AS画面（所定時間）</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">出力:</span>
+            <span class="io-item">メディカル出勤簿（修正）+ SS（申し送り）</span>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-mid">中</span>
+            <span class="system-badge">AS</span>
+          </div>
+          <div class="note-text">CSVに所定時間が含まれないため画面確認必須。完全自動化にはAPIまたはスクレイピングが必要</div>
+        </div>
+
+        <!-- #12 経費締め -->
+        <div class="card">
+          <div class="card-title">
+            <span>経費締め</span>
+            <span class="card-id">#12</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text"><span class="sys-badge">MF経費</span> &gt; 申請一覧 &gt; 未承認件数が0件になっているか確認</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text">未処理がある場合 → 担当者に再リマインド後、全承認を待つ</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text">全承認確認後 → <span class="sys-badge">MF経費</span> &gt; 月次締め &gt; 締め操作を実行</span>
+              </li>
+            </ol>
+          </div>
+          <div class="io-row">
+            <span class="io-label">入力:</span>
+            <span class="io-item">MF経費 承認状況</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">出力:</span>
+            <span class="io-item">MF経費 月次締め完了</span>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-low">低</span>
+            <span class="system-badge">MF経費</span>
+          </div>
+          <div class="note-text">締め操作はMF上の手動UI操作が必要（自動化難）</div>
+        </div>
+
+        <div class="section-label">事業部固有チェック</div>
+
+        <!-- Accordion: フレックス -->
+        <div class="accordion" id="acc-flex">
+          <button class="accordion-header" onclick="toggleAcc('acc-flex')">
+            <div>
+              <div class="accordion-title">フレックス総枠 + コアタイム確認</div>
+              <div class="accordion-subtitle">#14/#15 — DELTA / PTX / テスティー</div>
+            </div>
+            <span class="accordion-chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-item">
+              <span class="accordion-dept">DELTA</span>
+              <div class="accordion-item-steps">
+                <div class="accordion-item-title">#14 フレックス総枠・コアタイム確認</div>
+                <ol class="accordion-step-list">
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">1</span>
+                    <span><span class="sys-badge" style="font-size:9px;">MF勤怠</span> &gt; 日次勤怠 &gt; 月間の総労働時間を確認</span>
+                  </li>
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">2</span>
+                    <span><span class="sys-badge purple" style="font-size:9px;">SS</span> の時短フラグを確認 → 所定時間を特定（時短: 所定時間×日数 / 通常: 8h×日数）</span>
+                  </li>
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">3</span>
+                    <span>総枠に不足があれば → 控除の要否を上長に確認（Phase 3へ）</span>
+                  </li>
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">4</span>
+                    <span><span class="sys-badge" style="font-size:9px;">MF勤怠</span> でコアタイム（例: 10:00〜15:00）内の出退勤を確認 → 違反があれば上長に報告</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <span class="accordion-dept">PTX</span>
+              <div class="accordion-item-steps">
+                <div class="accordion-item-title">#14 フレックス総枠・コアタイム確認（DELTAと同ロジック）</div>
+                <ol class="accordion-step-list">
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">1</span>
+                    <span>DELTAと同手順で確認（昇給タイミングのみPTXが異なる点に注意）</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <span class="accordion-dept">テスティー</span>
+              <div class="accordion-item-steps">
+                <div class="accordion-item-title">#15 フレックス総枠・コアタイム確認（#14と同ロジック）</div>
+                <ol class="accordion-step-list">
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">1</span>
+                    <span>DELTAと同手順で確認</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+            <div class="card-meta" style="margin-top:6px;">
+              <span class="badge badge-mid">中</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accordion: 歯科 -->
+        <div class="accordion" id="acc-shika">
+          <button class="accordion-header" onclick="toggleAcc('acc-shika')">
+            <div>
+              <div class="accordion-title">皆勤手当 / 所定内外残業確認</div>
+              <div class="accordion-subtitle">#16/#16-b — 歯科</div>
+            </div>
+            <span class="accordion-chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-item">
+              <span class="accordion-dept">歯科</span>
+              <div class="accordion-item-steps">
+                <div class="accordion-item-title">#16 皆勤手当判定</div>
+                <ol class="accordion-step-list">
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">1</span>
+                    <span><span class="sys-badge green" style="font-size:9px;">AS</span> &gt; 勤怠実績 &gt; 月内の欠勤・遅刻・早退を確認</span>
+                  </li>
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">2</span>
+                    <span>欠勤・遅刻・早退が全てゼロの従業員 → 皆勤手当支給対象</span>
+                  </li>
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">3</span>
+                    <span>対象者の手当を<span class="sys-badge purple" style="font-size:9px;">SS</span> &gt; 皆勤手当欄に記載</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <span class="accordion-dept">歯科</span>
+              <div class="accordion-item-steps">
+                <div class="accordion-item-title">#16-b 所定内・所定外残業の区分確認</div>
+                <ol class="accordion-step-list">
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">1</span>
+                    <span><span class="sys-badge green" style="font-size:9px;">AS</span> / <span class="sys-badge" style="font-size:9px;">MF勤怠</span> &gt; 各スタッフの所定労働時間を確認</span>
+                  </li>
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">2</span>
+                    <span>所定時間内の残業（所定内残業）と所定時間外の残業（所定外残業）を区分確認</span>
+                  </li>
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">3</span>
+                    <span>区分に誤りがあれば → 現場担当者に確認し修正</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+            <div class="card-meta" style="margin-top:6px;">
+              <span class="badge badge-high">高 (#16)</span>
+              <span class="badge badge-mid" style="margin-left:4px;">中 (#16-b)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accordion: 医科 -->
+        <div class="accordion" id="acc-ika">
+          <button class="accordion-header" onclick="toggleAcc('acc-ika')">
+            <div>
+              <div class="accordion-title">看護・事務手当 / 年末年始手当</div>
+              <div class="accordion-subtitle">#18/#19 — 医科 / 薬局</div>
+            </div>
+            <span class="accordion-chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-item">
+              <span class="accordion-dept">医科</span>
+              <div class="accordion-item-steps">
+                <div class="accordion-item-title">#18 看護・事務の500円手当確認</div>
+                <ol class="accordion-step-list">
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">1</span>
+                    <span><span class="sys-badge" style="font-size:9px;">MF勤怠</span> &gt; 勤務実績 &gt; 看護職・事務職の当月勤務有無を確認</span>
+                  </li>
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">2</span>
+                    <span>勤務あり → <span class="sys-badge purple" style="font-size:9px;">SS</span> の手当欄に500円が記載されているか確認</span>
+                  </li>
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">3</span>
+                    <span>勤務なし → <span class="sys-badge purple" style="font-size:9px;">SS</span> に手当が残っていれば削除</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <span class="accordion-dept">医科/薬局</span>
+              <div class="accordion-item-steps">
+                <div class="accordion-item-title">#19 年末年始手当（12月・1月のみ実施）</div>
+                <ol class="accordion-step-list">
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">1</span>
+                    <span><span class="sys-badge" style="font-size:9px;">MF勤怠</span> or <span class="sys-badge green" style="font-size:9px;">AS</span> &gt; 12/29〜1/3の勤務実績を確認</span>
+                  </li>
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">2</span>
+                    <span>勤務あり・4h超 → 5,000円/日 / 4h以下 → 2,500円/日を<span class="sys-badge purple" style="font-size:9px;">SS</span>に記載</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+            <div class="card-meta" style="margin-top:6px;">
+              <span class="badge badge-high">高</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accordion: the・ -->
+        <div class="accordion" id="acc-the">
+          <button class="accordion-header" onclick="toggleAcc('acc-the')">
+            <div>
+              <div class="accordion-title">8h稼働 + シフト相違確認</div>
+              <div class="accordion-subtitle">#20 — the・</div>
+            </div>
+            <span class="accordion-chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-item">
+              <span class="accordion-dept">the・</span>
+              <div class="accordion-item-steps">
+                <div class="accordion-item-title">#20 8h稼働・シフト相違チェック</div>
+                <ol class="accordion-step-list">
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">1</span>
+                    <span><span class="sys-badge" style="font-size:9px;">MF勤怠</span> &gt; 日次勤怠データ &gt; 1日8h未満の勤務日を抽出</span>
+                  </li>
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">2</span>
+                    <span>シフト表と勤怠実績を照合 → 相違点をリスト化</span>
+                  </li>
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">3</span>
+                    <span>8h未満 or シフト相違があれば → Phase 3で高野さんへSlackで確認</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+            <div class="card-meta" style="margin-top:6px;">
+              <span class="badge badge-mid">中</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accordion: ウィメンズ -->
+        <div class="accordion" id="acc-womens">
+          <button class="accordion-header" onclick="toggleAcc('acc-womens')">
+            <div>
+              <div class="accordion-title">4週4休 / フレックス控除 / みなし残業</div>
+              <div class="accordion-subtitle">#23/#24/#25 — ウィメンズ漢方</div>
+            </div>
+            <span class="accordion-chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-item">
+              <span class="accordion-dept">ウィメンズ</span>
+              <div class="accordion-item-steps">
+                <div class="accordion-item-title">#23 4週4休確認（1月1日起算）</div>
+                <ol class="accordion-step-list">
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">1</span>
+                    <span><span class="sys-badge" style="font-size:9px;">MF勤怠</span> &gt; 日次勤怠データ &gt; 1月1日起算の4週間ブロックで休日数をカウント</span>
+                  </li>
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">2</span>
+                    <span>4週間に4日以上の休日があるか確認。未達の場合 → 上長に報告（労基法違反リスク）</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <span class="accordion-dept">ウィメンズ</span>
+              <div class="accordion-item-steps">
+                <div class="accordion-item-title">#24 フレックス総枠不足控除確認</div>
+                <ol class="accordion-step-list">
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">1</span>
+                    <span><span class="sys-badge" style="font-size:9px;">MF勤怠</span> &gt; 月間総労働時間と<span class="sys-badge purple" style="font-size:9px;">SS</span>のフレックス総枠を比較</span>
+                  </li>
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">2</span>
+                    <span>不足がある場合 → Phase 3で住吉さん・森田さんへ控除要否を確認</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <span class="accordion-dept">ウィメンズ</span>
+              <div class="accordion-item-steps">
+                <div class="accordion-item-title">#25 みなし0残業者の実残業検出</div>
+                <ol class="accordion-step-list">
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">1</span>
+                    <span><span class="sys-badge purple" style="font-size:9px;">SS</span> でみなし残業0hの従業員を確認</span>
+                  </li>
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">2</span>
+                    <span><span class="sys-badge" style="font-size:9px;">MF勤怠</span> &gt; 残業時間 &gt; 当該従業員に実残業が発生しているか確認</span>
+                  </li>
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">3</span>
+                    <span>実残業あり → Phase 3で住吉さん・森田さんへ残業承認の要否を確認・報告</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+            <div class="card-meta" style="margin-top:6px;">
+              <span class="badge badge-high">高 (#23)</span>
+              <span class="badge badge-mid" style="margin-left:4px;">中 (#24/#25)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- #26 特別休暇 -->
+        <div class="card">
+          <div class="card-title">
+            <span>特別休暇付与管理</span>
+            <span class="card-id">#26</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text"><span class="sys-badge pink">SmartHR</span> / 人事マスタ &gt; 当月の慶弔・誕生日・夏季・年末年始休暇対象者を確認</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text">事業部ごとの付与ルール（日数・種別）に従い、正しく付与されているか確認</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text">当月に異動した従業員がいれば → 新事業部のルールに変更されているか確認</span>
+              </li>
+            </ol>
+          </div>
+          <div class="io-row">
+            <span class="io-label">入力:</span>
+            <span class="io-item">SmartHR / 人事マスタ</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">出力:</span>
+            <span class="io-item">MF勤怠 休暇付与設定の確認・修正</span>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-mid">中</span>
+          </div>
+          <div class="note-text">異動時は新事業部のルールに変更が必要。夏季・年末年始・誕生日・慶弔の各種類が事業部ごとに異なる</div>
+        </div>
+
+        <!-- Phase 2 Memo -->
+        <div class="memo-section">
+          <button class="memo-toggle" onclick="toggleMemo('p2')">メモを追加 &#9660;</button>
+          <div class="memo-body" id="memo-p2" style="display:none;">
+            <textarea class="memo-input" id="memo-text-p2" placeholder="Phase 2に関するメモ・修正ポイント..." rows="3"></textarea>
+            <div class="memo-actions">
+              <button class="memo-save" onclick="saveMemo('p2')">保存</button>
+              <span class="memo-saved-at" id="memo-saved-p2"></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== PHASE 3 ===== -->
+      <div class="phase-col ph3-col">
+
+        <div class="section-label">各事業部上長へ確認依頼</div>
+
+        <!-- #5/#6 遅刻早退控除確認 -->
+        <div class="card">
+          <div class="card-title">
+            <span>遅刻早退控除確認</span>
+            <span class="card-id">#5 / #6</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text"><span class="sys-badge">MF勤怠</span> &gt; 日次勤怠 &gt; 所定出退勤時刻と実績を比較 &gt; 遅刻・早退が発生した従業員をリスト化</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text">遅刻・早退の時間数も集計</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text"><span class="sys-badge amber">Slack</span> &gt; 各事業部上長へ「控除を行うか要否確認」メッセージを送信（#5）</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">4</span>
+                <span class="step-text">上長から「控除する」の回答 → 控除時間数を<span class="sys-badge purple">SS</span> &gt; 控除欄に転記（#6）</span>
+              </li>
+            </ol>
+          </div>
+          <div class="io-row">
+            <span class="io-label">入力:</span>
+            <span class="io-item">MF勤怠 日次データ（遅刻早退）</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">確認先:</span>
+            <span class="io-item">各事業部上長（Slack）</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">出力:</span>
+            <span class="io-item">SS 控除欄</span>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-mid">中 (#5)</span>
+            <span class="badge badge-high" style="margin-left:4px;">高 (#6)</span>
+            <span class="approver-badge">各上長</span>
+          </div>
+        </div>
+
+        <!-- #7 割増判断確認 -->
+        <div class="card">
+          <div class="card-title">
+            <span>割増判断確認</span>
+            <span class="card-id">#7</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text"><span class="sys-badge">MF勤怠</span> &gt; 日次勤怠データ &gt; 深夜勤務（22時〜5時）・みなし残業超過・休日出勤の発生者を抽出</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text">該当者と発生時間数をリスト化</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text"><span class="sys-badge amber">Slack</span> &gt; 各事業部上長へ「割増支給の要否を確認」メッセージを送信</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">4</span>
+                <span class="step-text">上長の判断を受けて<span class="sys-badge purple">SS</span>に割増分を記載</span>
+              </li>
+            </ol>
+          </div>
+          <div class="io-row">
+            <span class="io-label">入力:</span>
+            <span class="io-item">MF勤怠 日次データ</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">確認先:</span>
+            <span class="io-item">各事業部上長（Slack）</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">出力:</span>
+            <span class="io-item">SS 割増欄</span>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-mid">中</span>
+            <span class="approver-badge">各上長</span>
+          </div>
+        </div>
+
+        <!-- #10 残業超過対応 -->
+        <div class="card">
+          <div class="card-title">
+            <span>残業超過対応（産業医連携）</span>
+            <span class="card-id">#10</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順（Phase 2で特定したリストを使用）</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text">80h以上の対象者 → 産業医へ連絡し、面談案内を本人に送付</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text">100h以上の対象者 → 産業医へ連絡し、面談日程を設定（本人・産業医の調整）</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text">社会保険加入要件超過者 → 担当部署へ情報共有</span>
+              </li>
+            </ol>
+          </div>
+          <div class="io-row">
+            <span class="io-label">入力:</span>
+            <span class="io-item">Phase 2の残業超過リスト</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">出力:</span>
+            <span class="io-item">面談案内送付 / 面談設定</span>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-high">高</span>
+            <span class="approver-badge">産業医</span>
+          </div>
+        </div>
+
+        <div class="section-label">インセンティブ記載</div>
+
+        <!-- #13 インセンティブ -->
+        <div class="accordion" id="acc-incent">
+          <button class="accordion-header" onclick="toggleAcc('acc-incent')">
+            <div>
+              <div class="accordion-title">インセンティブ記載</div>
+              <div class="accordion-subtitle">#13 — テスティー / 歯科 / 医科 / the・ / ReBridge / BOX</div>
+            </div>
+            <span class="accordion-chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            <div class="accordion-item">
+              <span class="accordion-dept">各事業部</span>
+              <div class="accordion-item-steps">
+                <div class="accordion-item-title">#13 インセンティブ転記（共通手順）</div>
+                <ol class="accordion-step-list">
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">1</span>
+                    <span><span class="sys-badge amber" style="font-size:9px;">Slack</span> / メール で各事業部担当者からインセンティブ金額の報告を受領</span>
+                  </li>
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">2</span>
+                    <span>報告された金額を<span class="sys-badge purple" style="font-size:9px;">SS</span> &gt; インセンティブ欄に転記</span>
+                  </li>
+                  <li class="accordion-step-item">
+                    <span class="accordion-step-num">3</span>
+                    <span>報告が未着の場合 → 担当者にリマインド送信</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+            <div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap;">
+              <span style="font-size:10px;background:#f3f4f6;padding:1px 6px;border-radius:4px;color:#374151;">テスティー</span>
+              <span style="font-size:10px;background:#f3f4f6;padding:1px 6px;border-radius:4px;color:#374151;">歯科</span>
+              <span style="font-size:10px;background:#f3f4f6;padding:1px 6px;border-radius:4px;color:#374151;">医科</span>
+              <span style="font-size:10px;background:#f3f4f6;padding:1px 6px;border-radius:4px;color:#374151;">the・</span>
+              <span style="font-size:10px;background:#f3f4f6;padding:1px 6px;border-radius:4px;color:#374151;">ReBridge</span>
+              <span style="font-size:10px;background:#f3f4f6;padding:1px 6px;border-radius:4px;color:#374151;">BOX</span>
+            </div>
+            <div class="card-meta" style="margin-top:6px;"><span class="badge badge-mid">中</span></div>
+          </div>
+        </div>
+
+        <div class="section-label">担当者確認（個別）</div>
+
+        <!-- #20 シフト相違確認 -->
+        <div class="card">
+          <div class="card-title">
+            <span>シフト相違確認</span>
+            <span class="card-id">#20</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順（Phase 2のリストをもとに）</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text">Phase 2で作成したシフト相違リストを<span class="sys-badge amber">Slack</span> で高野さんへ送信し確認依頼</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text">高野さんの回答を受けて<span class="sys-badge purple">SS</span>を更新</span>
+              </li>
+            </ol>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-mid">中</span>
+            <span class="approver-badge">高野さん</span>
+          </div>
+        </div>
+
+        <!-- #22 BOX控除確認 -->
+        <div class="card">
+          <div class="card-title">
+            <span>BOX 控除確認</span>
+            <span class="card-id">#22</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text"><span class="sys-badge">MF勤怠</span> &gt; BOX事業部の日次勤怠 &gt; 欠勤・遅刻・早退が発生した従業員と時間数を確認</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text"><span class="sys-badge amber">Slack</span> で長山さん・森さんへ「控除要否を確認」メッセージを送信</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text">回答を受けて<span class="sys-badge purple">SS</span> &gt; 控除欄を更新</span>
+              </li>
+            </ol>
+          </div>
+          <div class="io-row">
+            <span class="io-label">入力:</span>
+            <span class="io-item">MF勤怠 日次データ（BOX）</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">確認先:</span>
+            <span class="io-item">長山さん / 森さん（Slack）</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">出力:</span>
+            <span class="io-item">SS 控除欄</span>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-mid">中</span>
+            <span class="approver-badge">長山さん</span>
+            <span class="approver-badge">森さん</span>
+          </div>
+        </div>
+
+        <!-- #24/#25 ウィメンズ控除確認 -->
+        <div class="card">
+          <div class="card-title">
+            <span>ウィメンズ控除 / 残業承認</span>
+            <span class="card-id">#24 / #25</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順（Phase 2のリストをもとに）</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text"><span class="sys-badge amber">Slack</span> で住吉さん・森田さんへ「フレックス総枠不足の控除要否（#24）」を確認</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text"><span class="sys-badge amber">Slack</span> で住吉さん・森田さんへ「みなし0残業者の残業承認要否（#25）」を確認</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text">回答を受けて<span class="sys-badge purple">SS</span>を更新</span>
+              </li>
+            </ol>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-mid">中</span>
+            <span class="approver-badge">住吉さん</span>
+            <span class="approver-badge">森田さん</span>
+          </div>
+        </div>
+
+        <!-- #21 b{stoic -->
+        <div class="card">
+          <div class="card-title">
+            <span>b{stoic チェック</span>
+            <span class="card-id">#21</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text">確定したb{stoicの事業部ルールに基づきチェック内容を特定（詳細要追加ヒアリング）</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text">事業部担当者へ<span class="sys-badge amber">Slack</span>で確認依頼</span>
+              </li>
+            </ol>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-survey">要調査</span>
+            <span class="approver-badge">担当TBD</span>
+          </div>
+        </div>
+
+        <!-- #27 四半期インセンティブ -->
+        <div class="card">
+          <div class="card-title">
+            <span>四半期インセンティブ確認</span>
+            <span class="card-id">#27</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順（四半期支給月のみ: 4/7/10/1月）</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text">四半期支給月（1Q: 4/20・上期: 7/20・3Q: 10/20・下期: 1/20）か確認</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text">BOX事業部担当者からインセンティブ金額の報告を受領</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text">報告された金額を<span class="sys-badge purple">SS</span> &gt; 四半期インセンティブ欄に記載</span>
+              </li>
+            </ol>
+          </div>
+          <div class="io-row">
+            <span class="io-label">確認先:</span>
+            <span class="io-item">BOX事業部担当者</span>
+            <span class="io-arrow">→</span>
+            <span class="io-label">出力:</span>
+            <span class="io-item">SS 四半期インセンティブ欄</span>
+          </div>
+          <div class="card-meta">
+            <span class="badge badge-low">低</span>
+            <span class="approver-badge">BOX担当者</span>
+          </div>
+          <div class="note-text">四半期に1回のみ。事業部からの報告待ちのため自動化難</div>
+        </div>
+
+        <!-- Phase 3 Memo -->
+        <div class="memo-section">
+          <button class="memo-toggle" onclick="toggleMemo('p3')">メモを追加 &#9660;</button>
+          <div class="memo-body" id="memo-p3" style="display:none;">
+            <textarea class="memo-input" id="memo-text-p3" placeholder="Phase 3に関するメモ・修正ポイント..." rows="3"></textarea>
+            <div class="memo-actions">
+              <button class="memo-save" onclick="saveMemo('p3')">保存</button>
+              <span class="memo-saved-at" id="memo-saved-p3"></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== PHASE 4 ===== -->
+      <div class="phase-col ph4-col">
+
+        <div class="section-label">最終確認</div>
+
+        <!-- SS最終レビュー -->
+        <div class="card">
+          <div class="card-title">
+            <span>給与計算SS 最終レビュー</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text"><span class="sys-badge purple">SS</span>（給与計算メモ）を全事業部分、全項目通しで確認</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text">転記漏れ・空欄・計算ミス・前月値の残留がないか確認</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text">不整合を発見した場合 → 該当フェーズの担当者に戻して修正依頼</span>
+              </li>
+            </ol>
+          </div>
+          <div class="card-meta">
+            <span class="system-badge">給与計算SS</span>
+          </div>
+        </div>
+
+        <!-- 未回答フォロー -->
+        <div class="card">
+          <div class="card-title">
+            <span>未回答フォローアップ</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text">Phase 3で未回答の確認依頼をリストアップ</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text"><span class="sys-badge amber">Slack</span> で未回答の上長・担当者に催促メッセージを送信</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">3</span>
+                <span class="step-text">回答が得られ次第、SSを更新</span>
+              </li>
+            </ol>
+          </div>
+          <div class="card-meta">
+            <span class="approver-badge">各上長・担当</span>
+          </div>
+        </div>
+
+        <div class="section-label">クロスチェック</div>
+
+        <!-- ダブルチェック -->
+        <div class="card" style="border-left-color: #7c3aed;">
+          <div class="card-title">
+            <span>ダブルチェック（2名）</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text">グループ労務の2名が、互いに相手の担当分のSSを独立してレビュー</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text">相違・疑問点を記録し、2名で突き合わせて差異を解消</span>
+              </li>
+            </ol>
+          </div>
+          <div class="card-meta">
+            <span class="approver-badge">グループ労務 2名</span>
+          </div>
+        </div>
+
+        <div class="section-label">承認・連携</div>
+
+        <!-- 承認 -->
+        <div class="card" style="border-left-color: #7c3aed;">
+          <div class="card-title">
+            <span>承認</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text">ダブルチェック完了・全差異解消を確認</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text"><span class="sys-badge purple">SS</span>に承認済みフラグ・承認日時を記録</span>
+              </li>
+            </ol>
+          </div>
+          <div class="card-meta">
+            <span class="approver-badge">グループ労務責任者</span>
+          </div>
+        </div>
+
+        <!-- 給与計算連携 -->
+        <div class="card" style="border-left-color: #7c3aed; background: #f5f3ff;">
+          <div class="card-title" style="color: #5b21b6;">
+            <span>給与計算連携</span>
+          </div>
+          <div class="card-steps">
+            <div class="card-steps-title">手順</div>
+            <ol class="step-list">
+              <li class="step-item">
+                <span class="step-num">1</span>
+                <span class="step-text">承認済みの<span class="sys-badge purple">SS</span>（給与計算メモ）を給与計算部門に共有</span>
+              </li>
+              <li class="step-item">
+                <span class="step-num">2</span>
+                <span class="step-text">事業部ごとに完了したものから順次連携可能（全社一括でなくてよい）</span>
+              </li>
+            </ol>
+          </div>
+          <div class="card-meta">
+            <span class="system-badge">給与計算SS</span>
+          </div>
+        </div>
+
+        <!-- Phase 4 Memo -->
+        <div class="memo-section">
+          <button class="memo-toggle" onclick="toggleMemo('p4')">メモを追加 &#9660;</button>
+          <div class="memo-body" id="memo-p4" style="display:none;">
+            <textarea class="memo-input" id="memo-text-p4" placeholder="Phase 4に関するメモ・修正ポイント..." rows="3"></textarea>
+            <div class="memo-actions">
+              <button class="memo-save" onclick="saveMemo('p4')">保存</button>
+              <span class="memo-saved-at" id="memo-saved-p4"></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div><!-- /phase-cols -->
+  </div><!-- /timeline-wrapper -->
+
+  <!-- Systems -->
+  <div class="systems-section">
+    <h2>利用システム一覧</h2>
+    <div class="systems-grid">
+      <div class="system-card">
+        <span class="system-icon">📊</span>
+        <div>
+          <div class="system-name">MF勤怠</div>
+          <div class="system-desc">大半の事業部の勤怠管理</div>
+        </div>
+      </div>
+      <div class="system-card">
+        <span class="system-icon">📅</span>
+        <div>
+          <div class="system-name">エアシフト (AS)</div>
+          <div class="system-desc">歯科・薬局のシフト・勤怠管理</div>
+        </div>
+      </div>
+      <div class="system-card">
+        <span class="system-icon">📋</span>
+        <div>
+          <div class="system-name">給与計算メモSS</div>
+          <div class="system-desc">Spreadsheet — 全社の集計・転記先</div>
+        </div>
+      </div>
+      <div class="system-card">
+        <span class="system-icon">💴</span>
+        <div>
+          <div class="system-name">MF経費</div>
+          <div class="system-desc">経費精算の申請・承認管理</div>
+        </div>
+      </div>
+      <div class="system-card">
+        <span class="system-icon">👥</span>
+        <div>
+          <div class="system-name">SmartHR</div>
+          <div class="system-desc">慶弔休暇付与申請・人事マスタ</div>
+        </div>
+      </div>
+      <div class="system-card">
+        <span class="system-icon">📝</span>
+        <div>
+          <div class="system-name">kintone</div>
+          <div class="system-desc">歯科の有給管理</div>
+        </div>
+      </div>
+      <div class="system-card">
+        <span class="system-icon">📄</span>
+        <div>
+          <div class="system-name">メディカル出勤簿</div>
+          <div class="system-desc">医科系の出勤簿（Spreadsheet）</div>
+        </div>
+      </div>
+      <div class="system-card">
+        <span class="system-icon">💬</span>
+        <div>
+          <div class="system-name">Slack</div>
+          <div class="system-desc">各事業部への通知・確認連絡</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Departments -->
+  <div class="depts-section">
+    <h2>対象事業部（13部門）</h2>
+    <div class="dept-pills">
+      <span class="dept-pill">BPIO</span>
+      <span class="dept-pill">SRA</span>
+      <span class="dept-pill">DELTA</span>
+      <span class="dept-pill">PTX</span>
+      <span class="dept-pill">テスティー</span>
+      <span class="dept-pill">歯科</span>
+      <span class="dept-pill">薬局</span>
+      <span class="dept-pill">医科</span>
+      <span class="dept-pill">the・</span>
+      <span class="dept-pill">b{stoic</span>
+      <span class="dept-pill">BOX</span>
+      <span class="dept-pill">ReBridge</span>
+      <span class="dept-pill">ウィメンズ漢方</span>
+    </div>
+  </div>
+
+  <!-- Automation -->
+  <div class="auto-section">
+    <h2>自動化ポテンシャル サマリー</h2>
+    <div class="auto-grid">
+      <div class="auto-group auto-high-bg">
+        <div class="auto-group-title">高（11件）</div>
+        <div class="auto-items">
+          <span class="auto-tag">#1 勤怠リマインド</span>
+          <span class="auto-tag">#1 有給リマインド</span>
+          <span class="auto-tag">#2 有給突合</span>
+          <span class="auto-tag">#3 有給日数転記</span>
+          <span class="auto-tag">#4 欠勤日数転記</span>
+          <span class="auto-tag">#6 早退控除転記</span>
+          <span class="auto-tag">#10 残業集計・アラート</span>
+          <span class="auto-tag">#11 経費リマインド</span>
+          <span class="auto-tag">#16 皆勤手当</span>
+          <span class="auto-tag">#18 看護手当</span>
+          <span class="auto-tag">#19 年末年始手当</span>
+          <span class="auto-tag">#23 4週4休</span>
+        </div>
+      </div>
+      <div class="auto-group auto-mid-bg">
+        <div class="auto-group-title">中（13件）</div>
+        <div class="auto-items">
+          <span class="auto-tag">#5 遅刻控除確認</span>
+          <span class="auto-tag">#7 割増判断</span>
+          <span class="auto-tag">#8 休憩・休暇確認</span>
+          <span class="auto-tag">#9 通勤手当判定</span>
+          <span class="auto-tag">#13 インセンティブ</span>
+          <span class="auto-tag">#14/#15 フレックス</span>
+          <span class="auto-tag">#16-b 所定外残業</span>
+          <span class="auto-tag">#17 出勤簿突合</span>
+          <span class="auto-tag">#20 シフト相違</span>
+          <span class="auto-tag">#22 BOX控除</span>
+          <span class="auto-tag">#24 フレックス控除</span>
+          <span class="auto-tag">#25 みなし残業</span>
+          <span class="auto-tag">#26 特別休暇付与</span>
+        </div>
+      </div>
+      <div class="auto-group auto-low-bg">
+        <div class="auto-group-title">低（2件）</div>
+        <div class="auto-items">
+          <span class="auto-tag">#12 経費締め</span>
+          <span class="auto-tag">#27 四半期インセンティブ</span>
+        </div>
+      </div>
+      <div class="auto-group auto-survey-bg">
+        <div class="auto-group-title">要調査（1件）</div>
+        <div class="auto-items">
+          <span class="auto-tag">#21 b{stoic チェック</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slack Section -->
+  <div class="slack-section">
+    <h2>レビュー結果をSlackに送信</h2>
+    <p>レビュー状況・要修正ポイント・メモをまとめて <code>#pj_労務業務効率化</code> に送信します</p>
+    <div class="slack-btns">
+      <button class="slack-btn" onclick="sendToSlack()">Slackに送信</button>
+      <button class="slack-btn-secondary" onclick="copyForSlack()">クリップボードにコピー</button>
+      <button class="slack-btn-secondary" onclick="openWebhookSetup()">Webhook設定</button>
+      <span class="slack-webhook-status" id="webhookStatus"></span>
+    </div>
+    <div class="slack-preview" id="slackPreview"></div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- Webhook Setup Modal -->
+<div class="modal-overlay" id="webhookModal" onclick="if(event.target===this)closeWebhookSetup()">
+  <div class="modal-box">
+    <h3>Slack Webhook 設定</h3>
+    <p>Slack Incoming Webhook URLを入力してください。<br>一度設定すればブラウザに保存され、次回以降は不要です。</p>
+    <input type="text" class="modal-input" id="webhookInput" placeholder="https://hooks.slack.com/services/T.../B.../...">
+    <div class="modal-result" id="webhookResult"></div>
+    <div class="modal-actions">
+      <button class="modal-btn-cancel" onclick="closeWebhookSetup()">キャンセル</button>
+      <button class="modal-btn-primary" onclick="saveWebhook()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+
+<script>
+/* ===== Accordion ===== */
+function toggleAcc(id) {
+  var el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+window.matchMedia('print').addListener(function(mq) {
+  if (mq.matches) {
+    document.querySelectorAll('.accordion').forEach(function(a) { a.classList.add('open'); });
+  }
+});
+
+/* ===== Checklist ===== */
+var CHECKLIST_KEY = 'p022-checklist';
+var TOTAL_ITEMS = 16;
+
+function saveChecklist() {
+  var state = [];
+  for (var i = 0; i < TOTAL_ITEMS; i++) {
+    var chk = document.getElementById('chk-' + i);
+    state.push(chk ? chk.checked : false);
+    var item = document.getElementById('ci-' + i);
+    if (item) { item.classList.toggle('checked', chk && chk.checked); }
+  }
+  localStorage.setItem(CHECKLIST_KEY, JSON.stringify(state));
+}
+
+function loadChecklist() {
+  var raw = localStorage.getItem(CHECKLIST_KEY);
+  if (!raw) return;
+  try {
+    var state = JSON.parse(raw);
+    for (var i = 0; i < TOTAL_ITEMS; i++) {
+      var chk = document.getElementById('chk-' + i);
+      if (chk && state[i]) {
+        chk.checked = true;
+        var item = document.getElementById('ci-' + i);
+        if (item) item.classList.add('checked');
+      }
+    }
+  } catch(e) {}
+}
+
+function resetChecklist() {
+  for (var i = 0; i < TOTAL_ITEMS; i++) {
+    var chk = document.getElementById('chk-' + i);
+    if (chk) chk.checked = false;
+    var item = document.getElementById('ci-' + i);
+    if (item) item.classList.remove('checked');
+  }
+  localStorage.removeItem(CHECKLIST_KEY);
+}
+
+/* ===== Memo ===== */
+var memoDebounceTimers = {};
+
+function toggleMemo(phase) {
+  var body = document.getElementById('memo-' + phase);
+  var btn = body.previousElementSibling;
+  if (body.style.display === 'none') {
+    body.style.display = 'block';
+    btn.textContent = 'メモを閉じる ▲';
+  } else {
+    body.style.display = 'none';
+    btn.textContent = 'メモを追加 ▼';
+  }
+}
+
+function saveMemo(phase) {
+  var text = document.getElementById('memo-text-' + phase).value;
+  localStorage.setItem('p022-memo-' + phase, text);
+  var now = new Date();
+  var ts = now.getFullYear() + '-' +
+    String(now.getMonth()+1).padStart(2,'0') + '-' +
+    String(now.getDate()).padStart(2,'0') + ' ' +
+    String(now.getHours()).padStart(2,'0') + ':' +
+    String(now.getMinutes()).padStart(2,'0');
+  var el = document.getElementById('memo-saved-' + phase);
+  if (el) el.textContent = '保存済: ' + ts;
+}
+
+function loadMemos() {
+  ['p1','p2','p3','p4'].forEach(function(phase) {
+    var saved = localStorage.getItem('p022-memo-' + phase);
+    if (saved) {
+      var ta = document.getElementById('memo-text-' + phase);
+      if (ta) ta.value = saved;
+      var body = document.getElementById('memo-' + phase);
+      var btn = body ? body.previousElementSibling : null;
+      if (body) body.style.display = 'block';
+      if (btn) btn.textContent = 'メモを閉じる ▲';
+    }
+    var ta = document.getElementById('memo-text-' + phase);
+    if (ta) {
+      ta.addEventListener('input', (function(p) {
+        return function() {
+          clearTimeout(memoDebounceTimers[p]);
+          memoDebounceTimers[p] = setTimeout(function() { saveMemo(p); }, 3000);
+        };
+      })(phase));
+    }
+  });
+}
+
+/* ===== Slack Copy ===== */
+var CHECKLIST_LABELS = [
+  'Phase 1: 全従業員の勤怠提出が完了しているか',
+  'Phase 1: 経費の上長未承認・差戻が解消されているか',
+  'Phase 2: MF有給件数とSS記載数が一致しているか',
+  'Phase 2: アルバイトの有給日数がSSに転記されているか',
+  'Phase 2: 欠勤日数がSSに転記されているか',
+  'Phase 2: 休憩時間に異常値がないか',
+  'Phase 2: 殉80h/100h超過者がいないか',
+  'Phase 2: 通勤手当対象者を正しく判定できているか（忌引除外）',
+  'Phase 2: 歯科・薬局の出勤簿⇔AS笹合に不一致がないか',
+  'Phase 2: 事業部固有チェック（フレックス/皆勤/手当等）が完了しているか',
+  'Phase 2: 経費が全件承認済みで月次締め可能か',
+  'Phase 3: 全上長から遅刻早退控除・割増判断の回答が得られたか',
+  'Phase 3: インセンティブ金額が全事業部から報告されたか',
+  'Phase 3: 個別担当者（高野/長山/住吉等）からの回答が完了したか',
+  'Phase 4: ダブルチェックで差異が解消されたか',
+  'Phase 4: 全事業部の承認が完了し給与計算連携可能か'
+];
+
+/* ===== Webhook Storage ===== */
+var WEBHOOK_KEY = 'p022-slack-webhook';
+
+function getWebhookUrl() {
+  return localStorage.getItem(WEBHOOK_KEY) || '';
+}
+
+function setWebhookUrl(url) {
+  localStorage.setItem(WEBHOOK_KEY, url);
+  updateWebhookStatus();
+}
+
+function updateWebhookStatus() {
+  var el = document.getElementById('webhookStatus');
+  if (!el) return;
+  var url = getWebhookUrl();
+  if (url) {
+    el.textContent = '接続済み';
+    el.className = 'slack-webhook-status connected';
+  } else {
+    el.textContent = '未設定';
+    el.className = 'slack-webhook-status';
+  }
+}
+
+function openWebhookSetup() {
+  document.getElementById('webhookModal').classList.add('open');
+  document.getElementById('webhookInput').value = getWebhookUrl();
+  document.getElementById('webhookResult').textContent = '';
+  document.getElementById('webhookInput').focus();
+}
+
+function closeWebhookSetup() {
+  document.getElementById('webhookModal').classList.remove('open');
+}
+
+function saveWebhook() {
+  var url = document.getElementById('webhookInput').value.trim();
+  if (!url.startsWith('https://hooks.slack.com/')) {
+    document.getElementById('webhookResult').textContent = 'Slack Webhook URLの形式が正しくありません（https://hooks.slack.com/ で始まる必要があります）';
+    return;
+  }
+  setWebhookUrl(url);
+  closeWebhookSetup();
+  showToast('Slack Webhook を設定しました');
+}
+
+/* ===== Toast ===== */
+function showToast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('visible');
+  setTimeout(function() { el.classList.remove('visible'); }, 3000);
+}
+
+/* ===== Slack Send ===== */
+function sendToSlack() {
+  var webhookUrl = getWebhookUrl();
+  if (!webhookUrl) {
+    openWebhookSetup();
+    return;
+  }
+
+  var text = buildSlackText();
+  var payload = JSON.stringify({ text: text });
+
+  // Show preview
+  var preview = document.getElementById('slackPreview');
+  preview.textContent = text;
+  preview.classList.add('visible');
+
+  fetch(webhookUrl, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'payload=' + encodeURIComponent(payload)
+  }).then(function() {
+    showToast('Slackに送信しました');
+  }).catch(function() {
+    // Fallback: copy to clipboard
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).catch(function() {});
+    }
+    showToast('Slack送信に失敗 — クリップボードにコピーしました');
+  });
+}
+
+function copyForSlack() {
+  var text = buildSlackText();
+  var preview = document.getElementById('slackPreview');
+  preview.textContent = text;
+  preview.classList.add('visible');
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      showToast('クリップボードにコピーしました');
+    }).catch(function() {
+      showToast('コピーに失敗しました');
+    });
+  }
+}
+
+/* ===== Review System ===== */
+var REVIEW_KEY = 'p022-review';
+var REVIEWER_KEY = 'p022-reviewer';
+
+function initReviewBars() {
+  // Inject review bar into each .card and .accordion inside .phase-col
+  var items = document.querySelectorAll('.phase-col .card, .phase-col .accordion');
+  items.forEach(function(el, idx) {
+    var rid = 'rv-' + idx;
+    el.setAttribute('data-review-id', rid);
+
+    var bar = document.createElement('div');
+    bar.className = 'review-bar';
+    bar.innerHTML =
+      '<div class="review-btns">' +
+        '<button class="review-btn review-btn-ok" onclick="setReview(\'' + rid + '\',\'ok\',this)">OK</button>' +
+        '<button class="review-btn review-btn-ng" onclick="setReview(\'' + rid + '\',\'ng\',this)">要修正</button>' +
+        '<button class="review-btn review-btn-clear" onclick="clearReview(\'' + rid + '\',this)" title="リセット">&#10005;</button>' +
+        '<span class="review-status-label" id="rlabel-' + rid + '"></span>' +
+      '</div>' +
+      '<div class="review-comment-area" id="rcomment-' + rid + '">' +
+        '<textarea class="review-comment" id="rtext-' + rid + '" placeholder="修正内容・コメントを記入..." rows="2" oninput="saveReviewComment(\'' + rid + '\')"></textarea>' +
+        '<div class="review-comment-hint">内容は自動保存されます</div>' +
+      '</div>';
+
+    // Insert at end of card, or after accordion-header for accordions
+    if (el.classList.contains('accordion')) {
+      el.appendChild(bar);
+    } else {
+      el.appendChild(bar);
+    }
+  });
+}
+
+function getReviewData() {
+  try { return JSON.parse(localStorage.getItem(REVIEW_KEY)) || {}; } catch(e) { return {}; }
+}
+
+function saveReviewData(data) {
+  localStorage.setItem(REVIEW_KEY, JSON.stringify(data));
+}
+
+function setReview(rid, status, btn) {
+  var data = getReviewData();
+  if (!data[rid]) data[rid] = {};
+  data[rid].status = status;
+  data[rid].reviewer = document.getElementById('reviewerName').value || '';
+  data[rid].updatedAt = new Date().toISOString();
+  saveReviewData(data);
+  applyReviewUI(rid, data[rid]);
+  updateDashboard();
+}
+
+function clearReview(rid) {
+  var data = getReviewData();
+  delete data[rid];
+  saveReviewData(data);
+  applyReviewUI(rid, null);
+  updateDashboard();
+}
+
+function saveReviewComment(rid) {
+  var data = getReviewData();
+  if (!data[rid]) data[rid] = { status: 'ng' };
+  data[rid].comment = document.getElementById('rtext-' + rid).value;
+  data[rid].reviewer = document.getElementById('reviewerName').value || '';
+  data[rid].updatedAt = new Date().toISOString();
+  saveReviewData(data);
+  // If comment entered but no status, auto-set to ng
+  if (!data[rid].status || data[rid].status === '') {
+    data[rid].status = 'ng';
+    applyReviewUI(rid, data[rid]);
+    updateDashboard();
+  }
+}
+
+function applyReviewUI(rid, info) {
+  var el = document.querySelector('[data-review-id="' + rid + '"]');
+  if (!el) return;
+
+  el.classList.remove('review-ok', 'review-ng');
+  var okBtn = el.querySelector('.review-btn-ok');
+  var ngBtn = el.querySelector('.review-btn-ng');
+  var commentArea = document.getElementById('rcomment-' + rid);
+  var label = document.getElementById('rlabel-' + rid);
+
+  okBtn.classList.remove('active');
+  ngBtn.classList.remove('active');
+  commentArea.classList.remove('visible');
+  label.textContent = '';
+
+  if (!info || !info.status) return;
+
+  if (info.status === 'ok') {
+    okBtn.classList.add('active');
+    el.classList.add('review-ok');
+    if (info.reviewer) label.textContent = info.reviewer + ' が確認';
+  } else if (info.status === 'ng') {
+    ngBtn.classList.add('active');
+    el.classList.add('review-ng');
+    commentArea.classList.add('visible');
+    if (info.reviewer) label.textContent = info.reviewer + ' が指摘';
+  }
+
+  var ta = document.getElementById('rtext-' + rid);
+  if (ta && info.comment) ta.value = info.comment;
+}
+
+function loadReviews() {
+  var data = getReviewData();
+  Object.keys(data).forEach(function(rid) {
+    applyReviewUI(rid, data[rid]);
+  });
+  // Load reviewer name
+  var name = localStorage.getItem(REVIEWER_KEY);
+  if (name) document.getElementById('reviewerName').value = name;
+  updateDashboard();
+}
+
+function saveReviewerName() {
+  localStorage.setItem(REVIEWER_KEY, document.getElementById('reviewerName').value);
+}
+
+function updateDashboard() {
+  var items = document.querySelectorAll('[data-review-id]');
+  var total = items.length;
+  var data = getReviewData();
+  var ok = 0, ng = 0;
+
+  items.forEach(function(el) {
+    var rid = el.getAttribute('data-review-id');
+    if (data[rid] && data[rid].status === 'ok') ok++;
+    else if (data[rid] && data[rid].status === 'ng') ng++;
+  });
+
+  var pending = total - ok - ng;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statPending').textContent = pending;
+  document.getElementById('statOk').textContent = ok;
+  document.getElementById('statNg').textContent = ng;
+
+  var pOk = total > 0 ? (ok / total * 100) : 0;
+  var pNg = total > 0 ? (ng / total * 100) : 0;
+  document.getElementById('progOk').style.width = pOk + '%';
+  document.getElementById('progNg').style.width = pNg + '%';
+}
+
+/* ===== Slack Copy (updated with review) ===== */
+function buildSlackText() {
+  var checked = 0;
+  var unchecked = [];
+  for (var i = 0; i < TOTAL_ITEMS; i++) {
+    var chk = document.getElementById('chk-' + i);
+    if (chk && chk.checked) { checked++; }
+    else { unchecked.push(CHECKLIST_LABELS[i]); }
+  }
+
+  var memos = [];
+  ['p1','p2','p3','p4'].forEach(function(phase, idx) {
+    var ta = document.getElementById('memo-text-' + phase);
+    if (ta && ta.value.trim()) { memos.push('[Phase ' + (idx+1) + '] ' + ta.value.trim()); }
+  });
+
+  // Review summary
+  var data = getReviewData();
+  var items = document.querySelectorAll('[data-review-id]');
+  var total = items.length, ok = 0, ng = 0;
+  var ngItems = [];
+  items.forEach(function(el) {
+    var rid = el.getAttribute('data-review-id');
+    if (data[rid] && data[rid].status === 'ok') ok++;
+    else if (data[rid] && data[rid].status === 'ng') {
+      ng++;
+      var titleEl = el.querySelector('.card-title span:first-child') || el.querySelector('.accordion-title');
+      var title = titleEl ? titleEl.textContent : rid;
+      var comment = data[rid].comment || '';
+      ngItems.push('  - ' + title + (comment ? ': ' + comment : ''));
+    }
+  });
+
+  var now = new Date();
+  var ts = now.getFullYear() + '-' +
+    String(now.getMonth()+1).padStart(2,'0') + '-' +
+    String(now.getDate()).padStart(2,'0') + ' ' +
+    String(now.getHours()).padStart(2,'0') + ':' +
+    String(now.getMinutes()).padStart(2,'0');
+
+  var lines = [];
+  lines.push('📋 月次勤怠締めワークフロー — レビュー状況');
+  lines.push('');
+
+  // Review progress
+  lines.push('🔍 レビュー進捗: ' + (ok + ng) + '/' + total + ' 完了');
+  lines.push('  ✅ OK: ' + ok + '件  ❌ 要修正: ' + ng + '件  ⬜ 未レビュー: ' + (total - ok - ng) + '件');
+  if (ngItems.length > 0) {
+    lines.push('');
+    lines.push('🔴 要修正ポイント:');
+    ngItems.forEach(function(item) { lines.push(item); });
+  }
+
+  lines.push('');
+  lines.push('☑️ チェックリスト: ' + checked + '/' + TOTAL_ITEMS + '項目 確認済み');
+  if (unchecked.length > 0) {
+    lines.push('  未確認: ' + unchecked.join(', '));
+  }
+
+  if (memos.length > 0) {
+    lines.push('');
+    lines.push('📝 メモ:');
+    memos.forEach(function(m) { lines.push(m); });
+  }
+
+  var reviewer = document.getElementById('reviewerName').value;
+  lines.push('');
+  lines.push('---');
+  lines.push('更新: ' + ts + (reviewer ? ' (' + reviewer + ')' : ''));
+
+  return lines.join('\n');
+}
+
+/* ===== Init ===== */
+document.addEventListener('DOMContentLoaded', function() {
+  initReviewBars();
+  loadChecklist();
+  loadMemos();
+  loadReviews();
+  updateWebhookStatus();
+});
+</script>
+
+</body>
+</html>
