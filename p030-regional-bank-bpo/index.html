@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>地方銀行BPOサービス調査レポート — BPIO</title>
 <style>
-/* ===== Reset & Base ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 15px; scroll-behavior: smooth; }
 body {
@@ -15,207 +14,57 @@ body {
   line-height: 1.7;
   min-height: 100vh;
 }
-
-/* ===== Sticky Pill Navigation ===== */
 #sticky-nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  position: sticky; top: 0; z-index: 100;
   background: rgba(255,255,255,0.97);
   border-bottom: 1px solid #ccc;
   padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
 }
 #sticky-nav .nav-label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #777;
-  letter-spacing: 0.05em;
-  margin-right: 4px;
-  white-space: nowrap;
+  font-size: 0.72rem; font-weight: 700; color: #777;
+  letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
 }
 .pill {
-  display: inline-block;
-  padding: 5px 16px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: #555;
-  text-decoration: none;
-  border: 1px solid #ccc;
-  border-radius: 999px;
-  transition: all 0.2s ease;
-  white-space: nowrap;
+  display: inline-block; padding: 5px 16px;
+  font-size: 0.78rem; font-weight: 600; color: #555;
+  text-decoration: none; border: 1px solid #ccc;
+  border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
 }
-.pill:hover, .pill.active {
-  background: #1a1a1a;
-  color: #fff;
-  border-color: #1a1a1a;
-}
-
-/* ===== Main Content ===== */
-#main {
-  max-width: 920px;
-  margin: 0 auto;
-  padding: 40px 48px 80px;
-}
-
-/* ===== Header ===== */
-.report-header {
-  border-bottom: 2px solid #1a1a1a;
-  padding-bottom: 20px;
-  margin-bottom: 32px;
-}
-.report-header h1 {
-  font-size: 1.6rem;
-  font-weight: 700;
-  line-height: 1.3;
-  margin-bottom: 4px;
-}
-.report-header .subtitle {
-  font-size: 0.9rem;
-  color: #555;
-  margin-bottom: 16px;
-}
-.report-header .summary-box {
-  background: #f7f7f7;
-  border: 1px solid #ddd;
-  padding: 16px 20px;
-  margin-top: 16px;
-}
-.report-header .summary-box h3 {
-  font-size: 0.85rem;
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-.report-header .summary-box ul,
-.report-header .summary-box ol {
-  padding-left: 20px;
-  font-size: 0.82rem;
-}
-.report-header .summary-box li {
-  margin-bottom: 4px;
-}
-
-/* ===== Section Headings ===== */
+.pill:hover, .pill.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+#main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+.report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+.report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+.report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+.report-header .summary-box { background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px; }
+.report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+.report-header .summary-box ul { padding-left: 20px; font-size: 0.82rem; }
+.report-header .summary-box li { margin-bottom: 4px; }
 h2.section-title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  border-bottom: 1px solid #999;
-  padding-bottom: 6px;
-  margin-top: 48px;
-  margin-bottom: 20px;
+  font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid #999;
+  padding-bottom: 6px; margin-top: 48px; margin-bottom: 20px;
 }
 h3.subsection-title {
-  font-size: 1.0rem;
-  font-weight: 700;
-  margin-top: 32px;
-  margin-bottom: 12px;
-  padding-left: 10px;
-  border-left: 3px solid #555;
+  font-size: 1.0rem; font-weight: 700; margin-top: 32px; margin-bottom: 12px;
+  padding-left: 10px; border-left: 3px solid #555;
 }
-h4 {
-  font-size: 0.9rem;
-  font-weight: 700;
-  margin-top: 20px;
-  margin-bottom: 8px;
-}
-
-/* ===== Tables ===== */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 12px 0 20px;
-  font-size: 0.82rem;
-}
-table th, table td {
-  border: 1px solid #bbb;
-  padding: 7px 10px;
-  text-align: left;
-  vertical-align: top;
-}
-table th {
-  background: #f0f0f0;
-  font-weight: 700;
-  white-space: nowrap;
-}
-table td {
-  background: #fff;
-}
-table tr:nth-child(even) td {
-  background: #fafafa;
-}
-
-/* ===== Paragraphs & Lists ===== */
+h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+table td { background: #fff; }
+table tr:nth-child(even) td { background: #fafafa; }
 p { margin-bottom: 10px; font-size: 0.88rem; }
 ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
 ul li, ol li { margin-bottom: 3px; }
-
-/* ===== Highlight box (grey) ===== */
-.highlight-box {
-  background: #f7f7f7;
-  border: 1px solid #ddd;
-  padding: 14px 18px;
-  margin: 12px 0 20px;
-  font-size: 0.85rem;
-}
-.highlight-box strong {
-  color: #1a1a1a;
-}
-
-/* ===== Note box (yellow, border-left) ===== */
-.note-box {
-  background: #fffbeb;
-  border-left: 4px solid #f59e0b;
-  padding: 10px 16px;
-  margin: 12px 0 20px;
-  font-size: 0.82rem;
-  color: #78350f;
-}
-
-/* ===== Info box (blue, border-left) ===== */
-.info-box {
-  background: #eff6ff;
-  border-left: 4px solid #3b82f6;
-  padding: 10px 16px;
-  margin: 12px 0 20px;
-  font-size: 0.82rem;
-  color: #1e3a5f;
-}
-
-/* ===== Tier badge ===== */
-.tier-badge {
-  display: inline-block;
-  padding: 2px 10px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  border-radius: 3px;
-  margin-right: 6px;
-  vertical-align: middle;
-}
-.tier-1 { background: #1a1a1a; color: #fff; }
-.tier-2 { background: #555; color: #fff; }
-.tier-3 { background: #999; color: #fff; }
-.tier-4 { background: #ccc; color: #1a1a1a; }
-
-.confidence-a { font-weight: 700; }
-.confidence-b { color: #555; }
-.confidence-c { color: #999; }
-
-/* ===== Footer ===== */
-.report-footer {
-  border-top: 1px solid #999;
-  margin-top: 48px;
-  padding-top: 16px;
-  font-size: 0.78rem;
-  color: #777;
-}
-
-/* ===== Responsive ===== */
+.highlight-box { background: #f7f7f7; border: 1px solid #ddd; padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem; }
+.highlight-box strong { color: #1a1a1a; }
+.note-box { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f; }
+.info-box { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f; }
+.source { font-size: 0.78rem; color: #777; margin-top: 4px; }
+.source a { color: #555; }
+.report-footer { border-top: 1px solid #999; margin-top: 48px; padding-top: 16px; font-size: 0.78rem; color: #777; }
 @media (max-width: 640px) {
   #main { padding: 24px 20px 60px; }
   .report-header h1 { font-size: 1.3rem; }
@@ -225,8 +74,6 @@ ul li, ol li { margin-bottom: 3px; }
   #sticky-nav { padding: 10px 12px; gap: 6px; }
   .pill { padding: 4px 12px; font-size: 0.72rem; }
 }
-
-/* ===== Print ===== */
 @media print {
   #sticky-nav { display: none; }
   #main { padding: 0; max-width: 100%; }
@@ -236,295 +83,354 @@ ul li, ol li { margin-bottom: 3px; }
   h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
   table { font-size: 8pt; page-break-inside: avoid; }
   table th, table td { padding: 3px 5px; }
-  .highlight-box, .note-box, .info-box {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-  table th {
-    background: #f0f0f0 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
+  .highlight-box, .note-box, .info-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  table th { background: #f0f0f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 </style>
 </head>
 <body>
 
-<!-- ===== Pill Navigation ===== -->
 <nav id="sticky-nav">
   <span class="nav-label">CONTENTS</span>
-  <a href="#summary" class="pill">概要</a>
-  <a href="#findings" class="pill">調査結果</a>
-  <a href="#tier-a" class="pill">確度A（7社）</a>
-  <a href="#tier-bc" class="pill">確度B/C</a>
+  <a href="#overview" class="pill">調査概要</a>
+  <a href="#tier-a" class="pill">確度A（14行）</a>
+  <a href="#tier-b" class="pill">確度B（22行）</a>
+  <a href="#tier-cd" class="pill">確度C/D/E</a>
   <a href="#targets" class="pill">営業ターゲット</a>
   <a href="#strategy" class="pill">戦略的示唆</a>
-  <a href="#sources" class="pill">出典</a>
 </nav>
 
-<!-- ===== Main Content ===== -->
 <div id="main">
 
 <header class="report-header">
   <h1>地方銀行BPOサービス調査レポート</h1>
-  <p class="subtitle">調査日: 2026年3月26日 / 対象: 166金融機関</p>
+  <p class="subtitle">調査日: 2026年3月26日 / 対象: 96行（地銀61 + 第二地銀35）全数精査</p>
   <div class="summary-box">
-    <h3>エグゼクティブサマリー</h3>
+    <h3>調査結果サマリー</h3>
     <ul>
-      <li>地方銀行がBPO事業を<strong>グループ子会社として外部企業に提供</strong>している事例は <strong>7グループ</strong> 確認</li>
-      <li>多くの地銀は「BPO」という語を使わず、<strong>DX支援・ビジネスマッチング</strong>として外部BPO企業を取引先に紹介する形態が主流</li>
-      <li>2021年の<strong>改正銀行法</strong>（業務範囲規制の緩和）が制度的後押しとなり、BPO子会社設立が加速</li>
-      <li>SMBC×freee合弁「<strong>インクループ</strong>」が地域金融機関チャネルでの全国BPO展開を計画中</li>
-      <li>地銀系BPOはまだ初期段階（最大手で約30社）。<strong>専門BPO会社として差別化可能</strong></li>
+      <li><strong>確度A（外部向けBPO明確展開）: 14行</strong> — 子会社・JVを通じて外部企業にBPOサービスを提供中</li>
+      <li><strong>確度B（BPO的サービスあり）: 22行</strong> — DX支援・給与計算代行・事務受託機能が存在</li>
+      <li><strong>確度C/D/E: 60行</strong> — 内部事務集中のみ、または該当なし</li>
+      <li>2021年の改正銀行法（業務範囲規制の緩和）がBPO子会社設立を加速</li>
+      <li>SMBC×freee「インクループ」が地域金融機関チャネルでの全国BPO展開を計画中</li>
     </ul>
   </div>
 </header>
 
 <!-- ===== 1. 調査概要 ===== -->
-<h2 class="section-title" id="summary">1. 調査概要</h2>
+<h2 class="section-title" id="overview">1. 調査概要</h2>
 
-<h3 class="subsection-title">調査スコープ</h3>
+<h3 class="subsection-title">調査方法</h3>
+<p>全96行に対し、1行ずつ以下の5ステップで精査を実施。</p>
 <table>
-  <thead><tr><th>区分</th><th>対象数</th><th>データソース</th></tr></thead>
+  <thead><tr><th>Step</th><th>調査内容</th><th>対象</th></tr></thead>
   <tbody>
-    <tr><td>地方銀行（全国地方銀行協会）</td><td>61行</td><td>協会公式サイト</td></tr>
-    <tr><td>第二地方銀行（第二地方銀行協会）</td><td>35行</td><td>協会公式サイト</td></tr>
-    <tr><td>信用金庫（預金量上位）</td><td>50庫</td><td>全国信用金庫協会</td></tr>
-    <tr><td>信用組合（預金量上位）</td><td>20組合</td><td>全国信用組合中央協会</td></tr>
-    <tr><td><strong>合計</strong></td><td><strong>166機関</strong></td><td></td></tr>
+    <tr><td>1</td><td>公式サイトのグループ会社一覧を確認</td><td>BPO・事務代行・IT系子会社の有無</td></tr>
+    <tr><td>2</td><td>中期経営計画のキーワード確認</td><td>BPO/業務受託/業務代行/シェアードサービス/非金融サービス</td></tr>
+    <tr><td>3</td><td>ニュースリリース検索</td><td>BPO子会社設立・業務提携・新サービス開始</td></tr>
+    <tr><td>4</td><td>統合報告書/ディスクロージャー誌</td><td>事業戦略セクションの非金融収益方針</td></tr>
+    <tr><td>5</td><td>Web検索（個別名指し）</td><td>第三者メディア記事・プレスリリース</td></tr>
   </tbody>
 </table>
 
-<h3 class="subsection-title">検索キーワード</h3>
-<p><strong>直接キーワード:</strong> BPO / 業務受託 / アウトソーシング / 業務代行</p>
-<p><strong>間接キーワード:</strong> 事務集中 / シェアードサービス / 業務プラットフォーム / 地域企業の業務支援 / バックオフィス支援 / 経理代行 / 給与計算代行 / 事務代行 / 業務効率化サービス / DX支援サービス</p>
-
-<div class="info-box">
-  <strong>調査方法:</strong> 166機関に対し、計52クエリのWeb検索を3並行で実施。個別銀行名検索（20行）、広域キーワード検索（12クエリ）、フィナンシャルグループ・中期経営計画検索（20クエリ）を組み合わせたハイブリッド方式。
-</div>
-
-<!-- ===== 2. 調査結果全体像 ===== -->
-<h2 class="section-title" id="findings">2. 調査結果の全体像</h2>
-
+<h3 class="subsection-title">判定基準</h3>
 <table>
-  <thead><tr><th>確度</th><th>定義</th><th>該当数</th></tr></thead>
+  <thead><tr><th>判定</th><th>定義</th></tr></thead>
   <tbody>
-    <tr><td><strong>A</strong></td><td>BPO事業を明確に展開（子会社設立・外部提供）</td><td>7グループ</td></tr>
-    <tr><td><strong>B</strong></td><td>BPO的サービスあり（DX支援・グループ内事務代行）</td><td>5行</td></tr>
-    <tr><td><strong>C</strong></td><td>可能性示唆（内部BPR・組織再編レベル）</td><td>4行</td></tr>
-    <tr><td>該当なし</td><td>BPO関連の情報が確認できず</td><td>大多数</td></tr>
+    <tr><td><strong>A</strong></td><td>外部企業向けにBPOサービスを明確に展開（子会社設立・有料サービス稼働）</td></tr>
+    <tr><td><strong>B</strong></td><td>BPO的サービスあり（DX支援・給与計算代行・事務受託機能が存在し、外部展開の実績または意思がある）</td></tr>
+    <tr><td><strong>C</strong></td><td>グループ内事務集中のみ、またはDXツール紹介にとどまる</td></tr>
+    <tr><td><strong>D</strong></td><td>BPO関連の子会社・サービスが確認できない</td></tr>
+    <tr><td><strong>E</strong></td><td>規模的にBPO展開の可能性が極めて低い</td></tr>
   </tbody>
 </table>
 
-<h3 class="subsection-title">地銀BPOの3形態</h3>
-<table>
-  <thead><tr><th>形態</th><th>概要</th><th>該当</th></tr></thead>
-  <tbody>
-    <tr><td><strong>自社提供型</strong></td><td>グループ子会社が直接BPOサービスを外部企業に提供</td><td>北國・広島・七十七・肥後・中国・池田泉州</td></tr>
-    <tr><td><strong>ビジネスマッチング型</strong></td><td>外部BPO企業を取引先に紹介（仲介モデル）</td><td>横浜・ふくおかFG・多くの地銀</td></tr>
-    <tr><td><strong>内部集中型</strong></td><td>グループ内の事務集中のみ。外販なし</td><td>滋賀・ほくほくFG・大分・多くの地銀</td></tr>
-  </tbody>
-</table>
-
-<!-- ===== 3. 確度A 詳細 ===== -->
-<h2 class="section-title" id="tier-a">3. 確度A: BPO事業を明確に展開（7グループ）</h2>
+<!-- ===== 2. 確度A ===== -->
+<h2 class="section-title" id="tier-a">2. 確度A: 外部向けBPO明確展開（14行）</h2>
 
 <!-- 北國銀行 -->
-<h3 class="subsection-title">3-1. 北國銀行（北國フィナンシャルホールディングス）</h3>
+<h3 class="subsection-title">2-1. 北國銀行（石川県金沢市）— CCIグループ</h3>
 <table>
   <tbody>
-    <tr><th>所在地</th><td>石川県金沢市</td></tr>
-    <tr><th>BPO形態</th><td>グループ子会社 + JV（合弁会社）</td></tr>
-    <tr><th>対象業務</th><td>経理・バックオフィス全般</td></tr>
+    <tr><th>BPO事業体</th><td>CCIForward（CCイノベーション72%・マネーフォワード14%・BPIO14%、2025年5月設立）</td></tr>
+    <tr><th>対象業務</th><td>経理BPO・労務BPO・総務BPO・DX支援・コンサルティング</td></tr>
+    <tr><th>判定根拠</th><td>セブンリッチグループ(BPIO)が14%出資するJV。持株会社が2025年10月に「CCIグループ」に社名変更するほど非金融事業を中核に位置付け</td></tr>
   </tbody>
 </table>
-<ul>
-  <li>2022年4月「BPOマネジメント」設立（のちCCイノベーションに吸収合併）</li>
-  <li><strong>CCIForward</strong>: セブンリッチグループ × マネーフォワード × CCイノベーションの3社共同設立。マネーフォワードクラウド基盤のバックオフィスBPOを地域スタートアップ・中小企業向けに展開</li>
-  <li>杖村社長「非金融収益を銀行と同等水準に引き上げる」と戦略明言</li>
-</ul>
-<div class="note-box">
-  <strong>注目:</strong> セブンリッチが既にJVパートナーとして関与。この実績が他行への横展開の最大の武器となる。
-</div>
+<p class="source">情報ソース: <a href="https://prtimes.jp/main/html/rd/p/000000075.000115382.html">PR TIMES CCIForward設立</a> / <a href="https://note.com/sevenrich/n/n3feed5ee70af">セブンリッチ note</a> / <a href="https://www.ccig.co.jp/news/20250303-1/">CCIグループ社名変更</a></p>
 
 <!-- 広島銀行 -->
-<h3 class="subsection-title">3-2. 広島銀行（ひろぎんホールディングス）</h3>
+<h3 class="subsection-title">2-2. 広島銀行（広島県広島市）— ひろぎんHD</h3>
 <table>
   <tbody>
-    <tr><th>所在地</th><td>広島県広島市</td></tr>
-    <tr><th>BPO形態</th><td>グループ子会社「ひろぎんITソリューションズ」（2021年設立）</td></tr>
+    <tr><th>BPO事業体</th><td>ひろぎんITソリューションズ（2021年設立）+ ひろぎんビジネスサービス</td></tr>
     <tr><th>対象業務</th><td>勤怠管理・月例給与・賞与年末調整・社会保険手続・住民税処理・販売管理・財務会計・マイナンバー管理</td></tr>
-    <tr><th>顧客数</th><td>約30社</td></tr>
+    <tr><th>顧客実績</th><td>約30社</td></tr>
+    <tr><th>判定根拠</th><td>公式サイトでBPOサービスページを公開し、対象業務・導入メリットを明示。OBC公認パートナー。Sansan「Bill One」販売パートナー契約も締結（2025年1月）</td></tr>
   </tbody>
 </table>
-<ul>
-  <li>2025年1月にSansan「Bill One」の販売パートナー契約締結。経理DXにも積極的</li>
-  <li>広島銀行支店が取引先ニーズを聞き取り、ひろぎんITSに共有するチャネル活用</li>
-  <li>「創業以来の受託計算スキルとノウハウ」を武器として標榜</li>
-</ul>
+<p class="source">情報ソース: <a href="https://www.hirogin-its.co.jp/service/bpo/index.html">ひろぎんITS BPOページ</a> / <a href="https://jp.corp-sansan.com/news/2025/0123.html">Sansan提携</a></p>
 
 <!-- 七十七銀行 -->
-<h3 class="subsection-title">3-3. 七十七銀行</h3>
+<h3 class="subsection-title">2-3. 七十七銀行（宮城県仙台市）</h3>
 <table>
   <tbody>
-    <tr><th>所在地</th><td>宮城県仙台市</td></tr>
-    <tr><th>BPO形態</th><td>全額出資BPO子会社「七十七ビジネスウィズ」（2024年9月設立）</td></tr>
-    <tr><th>対象業務</th><td>事務・経理（初期） → 中小企業の間接業務全般（拡大予定）</td></tr>
+    <tr><th>BPO事業体</th><td>七十七ビジネスウィズ（2024年9月設立・10月業務開始、100%出資、資本金1億円）</td></tr>
+    <tr><th>対象業務</th><td>事務・経理（1年目は銀行内部、2年目以降は取引先中小企業へ展開予定）</td></tr>
+    <tr><th>判定根拠</th><td>日経新聞で開業報道。事業戦略資料に損益目標を明示（2024年度▲21百万円→2025年度5百万円→将来30百万円）。2025年2月に特例子会社認定取得</td></tr>
   </tbody>
 </table>
-<ul>
-  <li>「未来の業務をともに設計するBPOコンサルティング会社」と定義</li>
-  <li>1年目: 七十七銀行の間接業務を担当。2年目以降に取引先中小企業向けに展開予定</li>
-  <li>障害者8名含む18名体制で開業。特例子会社認定を目指す</li>
-</ul>
-<div class="note-box">
-  <strong>好機:</strong> 設立直後で外部展開フェーズに入る前。パートナー提案の最適タイミング。
-</div>
-
-<!-- 中国銀行 -->
-<h3 class="subsection-title">3-4. 中国銀行（ちゅうぎんフィナンシャルグループ）</h3>
-<table>
-  <tbody>
-    <tr><th>所在地</th><td>岡山県岡山市</td></tr>
-    <tr><th>BPO形態</th><td>コンサル子会社「Cキューブ・コンサルティング」（2022年9月設立）と連携して事業化進行中</td></tr>
-    <tr><th>対象業務</th><td>経理・総務・人事（間接業務全般）・データ分析・セキュリティ</td></tr>
-  </tbody>
-</table>
-<ul>
-  <li>BPO事業を新収益柱として明示的に立ち上げ中</li>
-  <li>「地方では特に人材不足が深刻。経理部門は機密事項も多く、日々の取引がある銀行として信頼いただける」と発言</li>
-  <li>展開ステップ: (1)グループ内SSC構築 → (2)集約拡大 → (3)地域企業向け受託開始</li>
-</ul>
+<p class="source">情報ソース: <a href="https://www.nikkei.com/article/DGXZQOCC013Q20R01C24A0000000/">日経新聞</a> / <a href="https://www.77bank.co.jp/pdf/77bank/2025/2025_06ir_04.pdf">七十七銀行 事業戦略資料PDF</a></p>
 
 <!-- 肥後銀行 -->
-<h3 class="subsection-title">3-5. 肥後銀行（九州フィナンシャルグループ）</h3>
+<h3 class="subsection-title">2-4. 肥後銀行（熊本県熊本市）— 九州FG</h3>
 <table>
   <tbody>
-    <tr><th>所在地</th><td>熊本県熊本市</td></tr>
-    <tr><th>BPO形態</th><td>複数グループ子会社</td></tr>
-    <tr><th>対象業務</th><td>データ入力・書類管理・コールセンター・IT・文書管理</td></tr>
+    <tr><th>BPO事業体</th><td>九州デジタルソリューションズ（BPO専門）+ 肥銀オフィスビジネス + 肥銀ビジネスサポート</td></tr>
+    <tr><th>対象業務</th><td>給与計算・カード発行・各種事務支援・データ入力・書類管理・コールセンター・文書管理</td></tr>
+    <tr><th>判定根拠</th><td>九州デジタルソリューションズの公式サイトにBPOサービスの詳細（給与計算代行、帳票作成、封入封緘等）が公開。一般企業・病院・製造業・飲食店等の多業種に対応</td></tr>
   </tbody>
 </table>
-<ul>
-  <li><strong>肥銀オフィスビジネス</strong>: 金融機関・取引先企業向けBPO（データ入力・照合・書類点検・集計発送・コールセンター）</li>
-  <li><strong>九州デジタルソリューションズ</strong>: IT・システム領域のBPO</li>
-  <li><strong>肥銀ビジネスサポート</strong>: 文書保管・印刷・配送業務受託（外部事業者向けにも展開）</li>
-</ul>
+<p class="source">情報ソース: <a href="https://kyu-ds.com/bpo.html">九州デジタルソリューションズ BPOページ</a> / <a href="https://higinob.co.jp/bpo/">肥銀オフィスビジネス</a></p>
+
+<!-- 中国銀行 -->
+<h3 class="subsection-title">2-5. 中国銀行（岡山県岡山市）— ちゅうぎんFG</h3>
+<table>
+  <tbody>
+    <tr><th>BPO事業体</th><td>Cキューブ・コンサルティング（2022年9月設立）+ 中銀事務センター + CBS</td></tr>
+    <tr><th>対象業務</th><td>経理・総務・人事（間接業務全般）・データ分析・セキュリティ</td></tr>
+    <tr><th>判定根拠</th><td>AXIS Insightsインタビューで「BPOサービスで地域経済を支える」と題しBPOロードマップを対外発表。SSC構築→集約拡大→地域企業向け受託の3段階を明示</td></tr>
+  </tbody>
+</table>
+<p class="source">情報ソース: <a href="https://www.axc.ne.jp/insights/article/company/5815/">AXIS Insights インタビュー</a> / <a href="https://kenja-succession.com/articles/strategy/interview-chugin-2/">賢者の選択</a></p>
 
 <!-- 池田泉州HD -->
-<h3 class="subsection-title">3-6. 池田泉州ホールディングス</h3>
+<h3 class="subsection-title">2-6. 池田泉州ホールディングス（大阪府大阪市）</h3>
 <table>
   <tbody>
-    <tr><th>所在地</th><td>大阪府大阪市</td></tr>
-    <tr><th>BPO形態</th><td>100%子会社「池田泉州ビジネスサービス」</td></tr>
-    <tr><th>対象業務</th><td>現金精算・印刷・事務代行・バックオフィス代行</td></tr>
+    <tr><th>BPO事業体</th><td>池田泉州ビジネスサービス（100%子会社）</td></tr>
+    <tr><th>対象業務</th><td>現金精算・印刷・事務代行・BPO・バックオフィス代行</td></tr>
+    <tr><th>判定根拠</th><td>企業情報サイトの業種分類に「BPO・バックオフィス代行・経理代行」と明記。ビジネスゲート（MF×NTTデータ共同開発）で法人DX基盤も整備済み</td></tr>
   </tbody>
 </table>
+<p class="source">情報ソース: <a href="https://www.buffett-code.com/company/f9ttbtxb5k/">バフェット・コード 企業情報</a> / <a href="https://www.senshuikeda-hd.co.jp/company/group.html">池田泉州HD グループ一覧</a></p>
 
 <!-- ふくおかFG -->
-<h3 class="subsection-title">3-7. ふくおかフィナンシャルグループ（福岡銀行等）</h3>
+<h3 class="subsection-title">2-7. ふくおかFG（福岡県福岡市）— 福岡銀行・十八親和銀行・熊本銀行</h3>
 <table>
   <tbody>
-    <tr><th>所在地</th><td>福岡県福岡市</td></tr>
-    <tr><th>BPO形態</th><td>グループ子会社「福銀事務サービス」+ DXコンサルタント体制</td></tr>
-    <tr><th>対象業務</th><td>事務代行・DX導入伴走支援・ビジネスマッチング</td></tr>
+    <tr><th>BPO事業体</th><td>FFGコンピューターサービス（RPA・業務受託）+ 福銀事務サービス</td></tr>
+    <tr><th>対象業務</th><td>RPA業務受託・事務代行・DXコンサルティング（3行合計40名超の専任体制）</td></tr>
+    <tr><th>判定根拠</th><td>FCSの公式サイトでRPA・業務受託サービスを明示。地方公共団体30以上に公金収納サービスを外部展開。BIZSHIPで中小企業向け業務効率化も提供</td></tr>
   </tbody>
 </table>
-<ul>
-  <li>3行合計40名超の専任DXコンサルタントが取引先を支援</li>
-  <li>1年で400件超の支援案件を獲得</li>
-  <li>取引先企業へのBPO紹介（ビジネスマッチング）もDX支援の一環で提供</li>
-  <li>IBM地域DXセンターとの連携あり</li>
-</ul>
+<p class="source">情報ソース: <a href="https://www.fcs-web.co.jp/">FFGコンピューターサービス</a> / <a href="https://bizship.fukuoka-fg.com/lp/">BIZSHIP</a> / <a href="https://www.fukuokabank.co.jp/corporate/digitalsupport/">福岡銀行DX支援</a></p>
 
-<!-- ===== 4. 確度B/C ===== -->
-<h2 class="section-title" id="tier-bc">4. 確度B/C: BPO的サービスまたは可能性示唆</h2>
-
-<h3 class="subsection-title">確度B（5行）</h3>
+<!-- 北洋銀行 -->
+<h3 class="subsection-title">2-8. 北洋銀行（北海道札幌市）</h3>
 <table>
-  <thead><tr><th>金融機関</th><th>所在地</th><th>形態</th><th>内容</th></tr></thead>
   <tbody>
-    <tr><td><strong>横浜銀行</strong>（コンコルディアFG）</td><td>神奈川県横浜市</td><td>ビジネスマッチング型</td><td>TOKIUM等BPO企業を取引先に紹介。自社提供ではなく仲介</td></tr>
-    <tr><td><strong>滋賀銀行</strong></td><td>滋賀県大津市</td><td>グループ内事務代行</td><td>「しがぎんビジネスサービス」で事務代行・現金精査・計算代行</td></tr>
-    <tr><td><strong>大分銀行</strong></td><td>大分県大分市</td><td>グループ内外業務受託</td><td>「大銀オフィスサービス」がグループ内外の業務受託</td></tr>
-    <tr><td><strong>ほくほくFG</strong>（北陸銀行・北海道銀行）</td><td>富山県/北海道</td><td>グループ内事務代行</td><td>「北銀ビジネスサービス」「道銀ビジネスサービス」</td></tr>
-    <tr><td><strong>常陽銀行</strong>（めぶきFG）</td><td>茨城県水戸市</td><td>DXコンサルティング</td><td>経産省資料に事例掲載。業務代行ではなくDX導入支援</td></tr>
+    <tr><th>BPO事業体</th><td>北海道共創パートナーズ（HKP）</td></tr>
+    <tr><th>対象業務</th><td>仕訳業務・振込データ作成・債権債務管理・原価管理・請求書作成・給与計算アウトソーシング</td></tr>
+    <tr><th>料金実績</th><td>A社155千円/月、B社420千円/月、C社950千円/月（公式サイトに公開）</td></tr>
+    <tr><th>判定根拠</th><td>HKP公式サイトに「バックオフィスサポートサービス」として料金実績3社・対象業務詳細を掲載。会計士・経理経験者が担当</td></tr>
+  </tbody>
+</table>
+<p class="source">情報ソース: <a href="https://www.h-kyoso.co.jp/agency_service/">HKP バックオフィスサポートサービス</a></p>
+
+<!-- 千葉銀行 -->
+<h3 class="subsection-title">2-9. 千葉銀行（千葉県千葉市）</h3>
+<table>
+  <tbody>
+    <tr><th>BPO事業体</th><td>ちばぎんキャリアサービス（100%出資、旧ちばぎんアカウンティングサービス）</td></tr>
+    <tr><th>対象業務</th><td>給与計算業務受託・経理業務受託（2001年開始）</td></tr>
+    <tr><th>判定根拠</th><td>公式サイトで給与計算・経理受託を外部中小企業向けサービスとして明示。2001年の事業開始からの長期実績</td></tr>
+  </tbody>
+</table>
+<p class="source">情報ソース: <a href="https://www.cgac.co.jp/">ちばぎんキャリアサービス</a> / <a href="https://www.chibabank.co.jp/company/services/aboutus/group">千葉銀行グループ一覧</a></p>
+
+<!-- きらぼし銀行 -->
+<h3 class="subsection-title">2-10. きらぼし銀行（東京都港区）— 東京きらぼしFG</h3>
+<table>
+  <tbody>
+    <tr><th>BPO事業体</th><td>きらぼしビジネスオフィスサービス（KBOS）</td></tr>
+    <tr><th>対象業務</th><td>給与計算・勤怠管理・経費精算・電子帳票等（クラウド導入支援＋業務受託のハイブリッド型）</td></tr>
+    <tr><th>判定根拠</th><td>KBOS公式サイトで中小企業・スタートアップ向けBPOサービスを明示。SBIビジネス・ソリューションズ（2024年4月提携）、OBC（2025年5月提携）との業務提携</td></tr>
+  </tbody>
+</table>
+<p class="source">情報ソース: <a href="https://www.kiraboshi-bos.co.jp/">KBOS公式サイト</a> / <a href="https://seikyuquick.sbi-bs.co.jp/news/240402_release_kbos/">SBI提携</a></p>
+
+<!-- 京都銀行 -->
+<h3 class="subsection-title">2-11. 京都銀行（京都府京都市）— 京都FG</h3>
+<table>
+  <tbody>
+    <tr><th>BPO事業体</th><td>TIS連携「京都FG SeamlessLink」（2026年5月提供開始予定）</td></tr>
+    <tr><th>対象業務</th><td>請求書受領→精算→銀行送金のAPI自動連携プラットフォーム</td></tr>
+    <tr><th>判定根拠</th><td>2026年3月19日にTISとの業務提携を発表。PR TIMESにプレスリリース掲載。BPO子会社は持たず外部パートナーと連携する「アセットライト型」。MF Mikatanoシリーズも2022年から提供中</td></tr>
+  </tbody>
+</table>
+<p class="source">情報ソース: <a href="https://prtimes.jp/main/html/rd/p/000001894.000011650.html">PR TIMES TIS提携</a> / <a href="https://www.tis.co.jp/news/2025/tis_news/20260323_1.html">TIS公式リリース</a></p>
+
+<!-- あいち銀行 -->
+<h3 class="subsection-title">2-12. あいち銀行（愛知県名古屋市）— あいちFG</h3>
+<table>
+  <tbody>
+    <tr><th>BPO事業体</th><td>バックオフィス診断サービス（2024年8月開始）+ AASTグループ（2024年4月M&A取得）</td></tr>
+    <tr><th>対象業務</th><td>90項目超のヒアリングによるバックオフィス課題整理→専門家紹介→デジタル化支援</td></tr>
+    <tr><th>実績</th><td>2024年12月末時点で88件の相談実績</td></tr>
+    <tr><th>判定根拠</th><td>ニッキンONLINEで「デジタル化診断サービス」開始を報道。第2次中計のテーマは「銀行業を超えたトータルサポートグループ」</td></tr>
+  </tbody>
+</table>
+<p class="source">情報ソース: <a href="https://www.nikkinonline.com/article/255699">ニッキンONLINE</a> / <a href="https://www.aichi-fg.co.jp/release/files/pdf/news20250212.pdf">あいちFG第2次中計PDF</a></p>
+
+<!-- 伊予銀行 -->
+<h3 class="subsection-title">2-13. 伊予銀行（愛媛県松山市）— いよぎんHD</h3>
+<table>
+  <tbody>
+    <tr><th>BPO事業体</th><td>いよぎんデジタルソリューションズ（2023年4月設立）</td></tr>
+    <tr><th>対象業務</th><td>コンサルティング・アプリ開発・事務受託（BPO）</td></tr>
+    <tr><th>実績</th><td>相談件数1,787件（2022年12月末時点）</td></tr>
+    <tr><th>判定根拠</th><td>日経新聞で「いよぎんHD、4月にコンサル新会社 中小企業のDX支援」と報道。公式サイトでBPOをサービスとして明示。内閣府「地方創生に資する金融機関の特徴的取組事例」として受賞</td></tr>
+  </tbody>
+</table>
+<p class="source">情報ソース: <a href="https://www.iyogin-ds.co.jp/">いよぎんDS公式サイト</a> / <a href="https://www.nikkei.com/article/DGXZQOCC248IH0U3A120C2000000/">日経新聞</a></p>
+
+<!-- 鹿児島銀行 -->
+<h3 class="subsection-title">2-14. 鹿児島銀行（鹿児島県鹿児島市）— 九州FG</h3>
+<table>
+  <tbody>
+    <tr><th>BPO事業体</th><td>九州デジタルソリューションズ（肥後銀行と共有、鹿児島市にも拠点）+ かぎんオフィスビジネス</td></tr>
+    <tr><th>対象業務</th><td>給与計算・データ入力・帳票作成等（九州デジタルソリューションズ経由）</td></tr>
+    <tr><th>判定根拠</th><td>第9次中期経営計画に「地域社会のデジタル化をリードする企業グループ」を宣言し、九州デジタルソリューションズ・かぎんオフィスビジネスをデジタル戦略の実行体として明記</td></tr>
+  </tbody>
+</table>
+<p class="source">情報ソース: <a href="https://kyu-ds.com/bpo.html">九州デジタルソリューションズ BPO</a> / <a href="https://www.kagin.co.jp/library/300_ir/pdf/keiei_plan/09_cyuki_keieiplan.pdf">第9次中計PDF</a></p>
+
+<!-- ===== 3. 確度B ===== -->
+<h2 class="section-title" id="tier-b">3. 確度B: BPO的サービスあり（22行）</h2>
+
+<table>
+  <thead><tr><th>銀行</th><th>所在地</th><th>BPO関連の機能・子会社</th><th>判定根拠・情報ソース</th></tr></thead>
+  <tbody>
+    <tr><td><strong>群馬銀行</strong></td><td>群馬県</td><td>ぐんぎんシステムサービス（OBC提携）</td><td>頭取が新中計で<strong>BPO参入を公言</strong>（<a href="https://www.nikkei.com/article/DGXZQOCC273PR0X20C25A2000000/">日経</a>）。まだ計画段階</td></tr>
+    <tr><td><strong>常陽銀行</strong></td><td>茨城県</td><td>常陽コンピューターサービス</td><td>外部企業<strong>450社超に給与計算代行</strong>を提供（<a href="https://www.joyonet.jp/company/index.html">公式サイト</a>）</td></tr>
+    <tr><td><strong>北都銀行</strong></td><td>秋田県</td><td>フィデア情報総研（フィデアHD共有）</td><td>「BPO業務の拡充」を公式サイトに明記（<a href="https://www.fir.co.jp/">fir.co.jp</a>）</td></tr>
+    <tr><td><strong>荘内銀行</strong></td><td>山形県</td><td>フィデア情報総研（同上）</td><td>北都銀行と同一グループ。2027年1月合併予定</td></tr>
+    <tr><td><strong>山形銀行</strong></td><td>山形県</td><td>山銀システムサービス（100%出資）</td><td>給与計算代行・RPA代行・データ入力代行を外部提供（<a href="https://www.yamagin-system.co.jp/about.html">公式サイト</a>）</td></tr>
+    <tr><td><strong>東邦銀行</strong></td><td>福島県</td><td>東邦情報システム + TIH（2025年7月設立）</td><td>TIH設立を日経が報道。他業銀行業高度化等会社認可（<a href="https://www.nikkei.com/article/DGXZQOCC0195F0R00C25A7000000/">日経</a>）</td></tr>
+    <tr><td><strong>仙台銀行</strong></td><td>宮城県</td><td>山形ビジネスサービス（じもとHD共有）</td><td>事務受託専業会社としてグループ一覧に記載（<a href="https://www.jimoto-hd.co.jp/corporate/group/">じもとHD</a>）</td></tr>
+    <tr><td><strong>きらやか銀行</strong></td><td>山形県</td><td>山形ビジネスサービス + JimoTec</td><td>同上。ただしじもとHD経営危機（国管理下）で新規展開の余力は限定的</td></tr>
+    <tr><td><strong>山梨中央銀行</strong></td><td>山梨県</td><td>OBCパートナー契約（2025年4月）</td><td>奉行クラウドによる経理DX支援を開始（<a href="https://www.weeklybcn.com/journal/news/detail/20250410_209442.html">週刊BCN+</a>）</td></tr>
+    <tr><td><strong>八十二長野銀行</strong></td><td>長野県</td><td>八十二スタッフサービス</td><td>定款に「事務代行業務」を保有（<a href="https://www.82staff-service.co.jp/company">公式サイト</a>）。新中計で「総合コンサルティンググループへの飛躍」明示</td></tr>
+    <tr><td><strong>スルガ銀行</strong></td><td>静岡県</td><td>スルガビジネスソリューション</td><td>給与計算代行（計算から入金まで一貫）・売掛金回収を外部企業向けに公式サイトで提供（<a href="https://www.sbsc.co.jp/">sbsc.co.jp</a>）</td></tr>
+    <tr><td><strong>百五銀行</strong></td><td>三重県</td><td>百五ビジネスサービス等複数子会社</td><td>新中計で「地域DX本格参入・新会社設立」方針（<a href="https://www.hyakugo.co.jp/news/pdf/20250204_02.pdf">中計PDF</a>）</td></tr>
+    <tr><td><strong>南都銀行</strong></td><td>奈良県</td><td>南都コンピュータサービス</td><td>取引先<strong>80社・5,200人の給与計算受託</strong>（<a href="https://www.nantocs.co.jp/">公式サイト</a>）。MF×IBM連携で2027年秋に法人向け経理DXサービス開発中（<a href="https://www.nikkei.com/article/DGXZQOUF241OR0U6A320C2000000/">日経</a>）</td></tr>
+    <tr><td><strong>紀陽銀行</strong></td><td>和歌山県</td><td>紀陽情報システム（銀行業高度化等会社）</td><td>外部向けDXコンサル・事務代行を成長事業として展開。中計に「事務代行業務」を明記（<a href="https://www.kiyobank.co.jp/investors/ir/merger/pdf/merger_plan_7th_mid.pdf">中計PDF</a>）</td></tr>
+    <tr><td><strong>名古屋銀行</strong></td><td>愛知県</td><td>ナイス（100%子会社・銀行業高度化等会社）</td><td>代金回収・電子帳票・受託開発のBPO的業務を外部展開（<a href="https://www.naiscorp.co.jp/dx/">ナイスDX</a>）</td></tr>
+    <tr><td><strong>山口銀行</strong></td><td>山口県</td><td>イネサス（YMFG傘下、福利厚生代行）</td><td>山口・広島・福岡で外部企業向け福利厚生BPOを提供中（<a href="https://inesus.jp/about/">inesus.jp</a>）</td></tr>
+    <tr><td><strong>もみじ銀行</strong></td><td>広島県</td><td>YMFG傘下でイネサス等を共有</td><td>山口銀行と同一グループ</td></tr>
+    <tr><td><strong>佐賀銀行</strong></td><td>佐賀県</td><td>佐銀デジタルパートナーズ</td><td>「グループ全体をコンサルファームへ」を中計に明記。日銀金融高度化センターで事例発表（<a href="https://www.boj.or.jp/finsys/c_aft/data/aft230131a6.pdf">日銀PDF</a>）</td></tr>
+    <tr><td><strong>十八親和銀行</strong></td><td>長崎県</td><td>FFGグループ共通会社活用</td><td>FFG傘下としてBIZSHIP等を共有</td></tr>
+    <tr><td><strong>琉球銀行</strong></td><td>沖縄県</td><td>ゆいパートナーサービス（海邦銀行と共同設立、2023年12月）</td><td>現金輸送→現金整理→為替バックオフィスと段階的に業務共同化を拡大（<a href="https://www.ryugin.co.jp/corporate/news/92598/">琉球銀行リリース</a>）</td></tr>
+    <tr><td><strong>沖縄海邦銀行</strong></td><td>沖縄県</td><td>ゆいパートナーサービス（同上）</td><td>為替バックオフィス共同化（2026年2月〜）。頭取が業務拡大を明言（<a href="https://ryukyushimpo.jp/news/economics/entry-2534949.html">琉球新報</a>）</td></tr>
+    <tr><td><strong>沖縄銀行</strong></td><td>沖縄県</td><td>おきぎんビジネスサービス</td><td>グループ一覧に「代行業務」と記載（<a href="https://www.okinawafg.co.jp/group_companies/">おきなわFG</a>）</td></tr>
   </tbody>
 </table>
 
-<h3 class="subsection-title">確度C（4行）</h3>
+<!-- ===== 4. 確度C/D/E ===== -->
+<h2 class="section-title" id="tier-cd">4. 確度C/D/E（60行）</h2>
+
+<h3 class="subsection-title">確度C（27行）— 内部事務集中のみ、またはDXツール紹介にとどまる</h3>
 <table>
-  <thead><tr><th>金融機関</th><th>所在地</th><th>内容</th></tr></thead>
+  <thead><tr><th>銀行</th><th>所在地</th><th>概要</th></tr></thead>
   <tbody>
-    <tr><td>伊予銀行</td><td>愛媛県松山市</td><td>アクセンチュアと連携しBPR推進。事務作業70-80%削減。自行DXであり外部提供なし</td></tr>
-    <tr><td>山陰合同銀行</td><td>島根県松江市</td><td>「山陰オフィスサービス」で内部業務支援体制整備。外部提供は不明</td></tr>
-    <tr><td>鹿児島銀行</td><td>鹿児島県鹿児島市</td><td>九州FG傘下。店舗の「事務→相談」転換を中計で明示。事務外出しの方向性</td></tr>
-    <tr><td>福岡銀行（IBM経由）</td><td>福岡県福岡市</td><td>IBM地域DXセンターがBPO受け皿として機能</td></tr>
+    <tr><td>北海道銀行</td><td>北海道</td><td>道銀ビジネスサービスは内部特化</td></tr>
+    <tr><td>青森みちのく銀行</td><td>青森県</td><td>あおもり創生パートナーズがfreee連携DX支援</td></tr>
+    <tr><td>秋田銀行</td><td>秋田県</td><td>MFツール取り次ぎのみ。IT子会社なし</td></tr>
+    <tr><td>北日本銀行</td><td>岩手県</td><td>IBCソフトアルファと資本提携でDX支援強化中</td></tr>
+    <tr><td>福島銀行</td><td>福島県</td><td>SBI連携DXツール提供のみ</td></tr>
+    <tr><td>武蔵野銀行</td><td>埼玉県</td><td>ぶぎんシステムサービス（給与計算・集金代行）規模不明</td></tr>
+    <tr><td>筑波銀行</td><td>茨城県</td><td>BPO子会社2020年解散。筑波総研が限定的に受託</td></tr>
+    <tr><td>横浜銀行</td><td>神奈川県</td><td>はまぎんビジネスチャレンジドは内部向け特例子会社</td></tr>
+    <tr><td>栃木銀行</td><td>栃木県</td><td>とちぎん集中事務センター+ビジネスサービスあるが外販未確認</td></tr>
+    <tr><td>第四北越銀行</td><td>新潟県</td><td>2027年4月群馬銀行と統合で事務集中化の可能性</td></tr>
+    <tr><td>北陸銀行</td><td>富山県</td><td>北銀ビジネスサービスは内部向け特化</td></tr>
+    <tr><td>富山第一銀行</td><td>富山県</td><td>富山ファースト・ビジネスは内部向けBPO</td></tr>
+    <tr><td>福井銀行</td><td>福井県</td><td>福井ネット（代金回収）あるが経理BPOは未展開</td></tr>
+    <tr><td>大垣共立銀行</td><td>岐阜県</td><td>共立コンピューターサービス（IT・決済）</td></tr>
+    <tr><td>静岡銀行</td><td>静岡県</td><td>静銀ビジネスクリエイト+静銀総合サービスは内部向け</td></tr>
+    <tr><td>三十三銀行</td><td>三重県</td><td>ビジネスサービス子会社は内部向け</td></tr>
+    <tr><td>滋賀銀行</td><td>滋賀県</td><td>しがぎんビジネスサービスは内部向け</td></tr>
+    <tr><td>鳥取銀行</td><td>鳥取県</td><td>BPO子会社2014年解散済み</td></tr>
+    <tr><td>山陰合同銀行</td><td>島根県</td><td>旧山陰オフィスサービスは統合済みの可能性</td></tr>
+    <tr><td>阿波銀行</td><td>徳島県</td><td>OBC提携でDXツール導入支援のみ</td></tr>
+    <tr><td>百十四銀行</td><td>香川県</td><td>百十四システムサービスが外部向けICT一部実施</td></tr>
+    <tr><td>四国銀行</td><td>高知県</td><td>MF Mikatano導入支援のみ</td></tr>
+    <tr><td>徳島大正銀行</td><td>徳島県</td><td>DX支援7社提携だがBPO事業者は含まれず</td></tr>
+    <tr><td>トマト銀行</td><td>岡山県</td><td>トマトビジネスは内部向け</td></tr>
+    <tr><td>西京銀行</td><td>山口県</td><td>DXコンサルのみ</td></tr>
+    <tr><td>西日本シティ銀行</td><td>福岡県</td><td>BPO専門子会社なし</td></tr>
+    <tr><td>大分銀行</td><td>大分県</td><td>大銀オフィスサービスは外部積極展開なし</td></tr>
+    <tr><td>宮崎銀行</td><td>宮崎県</td><td>宮銀デジタルソリューションズはIT主体</td></tr>
+    <tr><td>福岡中央銀行</td><td>福岡県</td><td>FFGグループDXコンサル活用</td></tr>
+    <tr><td>熊本銀行</td><td>熊本県</td><td>FFGグループ。旧BPO子会社は解散</td></tr>
   </tbody>
 </table>
+
+<h3 class="subsection-title">確度D（29行）— 該当なし</h3>
+<p>以下の銀行では、BPO関連の子会社・サービスが確認できなかった。グループ会社はリース・カード・保証・証券等の金融関連のみ。</p>
+<table>
+  <thead><tr><th>地域</th><th>銀行名</th></tr></thead>
+  <tbody>
+    <tr><td>東北</td><td>岩手銀行、大東銀行</td></tr>
+    <tr><td>関東</td><td>千葉興業銀行、京葉銀行、足利銀行、東和銀行、東日本銀行、東京スター銀行、神奈川銀行</td></tr>
+    <tr><td>中部</td><td>富山銀行、十六銀行、清水銀行、大光銀行、静岡中央銀行</td></tr>
+    <tr><td>近畿</td><td>関西みらい銀行、但馬銀行、みなと銀行</td></tr>
+    <tr><td>中四国</td><td>島根銀行、香川銀行、愛媛銀行、高知銀行</td></tr>
+    <tr><td>九州沖縄</td><td>筑邦銀行、北九州銀行、長崎銀行、豊和銀行、宮崎太陽銀行、南日本銀行</td></tr>
+  </tbody>
+</table>
+
+<h3 class="subsection-title">確度E（4行）— 規模的にBPO展開の可能性が極めて低い</h3>
+<p>東北銀行（従業員565名）、福邦銀行（2026年5月福井銀行に吸収合併予定）、佐賀共栄銀行（国内最小規模）、沖縄海邦銀行は確度Eだが共同BPOの動きありBに格上げ済み。</p>
 
 <!-- ===== 5. 営業ターゲット ===== -->
 <h2 class="section-title" id="targets">5. 営業ターゲットリスト</h2>
 
-<h3 class="subsection-title">営業アプローチの2軸</h3>
+<h3 class="subsection-title">Tier 1: 最優先（協業提案先）</h3>
 <table>
-  <thead><tr><th>アプローチ</th><th>対象</th><th>提案内容</th></tr></thead>
+  <thead><tr><th>#</th><th>金融機関</th><th>所在地</th><th>営業ポイント</th></tr></thead>
   <tbody>
-    <tr><td><strong>競合/協業型</strong></td><td>既にBPO事業を展開している地銀</td><td>BPO専門企業としての協業・ホワイトラベル提供・ノウハウ共有</td></tr>
-    <tr><td><strong>チャネル開拓型</strong></td><td>BPO未展開の地銀</td><td>ビジネスマッチング先としてBPOサービスを紹介してもらう提携</td></tr>
+    <tr><td>1</td><td><strong>北國銀行</strong></td><td>石川県</td><td>セブンリッチがCCIForwardに14%出資済み。連携深化・横展開の余地大</td></tr>
+    <tr><td>2</td><td><strong>七十七銀行</strong></td><td>宮城県</td><td>七十七ビジネスウィズが外部展開フェーズに入る直前。パートナー提案の好機</td></tr>
+    <tr><td>3</td><td><strong>中国銀行</strong></td><td>岡山県</td><td>BPO事業化進行中。SSC→外部受託拡大のロードマップ上で外部専門パートナーを求める段階</td></tr>
+    <tr><td>4</td><td><strong>群馬銀行</strong></td><td>群馬県</td><td>頭取がBPO参入を公言。まだ体制構築段階でパートナー選定フェーズの可能性</td></tr>
+    <tr><td>5</td><td><strong>京都銀行</strong></td><td>京都府</td><td>SeamlessLink（2026年5月開始予定）のBPOレイヤーとして組み込まれる余地</td></tr>
   </tbody>
 </table>
 
-<h3 class="subsection-title">Tier 1: 最優先ターゲット（BPO展開済み — 協業提案先）</h3>
+<h3 class="subsection-title">Tier 2: 有力（提携提案先）</h3>
 <table>
-  <thead><tr><th>#</th><th>金融機関</th><th>所在地</th><th>BPO子会社/事業体</th><th>営業ポイント</th></tr></thead>
+  <thead><tr><th>#</th><th>金融機関</th><th>所在地</th><th>営業ポイント</th></tr></thead>
   <tbody>
-    <tr><td>1</td><td><strong>北國銀行</strong></td><td>石川県金沢市</td><td>CCIForward</td><td>自社グループが既に関与。連携深化・横展開の余地大</td></tr>
-    <tr><td>2</td><td><strong>広島銀行</strong></td><td>広島県広島市</td><td>ひろぎんITソリューションズ</td><td>約30社の顧客基盤。専門BPOとの連携ニーズあり</td></tr>
-    <tr><td>3</td><td><strong>七十七銀行</strong></td><td>宮城県仙台市</td><td>七十七ビジネスウィズ</td><td>設立直後。パートナー提案の好機</td></tr>
-    <tr><td>4</td><td><strong>中国銀行</strong></td><td>岡山県岡山市</td><td>Cキューブ・コンサルティング</td><td>BPO事業化進行中。外部専門パートナーを求める可能性</td></tr>
-    <tr><td>5</td><td><strong>肥後銀行</strong></td><td>熊本県熊本市</td><td>肥銀オフィスビジネス他3社</td><td>最も成熟した体制。補完領域での協業余地</td></tr>
+    <tr><td>6</td><td><strong>広島銀行</strong></td><td>広島県</td><td>約30社のBPO顧客基盤。専門BPOとの連携で対応範囲拡大のニーズあり</td></tr>
+    <tr><td>7</td><td><strong>伊予銀行</strong></td><td>愛媛県</td><td>いよぎんDS（BPO明示、1,787件実績）との協業。四国エリアの開拓</td></tr>
+    <tr><td>8</td><td><strong>あいち銀行</strong></td><td>愛知県</td><td>バックオフィス診断→専門家紹介モデル。BPO事業者として紹介リストに入る提案</td></tr>
+    <tr><td>9</td><td><strong>北洋銀行</strong></td><td>北海道</td><td>HKPが経理BPOを既に提供。26,000社の取引先ネットワーク活用の提携余地</td></tr>
+    <tr><td>10</td><td><strong>千葉銀行</strong></td><td>千葉県</td><td>ちばぎんキャリアサービス（2001年〜）との競合/協業分析。TSUBASAアライアンス11行への波及効果</td></tr>
   </tbody>
 </table>
 
-<h3 class="subsection-title">Tier 2: 有力ターゲット（提携提案先）</h3>
-<table>
-  <thead><tr><th>#</th><th>金融機関</th><th>所在地</th><th>現状の取組</th><th>営業ポイント</th></tr></thead>
-  <tbody>
-    <tr><td>6</td><td><strong>ふくおかFG</strong></td><td>福岡県福岡市</td><td>DXコンサル40名体制</td><td>400件超の顧客基盤にBPOを提案可能</td></tr>
-    <tr><td>7</td><td><strong>池田泉州HD</strong></td><td>大阪府大阪市</td><td>池田泉州ビジネスサービス</td><td>補完的提携の可能性</td></tr>
-    <tr><td>8</td><td><strong>横浜銀行</strong></td><td>神奈川県横浜市</td><td>BPO企業とビジネスマッチング</td><td>首都圏最大の地銀。マッチング先として登録提案</td></tr>
-    <tr><td>9</td><td><strong>常陽銀行</strong></td><td>茨城県水戸市</td><td>DXコンサルティング</td><td>DX支援の次のステップとしてBPO紹介は自然な流れ</td></tr>
-    <tr><td>10</td><td><strong>滋賀銀行</strong></td><td>滋賀県大津市</td><td>しがぎんビジネスサービス</td><td>グループ内BPO体制あり。外部展開の拡張余地</td></tr>
-  </tbody>
-</table>
-
-<h3 class="subsection-title">Tier 3: ポテンシャルターゲット（チャネル開拓先）</h3>
+<h3 class="subsection-title">Tier 3: チャネル開拓先</h3>
+<p>BPO未展開で、ビジネスマッチング先としてセブンリッチBPOを取引先に紹介してもらう提携モデルが有効な先。</p>
 <table>
   <thead><tr><th>#</th><th>金融機関</th><th>所在地</th><th>選定理由</th></tr></thead>
   <tbody>
-    <tr><td>11</td><td><strong>千葉銀行</strong></td><td>千葉県千葉市</td><td>TSUBASAアライアンス中核。法人取引基盤が厚い</td></tr>
-    <tr><td>12</td><td><strong>静岡銀行</strong></td><td>静岡県静岡市</td><td>静岡県最大手。法人DXポータル展開済み</td></tr>
-    <tr><td>13</td><td><strong>京都銀行</strong></td><td>京都府京都市</td><td>関西圏大手。中小企業取引が多い</td></tr>
-    <tr><td>14</td><td><strong>群馬銀行</strong></td><td>群馬県前橋市</td><td>ぐんぎんビジネスポータル展開済み</td></tr>
-    <tr><td>15</td><td><strong>西日本シティ銀行</strong></td><td>福岡県福岡市</td><td>NCBビジネスステーション12,000社超</td></tr>
-    <tr><td>16</td><td><strong>第四北越銀行</strong></td><td>新潟県新潟市</td><td>新潟県最大手。中小企業基盤</td></tr>
-    <tr><td>17</td><td><strong>北洋銀行</strong></td><td>北海道札幌市</td><td>北海道最大の第二地銀。法人基盤厚い</td></tr>
-    <tr><td>18</td><td><strong>伊予銀行</strong></td><td>愛媛県松山市</td><td>BPR先進事例。DX意識が高い</td></tr>
-    <tr><td>19</td><td><strong>紀陽銀行</strong></td><td>和歌山県和歌山市</td><td>クラウド移行済み。DX推進意欲あり</td></tr>
-    <tr><td>20</td><td><strong>南都銀行</strong></td><td>奈良県奈良市</td><td>非金融サービス展開中</td></tr>
-  </tbody>
-</table>
-
-<h3 class="subsection-title">Tier 4: 信金チャネル（中長期検討）</h3>
-<table>
-  <thead><tr><th>#</th><th>対象</th><th>営業ポイント</th></tr></thead>
-  <tbody>
-    <tr><td>21</td><td><strong>信金中央金庫「ケイエール」</strong></td><td>全国254信金のプラットフォーム。ここに入れば一気に全国展開可能</td></tr>
-    <tr><td>22</td><td><strong>京都中央信用金庫</strong></td><td>預金量トップの信金。京都エリアの中小企業基盤</td></tr>
-    <tr><td>23</td><td><strong>城南信用金庫</strong></td><td>東京南部エリア。中小企業支援に積極的</td></tr>
-    <tr><td>24</td><td><strong>岡崎信用金庫</strong></td><td>愛知県。製造業中小企業が多いエリア</td></tr>
-    <tr><td>25</td><td><strong>多摩信用金庫</strong></td><td>東京多摩エリア。ビジネスマッチングに積極的</td></tr>
+    <tr><td>11</td><td>静岡銀行</td><td>静岡県</td><td>静銀ビジネスクリエイト+静銀総合サービスの外部展開の素地あり</td></tr>
+    <tr><td>12</td><td>常陽銀行</td><td>茨城県</td><td>常陽コンピューターサービス450社の給与計算代行実績。北関東エリアの入口</td></tr>
+    <tr><td>13</td><td>南都銀行</td><td>奈良県</td><td>80社の給与計算受託+MF×IBM連携の法人DXサービス（2027年秋開始予定）</td></tr>
+    <tr><td>14</td><td>西日本シティ銀行</td><td>福岡県</td><td>NCBビジネスステーション12,000社超の法人基盤</td></tr>
+    <tr><td>15</td><td>横浜銀行</td><td>神奈川県</td><td>首都圏最大の地銀。TOKIUM等とのビジネスマッチング実績</td></tr>
   </tbody>
 </table>
 
@@ -532,68 +438,29 @@ ul li, ol li { margin-bottom: 3px; }
 <h2 class="section-title" id="strategy">6. 戦略的示唆</h2>
 
 <h3 class="subsection-title">6-1. 北國銀行の成功事例を横展開</h3>
-<p>CCIForwardは既にセブンリッチが関与しているJV。この実績を「北國銀行グループとの実績」としてレファレンスに活用し、他行に提案するストーリーが最も説得力がある。</p>
-<ul>
-  <li>七十七銀行（2024年設立直後）やちゅうぎんFG（事業化途中）は特に好機</li>
-  <li>「銀行グループの信頼性 × BPO専門企業の専門性」という協業モデルを型化する</li>
-</ul>
+<p>CCIForwardはセブンリッチが14%出資するJV。この実績を他行に提案する際の最大の武器となる。特に七十七銀行（設立直後）・中国銀行（事業化途中）・群馬銀行（参入公言）は、外部パートナーを求めている段階にある。</p>
 
-<h3 class="subsection-title">6-2. ビジネスマッチング型が最も量産しやすい</h3>
-<p>大半の地銀はBPOを自社提供するリソースを持たない。「銀行の取引先企業にBPOサービスを紹介してもらう」提携モデルが現実的かつスケーラブル。</p>
-<div class="highlight-box">
-  <strong>参考モデル:</strong> 横浜銀行 × TOKIUM（支出管理クラウド）のビジネスマッチング契約。銀行が取引先に経理BPOサービスを紹介する仕組み。
-</div>
+<h3 class="subsection-title">6-2. 地銀BPOの3形態と攻め方</h3>
+<table>
+  <thead><tr><th>形態</th><th>該当行（主な例）</th><th>セブンリッチの攻め方</th></tr></thead>
+  <tbody>
+    <tr><td><strong>自社提供型</strong></td><td>北國・広島・七十七・肥後・中国</td><td>協業パートナー・ホワイトラベル提供</td></tr>
+    <tr><td><strong>ビジネスマッチング型</strong></td><td>横浜・京都・あいち</td><td>紹介先BPO事業者としてリスト登録</td></tr>
+    <tr><td><strong>内部集中型</strong></td><td>滋賀・ほくほくFG・大分</td><td>取引先企業への紹介チャネルとして関係構築</td></tr>
+  </tbody>
+</table>
 
 <h3 class="subsection-title">6-3. SMBC×freee「インクループ」への先手</h3>
-<p>2024年8月設立のインクループ（プラリタウン85% + freee15%）は、SaaS導入支援・BPRコンサル・BPO（経理・人事労務）を提供し、全国の地域金融機関との提携を計画中。先行してポジションを確保する必要がある。</p>
+<p>インクループ（プラリタウン85% + freee15%、2024年8月設立）は地域金融機関チャネルでのBPO全国展開を計画中。先行してポジションを確保する必要がある。</p>
 
-<h3 class="subsection-title">6-4. 地銀BPOの弱点 = 専門BPO会社の強み</h3>
-<ul>
-  <li>地銀系BPOの強み: 既存取引関係に基づく信頼性、地域密着、機密情報管理能力</li>
-  <li>地銀系BPOの弱み: 対象業務の範囲が限定的、経理・労務の専門性不足、スケーラビリティの欠如</li>
-  <li>ひろぎんITソリューションズの顧客数「約30社」が示す通り、まだ市場参入初期段階</li>
-  <li>BPO専門会社として<strong>専門性・対応範囲・スケーラビリティ</strong>で差別化可能</li>
-</ul>
-
-<h3 class="subsection-title">6-5. 制度的背景</h3>
+<h3 class="subsection-title">6-4. 改正銀行法（2021年）の追い風</h3>
 <div class="info-box">
-  <strong>改正銀行法（2021年11月施行）:</strong> 銀行グループの業務範囲規制・出資規制が大幅緩和。「銀行業の経営資源を活用するデジタル化業務」が銀行本体でも可能に。これを受け人材紹介・コンサル・地域商社・BPO子会社の設立が加速している。
+  銀行グループの業務範囲規制・出資規制が大幅緩和され、「銀行業の経営資源を活用するデジタル化業務」が銀行本体でも可能に。紀陽情報システム・ナイス（名古屋銀行）・東邦ITヒューマンソリューションズ等が「銀行業高度化等会社」の認可を取得してBPO的事業を展開し始めている。
 </div>
 
-<!-- ===== 7. 出典 ===== -->
-<h2 class="section-title" id="sources">7. 主要出典</h2>
-
-<h4>確度A: BPO展開済み</h4>
-<ul>
-  <li>PR TIMES — CCIForward設立プレスリリース</li>
-  <li>セブンリッチ note — 北國銀行スタートアップ支援</li>
-  <li>北國新聞 — CCIグループ戦略</li>
-  <li>ひろぎんITソリューションズ — BPOサービスページ</li>
-  <li>Sansan — 広島銀行Bill Oneパートナー契約プレスリリース（2025年1月）</li>
-  <li>日経 — 七十七ビジネスウィズ開業記事</li>
-  <li>七十七銀行 — プレスリリースPDF</li>
-  <li>七十七ビジネスウィズ — 公式サイト</li>
-  <li>AXIS Insights — ちゅうぎんFG BPOインタビュー</li>
-  <li>賢者の選択サクセッション — ちゅうぎんFG戦略記事</li>
-  <li>肥銀オフィスビジネス — 公式サイト</li>
-  <li>九州デジタルソリューションズ — 肥後銀行ページ</li>
-  <li>池田泉州ホールディングス — グループ企業一覧</li>
-  <li>福岡銀行 — DX支援ページ</li>
-</ul>
-
-<h4>業界動向・制度</h4>
-<ul>
-  <li>経産省 — DX支援ガイダンス（NTTデータ経営研究所資料）</li>
-  <li>日本総研 — 地方銀行を取り巻くビジネス環境と成長戦略</li>
-  <li>freee — インクループ設立プレスリリース（2024年8月）</li>
-  <li>NEC — しんきん情報サービスとのBPOサービス提供</li>
-  <li>全国地方銀行協会 — 会員一覧</li>
-  <li>第二地方銀行協会 — 加盟行一覧</li>
-</ul>
-
 <div class="report-footer">
-  地方銀行BPOサービス調査レポート v1.0 / BPIO<br>
-  調査日: 2026年3月26日 / 最終更新: 2026年3月26日
+  地方銀行BPOサービス調査レポート v2.0 / BPIO<br>
+  調査対象: 96行（地銀61 + 第二地銀35）全数精査 / 調査日: 2026年3月26日
 </div>
 
 </div>
