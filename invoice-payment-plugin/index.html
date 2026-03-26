@@ -182,7 +182,12 @@ td { padding: 10px 14px; border: 1px solid #e0e0e0; vertical-align: top; }
   <li><strong>Claude Code</strong> がインストール済みであること</li>
   <li><strong>Python 3.10+</strong>（PDF読取に使用）</li>
   <li><strong>Node.js 18+</strong></li>
+  <li><strong>kosukehoriebpio GitHub Organization のメンバー</strong>であること</li>
 </ul>
+
+<div class="highlight-box">
+  <strong>セキュリティ:</strong> プラグインとリファレンスはGitHub private リポジトリで管理されています。Organization メンバーのみがアクセスできます。GitHub CLI の認証がまだの場合は <code>gh auth login</code> を先に実行してください。
+</div>
 
 <h3>Step 1: プラグインのインストール</h3>
 <p>ターミナルで以下を実行します:</p>
@@ -394,7 +399,10 @@ git push</code></pre>
 <div class="section-label" id="faq">FAQ</div>
 
 <h3>Q: プラグインを使うのに特別な権限は必要？</h3>
-<p>Claude Code が使えれば追加権限は不要です。Drive/Gmail自動収集を使う場合は Google API の認証が必要ですが、手動配置なら設定ゼロで使えます。</p>
+<p>kosukehoriebpio GitHub Organization のメンバーであれば使えます。追加のパスワードやキーは不要です。<code>gh auth login</code> でGitHubにログインしていれば、初回実行時に自動でセットアップされます。Drive/Gmail自動収集を使う場合のみ Google API の認証が別途必要です。</p>
+
+<h3>Q: 社外の人がプラグインを使えてしまう？</h3>
+<p>使えません。プラグイン本体もクライアントデータ（リファレンス）も GitHub private リポジトリで管理されており、Organization メンバー以外はアクセスできません。退職等でOrgから外されると即座にアクセス不可になります。</p>
 
 <h3>Q: 新しいクライアントを追加するには？</h3>
 <p><code>/invoice-payment 新しいslug</code> で実行すると、テンプレートからリファレンスを作成するか聞かれます。作成後にリファレンスリポにプッシュすれば全社員に反映されます。</p>
