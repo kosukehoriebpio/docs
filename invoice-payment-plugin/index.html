@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>請求書振込業務プラグイン — BPIO</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color: #1a1a1a; background: #fff; line-height: 1.7; min-height: 100vh;
+}
+
+#sticky-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.97); border-bottom: 1px solid #ccc;
+  padding: 12px 20px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+#sticky-nav .nav-label {
+  font-size: 0.72rem; font-weight: 700; color: #777;
+  letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+}
+.pill {
+  display: inline-block; padding: 5px 16px; font-size: 0.78rem; font-weight: 600;
+  color: #555; text-decoration: none; border: 1px solid #ccc;
+  border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+}
+.pill:hover, .pill.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+.page-header {
+  border-bottom: 2px solid #1a1a1a; padding: 40px 48px 20px;
+  max-width: 920px; margin: 0 auto;
+}
+.page-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+.page-header .subtitle { font-size: 0.9rem; color: #555; }
+
+#main { max-width: 920px; margin: 0 auto; padding: 32px 48px 80px; }
+
+.section-label {
+  font-size: 0.72rem; font-weight: 700; color: #777;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  margin-bottom: 12px; margin-top: 48px; padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+.section-label:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+
+h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 16px; }
+h3 { font-size: 1.0rem; font-weight: 700; margin: 24px 0 12px; }
+p { margin-bottom: 12px; }
+ul, ol { margin: 0 0 16px 24px; }
+li { margin-bottom: 6px; }
+
+code {
+  background: #f4f4f4; padding: 2px 8px; border-radius: 4px;
+  font-size: 0.85rem; font-family: 'JetBrains Mono', 'Menlo', monospace;
+}
+pre {
+  background: #1a1a1a; color: #e0e0e0; padding: 16px 20px;
+  border-radius: 8px; overflow-x: auto; margin: 12px 0 20px;
+  font-size: 0.82rem; line-height: 1.5;
+  font-family: 'JetBrains Mono', 'Menlo', monospace;
+}
+pre code { background: none; padding: 0; color: inherit; }
+
+.card-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px; margin: 16px 0;
+}
+.card {
+  border: 1px solid #e0e0e0; border-radius: 10px; padding: 20px;
+  background: #fafafa;
+}
+.card-num { font-size: 2rem; font-weight: 700; color: #ccc; margin-bottom: 8px; }
+.card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+.card p { font-size: 0.82rem; color: #555; margin-bottom: 0; }
+
+.highlight-box {
+  background: #fff8e1; border: 1px solid #ffe082; border-radius: 8px;
+  padding: 16px 20px; margin: 16px 0;
+}
+.highlight-box.red { background: #fef2f2; border-color: #fca5a5; }
+.highlight-box.green { background: #f0fdf4; border-color: #86efac; }
+.highlight-box.blue { background: #eff6ff; border-color: #93c5fd; }
+.highlight-box strong { font-weight: 700; }
+
+table {
+  width: 100%; border-collapse: collapse; margin: 12px 0 20px;
+  font-size: 0.85rem;
+}
+th { background: #f4f4f4; font-weight: 700; text-align: left; padding: 10px 14px; border: 1px solid #e0e0e0; }
+td { padding: 10px 14px; border: 1px solid #e0e0e0; vertical-align: top; }
+
+.step-flow {
+  display: flex; flex-direction: column; gap: 0; margin: 20px 0;
+}
+.step-item {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 16px 0; border-bottom: 1px solid #eee;
+}
+.step-item:last-child { border-bottom: none; }
+.step-num-circle {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #1a1a1a; color: #fff; font-weight: 700; font-size: 0.9rem;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.step-num-circle.manual { background: #dc2626; }
+.step-content { flex: 1; }
+.step-content h4 { font-size: 0.95rem; margin-bottom: 4px; }
+.step-content p { font-size: 0.82rem; color: #555; margin-bottom: 0; }
+
+.footer {
+  max-width: 920px; margin: 0 auto; padding: 24px 48px;
+  border-top: 1px solid #e0e0e0; font-size: 0.75rem; color: #999;
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav id="sticky-nav">
+  <span class="nav-label">Invoice Payment Plugin</span>
+  <a href="#overview" class="pill">概要</a>
+  <a href="#install" class="pill">導入手順</a>
+  <a href="#usage" class="pill">使い方</a>
+  <a href="#flow" class="pill">処理フロー</a>
+  <a href="#tools" class="pill">対応ツール</a>
+  <a href="#reference" class="pill">リファレンス</a>
+  <a href="#faq" class="pill">FAQ</a>
+</nav>
+
+<!-- Header -->
+<header class="page-header">
+  <h1>請求書振込業務プラグイン</h1>
+  <p class="subtitle">経理BPOの請求書→振込業務を標準化・自動化する Claude Code プラグイン</p>
+</header>
+
+<div id="main">
+
+<!-- ==================== OVERVIEW ==================== -->
+<div class="section-label" id="overview">概要</div>
+
+<h2>何ができるか</h2>
+
+<p>
+  <code>/invoice-payment {クライアント名}</code> の1コマンドで、請求書の収集から振込データ作成、消込確認まで6ステップを一気通貫で実行します。
+  クライアントごとの業務ルール差分は「リファレンスファイル」で吸収するため、どのクライアントでも同じコマンドで動きます。
+</p>
+
+<div class="card-grid">
+  <div class="card">
+    <div class="card-num">129</div>
+    <h4>クライアント対応</h4>
+    <p>Notion顧客マニュアルDBから自動生成されたリファレンスで129社をカバー</p>
+  </div>
+  <div class="card">
+    <div class="card-num">9</div>
+    <h4>会計ツール対応</h4>
+    <p>バクラク / MF債務支払 / freee / MF会計 / 弥生 / 奉行 / ICS / TKC / PCA</p>
+  </div>
+  <div class="card">
+    <div class="card-num">4</div>
+    <h4>収集ソース</h4>
+    <p>Google Drive / Gmail / バクラクAPI / 手動配置の4つから自動判定</p>
+  </div>
+</div>
+
+<div class="highlight-box red">
+  <strong>銀行IB操作は絶対に自動化しません。</strong>
+  振込の最終実行は必ず人間がインターネットバンキングで行います。
+  プラグインが行うのは「振込データ（FBファイル）の作成」と「操作手順の案内」までです。
+</div>
+
+<!-- ==================== INSTALL ==================== -->
+<div class="section-label" id="install">導入手順</div>
+
+<h2>インストール（初回のみ、3分）</h2>
+
+<h3>前提条件</h3>
+<ul>
+  <li><strong>Claude Code</strong> がインストール済みであること</li>
+  <li><strong>Python 3.10+</strong>（PDF読取に使用）</li>
+  <li><strong>Node.js 18+</strong></li>
+</ul>
+
+<h3>Step 1: プラグインのインストール</h3>
+<p>ターミナルで以下を実行します:</p>
+<pre><code>/plugin install invoice-payment@kosukehoriebpio</code></pre>
+<p>自動的に以下がセットアップされます:</p>
+<ul>
+  <li>プラグイン本体（スクリプト5本 + SKILL.md）</li>
+  <li>銀行コードマスタ（<code>bank-codes.json</code>）</li>
+</ul>
+
+<h3>Step 2: Python依存パッケージのインストール</h3>
+<pre><code>pip install pdfplumber</code></pre>
+
+<h3>Step 3: 初回実行で自動セットアップ</h3>
+<p>初回の <code>/invoice-payment</code> 実行時に、129社分のリファレンスが自動でダウンロードされます（<code>git clone</code>）。以降は毎回自動 pull で最新版が取得されます。</p>
+
+<div class="highlight-box green">
+  <strong>これだけで使えます。</strong> 特別な設定やAPIキーは不要です（Drive/Gmail自動収集やバクラクAPI連携を使う場合のみ追加設定が必要）。
+</div>
+
+<!-- ==================== USAGE ==================== -->
+<div class="section-label" id="usage">使い方</div>
+
+<h2>基本コマンド</h2>
+
+<pre><code># 全ステップ通し実行（最も一般的）
+/invoice-payment ship
+
+# 特定ステップのみ実行
+/invoice-payment ship collect    # Step 1: 収集のみ
+/invoice-payment ship check      # Step 3: チェックのみ
+/invoice-payment ship pay        # Step 4: 振込データ作成のみ</code></pre>
+
+<h3>クライアント名の指定</h3>
+<p>リファレンスファイルのファイル名（slug）で指定します。会社名のうち「株式会社」等を除いた部分です。</p>
+
+<table>
+  <tr><th>会社名</th><th>コマンド</th></tr>
+  <tr><td>株式会社SHIP</td><td><code>/invoice-payment ship</code></td></tr>
+  <tr><td>BIRD INITIATIVE株式会社</td><td><code>/invoice-payment bird-initiative</code></td></tr>
+  <tr><td>株式会社マル勝高田商店</td><td><code>/invoice-payment マル勝高田商店</code></td></tr>
+  <tr><td>株式会社Timewitch</td><td><code>/invoice-payment timewitch</code></td></tr>
+</table>
+
+<p>slug がわからない場合は <code>/invoice-payment</code>（引数なし）で実行すると、対話的にクライアントを選択できます。</p>
+
+<h2>実行の流れ</h2>
+
+<p>コマンドを実行すると、Claude が各ステップを順番に進めます。途中でユーザーへの確認が入るポイントが3箇所あります:</p>
+
+<ol>
+  <li><strong>Step 3 後</strong> — チェック結果の確認（NGがあれば除外するか判断）</li>
+  <li><strong>Step 4 後</strong> — 振込サマリの確認（金額・件数の最終確認）</li>
+  <li><strong>Step 5</strong> — 銀行IBでの振込実行（手動操作 → 完了報告）</li>
+</ol>
+
+<div class="highlight-box blue">
+  <strong>リファレンスに情報が足りなくても止まりません。</strong>
+  不足している情報（振込元口座、定期取引先リストなど）はその場で質問されます。わからなければ「わからない」と答えれば手動フォールバックに切り替わります。
+</div>
+
+<!-- ==================== FLOW ==================== -->
+<div class="section-label" id="flow">処理フロー</div>
+
+<h2>6ステップの流れ</h2>
+
+<div class="step-flow">
+  <div class="step-item">
+    <div class="step-num-circle">0</div>
+    <div class="step-content">
+      <h4>初期化</h4>
+      <p>リファレンスリポの同期（自動pull）→ クライアントリファレンスの読み込み → 作業ディレクトリ作成</p>
+    </div>
+  </div>
+  <div class="step-item">
+    <div class="step-num-circle">1</div>
+    <div class="step-content">
+      <h4>請求書収集 <code>collect.ts</code></h4>
+      <p>
+        リファレンスの設定に基づき、Google Drive / Gmail / バクラクAPI / 手動配置 の4ソースから請求書PDFを収集。
+        収集されたファイルの一覧が <code>_manifest.json</code> に記録されます。
+      </p>
+    </div>
+  </div>
+  <div class="step-item">
+    <div class="step-num-circle">2</div>
+    <div class="step-content">
+      <h4>請求書読取・データ化 <code>extract.py</code></h4>
+      <p>
+        PDFのテキストレイヤーから金額・口座・日付等を構造パース（pdfplumber）。
+        テキストが取れない画像PDFのみ Claude Vision でフォールバック読取。
+        取引先名 / 金額 / 税額 / 振込先口座 / 明細行 / 登録番号を抽出。
+      </p>
+    </div>
+  </div>
+  <div class="step-item">
+    <div class="step-num-circle">3</div>
+    <div class="step-content">
+      <h4>内容チェック <code>check.ts</code></h4>
+      <p>
+        6項目を自動チェック: 二重請求検出 / 金額妥当性 / 取引先マスタ照合 / 支払期日 / 高額アラート / 源泉徴収。
+        結果は OK / WARN / NG で分類され、NGは除外を提案。
+      </p>
+    </div>
+  </div>
+  <div class="step-item">
+    <div class="step-num-circle">4</div>
+    <div class="step-content">
+      <h4>振込データ作成 <code>generate-fb.ts</code></h4>
+      <p>
+        全銀協FBフォーマットの振込ファイルを生成。振込サマリ（Markdown）も出力。
+        会計ツール別の連携手順（バクラク / MF / freee 等）も自動案内。
+        <strong>生成されたFBファイルのフルパスが画面に表示されます。</strong>
+      </p>
+    </div>
+  </div>
+  <div class="step-item">
+    <div class="step-num-circle manual">5</div>
+    <div class="step-content">
+      <h4>振込実行（手動）</h4>
+      <p>
+        <strong>銀行IBの操作は必ず人間が行います。</strong>
+        Claude は IB の種類と操作手順を案内し、FBファイルのパスと金額を提示します。完了報告を待ちます。
+      </p>
+    </div>
+  </div>
+  <div class="step-item">
+    <div class="step-num-circle">6</div>
+    <div class="step-content">
+      <h4>消込確認 <code>reconcile.ts</code></h4>
+      <p>
+        振込結果と請求データを突合し、消込OK / 未消込 / 不一致を検出。
+        取引先名のファジーマッチ（カナ⇔漢字）に対応。
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TOOLS ==================== -->
+<div class="section-label" id="tools">対応ツール</div>
+
+<h2>会計ツール別の対応状況</h2>
+
+<table>
+  <tr><th>ツール</th><th>API連携</th><th>利用クライアント数</th><th>Step 4 での処理</th></tr>
+  <tr><td><strong>バクラク</strong></td><td>実装済み</td><td>43社</td><td>支払申請を自動作成</td></tr>
+  <tr><td>MF債務支払</td><td>手動</td><td>10社</td><td>操作手順を案内</td></tr>
+  <tr><td>freee</td><td>将来対応</td><td>1社</td><td>操作手順を案内</td></tr>
+  <tr><td>MF会計</td><td>CSV</td><td>3社</td><td>CSVインポート手順を案内</td></tr>
+  <tr><td>弥生</td><td>手動</td><td>2社</td><td>操作手順を案内</td></tr>
+  <tr><td>奉行</td><td>手動</td><td>1社</td><td>操作手順を案内</td></tr>
+  <tr><td>ICS / TKC / PCA</td><td>手動</td><td>各社</td><td>操作手順を案内</td></tr>
+</table>
+
+<p>API未対応のツールでも、FBファイルは共通で生成されます。銀行IBへのアップロードは全ツール共通の手順です。</p>
+
+<h2>請求書収集ソース</h2>
+
+<table>
+  <tr><th>ソース</th><th>設定</th><th>動作</th></tr>
+  <tr><td><strong>Google Drive</strong></td><td>リファレンスにフォルダIDを記載</td><td>Drive APIで自動ダウンロード。月次サブフォルダも検出</td></tr>
+  <tr><td><strong>Gmail</strong></td><td>リファレンスにメールアドレスを記載</td><td>対象期間の添付PDF付きメールを検索・取得</td></tr>
+  <tr><td><strong>バクラク</strong></td><td>環境変数 <code>BAKURAKU_TOKEN</code></td><td>「処理中」の請求書をAPI取得</td></tr>
+  <tr><td><strong>手動</strong></td><td>設定不要</td><td>指定フォルダにPDFを配置 → スキャン</td></tr>
+</table>
+
+<!-- ==================== REFERENCE ==================== -->
+<div class="section-label" id="reference">リファレンス</div>
+
+<h2>リファレンスファイルとは</h2>
+
+<p>
+  各クライアントの業務ルール（どの会計ツールを使うか、振込元口座はどこか、定期取引先は誰か等）を記録したMarkdownファイルです。
+  129社分が自動生成済みで、<code>.invoice-payment-references/</code> に格納されています。
+</p>
+
+<h3>構成（7セクション）</h3>
+
+<table>
+  <tr><th>セクション</th><th>内容</th><th>自動抽出</th></tr>
+  <tr><td>0. 会計ツール</td><td>使用ツール名、API可否</td><td>済</td></tr>
+  <tr><td>1. 請求書収集</td><td>収集方法、DriveフォルダID</td><td>一部</td></tr>
+  <tr><td>2. 読取ヒント</td><td>既知取引先のフォーマット特徴</td><td>-</td></tr>
+  <tr><td>3. チェックルール</td><td>定期取引先リスト、閾値</td><td>-</td></tr>
+  <tr><td>4. 振込データ</td><td>振込元口座、支払サイクル</td><td>一部</td></tr>
+  <tr><td>5. 振込実行</td><td>IB種類、承認フロー</td><td>一部</td></tr>
+  <tr><td>6. 消込確認</td><td>消込方法</td><td>-</td></tr>
+</table>
+
+<div class="highlight-box">
+  <strong>リファレンスの補完は任意です。</strong>
+  空欄のままでもプラグインは動作します（実行時に質問されるか、手動フォールバック）。ただし、定期取引先リストや振込元口座を埋めるほどチェック精度が上がります。
+</div>
+
+<h3>リファレンスの編集方法</h3>
+
+<pre><code># リファレンスリポを開く
+cd .invoice-payment-references/
+
+# SHIPのリファレンスを編集
+code ship.md
+
+# 編集後、コミット & プッシュで全社員に反映
+git add ship.md
+git commit -m "update ship reference"
+git push</code></pre>
+
+<!-- ==================== FAQ ==================== -->
+<div class="section-label" id="faq">FAQ</div>
+
+<h3>Q: プラグインを使うのに特別な権限は必要？</h3>
+<p>Claude Code が使えれば追加権限は不要です。Drive/Gmail自動収集を使う場合は Google API の認証が必要ですが、手動配置なら設定ゼロで使えます。</p>
+
+<h3>Q: 新しいクライアントを追加するには？</h3>
+<p><code>/invoice-payment 新しいslug</code> で実行すると、テンプレートからリファレンスを作成するか聞かれます。作成後にリファレンスリポにプッシュすれば全社員に反映されます。</p>
+
+<h3>Q: 振込データ（FBファイル）はどこに保存される？</h3>
+<p>作業ディレクトリ <code>.tmp-invoice-payment/{クライアント名}/{年月}/</code> に保存されます。実行時にフルパスが画面に表示されるので、それをコピーしてエクスプローラーで開いてください。</p>
+
+<h3>Q: チェックでNGが出たらどうする？</h3>
+<p>NG項目を除外して残りを続行するか、全体を中断するかを選べます。除外された請求書は振込データに含まれません。</p>
+
+<h3>Q: リファレンスに情報が足りない場合は？</h3>
+<p>3段階で対応します: (1) リファレンスにあればそのまま使用 → (2) なければその場で質問 → (3) わからなければ手動操作に切替。止まることはありません。</p>
+
+<h3>Q: 間違って振込実行してしまったら？</h3>
+<p>プラグインが直接銀行操作をすることはありません。FBファイルのアップロードと振込承認は全て手動です。銀行IBの承認フローで止めることができます。</p>
+
+<h3>Q: 月の途中で追加の請求書が来たら？</h3>
+<p>同じクライアント・同じ月で再度 <code>/invoice-payment {slug} collect</code> を実行すれば、追加ファイルが収集されます。</p>
+
+</div><!-- /main -->
+
+<footer class="footer">
+  BPIO / SevenRich Accounting — Invoice Payment Plugin v1.0
+</footer>
+
+</body>
+</html>
