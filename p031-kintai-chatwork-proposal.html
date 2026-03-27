@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>勤怠チェック自動通知のご提案 — BPIO</title>
+<style>
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color: #1a1a1a;
+  background: #fff;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ===== Sticky Pill Navigation ===== */
+#sticky-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.97);
+  border-bottom: 1px solid #ccc;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+#sticky-nav .nav-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #777;
+  letter-spacing: 0.05em;
+  margin-right: 4px;
+  white-space: nowrap;
+}
+.pill {
+  display: inline-block;
+  padding: 5px 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #555;
+  text-decoration: none;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.pill:hover, .pill.active {
+  background: #1a1a1a;
+  color: #fff;
+  border-color: #1a1a1a;
+}
+
+/* ===== Main Content ===== */
+#main {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 40px 48px 80px;
+}
+
+/* ===== Header ===== */
+.report-header {
+  border-bottom: 2px solid #1a1a1a;
+  padding-bottom: 20px;
+  margin-bottom: 32px;
+}
+.report-header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.report-header .subtitle {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 16px;
+}
+.report-header .summary-box {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 16px 20px;
+  margin-top: 16px;
+}
+.report-header .summary-box h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.report-header .summary-box ul,
+.report-header .summary-box ol {
+  padding-left: 20px;
+  font-size: 0.82rem;
+}
+.report-header .summary-box li {
+  margin-bottom: 4px;
+}
+
+/* ===== Section Headings ===== */
+h2.section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-bottom: 1px solid #999;
+  padding-bottom: 6px;
+  margin-top: 48px;
+  margin-bottom: 20px;
+}
+h3.subsection-title {
+  font-size: 1.0rem;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  padding-left: 10px;
+  border-left: 3px solid #555;
+}
+
+/* ===== Tables ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 20px;
+  font-size: 0.82rem;
+}
+table th, table td {
+  border: 1px solid #bbb;
+  padding: 7px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+table th {
+  background: #f0f0f0;
+  font-weight: 700;
+  white-space: nowrap;
+}
+table td {
+  background: #fff;
+}
+table tr:nth-child(even) td {
+  background: #fafafa;
+}
+
+/* ===== Paragraphs & Lists ===== */
+p { margin-bottom: 10px; font-size: 0.88rem; }
+ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+ul li, ol li { margin-bottom: 3px; }
+
+/* ===== Highlight box (grey) ===== */
+.highlight-box {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 14px 18px;
+  margin: 12px 0 20px;
+  font-size: 0.85rem;
+}
+.highlight-box strong {
+  color: #1a1a1a;
+}
+
+/* ===== Note box (yellow, border-left) ===== */
+.note-box {
+  background: #fffbeb;
+  border-left: 4px solid #f59e0b;
+  padding: 10px 16px;
+  margin: 12px 0 20px;
+  font-size: 0.82rem;
+  color: #78350f;
+}
+
+/* ===== Info box (blue, border-left) ===== */
+.info-box {
+  background: #eff6ff;
+  border-left: 4px solid #3b82f6;
+  padding: 10px 16px;
+  margin: 12px 0 20px;
+  font-size: 0.82rem;
+  color: #1e3a5f;
+}
+
+/* ===== Feature cards ===== */
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 16px 0 24px;
+}
+.feature-card {
+  border: 1px solid #ddd;
+  padding: 20px;
+  background: #fff;
+}
+.feature-card .feature-num {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #999;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+.feature-card h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+.feature-card p {
+  font-size: 0.82rem;
+  color: #444;
+  margin-bottom: 0;
+}
+.feature-card.wide {
+  grid-column: 1 / -1;
+}
+
+/* ===== Flow diagram ===== */
+.flow-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 24px 0;
+  flex-wrap: wrap;
+}
+.flow-step {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 14px 20px;
+  text-align: center;
+  min-width: 140px;
+}
+.flow-step .step-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #999;
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+.flow-step .step-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+.flow-step .step-desc {
+  font-size: 0.75rem;
+  color: #666;
+  margin-top: 4px;
+}
+.flow-arrow {
+  font-size: 1.2rem;
+  color: #999;
+  padding: 0 6px;
+}
+.flow-step.highlight {
+  background: #1a1a1a;
+  border-color: #1a1a1a;
+}
+.flow-step.highlight .step-label,
+.flow-step.highlight .step-title,
+.flow-step.highlight .step-desc {
+  color: #fff;
+}
+.flow-step.highlight .step-label {
+  color: #aaa;
+}
+
+/* ===== Hearing checklist ===== */
+.hearing-group {
+  margin-bottom: 24px;
+}
+.hearing-group h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.hearing-item {
+  display: flex;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #eee;
+  font-size: 0.85rem;
+  align-items: flex-start;
+}
+.hearing-item:last-child {
+  border-bottom: none;
+}
+.hearing-num {
+  font-weight: 700;
+  color: #999;
+  font-size: 0.78rem;
+  min-width: 24px;
+  padding-top: 1px;
+}
+.hearing-content {
+  flex: 1;
+}
+.hearing-content .question {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.hearing-content .purpose {
+  font-size: 0.78rem;
+  color: #777;
+}
+
+/* ===== Before/After comparison ===== */
+.comparison {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0;
+  margin: 16px 0 24px;
+  align-items: stretch;
+}
+.comparison-col {
+  padding: 20px;
+  font-size: 0.82rem;
+}
+.comparison-col.before {
+  background: #fafafa;
+  border: 1px solid #ddd;
+}
+.comparison-col.after {
+  background: #f0f7f0;
+  border: 1px solid #bcd4bc;
+}
+.comparison-col h4 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #ccc;
+}
+.comparison-col.after h4 {
+  border-bottom-color: #a3c9a3;
+}
+.comparison-col ul {
+  padding-left: 18px;
+  margin-bottom: 0;
+  font-size: 0.82rem;
+}
+.comparison-col li {
+  margin-bottom: 4px;
+}
+.comparison-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: #999;
+  padding: 0 8px;
+}
+
+/* ===== Footer ===== */
+.report-footer {
+  border-top: 1px solid #999;
+  margin-top: 48px;
+  padding-top: 16px;
+  font-size: 0.78rem;
+  color: #777;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+  #main { padding: 24px 20px 60px; }
+  .report-header h1 { font-size: 1.3rem; }
+  h2.section-title { font-size: 1.05rem; }
+  table { font-size: 0.78rem; }
+  table th, table td { padding: 5px 7px; }
+  #sticky-nav { padding: 10px 12px; gap: 6px; }
+  .pill { padding: 4px 12px; font-size: 0.72rem; }
+  .feature-grid { grid-template-columns: 1fr; }
+  .comparison { grid-template-columns: 1fr; }
+  .comparison-divider { padding: 8px 0; transform: rotate(90deg); }
+  .flow-container { flex-direction: column; }
+  .flow-arrow { transform: rotate(90deg); padding: 4px 0; }
+}
+
+/* ===== Print ===== */
+@media print {
+  #sticky-nav { display: none; }
+  #main { padding: 0; max-width: 100%; }
+  body { font-size: 10pt; }
+  .report-header h1 { font-size: 16pt; }
+  h2.section-title { font-size: 13pt; page-break-after: avoid; }
+  h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+  table { font-size: 8pt; page-break-inside: avoid; }
+  table th, table td { padding: 3px 5px; }
+  .highlight-box, .note-box, .info-box, .feature-card, .comparison-col {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  table th {
+    background: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Pill Navigation ===== -->
+<nav id="sticky-nav">
+  <span class="nav-label">CONTENTS</span>
+  <a href="#overview" class="pill">概要</a>
+  <a href="#current" class="pill">現状の課題</a>
+  <a href="#proposal" class="pill">ご提案内容</a>
+  <a href="#flow" class="pill">導入の流れ</a>
+  <a href="#hearing" class="pill">ヒアリング事項</a>
+</nav>
+
+<!-- ===== Main Content ===== -->
+<div id="main">
+
+<header class="report-header">
+  <h1>勤怠チェック自動通知のご提案</h1>
+  <p class="subtitle">freee人事労務 × Chatwork連携による勤怠管理の効率化</p>
+  <div class="summary-box">
+    <h3>ご提案の概要</h3>
+    <ul>
+      <li>freee人事労務のデータをもとに、<strong>残業超過・打刻漏れなどの勤怠エラーを自動検知</strong>します</li>
+      <li>検知結果をChatworkの指定チャットに<strong>自動で通知</strong>します</li>
+      <li>月末の締め作業前に問題を早期発見し、<strong>修正対応の負担を軽減</strong>します</li>
+      <li>36協定の超過回数を自動カウントし、<strong>法令リスクを未然に防止</strong>します</li>
+    </ul>
+  </div>
+</header>
+
+<!-- ===== 1. 現状の課題 ===== -->
+<h2 class="section-title" id="current">1. 現状の課題</h2>
+
+<p>現在の勤怠チェック業務では、以下のような課題が発生しています。</p>
+
+<h3 class="subsection-title">手作業によるチェックの限界</h3>
+
+<div class="comparison">
+  <div class="comparison-col before">
+    <h4>現在の運用</h4>
+    <ul>
+      <li>freeeの勤怠データを<strong>目視で確認</strong></li>
+      <li>残業時間の集計・閾値チェックを<strong>Excelで手動管理</strong></li>
+      <li>問題を発見したらChatworkに<strong>手動で報告</strong></li>
+      <li>月末に<strong>まとめてチェック</strong>するため、修正が集中</li>
+      <li>36協定の超過回数は<strong>過去データを遡って確認</strong></li>
+    </ul>
+  </div>
+  <div class="comparison-divider">&rarr;</div>
+  <div class="comparison-col after">
+    <h4>導入後のイメージ</h4>
+    <ul>
+      <li>勤怠データの取得から通知まで<strong>自動で実行</strong></li>
+      <li>閾値を超えた時点で<strong>即座にChatworkへ通知</strong></li>
+      <li>月中でも<strong>途中経過を定期レポート</strong></li>
+      <li>問題の<strong>早期発見・早期対応</strong>が可能に</li>
+      <li>36協定の超過回数を<strong>常に自動追跡</strong></li>
+    </ul>
+  </div>
+</div>
+
+<h3 class="subsection-title">現状データから見える状況</h3>
+
+<p>いただいた勤怠データ（2025年12月実績）を分析した結果、以下の状況が確認されました。</p>
+
+<table>
+  <tr>
+    <th>項目</th>
+    <th>数値</th>
+    <th>備考</th>
+  </tr>
+  <tr>
+    <td>対象従業員数</td>
+    <td><strong>87名</strong>（在籍者）</td>
+    <td>34部署・12種の雇用区分</td>
+  </tr>
+  <tr>
+    <td>月間残業 45h超</td>
+    <td><strong>9名</strong></td>
+    <td>年間休日115日基準</td>
+  </tr>
+  <tr>
+    <td>月間残業 42h超</td>
+    <td><strong>14名</strong></td>
+    <td>年変形・年間休日105日基準</td>
+  </tr>
+  <tr>
+    <td>月間残業 60h超</td>
+    <td><strong>2名</strong></td>
+    <td>特に注意が必要</td>
+  </tr>
+  <tr>
+    <td>平均残業時間</td>
+    <td><strong>25.57h</strong></td>
+    <td>全従業員平均</td>
+  </tr>
+  <tr>
+    <td>36協定超過 累積4回以上</td>
+    <td><strong>2名</strong></td>
+    <td>年間上限（6回）に接近</td>
+  </tr>
+</table>
+
+<div class="note-box">
+  <strong>ポイント:</strong> 36協定では「月45時間超は年6回まで」という上限があります。累積4回以上の方は残り2回以内に抑える必要があり、リアルタイムの監視が重要です。
+</div>
+
+<!-- ===== 2. ご提案内容 ===== -->
+<h2 class="section-title" id="proposal">2. ご提案内容</h2>
+
+<p>freee人事労務とChatworkを連携し、以下の機能を提供します。</p>
+
+<div class="feature-grid">
+  <div class="feature-card">
+    <div class="feature-num">FEATURE 01</div>
+    <h4>残業超過アラート</h4>
+    <p>設定した閾値（42h / 45h等）を超えた従業員を自動検知し、Chatworkに通知します。月中の途中経過もレポートできるため、超過前の予防的対応が可能になります。</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-num">FEATURE 02</div>
+    <h4>打刻漏れ検知</h4>
+    <p>出勤打刻のみで退勤打刻がない、または打刻の整合性が取れないケースを検知します。翌営業日の朝に前日分をまとめて通知するなど、運用に合わせた設定が可能です。</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-num">FEATURE 03</div>
+    <h4>36協定カウンター</h4>
+    <p>従業員ごとに36協定の超過回数を自動カウントし、上限（年6回）に近づいた時点でアラートを発信します。年間休日数に応じた閾値（42h / 45h）の自動切替にも対応します。</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-num">FEATURE 04</div>
+    <h4>定期レポート</h4>
+    <p>週次または月次で、部署別・従業員別の残業状況サマリをChatworkに自動投稿します。Excel管理台帳と同等の情報を、手作業なしで共有できます。</p>
+  </div>
+  <div class="feature-card wide">
+    <div class="feature-num">FEATURE 05</div>
+    <h4>深夜・休日労働の可視化</h4>
+    <p>通常残業だけでなく、深夜労働（22時〜5時）や法定休日労働の発生状況も検知対象にできます。割増賃金の発生を事前に把握し、人件費管理にも活用できます。</p>
+  </div>
+</div>
+
+<h3 class="subsection-title">通知イメージ</h3>
+
+<p>Chatworkへの通知は、以下のようなフォーマットで届きます。</p>
+
+<div class="highlight-box">
+<strong>【残業超過アラート】2026年3月 第3週時点</strong><br><br>
+以下の従業員が残業閾値を超過しています。<br><br>
+<strong>■ 45h超（年間休日115日）</strong><br>
+&emsp;・山崎 英治（設計部）: 48.5h ← 36協定 今期3回目<br>
+&emsp;・池田 勇海（工務部）: 46.2h ← 36協定 今期4回目 ※要注意<br><br>
+<strong>■ 42h超（年間休日105日）</strong><br>
+&emsp;・杉浦 一倫（クラフト部）: 43.8h ← 36協定 今期4回目 ※要注意<br><br>
+<strong>■ 打刻漏れ（本日分）</strong><br>
+&emsp;・河野 愛実（本部/総務）: 3/20 退勤打刻なし<br>
+</div>
+
+<div class="info-box">
+  通知先のチャットルーム、通知タイミング（毎日 / 週1回 / 閾値超過時のみ）、通知フォーマットはご要望に応じてカスタマイズ可能です。
+</div>
+
+
+<!-- ===== 3. 導入の流れ ===== -->
+<h2 class="section-title" id="flow">3. 導入の流れ</h2>
+
+<div class="flow-container">
+  <div class="flow-step highlight">
+    <div class="step-label">STEP 1</div>
+    <div class="step-title">ヒアリング</div>
+    <div class="step-desc">ご要件の確認</div>
+  </div>
+  <div class="flow-arrow">&rarr;</div>
+  <div class="flow-step">
+    <div class="step-label">STEP 2</div>
+    <div class="step-title">環境準備</div>
+    <div class="step-desc">API接続設定</div>
+  </div>
+  <div class="flow-arrow">&rarr;</div>
+  <div class="flow-step">
+    <div class="step-label">STEP 3</div>
+    <div class="step-title">テスト運用</div>
+    <div class="step-desc">通知内容の確認</div>
+  </div>
+  <div class="flow-arrow">&rarr;</div>
+  <div class="flow-step">
+    <div class="step-label">STEP 4</div>
+    <div class="step-title">本番稼働</div>
+    <div class="step-desc">定期自動実行</div>
+  </div>
+</div>
+
+<table>
+  <tr>
+    <th>ステップ</th>
+    <th>内容</th>
+    <th>お客様側のご対応</th>
+  </tr>
+  <tr>
+    <td><strong>STEP 1</strong><br>ヒアリング</td>
+    <td>通知条件・閾値・頻度など、ご要件を確認します</td>
+    <td>下記ヒアリング事項へのご回答</td>
+  </tr>
+  <tr>
+    <td><strong>STEP 2</strong><br>環境準備</td>
+    <td>freee・Chatworkとの接続設定を行います</td>
+    <td>freeeのAPI利用設定の承認<br>ChatworkのAPIトークン発行</td>
+  </tr>
+  <tr>
+    <td><strong>STEP 3</strong><br>テスト運用</td>
+    <td>テスト用チャットで通知内容を確認いただきます</td>
+    <td>通知内容・フォーマットの確認</td>
+  </tr>
+  <tr>
+    <td><strong>STEP 4</strong><br>本番稼働</td>
+    <td>本番チャットへの通知を開始します</td>
+    <td>運用開始の承認</td>
+  </tr>
+</table>
+
+<h3 class="subsection-title">freeeのAPI連携について</h3>
+
+<p>本システムはfreee人事労務の公式APIを利用します。freee側で「API連携アプリ」の設定を行っていただく必要があります。</p>
+
+<div class="highlight-box">
+  <strong>必要な設定:</strong> freee管理画面の「設定」→「API連携」から、連携アプリの承認を行います。<br>
+  <strong>必要な権限:</strong> 勤怠データの読み取り権限（書き込みは行いません）<br>
+  <strong>対応プラン:</strong> ベーシックプラン（またはスタータープラン）以上でご利用いただけます
+</div>
+
+<h3 class="subsection-title">Chatworkの設定について</h3>
+
+<p>通知の送信にはChatwork APIを利用します。</p>
+
+<div class="highlight-box">
+  <strong>必要な設定:</strong> 通知用のChatworkアカウントからAPIトークンを発行します<br>
+  <strong>対応プラン:</strong> 全プラン対応（ビジネス・エンタープライズプランの場合は管理者の承認が必要です）
+</div>
+
+
+<!-- ===== 4. ヒアリング事項 ===== -->
+<h2 class="section-title" id="hearing">4. ヒアリング事項</h2>
+
+<p>導入にあたり、以下の項目についてお伺いさせてください。</p>
+
+<div class="hearing-group">
+  <h4>A. 通知条件について</h4>
+  <div class="hearing-item">
+    <span class="hearing-num">A-1</span>
+    <div class="hearing-content">
+      <div class="question">残業超過の閾値は現在のExcel管理と同じ設定（45h / 42h）でよいですか？</div>
+      <div class="purpose">年間休日数に応じた2段階の閾値設定を想定しています</div>
+    </div>
+  </div>
+  <div class="hearing-item">
+    <span class="hearing-num">A-2</span>
+    <div class="hearing-content">
+      <div class="question">閾値超過の「予告通知」は必要ですか？（例: 40hを超えた時点で注意喚起）</div>
+      <div class="purpose">超過前に対策を打てるよう、段階的な通知も設定可能です</div>
+    </div>
+  </div>
+  <div class="hearing-item">
+    <span class="hearing-num">A-3</span>
+    <div class="hearing-content">
+      <div class="question">打刻漏れの検知は必要ですか？ 必要な場合、どのタイミングで通知しますか？</div>
+      <div class="purpose">翌朝一括通知、リアルタイム通知などが選択可能です</div>
+    </div>
+  </div>
+  <div class="hearing-item">
+    <span class="hearing-num">A-4</span>
+    <div class="hearing-content">
+      <div class="question">深夜労働・休日労働の通知は必要ですか？</div>
+      <div class="purpose">割増賃金の管理に活用できます</div>
+    </div>
+  </div>
+  <div class="hearing-item">
+    <span class="hearing-num">A-5</span>
+    <div class="hearing-content">
+      <div class="question">固定残業時間（30h / 40h）の超過も通知対象にしますか？</div>
+      <div class="purpose">固定残業超過分の時間外手当の発生を事前に把握できます</div>
+    </div>
+  </div>
+</div>
+
+<div class="hearing-group">
+  <h4>B. 通知方法について</h4>
+  <div class="hearing-item">
+    <span class="hearing-num">B-1</span>
+    <div class="hearing-content">
+      <div class="question">通知先のChatworkチャットルームを教えてください</div>
+      <div class="purpose">既存のチャットルーム、または専用ルームの新規作成いずれも対応可能です</div>
+    </div>
+  </div>
+  <div class="hearing-item">
+    <span class="hearing-num">B-2</span>
+    <div class="hearing-content">
+      <div class="question">通知の頻度はどの程度を希望されますか？</div>
+      <div class="purpose">毎日（朝） / 週1回 / 閾値超過時のみ / 定期レポート＋超過時通知 などから選択</div>
+    </div>
+  </div>
+  <div class="hearing-item">
+    <span class="hearing-num">B-3</span>
+    <div class="hearing-content">
+      <div class="question">部署ごとに通知先を分けたいですか？ それとも全社一括でよいですか？</div>
+      <div class="purpose">部署管理者ごとに通知を分けることも可能です</div>
+    </div>
+  </div>
+</div>
+
+<div class="hearing-group">
+  <h4>C. 対象範囲について</h4>
+  <div class="hearing-item">
+    <span class="hearing-num">C-1</span>
+    <div class="hearing-content">
+      <div class="question">全従業員が対象ですか？ パート・アルバイトを含みますか？</div>
+      <div class="purpose">雇用区分による対象者の絞り込みが可能です</div>
+    </div>
+  </div>
+  <div class="hearing-item">
+    <span class="hearing-num">C-2</span>
+    <div class="hearing-content">
+      <div class="question">特定の部署のみを先行導入することは可能ですか？</div>
+      <div class="purpose">段階的な導入も対応可能です</div>
+    </div>
+  </div>
+  <div class="hearing-item">
+    <span class="hearing-num">C-3</span>
+    <div class="hearing-content">
+      <div class="question">勤怠の締め日はいつですか？（月末 / 15日 / その他）</div>
+      <div class="purpose">締め日に合わせた集計期間の設定に必要です</div>
+    </div>
+  </div>
+</div>
+
+<div class="hearing-group">
+  <h4>D. 環境について</h4>
+  <div class="hearing-item">
+    <span class="hearing-num">D-1</span>
+    <div class="hearing-content">
+      <div class="question">freee人事労務のご利用プランを教えてください</div>
+      <div class="purpose">ベーシック / スタータープラン以上でAPI連携が利用可能です</div>
+    </div>
+  </div>
+  <div class="hearing-item">
+    <span class="hearing-num">D-2</span>
+    <div class="hearing-content">
+      <div class="question">Chatworkのご利用プランを教えてください</div>
+      <div class="purpose">ビジネス・エンタープライズプランの場合、管理者によるAPI利用の承認が必要です</div>
+    </div>
+  </div>
+  <div class="hearing-item">
+    <span class="hearing-num">D-3</span>
+    <div class="hearing-content">
+      <div class="question">freeeの管理者権限をお持ちの方はどなたですか？</div>
+      <div class="purpose">API連携の設定に管理者権限が必要です</div>
+    </div>
+  </div>
+</div>
+
+<div class="info-box">
+  上記は初回のお打ち合わせ時にお伺いする内容です。すべてを事前にご準備いただく必要はありません。お分かりになる範囲でお答えいただければ、こちらで最適な構成をご提案いたします。
+</div>
+
+
+<!-- ===== Footer ===== -->
+<footer class="report-footer">
+  <p>&copy; 2026 BPIO co., Ltd. &mdash; 本資料に関するお問い合わせは担当までご連絡ください。</p>
+</footer>
+
+</div><!-- /#main -->
+
+<!-- ===== Scroll Spy ===== -->
+<script>
+(function() {
+  const pills = document.querySelectorAll('.pill');
+  const ids = Array.from(pills).map(p => p.getAttribute('href').slice(1));
+  function update() {
+    let current = ids[0];
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top <= 80) current = id;
+    }
+    pills.forEach(p => {
+      p.classList.toggle('active', p.getAttribute('href') === '#' + current);
+    });
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
+</script>
+</body>
+</html>
