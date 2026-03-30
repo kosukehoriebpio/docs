@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Code ユースケース紹介 — BPIO</title>
+  <style>
+    body {
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: #1a1a1a;
+      background: #fff;
+      line-height: 1.7;
+      margin: 0;
+    }
+    html { font-size: 15px; }
+    #sticky-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.97);
+      border-bottom: 1px solid #ccc;
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    #sticky-nav .nav-label {
+      font-size: 0.72rem; font-weight: 700; color: #777;
+      letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+    }
+    .pill {
+      display: inline-block; padding: 5px 16px;
+      font-size: 0.78rem; font-weight: 600; color: #555;
+      text-decoration: none; border: 1px solid #ccc;
+      border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+    }
+    .pill:hover, .pill.active {
+      background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+    }
+    #main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+    .report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+    .report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin: 0 0 4px; }
+    .report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+    .report-header .summary-box {
+      background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+    }
+    .report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin: 0 0 10px; }
+    .report-header .summary-box ul {
+      padding-left: 20px; font-size: 0.82rem; margin: 0;
+    }
+    .report-header .summary-box li { margin-bottom: 4px; }
+    h2.section-title {
+      font-size: 1.2rem; font-weight: 700;
+      border-bottom: 1px solid #999; padding-bottom: 6px;
+      margin-top: 48px; margin-bottom: 20px;
+    }
+    h3.subsection-title {
+      font-size: 1.0rem; font-weight: 700;
+      margin-top: 32px; margin-bottom: 12px;
+      padding-left: 10px; border-left: 3px solid #555;
+    }
+    h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+    table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+    table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+    table td { background: #fff; }
+    table tr:nth-child(even) td { background: #fafafa; }
+    p { margin-bottom: 10px; font-size: 0.88rem; }
+    ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+    ul li, ol li { margin-bottom: 3px; }
+    .highlight-box {
+      background: #f7f7f7; border: 1px solid #ddd;
+      padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+    }
+    .note-box {
+      background: #fffbeb; border-left: 4px solid #f59e0b;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+    }
+    .info-box {
+      background: #eff6ff; border-left: 4px solid #3b82f6;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f;
+    }
+    .badge {
+      display: inline-block; padding: 2px 10px;
+      font-size: 0.72rem; font-weight: 700;
+      border-radius: 999px; letter-spacing: 0.03em;
+    }
+    .badge-ok { background: #d4edda; color: #155724; }
+    .badge-info { background: #d1ecf1; color: #0c5460; }
+    .badge-pending { background: #e2e3e5; color: #383d41; }
+    .flow {
+      display: flex; align-items: center; gap: 0;
+      margin: 20px 0; flex-wrap: wrap; justify-content: center;
+    }
+    .flow-step {
+      background: #f0f0f0; border: 1px solid #ccc;
+      padding: 10px 18px; font-size: 0.82rem; font-weight: 600;
+      text-align: center; min-width: 120px;
+    }
+    .flow-step.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .flow-arrow { font-size: 1.2rem; color: #999; padding: 0 4px; }
+    .code-block {
+      background: #2d2d2d; color: #f8f8f2;
+      padding: 16px 20px; border-radius: 4px;
+      font-family: "Consolas", "Monaco", monospace;
+      font-size: 0.78rem; line-height: 1.6; overflow-x: auto;
+      margin: 12px 0 20px;
+    }
+    .report-footer {
+      border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+      font-size: 0.78rem; color: #777;
+    }
+    .num-big {
+      font-size: 2.2rem; font-weight: 700; line-height: 1; color: #1a1a1a;
+    }
+    .num-label {
+      font-size: 0.75rem; color: #777; margin-top: 2px;
+    }
+    .num-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 16px; margin: 16px 0 24px; text-align: center;
+    }
+    .num-card {
+      background: #f7f7f7; border: 1px solid #ddd; padding: 16px 8px;
+    }
+    .timeline-entry {
+      display: grid; grid-template-columns: 70px 1fr; gap: 0; margin-bottom: 0;
+      font-size: 0.82rem; border-bottom: 1px solid #eee; padding: 8px 0;
+    }
+    .timeline-time {
+      font-weight: 700; color: #555; padding-top: 1px;
+    }
+    .timeline-content {}
+    .timeline-content .tl-title { font-weight: 600; }
+    .timeline-content .tl-detail { color: #777; font-size: 0.78rem; }
+    .service-tag {
+      display: inline-block; padding: 1px 8px; font-size: 0.68rem;
+      font-weight: 600; border: 1px solid #ccc; border-radius: 999px;
+      color: #555; margin: 1px 2px;
+    }
+    @media (max-width: 640px) {
+      #main { padding: 24px 20px 60px; }
+      .report-header h1 { font-size: 1.3rem; }
+      h2.section-title { font-size: 1.05rem; }
+      table { font-size: 0.78rem; }
+      table th, table td { padding: 5px 7px; }
+      #sticky-nav { padding: 10px 12px; gap: 6px; }
+      .pill { padding: 4px 12px; font-size: 0.72rem; }
+      .num-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media print {
+      #sticky-nav { display: none; }
+      #main { padding: 0; max-width: 100%; }
+      body { font-size: 10pt; }
+      .report-header h1 { font-size: 16pt; }
+      h2.section-title { font-size: 13pt; page-break-after: avoid; }
+      h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+      table { font-size: 8pt; page-break-inside: avoid; }
+      table th, table td { padding: 3px 5px; }
+      .highlight-box, .note-box, .info-box {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      table th {
+        background: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav id="sticky-nav">
+    <span class="nav-label">SECTIONS</span>
+    <a class="pill" href="#concept">コンセプト</a>
+    <a class="pill" href="#daily">1日の実例</a>
+    <a class="pill" href="#repo">リポジトリ構造</a>
+    <a class="pill" href="#commands">スラッシュコマンド</a>
+    <a class="pill" href="#mcp">MCP連携</a>
+    <a class="pill" href="#hooks">Hook安全装置</a>
+    <a class="pill" href="#learning">自己進化</a>
+    <a class="pill" href="#results">成果</a>
+  </nav>
+
+  <div id="main">
+    <header class="report-header">
+      <h1>Claude Code ユースケース紹介</h1>
+      <div class="subtitle">BPIO / COREWO での「一元秘書システム」— 全ての仕事をClaude Codeから</div>
+      <div class="summary-box">
+        <h3>このページについて</h3>
+        <ul>
+          <li>BPIOで実運用中の Claude Code 活用事例を紹介</li>
+          <li>個別プロジェクトの話ではなく、<strong>「全ての仕事がClaude Codeを窓口に一元化されている」</strong>という使い方そのものがユースケース</li>
+          <li>メール、Slack、会計、ファイル整理、調査、コーディング、ドキュメント作成、公開まで全部ターミナルから</li>
+        </ul>
+      </div>
+    </header>
+
+    <!-- Section: コンセプト -->
+    <h2 class="section-title" id="concept">コンセプト: Gitリポジトリ = 秘書のデスク</h2>
+
+    <p>1つのGitリポジトリに、業務データ・タスク・プロジェクト・ナレッジ・連絡先・意思決定記録を全て格納。Claude Code がこのリポジトリを「デスク」として、全ての業務を遂行する。</p>
+
+    <div class="highlight-box">
+      <strong>従来:</strong> メーラー → Slack → 会計ソフト → スプレッドシート → ブラウザ → エディタ を行き来<br>
+      <strong>現在:</strong> Claude Code のターミナル1つで全てが完結
+    </div>
+
+    <div class="num-grid">
+      <div class="num-card">
+        <div class="num-big">35</div>
+        <div class="num-label">プロジェクト管理中</div>
+      </div>
+      <div class="num-card">
+        <div class="num-big">59</div>
+        <div class="num-label">カスタムスキル</div>
+      </div>
+      <div class="num-card">
+        <div class="num-big">18</div>
+        <div class="num-label">専門エージェント</div>
+      </div>
+      <div class="num-card">
+        <div class="num-big">8+</div>
+        <div class="num-label">外部サービス連携</div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>なぜ一元化するのか:</strong> コンテキストスイッチをゼロにし、全ての操作がGit履歴に残り、繰り返し作業がスキル化され、失敗が学習資産になる。
+    </div>
+
+    <!-- Section: 1日の実例 -->
+    <h2 class="section-title" id="daily">ある1日の実例（2026-03-30）</h2>
+
+    <p>この日の全業務がClaude Codeから実行された。ブラウザを開いたのはOAuth認証のリダイレクトのみ。</p>
+
+    <div class="timeline-entry">
+      <div class="timeline-time">09:00</div>
+      <div class="timeline-content">
+        <div class="tl-title">KoTシフトCSV生成（労務BPO）</div>
+        <div class="tl-detail">19名315件の4月分シフトデータをAPI経由で自動生成 <span class="service-tag">KoT API</span></div>
+      </div>
+    </div>
+    <div class="timeline-entry">
+      <div class="timeline-time">11:00</div>
+      <div class="timeline-content">
+        <div class="tl-title">勤怠チェック自動化 完了報告 → Slack連絡</div>
+        <div class="tl-detail">22チェック項目の実装完了、労務チームにテスト日程調整 <span class="service-tag">Slack</span></div>
+      </div>
+    </div>
+    <div class="timeline-entry">
+      <div class="timeline-time">13:00</div>
+      <div class="timeline-content">
+        <div class="tl-title">Slackの議論を読んで新プロジェクト立ち上げ + 仕様書作成</div>
+        <div class="tl-detail">Slack → 内容分析 → プロジェクトディレクトリ・AGENT.md・仕様書を一括生成 <span class="service-tag">Slack</span> <span class="service-tag">Git</span></div>
+      </div>
+    </div>
+    <div class="timeline-entry">
+      <div class="timeline-time">14:00</div>
+      <div class="timeline-content">
+        <div class="tl-title">地方銀行96行のデータ調査（12エージェント並列）</div>
+        <div class="tl-detail">12バッチの調査エージェントを同時起動、96機関の財務データを収集 <span class="service-tag">Web検索 x12</span></div>
+      </div>
+    </div>
+    <div class="timeline-entry">
+      <div class="timeline-time">16:00</div>
+      <div class="timeline-content">
+        <div class="tl-title">AIニュース78件収集 → 要約 → Slack通知</div>
+        <div class="tl-detail">14ソースから自動収集、重要度分類してDM通知 <span class="service-tag">Web</span> <span class="service-tag">Slack</span></div>
+      </div>
+    </div>
+    <div class="timeline-entry">
+      <div class="timeline-time">16:30</div>
+      <div class="timeline-content">
+        <div class="tl-title">Gmail同期 + 受信ボックス559件クリア</div>
+        <div class="tl-detail">7件取得 → 分類 → 52件ローカルアーカイブ → Gmail API で一括ラベル除去 <span class="service-tag">Gmail API</span></div>
+      </div>
+    </div>
+    <div class="timeline-entry">
+      <div class="timeline-time">21:00</div>
+      <div class="timeline-content">
+        <div class="tl-title">SEO包括分析 → HTMLレポート → GitHub Pages公開</div>
+        <div class="tl-detail">17記事を一括分析、戦略策定、レポートをURLで即共有 <span class="service-tag">GSC</span> <span class="service-tag">GA4</span> <span class="service-tag">GitHub Pages</span></div>
+      </div>
+    </div>
+    <div class="timeline-entry">
+      <div class="timeline-time">22:30</div>
+      <div class="timeline-content">
+        <div class="tl-title">ダウンロードフォルダ整理 168→5件</div>
+        <div class="tl-detail">重複削除 → 88ファイルをDriveにカテゴリ分けアップロード <span class="service-tag">Google Drive</span></div>
+      </div>
+    </div>
+    <div class="timeline-entry">
+      <div class="timeline-time">24:00</div>
+      <div class="timeline-content">
+        <div class="tl-title">MFクラウド会計にOAuth接続 → 仕訳登録 → 試算表確認</div>
+        <div class="tl-detail">会計APIの全10エンドポイント検証、仕訳投入〜BS/PL反映まで確認 <span class="service-tag">MF会計 API</span></div>
+      </div>
+    </div>
+    <div class="timeline-entry" style="border-bottom: none;">
+      <div class="timeline-time">27:00</div>
+      <div class="timeline-content">
+        <div class="tl-title">Notion顧客マニュアル93件と社内リファレンス151社を突合精査</div>
+        <div class="tl-detail">64ファイル更新 + 2社新規作成、品質レビュー5社分実施 <span class="service-tag">Notion API</span></div>
+      </div>
+    </div>
+
+    <div class="note-box">
+      <strong>ポイント:</strong> 上記の全てがClaude Codeのターミナルから実行されている。ログは自動でGitにコミットされ、翌日以降いつでも追跡可能。
+    </div>
+
+    <!-- Section: リポジトリ構造 -->
+    <h2 class="section-title" id="repo">リポジトリ構造 = 業務の全履歴</h2>
+
+    <p>1つのリポジトリが「秘書のデスク」として機能する。全てのデータはYAML frontmatter付きMarkdownで管理され、Git履歴で完全追跡される。</p>
+
+    <div class="code-block">data/
+  logs/       <span style="color:#75715e;">← 日次の全活動ログ（何をいつやったか）</span>
+  tasks/      <span style="color:#75715e;">← TODO管理（active/ → completed/ に移動）</span>
+  projects/   <span style="color:#75715e;">← 35プロジェクト（各々に専任エージェント設定）</span>
+  contacts/   <span style="color:#75715e;">← 顧客・関係者DB（16名）</span>
+  decisions/  <span style="color:#75715e;">← 意思決定の記録（背景・選択肢・理由）</span>
+  inbox/      <span style="color:#75715e;">← Gmail/Slack等からの受信データ</span>
+  knowledge/  <span style="color:#75715e;">← 調査・ナレッジ蓄積</span>
+  notes/      <span style="color:#75715e;">← 議事録・メモ</span>
+  .meta/      <span style="color:#75715e;">← マスターテーブル（projects.json等）</span>
+  .state/     <span style="color:#75715e;">← セッション間の状態引き継ぎ</span></div>
+
+    <h3 class="subsection-title">プロジェクト = 独立したエージェント</h3>
+
+    <p>各プロジェクトは独自のディレクトリを持ち、<code>AGENT.md</code> で専任エージェントの振る舞いを定義する。<code>/project p006</code> と呼べば、そのプロジェクトの文脈を全て読み込んだ状態で応答する。</p>
+
+    <div class="code-block">data/projects/active/p006-senjin-hr/
+  AGENT.md       <span style="color:#75715e;">← 専任エージェントの設定・振る舞い</span>
+  overview.md    <span style="color:#75715e;">← プロジェクト概要</span>
+  contacts.md    <span style="color:#75715e;">← 関係者一覧</span>
+  tasks/         <span style="color:#75715e;">← PJ固有タスク</span>
+  docs/          <span style="color:#75715e;">← PJドキュメント群</span></div>
+
+    <h3 class="subsection-title">コミット = 業務ログ</h3>
+
+    <p>コミットメッセージは種別プレフィックスで分類。<code>git log</code> が業務日誌になる。</p>
+
+    <table>
+      <tr><th>種別</th><th>用途</th><th>例</th></tr>
+      <tr><td><code>task:</code></td><td>タスク操作</td><td>task: complete "勤怠チェック実装"</td></tr>
+      <tr><td><code>log:</code></td><td>活動記録</td><td>log: 2026-03-30 p006 KoTシフトCSV再生成</td></tr>
+      <tr><td><code>project:</code></td><td>PJ操作</td><td>project: add "Japan Sauna SEO"</td></tr>
+      <tr><td><code>note:</code></td><td>議事録</td><td>note: add "古川製材ヒアリング"</td></tr>
+      <tr><td><code>decision:</code></td><td>意思決定</td><td>decision: MCP方式を採用</td></tr>
+      <tr><td><code>sync:</code></td><td>外部同期</td><td>sync: Gmail 7件取得</td></tr>
+    </table>
+
+    <!-- Section: スラッシュコマンド -->
+    <h2 class="section-title" id="commands">スラッシュコマンド = 業務メニュー</h2>
+
+    <p>繰り返し行う業務はスラッシュコマンド（スキル）として定義。Claude Codeに <code>/コマンド名</code> と打つだけで実行される。</p>
+
+    <h3 class="subsection-title">日常業務</h3>
+    <table>
+      <tr><th>コマンド</th><th>やること</th></tr>
+      <tr><td><code>/digest</code></td><td>Gmail・Calendar・タスク・スケジュールを統合したデイリーブリーフィング</td></tr>
+      <tr><td><code>/brain</code></td><td>Notion 7DB（3,228件）を横断検索して質問に回答</td></tr>
+      <tr><td><code>/weekly</code></td><td>1週間の実績集計 + 翌週計画を自動生成</td></tr>
+      <tr><td><code>/cleanup-downloads</code></td><td>ダウンロードフォルダ整理 → Driveにアーカイブ</td></tr>
+    </table>
+
+    <h3 class="subsection-title">成果物作成</h3>
+    <table>
+      <tr><th>コマンド</th><th>やること</th></tr>
+      <tr><td><code>/publish-page</code></td><td>HTML生成 → GitHub Pagesで即URL共有（このページも）</td></tr>
+      <tr><td><code>/slide</code></td><td>台本テキストから研修用HTMLスライドを生成</td></tr>
+      <tr><td><code>/tts-script</code></td><td>スライドからGCP TTS向け録音台本を生成</td></tr>
+      <tr><td><code>/meeting-update</code></td><td>録音テキストから議事録をNotionに自動作成</td></tr>
+    </table>
+
+    <h3 class="subsection-title">分析・調査</h3>
+    <table>
+      <tr><th>コマンド</th><th>やること</th></tr>
+      <tr><td><code>/seo</code></td><td>17種のSEO分析を12エージェント並列実行</td></tr>
+      <tr><td><code>/client-model-create</code></td><td>Notionデータ + Web調査 → クライアント事業モデル分析</td></tr>
+      <tr><td><code>/payroll-check</code></td><td>月次給与データをDrive取得 → API突合 → 結果Excel生成</td></tr>
+    </table>
+
+    <h3 class="subsection-title">システム管理</h3>
+    <table>
+      <tr><th>コマンド</th><th>やること</th></tr>
+      <tr><td><code>/learn</code></td><td>セッション中の失敗・発見をLesson化して蓄積</td></tr>
+      <tr><td><code>/evolve</code></td><td>蓄積したLessonをルール・hookに自動昇格</td></tr>
+      <tr><td><code>/health-dashboard</code></td><td>システム全体のヘルスチェックHTML生成</td></tr>
+    </table>
+
+    <!-- Section: MCP連携 -->
+    <h2 class="section-title" id="mcp">MCP連携 = Claude Codeの手足</h2>
+
+    <p>MCP（Model Context Protocol）により、Claude CodeからAPIを直接呼び出せる。ブラウザを開かずに外部サービスを操作できる。</p>
+
+    <table>
+      <tr><th>サービス</th><th>できること</th><th>活用例</th></tr>
+      <tr>
+        <td><strong>Google Workspace</strong></td>
+        <td>Gmail読み書き、Calendar、Drive、Sheets、Docs</td>
+        <td>メール同期、スケジュール確認、ファイルアップロード</td>
+      </tr>
+      <tr>
+        <td><strong>Notion</strong></td>
+        <td>7DB横断検索、ページ作成・更新</td>
+        <td>ナレッジ検索、顧客マニュアル作成、議事録登録</td>
+      </tr>
+      <tr>
+        <td><strong>Slack</strong></td>
+        <td>メッセージ送受信、堀江名義の代理送信</td>
+        <td>進捗報告、チーム連絡、ニュース配信</td>
+      </tr>
+      <tr>
+        <td><strong>MFクラウド会計</strong></td>
+        <td>仕訳登録、試算表取得、取引先管理</td>
+        <td>経理業務の自動化検証</td>
+      </tr>
+      <tr>
+        <td><strong>GSC / GA4</strong></td>
+        <td>検索パフォーマンス、URL検査、トラフィック分析</td>
+        <td>SEOレポート自動生成</td>
+      </tr>
+      <tr>
+        <td><strong>Figma</strong></td>
+        <td>デザイン取得、コード連携</td>
+        <td>デザイン→コード変換</td>
+      </tr>
+      <tr>
+        <td><strong>Playwright</strong></td>
+        <td>ブラウザ操作、スクリーンショット</td>
+        <td>Webスクレイピング、UI検証</td>
+      </tr>
+    </table>
+
+    <div class="flow">
+      <div class="flow-step">自然言語で指示</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step active">Claude Code</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">MCP経由でAPI実行</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">結果をGitに記録</div>
+    </div>
+
+    <!-- Section: Hook -->
+    <h2 class="section-title" id="hooks">Hook = 安全装置とガードレール</h2>
+
+    <p>自律的に動く代わりに、Hookで事前・事後のチェックを自動実行する。「やっていいこと」と「やってはいけないこと」をシステムレベルで制御。</p>
+
+    <table>
+      <tr><th>タイミング</th><th>Hook</th><th>やること</th></tr>
+      <tr>
+        <td>PreToolUse</td>
+        <td>Notion書き込み制御</td>
+        <td>許可された3DBスコープ以外への書き込みをブロック</td>
+      </tr>
+      <tr>
+        <td>PreToolUse</td>
+        <td>危険コマンド防止</td>
+        <td><code>rm -rf</code>, <code>git push --force</code> 等を事前検知</td>
+      </tr>
+      <tr>
+        <td>PostToolUse</td>
+        <td>自動ログ</td>
+        <td>ツール実行を自動記録</td>
+      </tr>
+      <tr>
+        <td>Stop</td>
+        <td>学習キャプチャ</td>
+        <td>セッション中のエラー・発見をLesson候補として蓄積</td>
+      </tr>
+      <tr>
+        <td>StopFailure</td>
+        <td>APIエラーログ</td>
+        <td>失敗時の詳細を自動記録</td>
+      </tr>
+      <tr>
+        <td>TaskCreated</td>
+        <td>タスク構造検証</td>
+        <td>新規タスクのフォーマット・必須フィールドを自動チェック</td>
+      </tr>
+    </table>
+
+    <div class="info-box">
+      <strong>例:</strong> 誤ってNotionの本番DBに書き込もうとすると → Hookが自動ブロック → 「このDBへの書き込みは許可されていません」とエラー表示。事故を未然に防止。
+    </div>
+
+    <!-- Section: 自己進化 -->
+    <h2 class="section-title" id="learning">自己進化 = 失敗が資産になる仕組み</h2>
+
+    <p>Claude Codeの操作中に発生した失敗・発見・パターンを蓄積し、システム自体を改善していく3層の学習ループ。</p>
+
+    <div class="flow">
+      <div class="flow-step">失敗 / 発見</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Auto-Capture<br><span style="font-size:0.72rem;color:#777;">Stop Hook</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step active">/learn<br><span style="font-size:0.72rem;color:#ccc;">Lesson抽出</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">/evolve<br><span style="font-size:0.72rem;color:#777;">ルール昇格</span></div>
+    </div>
+
+    <h3 class="subsection-title">具体例</h3>
+
+    <table>
+      <tr><th>きっかけ</th><th>Lesson</th><th>昇格先</th></tr>
+      <tr>
+        <td>Notionの本番DBを誤って更新</td>
+        <td>「書き込みは許可スコープを限定すべき」</td>
+        <td>Hook: Notion書き込み制御（exit 2でブロック）</td>
+      </tr>
+      <tr>
+        <td>APIレートリミットで12バッチ中10件失敗</td>
+        <td>「並列数を制御すべき」</td>
+        <td>エージェント設定: maxTurns制限を追加</td>
+      </tr>
+      <tr>
+        <td>勝手に次ステップに進んで手戻り</td>
+        <td>「全ステップ間でユーザー確認を必須化」</td>
+        <td>SKILL.md: 確認必須ルール追加</td>
+      </tr>
+    </table>
+
+    <div class="highlight-box">
+      <strong>信頼度スコア:</strong> 各Lessonは初期0.5 → レビューで+0.2 → 0.7以上で昇格候補。週次レビュー（<code>/weekly</code>）で集計・昇格提案される。
+    </div>
+
+    <!-- Section: 成果 -->
+    <h2 class="section-title" id="results">一元化の成果</h2>
+
+    <h3 class="subsection-title">定量的な効果</h3>
+
+    <table>
+      <tr><th>指標</th><th>内容</th></tr>
+      <tr><td>コンテキストスイッチ</td><td>実質ゼロ — ブラウザ・メーラー・会計ソフトを行き来しない</td></tr>
+      <tr><td>並列処理</td><td>最大12エージェント同時起動で調査・分析を高速化</td></tr>
+      <tr><td>トレーサビリティ</td><td>全操作がGitコミットで追跡可能（「いつ・何を・なぜ」）</td></tr>
+      <tr><td>スキル蓄積</td><td>59のカスタムコマンドで繰り返し作業を一発実行</td></tr>
+      <tr><td>学習資産</td><td>失敗 → Lesson → ルール昇格の自動サイクルで同じミスを防止</td></tr>
+    </table>
+
+    <h3 class="subsection-title">公開済みの成果物（GitHub Pages）</h3>
+
+    <p>Claude Codeから <code>/publish-page</code> で生成・公開したページの一部:</p>
+
+    <table>
+      <tr><th>ページ</th><th>内容</th><th>種別</th></tr>
+      <tr><td>p035-mf-accounting-mcp</td><td>MFクラウド会計MCP検証レポート</td><td><span class="badge badge-ok">検証レポート</span></td></tr>
+      <tr><td>p034-japansauna-seo</td><td>SEO包括分析レポート（17記事）</td><td><span class="badge badge-info">分析レポート</span></td></tr>
+      <tr><td>p032-meeting-feedback-proposal</td><td>面談AIフィードバック提案書</td><td><span class="badge badge-pending">提案書</span></td></tr>
+      <tr><td>p031-kintai-flow-confirmation</td><td>勤怠レポート業務フロー確認</td><td><span class="badge badge-info">確認ページ</span></td></tr>
+      <tr><td>p030-regional-bank-bpo</td><td>地方銀行BPOサービス調査</td><td><span class="badge badge-ok">調査レポート</span></td></tr>
+    </table>
+
+    <div class="highlight-box">
+      <strong>まとめ:</strong> Claude Code は単なるコーディングツールではなく、<strong>業務基盤そのもの</strong>として機能する。リポジトリの構造化 → スキル化 → Hook制御 → 学習ループという段階を経て、「全ての仕事がここから出ていく」一元秘書システムが完成する。
+    </div>
+
+    <div class="report-footer">
+      Claude Code ユースケース紹介 — Generated 2026-03-30 — BPIO co., Ltd.
+    </div>
+  </div>
+
+  <script>
+    const pills = document.querySelectorAll('.pill');
+    const sectionIds = Array.from(pills).map(p => p.getAttribute('href').slice(1));
+    const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          pills.forEach(p => p.classList.remove('active'));
+          const active = document.querySelector('.pill[href="#' + entry.target.id + '"]');
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-80px 0px -80% 0px' });
+    sections.forEach(s => observer.observe(s));
+  </script>
+</body>
+</html>
