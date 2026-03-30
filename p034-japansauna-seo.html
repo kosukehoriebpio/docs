@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Japan Sauna SEO・コンテンツ自動化 進捗レポート — BPIO</title>
+  <style>
+    body {
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: #1a1a1a;
+      background: #fff;
+      line-height: 1.7;
+      margin: 0;
+    }
+    html { font-size: 15px; }
+    #sticky-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.97);
+      border-bottom: 1px solid #ccc;
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    #sticky-nav .nav-label {
+      font-size: 0.72rem; font-weight: 700; color: #777;
+      letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+    }
+    .pill {
+      display: inline-block; padding: 5px 16px;
+      font-size: 0.78rem; font-weight: 600; color: #555;
+      text-decoration: none; border: 1px solid #ccc;
+      border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+    }
+    .pill:hover, .pill.active {
+      background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+    }
+    #main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+    .report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+    .report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+    .report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+    .report-header .summary-box {
+      background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+    }
+    .report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+    .report-header .summary-box ul, .report-header .summary-box ol {
+      padding-left: 20px; font-size: 0.82rem;
+    }
+    .report-header .summary-box li { margin-bottom: 4px; }
+    h2.section-title {
+      font-size: 1.2rem; font-weight: 700;
+      border-bottom: 1px solid #999; padding-bottom: 6px;
+      margin-top: 48px; margin-bottom: 20px;
+    }
+    h3.subsection-title {
+      font-size: 1.0rem; font-weight: 700;
+      margin-top: 32px; margin-bottom: 12px;
+      padding-left: 10px; border-left: 3px solid #555;
+    }
+    h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+    table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+    table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+    table td { background: #fff; }
+    table tr:nth-child(even) td { background: #fafafa; }
+    p { margin-bottom: 10px; font-size: 0.88rem; }
+    ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+    ul li, ol li { margin-bottom: 3px; }
+    .highlight-box {
+      background: #f7f7f7; border: 1px solid #ddd;
+      padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+    }
+    .note-box {
+      background: #fffbeb; border-left: 4px solid #f59e0b;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+    }
+    .info-box {
+      background: #eff6ff; border-left: 4px solid #3b82f6;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f;
+    }
+    .confirm-box {
+      background: #f0fdf4; border-left: 4px solid #22c55e;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #14532d;
+    }
+    .badge {
+      display: inline-block; padding: 2px 10px;
+      font-size: 0.72rem; font-weight: 700;
+      border-radius: 999px; letter-spacing: 0.03em;
+    }
+    .badge-ok { background: #d4edda; color: #155724; }
+    .badge-warn { background: #fff3cd; color: #856404; }
+    .badge-info { background: #d1ecf1; color: #0c5460; }
+    .badge-pending { background: #e2e3e5; color: #383d41; }
+    .badge-ng { background: #f8d7da; color: #721c24; }
+    .flow {
+      display: flex; align-items: center; gap: 0;
+      margin: 20px 0; flex-wrap: wrap; justify-content: center;
+    }
+    .flow-step {
+      background: #f0f0f0; border: 1px solid #ccc;
+      padding: 10px 18px; font-size: 0.82rem; font-weight: 600;
+      text-align: center; min-width: 120px;
+    }
+    .flow-step.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .flow-step.done { background: #d4edda; color: #155724; border-color: #155724; }
+    .flow-arrow { font-size: 1.2rem; color: #999; padding: 0 4px; }
+    .report-footer {
+      border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+      font-size: 0.78rem; color: #777;
+    }
+    .phase-label {
+      display: inline-block; padding: 2px 10px; font-size: 0.72rem; font-weight: 700;
+      border-radius: 999px; letter-spacing: 0.03em; margin-bottom: 8px;
+    }
+    .phase-2a { background: #1a1a1a; color: #fff; }
+    .phase-2b { background: #555; color: #fff; }
+    .phase-2c { background: #999; color: #fff; }
+    .phase-2d { background: #ccc; color: #1a1a1a; }
+    .star { color: #f59e0b; }
+    .meta-desc-block {
+      background: #fafafa; border: 1px solid #ddd; padding: 14px 18px; margin: 8px 0 20px;
+      font-size: 0.82rem;
+    }
+    .meta-desc-block .label { font-weight: 700; font-size: 0.78rem; color: #555; margin-bottom: 4px; }
+    .meta-desc-block .desc-text { font-style: italic; color: #333; line-height: 1.6; }
+    /* Article preview */
+    .article-preview { border: 1px solid #ddd; padding: 24px 28px; margin: 16px 0 24px; background: #fafafa; }
+    .article-preview h3 { font-size: 1.0rem; font-weight: 700; margin-top: 28px; margin-bottom: 10px; padding-left: 10px; border-left: 3px solid #555; }
+    .article-preview h4 { font-size: 0.9rem; font-weight: 700; margin-top: 18px; margin-bottom: 8px; }
+    .article-preview p { font-size: 0.85rem; }
+    .article-preview ul, .article-preview ol { font-size: 0.85rem; }
+    .article-preview table { font-size: 0.8rem; }
+    .article-preview blockquote {
+      border-left: 3px solid #999; padding: 8px 16px; margin: 12px 0;
+      font-size: 0.85rem; color: #555; background: #f7f7f7;
+    }
+    @media (max-width: 640px) {
+      #main { padding: 24px 20px 60px; }
+      .report-header h1 { font-size: 1.3rem; }
+      h2.section-title { font-size: 1.05rem; }
+      table { font-size: 0.78rem; }
+      table th, table td { padding: 5px 7px; }
+      #sticky-nav { padding: 10px 12px; gap: 6px; }
+      .pill { padding: 4px 12px; font-size: 0.72rem; }
+      .article-preview { padding: 16px 14px; }
+    }
+    @media print {
+      #sticky-nav { display: none; }
+      #main { padding: 0; max-width: 100%; }
+      body { font-size: 10pt; }
+      .report-header h1 { font-size: 16pt; }
+      h2.section-title { font-size: 13pt; page-break-after: avoid; }
+      h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+      table { font-size: 8pt; page-break-inside: avoid; }
+      table th, table td { padding: 3px 5px; }
+      .highlight-box, .note-box, .info-box {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      table th {
+        background: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">SECTIONS</span>
+  <a class="pill" href="#overview">概要</a>
+  <a class="pill" href="#analysis">サイト分析</a>
+  <a class="pill" href="#gsc">GSCデータ</a>
+  <a class="pill" href="#strategy">KW戦略</a>
+  <a class="pill" href="#quickwin">クイックウィン</a>
+  <a class="pill" href="#preview">記事プレビュー</a>
+  <a class="pill" href="#next">Next</a>
+</nav>
+
+<div id="main">
+
+  <!-- ===== HEADER ===== -->
+  <header class="report-header">
+    <h1>Japan Sauna SEO・コンテンツ自動化 進捗レポート</h1>
+    <div class="subtitle">p034 — japansauna.jp のSEO戦略・コンテンツ量産体制構築</div>
+    <div class="summary-box">
+      <h3>サマリー</h3>
+      <ul>
+        <li><strong>対象サイト:</strong> japansauna.jp（セブンリッチグループ サウナ事業）</li>
+        <li><strong>フェーズ:</strong> Phase 1（分析）完了 / Phase 2（戦略）完了 / Phase 3（実行）進行中</li>
+        <li><strong>GSC実績（過去90日）:</strong> クリック 3,937 / インプレッション 228,489 / 平均順位 9.4</li>
+        <li><strong>新規記事候補:</strong> 16本特定（うち最優先3本のうち1本の下書き完了）</li>
+        <li><strong>既存記事クイックウィン:</strong> 7件（meta description改善案作成済み）</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- ===== SECTION 1: プロジェクト概要 ===== -->
+  <h2 class="section-title" id="overview">1. プロジェクト概要</h2>
+
+  <h3 class="subsection-title">背景</h3>
+  <p>japansauna.jp は現在、月2本ペースでコラム記事を公開しています。記事品質は高い（独自アンケート全記事掲載、専門性のある構成）ものの、公開頻度がSEO成長のボトルネックとなっています。本プロジェクトでは、品質を維持しつつ<strong>月8〜10本</strong>の記事量産体制を構築することを目標とします。</p>
+
+  <h3 class="subsection-title">ゴール</h3>
+  <p>3フェーズに分けて段階的に推進します。</p>
+
+  <div class="flow">
+    <div class="flow-step done">Phase 1<br>分析 ✓</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step done">Phase 2<br>戦略 ✓</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step active">Phase 3<br>実行（進行中）</div>
+  </div>
+
+  <table>
+    <tr><th>フェーズ</th><th>内容</th><th>ステータス</th></tr>
+    <tr><td>Phase 1 — 分析</td><td>サイト技術構成の調査、GSCデータ取得、競合分析、既存コンテンツ評価</td><td><span class="badge badge-ok">完了</span></td></tr>
+    <tr><td>Phase 2 — 戦略</td><td>キーワード戦略策定、記事候補選定、優先度付け、競合ギャップ分析</td><td><span class="badge badge-ok">完了</span></td></tr>
+    <tr><td>Phase 3 — 実行</td><td>記事下書き生成、meta改善、技術的SEO改善提案</td><td><span class="badge badge-warn">進行中</span></td></tr>
+  </table>
+
+  <!-- ===== SECTION 2: サイト分析結果 ===== -->
+  <h2 class="section-title" id="analysis">2. サイト分析結果</h2>
+
+  <h3 class="subsection-title">サイト技術構成</h3>
+  <table>
+    <tr><th>項目</th><th>内容</th></tr>
+    <tr><td>フレームワーク</td><td>Nuxt.js（SPA/SSR）</td></tr>
+    <tr><td>CMS</td><td>Nuxt Studio CMS</td></tr>
+    <tr><td>ホスティング</td><td>Firebase Hosting</td></tr>
+    <tr><td>コラム記事数</td><td>17本</td></tr>
+    <tr><td>制作事例</td><td>3件</td></tr>
+  </table>
+
+  <h3 class="subsection-title">既存記事の成功パターン</h3>
+  <p>既存17記事を分析した結果、以下の成功パターンが確認されました。</p>
+  <ul>
+    <li><strong>タイトル形式:</strong> 2パターン（「〇〇を解説！」型 / 「〇〇まとめ」型）</li>
+    <li><strong>H2見出し:</strong> 各記事4〜7本（適切な分量）</li>
+    <li><strong>独自アンケート:</strong> 全記事に掲載（強力な差別化要因）</li>
+    <li><strong>内部リンク:</strong> 記事間で相互リンクあり（クラスター構造の萌芽）</li>
+  </ul>
+
+  <h3 class="subsection-title">技術的SEO課題（優先度高）</h3>
+  <table>
+    <tr><th>#</th><th>課題</th><th>優先度</th><th>影響範囲</th></tr>
+    <tr><td>1</td><td>Core Web Vitals未検証（SPA構成でJS比率16.7倍）</td><td><span class="badge badge-warn">高</span></td><td>全ページ</td></tr>
+    <tr><td>2</td><td>Googlebotレンダリング未検証</td><td><span class="badge badge-warn">高</span></td><td>全ページ</td></tr>
+    <tr><td>3</td><td>H1タグ未設定（全記事）</td><td><span class="badge badge-warn">高</span></td><td>全記事</td></tr>
+    <tr><td>4</td><td>Meta description未設定（全記事）</td><td><span class="badge badge-warn">高</span></td><td>全記事</td></tr>
+    <tr><td>5</td><td>Canonical URL未設定（全記事）</td><td><span class="badge badge-warn">高</span></td><td>全記事</td></tr>
+    <tr><td>6</td><td>JSON-LD未実装</td><td><span class="badge badge-info">中</span></td><td>全ページ</td></tr>
+    <tr><td>7</td><td>モバイル対応未検証</td><td><span class="badge badge-info">中</span></td><td>全ページ</td></tr>
+  </table>
+
+  <div class="note-box">
+    <strong>注意:</strong> H1・meta description・canonical URLの未設定は、全記事共通の課題です。CMS（Nuxt Studio）側での一括対応が効率的です。
+  </div>
+
+  <!-- ===== SECTION 3: GSCパフォーマンスデータ ===== -->
+  <h2 class="section-title" id="gsc">3. GSCパフォーマンスデータ</h2>
+
+  <h3 class="subsection-title">全体サマリー（過去90日）</h3>
+  <div class="highlight-box">
+    <table style="margin:0;">
+      <tr><th>クリック</th><th>インプレッション</th><th>CTR</th><th>平均順位</th></tr>
+      <tr><td><strong>3,937</strong></td><td><strong>228,489</strong></td><td><strong>1.72%</strong></td><td><strong>9.4</strong></td></tr>
+    </table>
+  </div>
+
+  <h3 class="subsection-title">ページ別 TOP10</h3>
+  <table>
+    <tr><th>ページ</th><th>Clicks</th><th>Imp.</th><th>CTR</th><th>順位</th></tr>
+    <tr><td>トップ (/)</td><td>267</td><td>13,341</td><td>2.00%</td><td>13.0</td></tr>
+    <tr><td>MistSauna-Home</td><td>205</td><td>9,458</td><td>2.17%</td><td>5.5</td></tr>
+    <tr><td>Sauna-home-cost</td><td>174</td><td>17,651</td><td>0.99%</td><td>8.0</td></tr>
+    <tr><td>Sauna-homegarden</td><td>125</td><td>5,333</td><td>2.34%</td><td>8.1</td></tr>
+    <tr><td>TentSauna-Home</td><td>93</td><td>7,085</td><td>1.31%</td><td>6.7</td></tr>
+    <tr><td>coldwater-bath-home</td><td>84</td><td>5,070</td><td>1.66%</td><td>6.5</td></tr>
+    <tr><td>HomeSauna-Outdoor</td><td>71</td><td>5,088</td><td>1.40%</td><td>7.6</td></tr>
+    <tr><td>Bathhouse-SaunaHome</td><td>58</td><td>6,776</td><td>0.86%</td><td>6.4</td></tr>
+    <tr><td>home-sauna-regret</td><td>46</td><td>2,142</td><td>2.15%</td><td>7.0</td></tr>
+    <tr><td>homesauna-costs</td><td>23</td><td>4,042</td><td>0.57%</td><td>6.6</td></tr>
+  </table>
+
+  <h3 class="subsection-title">クイックウィン機会</h3>
+  <div class="highlight-box">
+    <strong>高インプレッション × 低CTR = 改善余地が大きいページ</strong>
+    <ul>
+      <li><strong>Sauna-home-cost:</strong> Imp. 17,651 に対し CTR 0.99% — meta description追加で大幅改善が見込める</li>
+      <li><strong>Bathhouse-SaunaHome:</strong> Imp. 6,776 に対し CTR 0.86% — タイトル・desc最適化で改善</li>
+      <li><strong>homesauna-costs:</strong> Imp. 4,042 に対し CTR 0.57% — desc未設定、追加で即効性あり</li>
+    </ul>
+    <p style="margin-bottom:0;">これらのページは<strong>新規記事作成なしでクリック数を増やせる</strong>即効性の高い施策です。</p>
+  </div>
+
+  <!-- ===== SECTION 4: キーワード戦略・記事制作計画 ===== -->
+  <h2 class="section-title" id="strategy">4. キーワード戦略・記事制作計画</h2>
+
+  <h3 class="subsection-title">新規記事候補 16本（4フェーズ）</h3>
+
+  <h4><span class="phase-label phase-2a">Phase 2A</span> 最優先（即効性・競合カバー）</h4>
+  <table>
+    <tr><th>#</th><th>記事テーマ</th><th>備考</th></tr>
+    <tr><td>1</td><td>既存記事のmeta/title改善（クイックウィン7件）</td><td>新規作成不要・即効性最大</td></tr>
+    <tr><td>2</td><td><span class="star">★</span> 自宅サウナの間取り・動線設計ガイド</td><td>競合全社カバー・<strong>下書き完了</strong></td></tr>
+    <tr><td>3</td><td><span class="star">★</span> マンション・賃貸でサウナ導入</td><td>競合多数・ニーズ高</td></tr>
+    <tr><td>4</td><td><span class="star">★</span> 家庭用サウナメーカー比較2026年版</td><td>購買直結KW</td></tr>
+  </table>
+
+  <h4><span class="phase-label phase-2b">Phase 2B</span> GSCデータ連動</h4>
+  <table>
+    <tr><th>#</th><th>記事テーマ</th><th>備考</th></tr>
+    <tr><td>5</td><td>お風呂をサウナ化する方法</td><td>GSC 500+ imp</td></tr>
+    <tr><td>6</td><td>簡易サウナの選び方</td><td>GSC 229 imp</td></tr>
+    <tr><td>7</td><td>建築基準法・消防法まとめ</td><td>権威性構築</td></tr>
+    <tr><td>8</td><td>サウナDIY自作ガイド</td><td>ロングテール</td></tr>
+  </table>
+
+  <h4><span class="phase-label phase-2c">Phase 2C</span> トピッククラスター拡張</h4>
+  <table>
+    <tr><th>#</th><th>記事テーマ</th><th>備考</th></tr>
+    <tr><td>9</td><td>電気代・100V vs 200V比較</td><td>既存記事と連携</td></tr>
+    <tr><td>10</td><td>ロウリュの楽しみ方</td><td>体験系コンテンツ</td></tr>
+    <tr><td>11</td><td>お手入れ・カビ対策</td><td>保守系コンテンツ</td></tr>
+    <tr><td>12</td><td>ドライvsウェットサウナ</td><td>比較系コンテンツ</td></tr>
+  </table>
+
+  <h4><span class="phase-label phase-2d">Phase 2D</span> ロングテール・ニッチ</h4>
+  <table>
+    <tr><th>#</th><th>記事テーマ</th><th>備考</th></tr>
+    <tr><td>13</td><td>注文住宅サウナ設置</td><td>高単価ユーザー向け</td></tr>
+    <tr><td>14</td><td>サウナダイエット効果</td><td>健康系KW</td></tr>
+    <tr><td>15</td><td>水風呂チラー導入</td><td>購買直結</td></tr>
+    <tr><td>16</td><td>テントサウナ法規制</td><td>権威性構築</td></tr>
+  </table>
+
+  <h3 class="subsection-title">競合分析サマリー</h3>
+  <table>
+    <tr><th>競合</th><th>特徴</th><th>記事数</th><th>強み</th><th>弱み</th></tr>
+    <tr><td>SAUNAGE</td><td>サウナ専門メディア</td><td>多数</td><td>網羅的なコンテンツ量</td><td>独自調査なし</td></tr>
+    <tr><td>METOS</td><td>業務用サウナメーカー</td><td>中程度</td><td>専門知識・事例豊富</td><td>家庭向け情報が薄い</td></tr>
+    <tr><td>bros-sauna</td><td>家庭用サウナ販売</td><td>中程度</td><td>商品比較に強い</td><td>SEO最適化が不十分</td></tr>
+    <tr><td>idetox</td><td>サウナ設備販売</td><td>少数</td><td>施工事例が豊富</td><td>コラム記事が少ない</td></tr>
+    <tr><td>SUUMO</td><td>住宅情報大手</td><td>少数</td><td>ドメイン権威性が圧倒的</td><td>サウナ専門性は低い</td></tr>
+  </table>
+
+  <div class="highlight-box">
+    <strong>japansauna.jp の差別化ポイント:</strong> 全記事に独自アンケート調査を掲載しており、E-E-A-T（経験・専門性・権威性・信頼性）の「経験」軸で競合優位を構築できる。この強みを新規記事でも一貫して活用する。
+  </div>
+
+  <!-- ===== SECTION 5: クイックウィン ===== -->
+  <h2 class="section-title" id="quickwin">5. クイックウィン — meta description改善案</h2>
+
+  <p>以下の7記事について、meta description改善案を作成済みです。いずれも現在meta descriptionが未設定のため、追加するだけでCTR改善が見込めます。</p>
+
+  <!-- 1. MistSauna -->
+  <h4>1. MistSauna-Home — ミストサウナとは？</h4>
+  <table>
+    <tr><th>現CTR</th><td>2.17%</td><th>Imp.</th><td>9,458</td><th>順位</th><td>5.5</td></tr>
+  </table>
+  <div class="meta-desc-block">
+    <div class="label">改善案 meta description:</div>
+    <div class="desc-text">ミストサウナとは低温・高湿度で体を温めるサウナの一種。自宅への設置方法やメリット・デメリット、実際の美容・健康効果を解説。導入経験者へのアンケートでは約90%が満足と回答。費用相場や浴室への後付け方法も紹介します。</div>
+  </div>
+
+  <!-- 2. Sauna-home-cost -->
+  <h4>2. Sauna-home-cost — 自宅サウナの費用</h4>
+  <table>
+    <tr><th>現CTR</th><td>0.99%</td><th>Imp.</th><td>17,651</td><th>順位</th><td>8.0</td></tr>
+  </table>
+  <div class="meta-desc-block">
+    <div class="label">改善案 meta description:</div>
+    <div class="desc-text">自宅サウナの設置費用は30万円〜300万円以上。屋内型・屋外型・リフォーム型の費用相場を解説。実際にサウナを導入した81名へのアンケートで判明したリアルな価格帯や月々の電気代も紹介。家庭用サウナの値段で失敗しないためのポイントをまとめました。</div>
+  </div>
+
+  <!-- 3. coldwater-bath-home -->
+  <h4>3. coldwater-bath-home — 自宅に水風呂を設置</h4>
+  <table>
+    <tr><th>現CTR</th><td>1.66%</td><th>Imp.</th><td>5,070</td><th>順位</th><td>6.5</td></tr>
+  </table>
+  <div class="meta-desc-block">
+    <div class="label">改善案 meta description:</div>
+    <div class="desc-text">自宅に水風呂を設置する方法と費用を解説。サウナ後の水風呂の健康効果や「ととのい」の仕組みも紹介。導入経験者100名への独自調査で判明した満足度やおすすめの水温設定、設置時の注意点をまとめました。自宅サウナの水風呂で本格的なととのい体験を。</div>
+  </div>
+
+  <!-- 4. home-sauna-regret -->
+  <h4>4. home-sauna-regret — サウナで後悔しないために</h4>
+  <table>
+    <tr><th>現CTR</th><td>2.15%</td><th>Imp.</th><td>2,142</td><th>順位</th><td>7.0</td></tr>
+  </table>
+  <div class="meta-desc-block">
+    <div class="label">改善案 meta description:</div>
+    <div class="desc-text">家庭用サウナで後悔しないためのポイントを解説。購入経験者100名へのアンケートでは電気代（34%）・メンテナンス（33%）・使用頻度低下（32%）が主な後悔ポイント。デメリットと対策法、導入前に確認すべきチェックリストを紹介します。</div>
+  </div>
+
+  <!-- 5. homesauna-costs -->
+  <h4>5. homesauna-costs — 自宅サウナの維持費</h4>
+  <table>
+    <tr><th>現CTR</th><td>0.57%</td><th>Imp.</th><td>4,042</td><th>順位</th><td>6.6</td></tr>
+  </table>
+  <div class="meta-desc-block">
+    <div class="label">改善案 meta description:</div>
+    <div class="desc-text">自宅サウナの維持費は月5,000〜10,000円前後。電気代・水道代・メンテナンス費の内訳を独自調査で解説。導入者100名のリアルなランニングコストを公開。サウナ施設に通う場合との費用比較や、維持費を抑えるコツも紹介します。</div>
+  </div>
+
+  <!-- 6. Bathhouse-SaunaHome -->
+  <h4>6. Bathhouse-SaunaHome — お風呂でサウナ気分</h4>
+  <table>
+    <tr><th>現CTR</th><td>0.86%</td><th>Imp.</th><td>6,776</td><th>順位</th><td>6.4</td></tr>
+  </table>
+  <div class="meta-desc-block">
+    <div class="label">改善案 meta description:</div>
+    <div class="desc-text">自宅のお風呂でサウナ気分を楽しむ方法を解説。お風呂のサウナ化に必要なグッズや簡易的な方法から、本格的なミストサウナ・スチームサウナの後付けまで比較。銭湯サウナとの費用比較や、自宅サウナならではのメリットも紹介します。</div>
+  </div>
+
+  <!-- 7. single-person-sauna -->
+  <h4>7. single-person-sauna — 1人用サウナ</h4>
+  <table>
+    <tr><th>現CTR</th><td>0.57%</td><th>Imp.</th><td>—</td><th>順位</th><td>—</td></tr>
+  </table>
+  <div class="meta-desc-block">
+    <div class="label">改善案 meta description:</div>
+    <div class="desc-text">自宅に1人用サウナを設置する際のポイントを解説。省スペースで設置できるコンパクトサウナの種類や費用相場、賃貸・マンションでも楽しむ方法を紹介。実際に導入した方の口コミや選び方のコツもまとめました。</div>
+  </div>
+
+  <div class="note-box">
+    <strong>実施方法:</strong> meta descriptionの追加は Nuxt Studio CMS 側での設定変更が必要です。各記事のfrontmatter（YAMLヘッダー）に <code>description</code> フィールドを追加し、nuxt.config の head 設定で出力されるよう構成します。
+  </div>
+
+  <!-- ===== SECTION 6: 記事プレビュー ===== -->
+  <h2 class="section-title" id="preview">6. 記事1 下書きプレビュー — 自宅サウナの間取り・動線設計</h2>
+
+  <p>Phase 2A の最優先記事「自宅サウナの間取り・動線設計ガイド」の下書き全文です。</p>
+
+  <div class="note-box">
+    <strong>プレースホルダーについて:</strong> <code>{{○○}}</code> の形式で表示されている箇所は、アンケート実施後に実数値に差し替えます。
+  </div>
+
+  <div class="article-preview">
+
+    <!-- meta -->
+    <h4>meta description（140字）</h4>
+    <div class="meta-desc-block">
+      <div class="desc-text">自宅サウナの間取りと動線設計を徹底解説。導入経験者100名のアンケートでは<span style="background:#fffbeb;padding:1px 4px;">{{○○}}</span>%が動線設計の重要性を実感。サウナ室の広さ・水風呂の配置・ととのいスペースの確保まで、失敗しない間取りの考え方と実例を紹介します。</div>
+    </div>
+
+    <h4>記事タイトル</h4>
+    <p><strong style="font-size:1.05rem;">自宅サウナの間取りと動線設計を解説！導入経験者100名の失敗談も紹介</strong></p>
+
+    <div class="info-box">[画像: 自然光が差し込むモダンな自宅サウナ空間の全景写真。サウナ室・水風呂・ととのいスペースが一体的に配置された間取りが伝わる構図]</div>
+
+    <!-- 導入文 -->
+    <h3>導入文</h3>
+    <p>「自宅にサウナを作りたいけれど、どこに配置すればいいのかわからない」「サウナ室の広さはどのくらい必要？水風呂やととのいスペースはどう配置するの？」――新築やリフォームで自宅サウナの導入を検討している方の多くが、間取りと動線設計に悩んでいます。</p>
+    <p>自宅サウナは、商業施設とは異なり限られたスペースの中で「サウナ室」「水風呂（冷水シャワー）」「ととのいスペース」の3要素を適切に配置する必要があります。この動線が不適切だと、せっかくのサウナ体験が半減してしまうことも。実際に自宅サウナを導入した100名へのアンケートでは、<strong><span style="background:#fffbeb;padding:1px 4px;">{{○○}}</span>%が「動線設計をもっと慎重に考えればよかった」と回答</strong>しています。</p>
+    <p>この記事では、自宅サウナに必要な間取りの基本知識から、失敗しない動線設計の具体的な手順、費用や注意点までを網羅的に解説します。理想のサウナライフを実現するための間取り設計に、ぜひお役立てください。</p>
+
+    <div class="highlight-box"><strong>Japan Saunaの商品情報はこちら</strong> → <a href="https://japansauna.jp/" target="_blank">https://japansauna.jp/</a></div>
+
+    <!-- H2-1 -->
+    <h3>自宅サウナの間取りに必要な基本知識</h3>
+    <p>自宅サウナを検討する際、まず理解しておくべきなのが「サウナ体験を構成する3つの要素」と「それぞれに必要なスペース」です。ここでは間取りを考える前提として押さえておきたい基礎知識を解説します。</p>
+
+    <h4>サウナ体験を構成する3つのゾーン</h4>
+    <ol>
+      <li><strong>サウナ室（ホットゾーン）:</strong> 高温で発汗を促すメインの空間です。自宅用では乾式（ドライサウナ）とスチーム式（ミストサウナ）の2種類が一般的です。</li>
+      <li><strong>水風呂・冷水シャワー（コールドゾーン）:</strong> サウナ後に身体を冷やすための空間です。専用の水風呂を設置する方法と、既存の浴室シャワーを活用する方法があります。</li>
+      <li><strong>ととのいスペース（レストゾーン）:</strong> 加温と冷却の後に身体を休める空間です。外気浴ができるバルコニーやテラス、または室内の休憩スペースが該当します。</li>
+    </ol>
+    <p>この3つのゾーンを<strong>いかにスムーズな動線で結ぶか</strong>が、自宅サウナの間取り設計における最大のポイントとなります。</p>
+
+    <h4>サウナ室の広さの目安</h4>
+    <ul>
+      <li><strong>1人用:</strong> 約0.75畳（幅0.9m x 奥行1.2m程度）。最小限のスペースで、座って利用する形式です。</li>
+      <li><strong>2人用:</strong> 約1〜1.5畳（幅1.2m x 奥行1.5m程度）。夫婦やパートナーと一緒に利用できるサイズです。</li>
+      <li><strong>3〜4人用:</strong> 約2〜3畳（幅1.8m x 奥行2.0m程度）。家族やゲストとの利用も想定した余裕のあるサイズです。</li>
+    </ul>
+    <p>なお、建築基準法では居室の天井高は2.1m以上と定められていますが、サウナ室は一般的に「居室」には該当しないと解釈されるケースが多く、天井高を1.8〜2.0m程度に抑えることで効率的に室温を上げることが可能です（※自治体により解釈が異なる場合があるため、設計段階で必ず確認してください）。また、換気設備については建築基準法第28条に基づく換気基準への適合が求められる場合がありますので、設計時に専門家への相談をおすすめします。</p>
+
+    <div class="info-box">[画像: サウナ室の広さ別（1人用・2人用・4人用）の平面寸法図。各サイズの畳数とメートル寸法を図示]</div>
+
+    <h4>水風呂・ととのいスペースに必要な面積</h4>
+    <ul>
+      <li><strong>水風呂:</strong> 専用の水風呂を設置する場合、最低でも幅0.7m x 奥行1.0m x 深さ0.5m程度のスペースが必要です。既存の浴槽を冷水で満たして代用する方法もあります。水風呂の設置について詳しくは、<a href="https://japansauna.jp/column/coldwater-bath-home" target="_blank">自宅に水風呂を設置するポイント</a>をご覧ください。</li>
+      <li><strong>ととのいスペース:</strong> リクライニングチェアやインフィニティチェア（背もたれが大きく倒れるアウトドアチェア）を1脚置く場合、約1畳（1.8m x 0.9m）程度は確保したいところです。外気浴を楽しむなら、バルコニーやテラスに2畳以上のスペースがあると快適です。</li>
+    </ul>
+
+    <h4>電気容量と設備面の前提条件</h4>
+    <ul>
+      <li><strong>家庭用電気サウナ:</strong> 一般的に100V/200Vで消費電力は2〜6kW程度。既存の電気契約容量（一般家庭で40〜60A）では不足する場合があり、契約変更や分電盤の増設が必要になることがあります。</li>
+      <li><strong>排水設備:</strong> 水風呂を設置する場合は、排水経路の確保が必要です。既存の浴室に隣接させることで排水工事のコストを抑えられます。</li>
+      <li><strong>断熱・防水:</strong> サウナ室周辺は高温多湿になるため、適切な断熱材と防水処理が不可欠です。</li>
+    </ul>
+
+    <!-- H2-2 アンケート -->
+    <h3>【独自アンケート】自宅サウナ導入経験者100名に聞いた間取りの満足度</h3>
+    <p>Japan Saunaでは、自宅サウナを実際に導入した方100名を対象に、間取りと動線設計に関するアンケート調査を実施しました。</p>
+
+    <div class="highlight-box">
+      <strong>【独自アンケート調査】</strong><br>
+      調査対象: 自宅サウナ導入経験者 100名<br>
+      調査方法: インターネットアンケート<br>
+      実施期間: <span style="background:#fffbeb;padding:1px 4px;">{{2026年MM月DD日〜MM月DD日}}</span>
+    </div>
+
+    <h4>間取りの満足度</h4>
+    <div class="info-box">[グラフ: 自宅サウナの間取りに対する満足度を5段階で示した棒グラフ]</div>
+    <p>主な結果:</p>
+    <ul>
+      <li>間取りに「とても満足」「満足」と回答した人: <span style="background:#fffbeb;padding:1px 4px;">{{○○}}</span>%</li>
+      <li>「どちらともいえない」と回答した人: <span style="background:#fffbeb;padding:1px 4px;">{{○○}}</span>%</li>
+      <li>「不満」「とても不満」と回答した人: <span style="background:#fffbeb;padding:1px 4px;">{{○○}}</span>%</li>
+    </ul>
+
+    <h4>間取りで最も後悔したポイント</h4>
+    <div class="info-box">[グラフ: 間取りで後悔したポイントの上位5項目を示した横棒グラフ]</div>
+    <p>主な結果:</p>
+    <ul>
+      <li>動線が悪く移動が面倒: <span style="background:#fffbeb;padding:1px 4px;">{{○○}}</span>%</li>
+      <li>ととのいスペースが狭すぎた: <span style="background:#fffbeb;padding:1px 4px;">{{○○}}</span>%</li>
+      <li>水風呂までの距離が遠い: <span style="background:#fffbeb;padding:1px 4px;">{{○○}}</span>%</li>
+      <li>サウナ室が思ったより狭かった: <span style="background:#fffbeb;padding:1px 4px;">{{○○}}</span>%</li>
+      <li>換気・湿気対策が不十分だった: <span style="background:#fffbeb;padding:1px 4px;">{{○○}}</span>%</li>
+    </ul>
+
+    <h4>間取り設計で重視すべきだったこと</h4>
+    <div class="info-box">[グラフ: 「設計時にもっと重視すべきだった」と思う項目の円グラフ]</div>
+    <p>主な結果:</p>
+    <ul>
+      <li>動線のスムーズさ: <span style="background:#fffbeb;padding:1px 4px;">{{○○}}</span>%</li>
+      <li>ととのいスペースの広さ: <span style="background:#fffbeb;padding:1px 4px;">{{○○}}</span>%</li>
+      <li>水回りとの近接性: <span style="background:#fffbeb;padding:1px 4px;">{{○○}}</span>%</li>
+      <li>家族の生活動線との分離: <span style="background:#fffbeb;padding:1px 4px;">{{○○}}</span>%</li>
+    </ul>
+    <p>このアンケート結果から、<strong>動線設計が自宅サウナの満足度を大きく左右する</strong>ことがわかります。</p>
+
+    <!-- H2-3 5ステップ -->
+    <h3>失敗しない自宅サウナの間取り設計 5つのステップ</h3>
+
+    <h4>ステップ1 ─ サウナの種類と設置場所を決める</h4>
+    <p>まず最初に決めるのは、<strong>サウナの種類</strong>と<strong>設置場所</strong>です。</p>
+    <table>
+      <tr><th>サウナ種類</th><th>特徴</th><th>必要スペース</th><th>間取りへの影響</th></tr>
+      <tr><td>屋内据え置き型</td><td>既存の室内に設置</td><td>1〜3畳+周囲の余裕</td><td>浴室隣接が理想</td></tr>
+      <tr><td>屋内造作型</td><td>建築時に組み込む</td><td>1〜4畳</td><td>設計自由度が高い</td></tr>
+      <tr><td>屋外独立型</td><td>庭・テラスに設置</td><td>設置面積+動線スペース</td><td>母屋との動線が課題</td></tr>
+      <tr><td>バレルサウナ</td><td>庭に樽型を設置</td><td>直径2m前後の円形</td><td>搬入経路の確保が必要</td></tr>
+    </table>
+    <p><strong>設置場所の候補:</strong></p>
+    <ul>
+      <li><strong>浴室隣接型:</strong> 水回り設備を共有できるため、コストを抑えやすい。リフォームで特に有効。詳しくは<a href="https://japansauna.jp/column/renovation-sauna" target="_blank">リフォームでサウナ導入する方法</a>をご参照ください。</li>
+      <li><strong>ガレージ・地下室型:</strong> 防音性が高く、生活空間への影響が少ない。</li>
+      <li><strong>庭・テラス型:</strong> 外気浴と組み合わせやすい。詳細は<a href="https://japansauna.jp/column/HomeSauna-Outdoor" target="_blank">屋外サウナの設置方法</a>で解説。</li>
+    </ul>
+    <div class="info-box">[画像: 浴室隣接型・ガレージ型・庭テラス型の3パターンの間取り概略図を並べた比較図]</div>
+
+    <h4>ステップ2 ─ 3ゾーンの配置を決める</h4>
+    <p><strong>配置の基本原則:</strong></p>
+    <ol>
+      <li><strong>直線動線の確保:</strong> サウナ室 → 水風呂 → ととのいスペースの順に、できるだけ直線的に移動できる配置が理想。</li>
+      <li><strong>水風呂はサウナ室の隣に:</strong> サウナ室と水風呂（冷水シャワー）は隣接させるのが鉄則。</li>
+      <li><strong>ととのいスペースは最後に:</strong> 水風呂で冷やした後、すぐに休憩できる場所を確保。</li>
+    </ol>
+    <p><strong>推奨する配置パターン:</strong></p>
+    <ul>
+      <li><strong>パターンA（浴室一体型）:</strong> 浴室の隣にサウナ室を設け、浴室の浴槽を水風呂として活用。ととのいスペースは脱衣所または隣接するバルコニーに設置。</li>
+      <li><strong>パターンB（屋外連続型）:</strong> 庭にサウナ小屋を設置し、隣に水風呂（チラー付き）を配置。ウッドデッキ上にととのいチェアを設置。</li>
+      <li><strong>パターンC（地下室活用型）:</strong> 地下室にサウナ室と水風呂を設け、1階テラスに出てととのいスペースとする。</li>
+    </ul>
+
+    <h4>ステップ3 ─ サウナ動線を最適化する</h4>
+    <ul>
+      <li><strong>移動距離の最短化:</strong> サウナ室から水風呂まで3〜5歩（2〜3m以内）が理想。</li>
+      <li><strong>段差の排除:</strong> 転倒防止の観点からフラットな動線を確保。</li>
+      <li><strong>滑りにくい床材:</strong> タイルやテラコッタなど水に強く滑りにくい素材を選択。</li>
+      <li><strong>プライバシーの確保:</strong> 家族の生活動線や外部からの視線と交差しない設計が重要。</li>
+    </ul>
+    <div class="info-box">[画像: 理想的な自宅サウナ動線の平面図。サウナ室→水風呂→ととのいスペースの動線を矢印で示し、距離と所要歩数を記載]</div>
+
+    <h4>ステップ4 ─ 換気・排水・電気の設備動線を計画する</h4>
+    <p><strong>換気計画:</strong> サウナ室の換気回数は1時間あたり3〜6回が目安。吸気口はヒーター付近の低い位置に、排気口は対角の高い位置に設けるのが一般的。</p>
+    <p><strong>排水計画:</strong> 水風呂を設置する場合、排水管の勾配確保が重要。既存の浴室排水に接続する場合は、配管距離が短くなるよう間取りを工夫。</p>
+    <p><strong>電気設備計画:</strong> 200V電源が必要な場合は、分電盤からサウナ室まで専用回路を引く必要があります。</p>
+
+    <h4>ステップ5 ─ 家族の生活動線との両立を確認する</h4>
+    <ul>
+      <li><strong>サウナ動線と生活動線の分離:</strong> リビングやキッチンを通らずに移動できるルートを確保。</li>
+      <li><strong>音の問題:</strong> サウナヒーターの稼働音やロウリュ時の音が寝室やリビングに響かないよう防音対策。</li>
+      <li><strong>湿気の影響:</strong> サウナ室周辺の湿気が他の居室に影響しないよう換気経路と防湿処理を計画。</li>
+      <li><strong>来客時の動線:</strong> ゲストをサウナに招く可能性がある場合は、玄関からサウナまでの専用動線を検討。</li>
+    </ul>
+
+    <!-- H2-4 注意点 -->
+    <h3>自宅サウナの間取りで失敗しないための注意点</h3>
+
+    <h4>失敗例1 ─ ととのいスペースを後回しにした</h4>
+    <p>最も多い失敗が、<strong>ととのいスペースの確保を後回しにしてしまう</strong>ケースです。</p>
+    <p><strong>対策:</strong> 間取り設計の初期段階から、ととのいスペースを3ゾーンの1つとして明確に位置づけ、最低1畳以上のスペースを確保しましょう。</p>
+
+    <h4>失敗例2 ─ 水回りから離れた場所に設置した</h4>
+    <p><strong>対策:</strong> 可能な限り既存の浴室・洗面所に隣接した場所を選びましょう。水回りを集約した間取りにすることで配管工事のコストを大幅に抑えられます。</p>
+
+    <h4>失敗例3 ─ 将来の変更を想定していなかった</h4>
+    <p><strong>対策:</strong> 壁を取り外せる構造にしておく、配管のための下地を先行して施工しておく、電気容量に余裕を持たせるなどの工夫が有効です。</p>
+
+    <h4>失敗例4 ─ 近隣への配慮が不足していた</h4>
+    <p><strong>対策:</strong> 屋外設置の場合は、設置位置を隣地境界から十分に離し、煙突の向きや排気方向を考慮した間取りにしましょう。</p>
+
+    <div class="info-box">[画像: 自宅サウナの間取りにおける「よくある失敗」と「改善例」のビフォーアフター間取り図]</div>
+
+    <!-- H2-5 費用 -->
+    <h3>自宅サウナの間取り変更にかかる費用と期間の目安</h3>
+
+    <h4>設置タイプ別の費用目安</h4>
+    <table>
+      <tr><th>設置タイプ</th><th>サウナ本体</th><th>設置工事</th><th>合計目安</th></tr>
+      <tr><td>屋内据え置き型（1〜2人用）</td><td>50〜150万円</td><td>20〜50万円</td><td>70〜200万円</td></tr>
+      <tr><td>屋内造作型（2〜4人用）</td><td>100〜300万円</td><td>50〜150万円</td><td>150〜450万円</td></tr>
+      <tr><td>屋外バレルサウナ</td><td>80〜250万円</td><td>10〜30万円</td><td>90〜280万円</td></tr>
+      <tr><td>屋外ログサウナ（独立型）</td><td>150〜400万円</td><td>30〜80万円</td><td>180〜480万円</td></tr>
+    </table>
+    <p style="font-size:0.8rem;color:#777;">※上記費用は業界相場をもとにした概算目安です。実際の費用はサウナの仕様・設置環境・地域により大きく異なります。</p>
+    <p>上記に加えて、<strong>水風呂の新設</strong>には20〜80万円程度、<strong>電気容量の変更・専用回路の増設</strong>には5〜20万円程度が追加で必要になる場合があります。費用の詳細は<a href="https://japansauna.jp/column/Sauna-home-cost" target="_blank">自宅サウナの費用相場まとめ</a>をご覧ください。</p>
+
+    <div class="info-box">[グラフ: 設置タイプ別の費用レンジを示した横棒グラフ]</div>
+
+    <h4>工期の目安</h4>
+    <table>
+      <tr><th>設置タイプ</th><th>工期目安</th></tr>
+      <tr><td>屋内据え置き型</td><td>1〜2週間</td></tr>
+      <tr><td>屋内造作型（リフォーム）</td><td>2〜6週間</td></tr>
+      <tr><td>屋内造作型（新築に組み込み）</td><td>建築工期に含む</td></tr>
+      <tr><td>屋外バレルサウナ</td><td>搬入・設置で1〜3日</td></tr>
+      <tr><td>屋外ログサウナ</td><td>基礎工事含め2〜4週間</td></tr>
+    </table>
+    <p>新築に組み込む場合は、<strong>設計段階（着工の3〜6か月前）からサウナの間取りを盛り込む</strong>のが理想です。</p>
+
+    <h4>コストを抑える間取りの工夫</h4>
+    <ul>
+      <li><strong>浴室隣接配置:</strong> 給排水管の新設を最小限に抑えられます。</li>
+      <li><strong>1階への設置:</strong> 2階以上への設置は床の補強工事が必要になる場合があります。</li>
+      <li><strong>既存空間の転用:</strong> 使っていない納戸やウォークインクローゼットをサウナ室に転用する方法も。</li>
+    </ul>
+
+    <div class="info-box">[画像: コスト別の3つの間取りプラン（エコノミー・スタンダード・プレミアム）の概略図]</div>
+
+    <!-- H2-6 実例 -->
+    <h3>自宅サウナの間取り実例3パターン</h3>
+
+    <h4>実例A ─ マンションリフォーム（浴室隣接型・1人用）</h4>
+    <ul>
+      <li><strong>住居タイプ:</strong> 3LDKマンション（築15年）</li>
+      <li><strong>設置場所:</strong> 既存浴室の隣の収納スペースを転用</li>
+      <li><strong>サウナ室:</strong> 約0.75畳（据え置き型・1人用）</li>
+      <li><strong>水風呂:</strong> 既存浴槽を活用（チラーなし・冷水シャワー併用）</li>
+      <li><strong>ととのいスペース:</strong> 脱衣所にリクライニングチェアを設置</li>
+      <li><strong>動線:</strong> サウナ室→浴室→脱衣所の直線動線、移動距離約2m</li>
+      <li><strong>費用:</strong> 約120万円</li>
+      <li><strong>工期:</strong> 約10日</li>
+    </ul>
+
+    <h4>実例B ─ 戸建て新築（造作型・2〜3人用）</h4>
+    <ul>
+      <li><strong>住居タイプ:</strong> 新築戸建て（延床35坪）</li>
+      <li><strong>設置場所:</strong> 1階浴室横に専用サウナ室を設計</li>
+      <li><strong>サウナ室:</strong> 約2畳（造作型・2〜3人用・ロウリュ対応）</li>
+      <li><strong>水風呂:</strong> 専用水風呂（チラー付き・0.7m x 1.0m）</li>
+      <li><strong>ととのいスペース:</strong> 1階テラス（約3畳・目隠しフェンス付き）</li>
+      <li><strong>動線:</strong> 一直線動線、移動距離約4m</li>
+      <li><strong>費用:</strong> 約300万円（新築設計に含むため割安）</li>
+    </ul>
+    <p>新築の場合、設計段階からサウナを組み込むことで、<strong>後付けより30〜50%程度コストを抑えられる</strong>と言われています。</p>
+
+    <h4>実例C ─ 戸建て庭（屋外バレルサウナ型）</h4>
+    <ul>
+      <li><strong>住居タイプ:</strong> 戸建て（庭付き・敷地面積60坪）</li>
+      <li><strong>設置場所:</strong> 庭の一角</li>
+      <li><strong>サウナ室:</strong> バレルサウナ（直径1.8m x 長さ2.0m・4人用）</li>
+      <li><strong>水風呂:</strong> 屋外専用水風呂（プランジプール）</li>
+      <li><strong>ととのいスペース:</strong> ウッドデッキ上にインフィニティチェア2脚</li>
+      <li><strong>動線:</strong> 直線動線、移動距離約3m</li>
+      <li><strong>費用:</strong> 約200万円</li>
+      <li><strong>工期:</strong> 約2週間</li>
+    </ul>
+    <p>屋外設置型は、<strong>母屋からサウナまでの動線</strong>が課題です。この事例では、勝手口から直接庭に出られる間取りにしたことで、プライバシーを保ちながらスムーズな動線を実現しています。</p>
+
+    <div class="info-box">[画像: 実例A・B・Cの3パターンの間取り平面図を並べた比較図]</div>
+
+    <!-- H2-7 まとめ -->
+    <h3>まとめ ─ 理想の自宅サウナ間取りを実現するために</h3>
+    <p>自宅サウナの間取り設計で最も重要なのは、<strong>サウナ室・水風呂・ととのいスペースの3ゾーンをスムーズな動線で結ぶこと</strong>です。</p>
+    <ol>
+      <li><strong>3ゾーンの明確化:</strong> サウナ室・水風呂・ととのいスペースをそれぞれ独立したゾーンとして設計に組み込む</li>
+      <li><strong>直線動線の確保:</strong> 移動はできるだけ直線的に、距離は5m以内を目標に</li>
+      <li><strong>水回りとの隣接:</strong> 既存の浴室・洗面所の近くに配置することでコストを抑制</li>
+      <li><strong>生活動線との分離:</strong> 家族の日常生活に干渉しないサウナ専用動線を確保</li>
+      <li><strong>将来の拡張性:</strong> 家族構成の変化や設備のアップグレードに対応できる余裕を持たせる</li>
+    </ol>
+
+    <div class="highlight-box">
+      <strong>Japan Saunaへのご相談はこちら</strong> → <a href="https://japansauna.jp/contact" target="_blank">https://japansauna.jp/contact</a><br>
+      間取り図や現場写真をお送りいただければ、最適なサウナプランをご提案いたします。まずはお気軽にご相談ください。
+    </div>
+
+    <div class="info-box">[画像: Japan Saunaの施工実績写真。美しく仕上がった自宅サウナの内装写真]</div>
+
+    <!-- アンケート調査設計案 -->
+    <h3>付録: アンケート調査設計案</h3>
+    <p>本記事に掲載する独自アンケートの質問項目案です。実施後に数値・グラフを差し替えます。</p>
+
+    <div class="highlight-box">
+      <strong>調査概要</strong><br>
+      調査対象: 自宅サウナ導入経験者（導入後6か月以上経過した方）100名<br>
+      調査方法: インターネットアンケート（スクリーニング調査で対象者を抽出）
+    </div>
+
+    <h4>質問項目（5問）</h4>
+    <p><strong>Q1.</strong> 自宅サウナの間取り・配置に対する総合的な満足度を教えてください。<br>（5段階: とても満足 / 満足 / どちらともいえない / 不満 / とても不満）</p>
+    <p><strong>Q2.</strong> 間取り設計で最も後悔しているポイントはどれですか？（複数回答可）</p>
+    <ul>
+      <li>サウナ室が狭すぎた</li>
+      <li>水風呂までの動線が悪い（距離が遠い・段差がある等）</li>
+      <li>ととのいスペースが確保できなかった</li>
+      <li>換気・湿気対策が不十分だった</li>
+      <li>家族の生活動線と干渉した</li>
+      <li>近隣への配慮が不足していた</li>
+      <li>電気容量が足りなかった</li>
+      <li>特に後悔していない</li>
+      <li>その他（自由記述）</li>
+    </ul>
+    <p><strong>Q3.</strong> 間取り設計時にもっと重視すべきだったと感じることはどれですか？（最大3つまで選択）</p>
+    <ul>
+      <li>3ゾーン間の動線のスムーズさ</li>
+      <li>ととのいスペースの広さ・快適性</li>
+      <li>既存の水回りとの近接性</li>
+      <li>家族の生活動線との分離</li>
+      <li>将来の拡張・変更のしやすさ</li>
+      <li>防音対策</li>
+      <li>プライバシーの確保</li>
+      <li>その他（自由記述）</li>
+    </ul>
+    <p><strong>Q4.</strong> サウナ室から水風呂（冷水シャワー）までの移動距離はどのくらいですか？</p>
+    <ul>
+      <li>1m以内（隣接）</li>
+      <li>1〜3m（すぐ近く）</li>
+      <li>3〜5m（同じフロア内）</li>
+      <li>5m以上（別フロア・別棟を含む）</li>
+    </ul>
+    <p><strong>Q5.</strong> これから自宅サウナを検討する方にアドバイスするとしたら、間取りで最も重要なことは何だと思いますか？（自由記述）</p>
+
+  </div><!-- end article-preview -->
+
+  <!-- ===== SECTION 7: ツール環境・次のアクション ===== -->
+  <h2 class="section-title" id="next">7. ツール環境・次のアクション</h2>
+
+  <h3 class="subsection-title">ツール環境ステータス</h3>
+  <table>
+    <tr><th>ツール</th><th>ステータス</th></tr>
+    <tr><td>GSC MCP</td><td><span class="badge badge-ok">接続成功</span></td></tr>
+    <tr><td>SEO Audit MCP</td><td><span class="badge badge-ok">動作確認済み</span></td></tr>
+    <tr><td>Playwright MCP</td><td><span class="badge badge-ok">利用可能</span></td></tr>
+    <tr><td>Google Ads API</td><td><span class="badge badge-warn">Basic Access未承認</span></td></tr>
+    <tr><td>DataForSEO</td><td><span class="badge badge-ng">未導入</span></td></tr>
+  </table>
+
+  <h3 class="subsection-title">次のアクション</h3>
+  <table>
+    <tr><th>#</th><th>アクション</th><th>担当</th><th>優先度</th></tr>
+    <tr><td>1</td><td>既存記事のmeta description / title改善 → Studio CMS側の作業</td><td>堀江</td><td><span class="badge badge-warn">高</span></td></tr>
+    <tr><td>2</td><td>記事2「マンション・賃貸サウナ導入」下書き生成</td><td>Claude</td><td><span class="badge badge-warn">高</span></td></tr>
+    <tr><td>3</td><td>記事3「家庭用サウナメーカー比較2026」下書き生成</td><td>Claude</td><td><span class="badge badge-warn">高</span></td></tr>
+    <tr><td>4</td><td>技術的SEO改善提案書作成</td><td>Claude</td><td><span class="badge badge-info">中</span></td></tr>
+    <tr><td>5</td><td>アンケート実施・画像制作の手配</td><td>堀江</td><td><span class="badge badge-info">中</span></td></tr>
+  </table>
+
+  <!-- ===== FOOTER ===== -->
+  <div class="report-footer">
+    p034 — Japan Sauna SEO・コンテンツ自動化 — Generated 2026-03-30 — BPIO co., Ltd.
+  </div>
+
+</div><!-- end #main -->
+
+<script>
+const pills = document.querySelectorAll('.pill');
+const sections = document.querySelectorAll('[id]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      pills.forEach(p => p.classList.remove('active'));
+      const active = document.querySelector(`.pill[href="#${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -80% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
