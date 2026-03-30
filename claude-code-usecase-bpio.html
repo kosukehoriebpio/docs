@@ -177,6 +177,29 @@
     .tl-note {
       font-size: 0.72rem; color: #999; font-style: italic; padding: 2px 0 0 54px;
     }
+    /* Multi-window visualization */
+    .windows-row {
+      display: grid; gap: 8px; margin: 12px 0;
+    }
+    .windows-row.w2 { grid-template-columns: 1fr 1fr; }
+    .windows-row.w3 { grid-template-columns: 1fr 1fr 1fr; }
+    .windows-row.w4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+    .windows-row.w5 { grid-template-columns: 1fr 1fr 1fr 1fr 1fr; }
+    .win {
+      border: 1px solid #ccc; padding: 8px 10px; font-size: 0.75rem; min-height: 48px;
+      position: relative;
+    }
+    .win-header {
+      display: flex; align-items: center; gap: 4px;
+      border-bottom: 1px solid #eee; padding-bottom: 4px; margin-bottom: 4px;
+    }
+    .win-dot { width: 6px; height: 6px; border-radius: 999px; flex-shrink: 0; }
+    .win-dot.green { background: #22c55e; }
+    .win-dot.yellow { background: #f59e0b; }
+    .win-dot.gray { background: #ccc; }
+    .win-title { font-weight: 700; font-size: 0.68rem; color: #555; }
+    .win-body { font-size: 0.72rem; color: #333; }
+    .win-body .dim { color: #999; }
     @media (max-width: 640px) {
       #main { padding: 24px 20px 60px; }
       .report-header h1 { font-size: 1.3rem; }
@@ -188,6 +211,7 @@
       .num-grid { grid-template-columns: repeat(2, 1fr); }
       .tl-items { flex-direction: column; align-items: flex-start; }
       .tl-note { padding-left: 54px; }
+      .windows-row.w3, .windows-row.w4, .windows-row.w5 { grid-template-columns: 1fr 1fr; }
     }
     @media print {
       #sticky-nav { display: none; }
@@ -271,176 +295,192 @@
     <!-- Section: 1日の実例 -->
     <h2 class="section-title" id="daily">ある1日の実例</h2>
 
-    <p>実際にClaude Codeで業務を回した日のタイムライン。並行で走るタスク、割り込み、バックグラウンド処理が入り混じる。<strong>全てがこのターミナルから出ている。</strong></p>
+    <p>実際にClaude Codeで業務を回した日のタイムライン。<strong>4〜5ウィンドウを同時に開き</strong>、それぞれが別プロジェクトを並列処理する。全てがこのターミナルから出ている。</p>
 
     <div class="info-box">
-      <span class="tl-item" style="margin-right:8px;">通常タスク</span>
-      <span class="tl-item bg" style="margin-right:8px;">バックグラウンド</span>
-      <span class="tl-item interrupt">割り込み・連絡</span>
-      — 実線 = フォアグラウンド作業、破線 = エージェントが裏で並列処理中
+      下の各ブロックはClaude Codeのターミナルウィンドウを表す。<span class="win-dot green" style="display:inline-block;"></span> 実行中 <span class="win-dot yellow" style="display:inline-block;"></span> 待機中 <span class="win-dot gray" style="display:inline-block;"></span> 完了 — 同じ時間帯に複数ウィンドウが並走する。
     </div>
 
-    <!-- 朝 -->
+    <!-- 朝: ブリーフィング → 3窓展開 -->
     <div class="tl-block">
-      <div class="tl-block-header">MORNING</div>
+      <div class="tl-block-header">09:00 — 始業: ブリーフィング → 3ウィンドウ展開</div>
 
       <div class="tl-row">
         <div class="tl-time">09:10</div>
         <div class="tl-items">
-          <span class="tl-item"><span class="tl-cat cat-admin">日課</span>/digest でブリーフィング表示</span>
-        </div>
-      </div>
-      <div class="tl-note">期限超過タスク2件、今日のMTG 1件、未読メール7件 → 優先度を判断</div>
-
-      <div class="tl-row">
-        <div class="tl-time">09:15</div>
-        <div class="tl-items">
-          <span class="tl-item"><span class="tl-cat cat-labor">労務</span>KoTシフトCSV生成（19名315件）</span>
-          <span class="tl-item"><span class="tl-cat cat-comms">連絡</span>Gmail 7件同期・分類</span>
-        </div>
-      </div>
-      <div class="tl-note">シフト生成の待ち時間にメール処理。KoT APIのメンテ時間帯でリトライ待ち</div>
-
-      <div class="tl-row">
-        <div class="tl-time">09:40</div>
-        <div class="tl-items">
-          <span class="tl-item"><span class="tl-cat cat-dev">開発</span>勤怠チェック自動化の最終テスト</span>
-          <span class="tl-item bg"><span class="tl-cat cat-labor">労務</span>KoTリトライ待ち…</span>
+          <span class="tl-item"><span class="tl-cat cat-admin">日課</span>/digest — 期限超過2件、MTG 1件、未読メール7件</span>
         </div>
       </div>
 
-      <div class="tl-row">
-        <div class="tl-time">10:20</div>
-        <div class="tl-items">
-          <span class="tl-item interrupt"><span class="tl-cat cat-comms">Slack</span>労務チームから質問 → 即回答</span>
-        </div>
-      </div>
-      <div class="tl-note">勤怠チェックの実装を見ながらそのままSlackで回答。コンテキストスイッチなし</div>
+      <p style="font-size:0.78rem;color:#777;margin:8px 0 4px;">優先度を見て、3つのウィンドウに振り分ける:</p>
 
-      <div class="tl-row">
-        <div class="tl-time">10:30</div>
-        <div class="tl-items">
-          <span class="tl-item"><span class="tl-cat cat-dev">開発</span>22チェック項目の実装完了</span>
-          <span class="tl-item"><span class="tl-cat cat-comms">Slack</span>テスト日程調整メッセージ送信</span>
+      <div class="windows-row w3">
+        <div class="win">
+          <div class="win-header"><span class="win-dot green"></span><span class="win-title">Window 1 — 労務BPO</span></div>
+          <div class="win-body">
+            KoTシフトCSV生成<br>19名315件 → API経由で自動生成<br>
+            <span class="dim">→ メンテ時間帯403、10:00リトライ</span>
+          </div>
+        </div>
+        <div class="win">
+          <div class="win-header"><span class="win-dot green"></span><span class="win-title">Window 2 — 開発</span></div>
+          <div class="win-body">
+            勤怠チェック自動化の最終テスト<br>22チェック項目の実装
+          </div>
+        </div>
+        <div class="win">
+          <div class="win-header"><span class="win-dot green"></span><span class="win-title">Window 3 — 連絡</span></div>
+          <div class="win-body">
+            Gmail 7件同期・分類<br>
+            受信ボックス559件を一括クリア
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 昼 -->
+    <!-- 午前: 4窓に拡大 -->
     <div class="tl-block">
-      <div class="tl-block-header">MIDDAY</div>
+      <div class="tl-block-header">10:00 — 4ウィンドウ並列: 開発 + 請求書プラグイン + 法令対応 + 連絡</div>
 
-      <div class="tl-row">
-        <div class="tl-time">11:00</div>
-        <div class="tl-items">
-          <span class="tl-item"><span class="tl-cat cat-comms">Slack</span>Slackの議論を読む → 新PJ仕様書作成</span>
+      <div class="windows-row w4">
+        <div class="win">
+          <div class="win-header"><span class="win-dot green"></span><span class="win-title">W1 — 開発</span></div>
+          <div class="win-body">
+            勤怠チェック22項目完了<br>
+            → Slackでテスト日程調整<br>
+            <span class="dim">→ 完了、W1を次タスクへ</span>
+          </div>
         </div>
-      </div>
-      <div class="tl-note">チャンネル内容を分析 → プロジェクトディレクトリ・AGENT.md・spec-v1.md を一括生成</div>
-
-      <div class="tl-row">
-        <div class="tl-time">12:15</div>
-        <div class="tl-items">
-          <span class="tl-item"><span class="tl-cat cat-comms">連絡</span>Slack代理送信Botの実装テスト</span>
-          <span class="tl-item"><span class="tl-cat cat-admin">管理</span>プロジェクトステータス5件更新</span>
+        <div class="win">
+          <div class="win-header"><span class="win-dot green"></span><span class="win-title">W2 — 請求書プラグイン</span></div>
+          <div class="win-body">
+            振込業務の6ステップ設計<br>
+            Claude VisionでPDF読取→<br>JSON構造化→チェック自動実行
+          </div>
+        </div>
+        <div class="win">
+          <div class="win-header"><span class="win-dot green"></span><span class="win-title">W3 — 法令対応</span></div>
+          <div class="win-body">
+            女性活躍推進法の調査<br>
+            MF給与386列 + SmartHR 249列<br>
+            のフォーマット分析・突合設計
+          </div>
+        </div>
+        <div class="win">
+          <div class="win-header"><span class="win-dot yellow"></span><span class="win-title">W4 — 割り込み対応</span></div>
+          <div class="win-body">
+            Slack #all_kintai の質問に即回答<br>
+            <span class="dim">他ウィンドウの文脈を見ながら対応</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 午後 -->
+    <!-- 午後: 5窓フル稼働 -->
     <div class="tl-block">
-      <div class="tl-block-header">AFTERNOON — 並列調査</div>
+      <div class="tl-block-header">14:00 — 5ウィンドウ最大展開: 調査エージェント12体 + 4本の作業</div>
 
-      <div class="tl-row">
-        <div class="tl-time">13:30</div>
-        <div class="tl-items">
-          <span class="tl-item"><span class="tl-cat cat-research">調査</span>地方銀行データ調査 <strong>12エージェント同時起動</strong></span>
+      <div class="windows-row w5">
+        <div class="win">
+          <div class="win-header"><span class="win-dot green"></span><span class="win-title">W1 — 調査</span></div>
+          <div class="win-body">
+            地方銀行96行<br>
+            <strong>12エージェント</strong><br>
+            並列でWeb検索
+          </div>
+        </div>
+        <div class="win">
+          <div class="win-header"><span class="win-dot green"></span><span class="win-title">W2 — プラグイン</span></div>
+          <div class="win-body">
+            パイロット全6Step<br>
+            リアル検証<br>
+            バクラクAPI接続
+          </div>
+        </div>
+        <div class="win">
+          <div class="win-header"><span class="win-dot green"></span><span class="win-title">W3 — ニュース</span></div>
+          <div class="win-body">
+            14ソースから<br>
+            78件収集→要約<br>
+            →Slack通知
+          </div>
+        </div>
+        <div class="win">
+          <div class="win-header"><span class="win-dot green"></span><span class="win-title">W4 — 法令ツール</span></div>
+          <div class="win-body">
+            男女賃金差異<br>
+            計算ツール v1.0<br>
+            HTMLで作成
+          </div>
+        </div>
+        <div class="win">
+          <div class="win-header"><span class="win-dot yellow"></span><span class="win-title">W5 — 保守</span></div>
+          <div class="win-body">
+            ドキュメント同期<br>
+            設定ギャップ分析<br>
+            <span class="dim">→6件反映</span>
+          </div>
         </div>
       </div>
-      <div class="tl-note">96機関の財務データを12バッチに分割、エージェントが並列でWeb検索中 ↓</div>
-
-      <div class="tl-row">
-        <div class="tl-time">13:35</div>
-        <div class="tl-items">
-          <span class="tl-item bg"><span class="tl-cat cat-research">調査</span>×12 エージェントがバックグラウンドで検索中…</span>
-          <span class="tl-item"><span class="tl-cat cat-admin">日課</span>AIニュース78件収集・要約・Slack通知</span>
-        </div>
-      </div>
-      <div class="tl-note">調査エージェントが裏で動いている間に、ニュース収集を並行実行</div>
-
-      <div class="tl-row">
-        <div class="tl-time">14:10</div>
-        <div class="tl-items">
-          <span class="tl-item bg"><span class="tl-cat cat-research">調査</span>2/12バッチ完了、10件はレートリミット</span>
-          <span class="tl-item"><span class="tl-cat cat-admin">整理</span>Gmail受信ボックス559件を一括クリア</span>
-        </div>
-      </div>
-
-      <div class="tl-row">
-        <div class="tl-time">14:30</div>
-        <div class="tl-items">
-          <span class="tl-item interrupt"><span class="tl-cat cat-comms">割込</span>調査の代替手段を発見（全銀協ZIP一括取得）→ 方針転換</span>
-        </div>
-      </div>
-      <div class="tl-note">エージェントのレートリミットから、より効率的なデータソースの存在に気づく</div>
-
-      <div class="tl-row">
-        <div class="tl-time">15:00</div>
-        <div class="tl-items">
-          <span class="tl-item"><span class="tl-cat cat-admin">保守</span>Anthropicドキュメント同期 → 設定ギャップ分析 → 6件反映</span>
-        </div>
-      </div>
-      <div class="tl-note">Claude Code自体の最新機能を取り込んで、エージェント5体・スキル39個を更新</div>
+      <div class="tl-note">W1の12エージェントが裏で走っている間に、W2-W5で別の作業を進行。レートリミット発生 → 代替手段（全銀協ZIP）を発見して方針転換</div>
     </div>
 
-    <!-- 夜 -->
+    <!-- 夕方〜夜 -->
     <div class="tl-block">
-      <div class="tl-block-header">EVENING — 深い作業</div>
+      <div class="tl-block-header">17:00 — 夕方: 深い分析 + 会計検証を並列</div>
 
-      <div class="tl-row">
-        <div class="tl-time">17:00</div>
-        <div class="tl-items">
-          <span class="tl-item"><span class="tl-cat cat-seo">SEO</span>Japan Sauna 17記事の包括SEO分析</span>
+      <div class="windows-row w3">
+        <div class="win">
+          <div class="win-header"><span class="win-dot green"></span><span class="win-title">W1 — SEO分析</span></div>
+          <div class="win-body">
+            クライアントサイト17記事の包括分析<br>
+            GSC実データ200クエリ + 競合5サイト<br>
+            → HTMLレポート → GitHub Pages公開
+          </div>
+        </div>
+        <div class="win">
+          <div class="win-header"><span class="win-dot green"></span><span class="win-title">W2 — 会計MCP検証</span></div>
+          <div class="win-body">
+            MFクラウド会計にOAuth接続<br>
+            全10エンドポイント検証<br>
+            仕訳登録 → BS/PL反映確認
+          </div>
+        </div>
+        <div class="win">
+          <div class="win-header"><span class="win-dot green"></span><span class="win-title">W3 — データ整備</span></div>
+          <div class="win-body">
+            Notion顧客マニュアル93件 ×<br>
+            社内リファレンス151社の突合<br>
+            64ファイル更新 + 品質レビュー
+          </div>
         </div>
       </div>
-      <div class="tl-note">GSC実データ200クエリ + 競合5サイト分析 + コンテンツギャップ特定 → 新規記事候補16本</div>
+    </div>
 
-      <div class="tl-row">
-        <div class="tl-time">18:30</div>
-        <div class="tl-items">
-          <span class="tl-item"><span class="tl-cat cat-seo">SEO</span>HTMLレポート生成 → GitHub Pages公開</span>
-          <span class="tl-item"><span class="tl-cat cat-admin">整理</span>ダウンロードフォルダ 168→5件</span>
+    <!-- 終了 -->
+    <div class="tl-block">
+      <div class="tl-block-header">21:00 — 締め</div>
+
+      <div class="windows-row w2">
+        <div class="win">
+          <div class="win-header"><span class="win-dot green"></span><span class="win-title">W1 — 学習</span></div>
+          <div class="win-body">
+            /learn でセッション中の失敗・発見を抽出<br>
+            3件のLessonを蓄積
+          </div>
         </div>
-      </div>
-      <div class="tl-note">レポートデプロイの待ち時間にファイル整理。88ファイルをDriveに自動分類アップロード</div>
-
-      <div class="tl-row">
-        <div class="tl-time">19:30</div>
-        <div class="tl-items">
-          <span class="tl-item"><span class="tl-cat cat-accounting">会計</span>MFクラウド会計 OAuth接続 → 仕訳登録 → 試算表確認</span>
-        </div>
-      </div>
-      <div class="tl-note">新MCP検証: 全10エンドポイントをClaude Codeから直接操作、BS/PL反映まで確認</div>
-
-      <div class="tl-row">
-        <div class="tl-time">20:45</div>
-        <div class="tl-items">
-          <span class="tl-item"><span class="tl-cat cat-labor">労務</span>Notion顧客マニュアル93件 × 社内リファレンス151社の突合精査</span>
-        </div>
-      </div>
-      <div class="tl-note">64ファイル更新 + 2社新規 + 品質レビュー5社。ハルシネーション1件検出・削除</div>
-
-      <div class="tl-row">
-        <div class="tl-time">21:30</div>
-        <div class="tl-items">
-          <span class="tl-item"><span class="tl-cat cat-admin">日課</span>/learn でセッションの学びを抽出・蓄積</span>
-          <span class="tl-item"><span class="tl-cat cat-admin">記録</span>活動ログ自動コミット</span>
+        <div class="win">
+          <div class="win-header"><span class="win-dot green"></span><span class="win-title">W2 — 整理</span></div>
+          <div class="win-body">
+            ダウンロードフォルダ 168→5件<br>
+            88ファイルをDriveに自動分類アップロード
+          </div>
         </div>
       </div>
     </div>
 
     <div class="note-box">
-      <strong>ポイント:</strong> 12エージェント並列調査の裏でメール整理、SEOレポートのデプロイ待ちでファイル整理 — 待ち時間に別の仕事を差し込む使い方が自然にできる。全てのログは自動でGitにコミットされ、翌日以降いつでも追跡可能。
+      <strong>ポイント:</strong> Claude Codeのウィンドウを4〜5個開き、それぞれが別プロジェクトを同時に処理。あるウィンドウでAPIの応答を待っている間に、別のウィンドウで実装を進める。全てのログは自動でGitにコミットされ、翌日以降いつでも追跡可能。
     </div>
 
     <!-- Section: リポジトリ構造 -->
@@ -479,7 +519,7 @@
       <tr><th>種別</th><th>用途</th><th>例</th></tr>
       <tr><td><code>task:</code></td><td>タスク操作</td><td>task: complete "勤怠チェック実装"</td></tr>
       <tr><td><code>log:</code></td><td>活動記録</td><td>log: 2026-03-30 p006 KoTシフトCSV再生成</td></tr>
-      <tr><td><code>project:</code></td><td>PJ操作</td><td>project: add "Japan Sauna SEO"</td></tr>
+      <tr><td><code>project:</code></td><td>PJ操作</td><td>project: add "クライアントA SEO改善"</td></tr>
       <tr><td><code>note:</code></td><td>議事録</td><td>note: add "古川製材ヒアリング"</td></tr>
       <tr><td><code>decision:</code></td><td>意思決定</td><td>decision: MCP方式を採用</td></tr>
       <tr><td><code>sync:</code></td><td>外部同期</td><td>sync: Gmail 7件取得</td></tr>
@@ -682,7 +722,7 @@
     <table>
       <tr><th>ページ</th><th>内容</th><th>種別</th></tr>
       <tr><td>p035-mf-accounting-mcp</td><td>MFクラウド会計MCP検証レポート</td><td><span class="badge badge-ok">検証レポート</span></td></tr>
-      <tr><td>p034-japansauna-seo</td><td>SEO包括分析レポート（17記事）</td><td><span class="badge badge-info">分析レポート</span></td></tr>
+      <tr><td>（クライアント案件）</td><td>SEO包括分析レポート（17記事）</td><td><span class="badge badge-info">分析レポート</span></td></tr>
       <tr><td>p032-meeting-feedback-proposal</td><td>面談AIフィードバック提案書</td><td><span class="badge badge-pending">提案書</span></td></tr>
       <tr><td>p031-kintai-flow-confirmation</td><td>勤怠レポート業務フロー確認</td><td><span class="badge badge-info">確認ページ</span></td></tr>
       <tr><td>p030-regional-bank-bpo</td><td>地方銀行BPOサービス調査</td><td><span class="badge badge-ok">調査レポート</span></td></tr>
