@@ -135,6 +135,48 @@
       font-weight: 600; border: 1px solid #ccc; border-radius: 999px;
       color: #555; margin: 1px 2px;
     }
+    /* Swim-lane timeline */
+    .tl-block { margin-bottom: 24px; }
+    .tl-block-header {
+      font-size: 0.78rem; font-weight: 700; color: #777;
+      letter-spacing: 0.05em; border-bottom: 1px solid #ddd;
+      padding-bottom: 4px; margin-bottom: 8px;
+    }
+    .tl-row {
+      display: grid; grid-template-columns: 54px 1fr; gap: 0;
+      font-size: 0.82rem; padding: 5px 0; border-bottom: 1px solid #f0f0f0;
+    }
+    .tl-row:last-child { border-bottom: none; }
+    .tl-time { font-weight: 700; color: #555; font-size: 0.78rem; }
+    .tl-items { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .tl-item {
+      background: #f7f7f7; border: 1px solid #ddd;
+      padding: 4px 10px; font-size: 0.75rem; display: inline-flex;
+      align-items: center; gap: 6px; max-width: 100%;
+    }
+    .tl-item.bg {
+      background: #fff; border: 1px dashed #bbb; color: #888;
+    }
+    .tl-item.interrupt {
+      background: #fffbeb; border: 1px solid #f59e0b; color: #78350f;
+    }
+    .tl-cat {
+      font-size: 0.65rem; font-weight: 700; padding: 1px 6px;
+      border-radius: 999px; white-space: nowrap; flex-shrink: 0;
+    }
+    .cat-labor { background: #dbeafe; color: #1e40af; }
+    .cat-research { background: #fae8ff; color: #7e22ce; }
+    .cat-comms { background: #d1fae5; color: #065f46; }
+    .cat-admin { background: #f3f4f6; color: #374151; }
+    .cat-seo { background: #fef3c7; color: #92400e; }
+    .cat-accounting { background: #ede9fe; color: #5b21b6; }
+    .cat-dev { background: #fce7f3; color: #9d174d; }
+    .tl-plus {
+      font-size: 0.72rem; color: #999; font-weight: 600;
+    }
+    .tl-note {
+      font-size: 0.72rem; color: #999; font-style: italic; padding: 2px 0 0 54px;
+    }
     @media (max-width: 640px) {
       #main { padding: 24px 20px 60px; }
       .report-header h1 { font-size: 1.3rem; }
@@ -144,6 +186,8 @@
       #sticky-nav { padding: 10px 12px; gap: 6px; }
       .pill { padding: 4px 12px; font-size: 0.72rem; }
       .num-grid { grid-template-columns: repeat(2, 1fr); }
+      .tl-items { flex-direction: column; align-items: flex-start; }
+      .tl-note { padding-left: 54px; }
     }
     @media print {
       #sticky-nav { display: none; }
@@ -225,83 +269,178 @@
     </div>
 
     <!-- Section: 1日の実例 -->
-    <h2 class="section-title" id="daily">ある1日の実例（2026-03-30）</h2>
+    <h2 class="section-title" id="daily">ある1日の実例</h2>
 
-    <p>この日の全業務がClaude Codeから実行された。ブラウザを開いたのはOAuth認証のリダイレクトのみ。</p>
+    <p>実際にClaude Codeで業務を回した日のタイムライン。並行で走るタスク、割り込み、バックグラウンド処理が入り混じる。<strong>全てがこのターミナルから出ている。</strong></p>
 
-    <div class="timeline-entry">
-      <div class="timeline-time">09:00</div>
-      <div class="timeline-content">
-        <div class="tl-title">KoTシフトCSV生成（労務BPO）</div>
-        <div class="tl-detail">19名315件の4月分シフトデータをAPI経由で自動生成 <span class="service-tag">KoT API</span></div>
+    <div class="info-box">
+      <span class="tl-item" style="margin-right:8px;">通常タスク</span>
+      <span class="tl-item bg" style="margin-right:8px;">バックグラウンド</span>
+      <span class="tl-item interrupt">割り込み・連絡</span>
+      — 実線 = フォアグラウンド作業、破線 = エージェントが裏で並列処理中
+    </div>
+
+    <!-- 朝 -->
+    <div class="tl-block">
+      <div class="tl-block-header">MORNING</div>
+
+      <div class="tl-row">
+        <div class="tl-time">09:10</div>
+        <div class="tl-items">
+          <span class="tl-item"><span class="tl-cat cat-admin">日課</span>/digest でブリーフィング表示</span>
+        </div>
+      </div>
+      <div class="tl-note">期限超過タスク2件、今日のMTG 1件、未読メール7件 → 優先度を判断</div>
+
+      <div class="tl-row">
+        <div class="tl-time">09:15</div>
+        <div class="tl-items">
+          <span class="tl-item"><span class="tl-cat cat-labor">労務</span>KoTシフトCSV生成（19名315件）</span>
+          <span class="tl-item"><span class="tl-cat cat-comms">連絡</span>Gmail 7件同期・分類</span>
+        </div>
+      </div>
+      <div class="tl-note">シフト生成の待ち時間にメール処理。KoT APIのメンテ時間帯でリトライ待ち</div>
+
+      <div class="tl-row">
+        <div class="tl-time">09:40</div>
+        <div class="tl-items">
+          <span class="tl-item"><span class="tl-cat cat-dev">開発</span>勤怠チェック自動化の最終テスト</span>
+          <span class="tl-item bg"><span class="tl-cat cat-labor">労務</span>KoTリトライ待ち…</span>
+        </div>
+      </div>
+
+      <div class="tl-row">
+        <div class="tl-time">10:20</div>
+        <div class="tl-items">
+          <span class="tl-item interrupt"><span class="tl-cat cat-comms">Slack</span>労務チームから質問 → 即回答</span>
+        </div>
+      </div>
+      <div class="tl-note">勤怠チェックの実装を見ながらそのままSlackで回答。コンテキストスイッチなし</div>
+
+      <div class="tl-row">
+        <div class="tl-time">10:30</div>
+        <div class="tl-items">
+          <span class="tl-item"><span class="tl-cat cat-dev">開発</span>22チェック項目の実装完了</span>
+          <span class="tl-item"><span class="tl-cat cat-comms">Slack</span>テスト日程調整メッセージ送信</span>
+        </div>
       </div>
     </div>
-    <div class="timeline-entry">
-      <div class="timeline-time">11:00</div>
-      <div class="timeline-content">
-        <div class="tl-title">勤怠チェック自動化 完了報告 → Slack連絡</div>
-        <div class="tl-detail">22チェック項目の実装完了、労務チームにテスト日程調整 <span class="service-tag">Slack</span></div>
+
+    <!-- 昼 -->
+    <div class="tl-block">
+      <div class="tl-block-header">MIDDAY</div>
+
+      <div class="tl-row">
+        <div class="tl-time">11:00</div>
+        <div class="tl-items">
+          <span class="tl-item"><span class="tl-cat cat-comms">Slack</span>Slackの議論を読む → 新PJ仕様書作成</span>
+        </div>
+      </div>
+      <div class="tl-note">チャンネル内容を分析 → プロジェクトディレクトリ・AGENT.md・spec-v1.md を一括生成</div>
+
+      <div class="tl-row">
+        <div class="tl-time">12:15</div>
+        <div class="tl-items">
+          <span class="tl-item"><span class="tl-cat cat-comms">連絡</span>Slack代理送信Botの実装テスト</span>
+          <span class="tl-item"><span class="tl-cat cat-admin">管理</span>プロジェクトステータス5件更新</span>
+        </div>
       </div>
     </div>
-    <div class="timeline-entry">
-      <div class="timeline-time">13:00</div>
-      <div class="timeline-content">
-        <div class="tl-title">Slackの議論を読んで新プロジェクト立ち上げ + 仕様書作成</div>
-        <div class="tl-detail">Slack → 内容分析 → プロジェクトディレクトリ・AGENT.md・仕様書を一括生成 <span class="service-tag">Slack</span> <span class="service-tag">Git</span></div>
+
+    <!-- 午後 -->
+    <div class="tl-block">
+      <div class="tl-block-header">AFTERNOON — 並列調査</div>
+
+      <div class="tl-row">
+        <div class="tl-time">13:30</div>
+        <div class="tl-items">
+          <span class="tl-item"><span class="tl-cat cat-research">調査</span>地方銀行データ調査 <strong>12エージェント同時起動</strong></span>
+        </div>
       </div>
-    </div>
-    <div class="timeline-entry">
-      <div class="timeline-time">14:00</div>
-      <div class="timeline-content">
-        <div class="tl-title">地方銀行96行のデータ調査（12エージェント並列）</div>
-        <div class="tl-detail">12バッチの調査エージェントを同時起動、96機関の財務データを収集 <span class="service-tag">Web検索 x12</span></div>
+      <div class="tl-note">96機関の財務データを12バッチに分割、エージェントが並列でWeb検索中 ↓</div>
+
+      <div class="tl-row">
+        <div class="tl-time">13:35</div>
+        <div class="tl-items">
+          <span class="tl-item bg"><span class="tl-cat cat-research">調査</span>×12 エージェントがバックグラウンドで検索中…</span>
+          <span class="tl-item"><span class="tl-cat cat-admin">日課</span>AIニュース78件収集・要約・Slack通知</span>
+        </div>
       </div>
-    </div>
-    <div class="timeline-entry">
-      <div class="timeline-time">16:00</div>
-      <div class="timeline-content">
-        <div class="tl-title">AIニュース78件収集 → 要約 → Slack通知</div>
-        <div class="tl-detail">14ソースから自動収集、重要度分類してDM通知 <span class="service-tag">Web</span> <span class="service-tag">Slack</span></div>
+      <div class="tl-note">調査エージェントが裏で動いている間に、ニュース収集を並行実行</div>
+
+      <div class="tl-row">
+        <div class="tl-time">14:10</div>
+        <div class="tl-items">
+          <span class="tl-item bg"><span class="tl-cat cat-research">調査</span>2/12バッチ完了、10件はレートリミット</span>
+          <span class="tl-item"><span class="tl-cat cat-admin">整理</span>Gmail受信ボックス559件を一括クリア</span>
+        </div>
       </div>
-    </div>
-    <div class="timeline-entry">
-      <div class="timeline-time">16:30</div>
-      <div class="timeline-content">
-        <div class="tl-title">Gmail同期 + 受信ボックス559件クリア</div>
-        <div class="tl-detail">7件取得 → 分類 → 52件ローカルアーカイブ → Gmail API で一括ラベル除去 <span class="service-tag">Gmail API</span></div>
+
+      <div class="tl-row">
+        <div class="tl-time">14:30</div>
+        <div class="tl-items">
+          <span class="tl-item interrupt"><span class="tl-cat cat-comms">割込</span>調査の代替手段を発見（全銀協ZIP一括取得）→ 方針転換</span>
+        </div>
       </div>
-    </div>
-    <div class="timeline-entry">
-      <div class="timeline-time">21:00</div>
-      <div class="timeline-content">
-        <div class="tl-title">SEO包括分析 → HTMLレポート → GitHub Pages公開</div>
-        <div class="tl-detail">17記事を一括分析、戦略策定、レポートをURLで即共有 <span class="service-tag">GSC</span> <span class="service-tag">GA4</span> <span class="service-tag">GitHub Pages</span></div>
+      <div class="tl-note">エージェントのレートリミットから、より効率的なデータソースの存在に気づく</div>
+
+      <div class="tl-row">
+        <div class="tl-time">15:00</div>
+        <div class="tl-items">
+          <span class="tl-item"><span class="tl-cat cat-admin">保守</span>Anthropicドキュメント同期 → 設定ギャップ分析 → 6件反映</span>
+        </div>
       </div>
+      <div class="tl-note">Claude Code自体の最新機能を取り込んで、エージェント5体・スキル39個を更新</div>
     </div>
-    <div class="timeline-entry">
-      <div class="timeline-time">22:30</div>
-      <div class="timeline-content">
-        <div class="tl-title">ダウンロードフォルダ整理 168→5件</div>
-        <div class="tl-detail">重複削除 → 88ファイルをDriveにカテゴリ分けアップロード <span class="service-tag">Google Drive</span></div>
+
+    <!-- 夜 -->
+    <div class="tl-block">
+      <div class="tl-block-header">EVENING — 深い作業</div>
+
+      <div class="tl-row">
+        <div class="tl-time">17:00</div>
+        <div class="tl-items">
+          <span class="tl-item"><span class="tl-cat cat-seo">SEO</span>Japan Sauna 17記事の包括SEO分析</span>
+        </div>
       </div>
-    </div>
-    <div class="timeline-entry">
-      <div class="timeline-time">24:00</div>
-      <div class="timeline-content">
-        <div class="tl-title">MFクラウド会計にOAuth接続 → 仕訳登録 → 試算表確認</div>
-        <div class="tl-detail">会計APIの全10エンドポイント検証、仕訳投入〜BS/PL反映まで確認 <span class="service-tag">MF会計 API</span></div>
+      <div class="tl-note">GSC実データ200クエリ + 競合5サイト分析 + コンテンツギャップ特定 → 新規記事候補16本</div>
+
+      <div class="tl-row">
+        <div class="tl-time">18:30</div>
+        <div class="tl-items">
+          <span class="tl-item"><span class="tl-cat cat-seo">SEO</span>HTMLレポート生成 → GitHub Pages公開</span>
+          <span class="tl-item"><span class="tl-cat cat-admin">整理</span>ダウンロードフォルダ 168→5件</span>
+        </div>
       </div>
-    </div>
-    <div class="timeline-entry" style="border-bottom: none;">
-      <div class="timeline-time">27:00</div>
-      <div class="timeline-content">
-        <div class="tl-title">Notion顧客マニュアル93件と社内リファレンス151社を突合精査</div>
-        <div class="tl-detail">64ファイル更新 + 2社新規作成、品質レビュー5社分実施 <span class="service-tag">Notion API</span></div>
+      <div class="tl-note">レポートデプロイの待ち時間にファイル整理。88ファイルをDriveに自動分類アップロード</div>
+
+      <div class="tl-row">
+        <div class="tl-time">19:30</div>
+        <div class="tl-items">
+          <span class="tl-item"><span class="tl-cat cat-accounting">会計</span>MFクラウド会計 OAuth接続 → 仕訳登録 → 試算表確認</span>
+        </div>
+      </div>
+      <div class="tl-note">新MCP検証: 全10エンドポイントをClaude Codeから直接操作、BS/PL反映まで確認</div>
+
+      <div class="tl-row">
+        <div class="tl-time">20:45</div>
+        <div class="tl-items">
+          <span class="tl-item"><span class="tl-cat cat-labor">労務</span>Notion顧客マニュアル93件 × 社内リファレンス151社の突合精査</span>
+        </div>
+      </div>
+      <div class="tl-note">64ファイル更新 + 2社新規 + 品質レビュー5社。ハルシネーション1件検出・削除</div>
+
+      <div class="tl-row">
+        <div class="tl-time">21:30</div>
+        <div class="tl-items">
+          <span class="tl-item"><span class="tl-cat cat-admin">日課</span>/learn でセッションの学びを抽出・蓄積</span>
+          <span class="tl-item"><span class="tl-cat cat-admin">記録</span>活動ログ自動コミット</span>
+        </div>
       </div>
     </div>
 
     <div class="note-box">
-      <strong>ポイント:</strong> 上記の全てがClaude Codeのターミナルから実行されている。ログは自動でGitにコミットされ、翌日以降いつでも追跡可能。
+      <strong>ポイント:</strong> 12エージェント並列調査の裏でメール整理、SEOレポートのデプロイ待ちでファイル整理 — 待ち時間に別の仕事を差し込む使い方が自然にできる。全てのログは自動でGitにコミットされ、翌日以降いつでも追跡可能。
     </div>
 
     <!-- Section: リポジトリ構造 -->
