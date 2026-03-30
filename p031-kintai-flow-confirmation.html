@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>勤怠レポート業務フロー確認 — BPIO</title>
+<style>
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color: #1a1a1a;
+  background: #fff;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ===== Sticky Pill Navigation ===== */
+#sticky-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.97);
+  border-bottom: 1px solid #ccc;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+#sticky-nav .nav-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #777;
+  letter-spacing: 0.05em;
+  margin-right: 4px;
+  white-space: nowrap;
+}
+.pill {
+  display: inline-block;
+  padding: 5px 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #555;
+  text-decoration: none;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.pill:hover, .pill.active {
+  background: #1a1a1a;
+  color: #fff;
+  border-color: #1a1a1a;
+}
+
+/* ===== Main Content ===== */
+#main {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 40px 48px 80px;
+}
+
+/* ===== Header ===== */
+.report-header {
+  border-bottom: 2px solid #1a1a1a;
+  padding-bottom: 20px;
+  margin-bottom: 32px;
+}
+.report-header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.report-header .subtitle {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 16px;
+}
+.report-header .summary-box {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 16px 20px;
+  margin-top: 16px;
+}
+.report-header .summary-box h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.report-header .summary-box ul {
+  padding-left: 20px;
+  font-size: 0.82rem;
+}
+.report-header .summary-box li {
+  margin-bottom: 4px;
+}
+
+/* ===== Section Headings ===== */
+h2.section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-bottom: 1px solid #999;
+  padding-bottom: 6px;
+  margin-top: 48px;
+  margin-bottom: 20px;
+}
+h3.subsection-title {
+  font-size: 1.0rem;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  padding-left: 10px;
+  border-left: 3px solid #555;
+}
+
+/* ===== Tables ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 20px;
+  font-size: 0.82rem;
+}
+table th, table td {
+  border: 1px solid #bbb;
+  padding: 7px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+table th {
+  background: #f0f0f0;
+  font-weight: 700;
+  white-space: nowrap;
+}
+table td {
+  background: #fff;
+}
+table tr:nth-child(even) td {
+  background: #fafafa;
+}
+
+/* ===== Paragraphs & Lists ===== */
+p { margin-bottom: 10px; font-size: 0.88rem; }
+ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+ul li, ol li { margin-bottom: 3px; }
+
+/* ===== Highlight box ===== */
+.highlight-box {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 14px 18px;
+  margin: 12px 0 20px;
+  font-size: 0.85rem;
+}
+
+/* ===== Note box (yellow) ===== */
+.note-box {
+  background: #fffbeb;
+  border-left: 4px solid #f59e0b;
+  padding: 10px 16px;
+  margin: 12px 0 20px;
+  font-size: 0.82rem;
+  color: #78350f;
+}
+
+/* ===== Info box (blue) ===== */
+.info-box {
+  background: #eff6ff;
+  border-left: 4px solid #3b82f6;
+  padding: 10px 16px;
+  margin: 12px 0 20px;
+  font-size: 0.82rem;
+  color: #1e3a5f;
+}
+
+/* ===== Confirm box (green) ===== */
+.confirm-box {
+  background: #f0fdf4;
+  border-left: 4px solid #22c55e;
+  padding: 10px 16px;
+  margin: 12px 0 20px;
+  font-size: 0.82rem;
+  color: #14532d;
+}
+
+/* ===== Question box (purple) ===== */
+.question-box {
+  background: #faf5ff;
+  border: 2px solid #a855f7;
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 16px 0 24px;
+  font-size: 0.85rem;
+  color: #3b0764;
+}
+.question-box .q-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #a855f7;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+.question-box p {
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+  color: #3b0764;
+}
+.question-box .options {
+  margin-top: 8px;
+  padding-left: 18px;
+}
+.question-box .options li {
+  margin-bottom: 2px;
+  color: #581c87;
+}
+
+/* ===== Flow diagram ===== */
+.flow-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 20px 0 28px;
+}
+.flow-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.flow-step .flow-timing {
+  flex: 0 0 80px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #888;
+  text-align: right;
+  padding-top: 14px;
+}
+.flow-step .flow-box {
+  flex: 1;
+  border: 1px solid #ccc;
+  background: #fff;
+  padding: 12px 16px;
+  font-size: 0.82rem;
+}
+.flow-step .flow-box strong {
+  display: block;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+.flow-step .flow-box .note {
+  color: #777;
+  font-size: 0.78rem;
+}
+.flow-arrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.flow-arrow .flow-timing {
+  flex: 0 0 80px;
+}
+.flow-arrow .arrow {
+  flex: 1;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #aaa;
+  padding: 2px 0;
+}
+
+/* ===== Report mock ===== */
+.report-mock {
+  border: 2px solid #1a1a1a;
+  margin: 20px 0;
+  font-size: 0.8rem;
+}
+.report-mock-header {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.report-mock-body {
+  padding: 16px;
+}
+.report-mock-body .mock-section {
+  margin-bottom: 16px;
+}
+.report-mock-body .mock-section:last-child {
+  margin-bottom: 0;
+}
+.report-mock-body .mock-label {
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: #555;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 3px;
+}
+.mock-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+.mock-table th, .mock-table td {
+  border: 1px solid #ddd;
+  padding: 5px 8px;
+}
+.mock-table th {
+  background: #f5f5f5;
+  font-weight: 600;
+  font-size: 0.72rem;
+}
+.mock-table .danger {
+  background: #fef2f2;
+  color: #dc2626;
+  font-weight: 700;
+}
+.mock-table .warning {
+  background: #fffbeb;
+  color: #d97706;
+  font-weight: 600;
+}
+.mock-table .ok {
+  color: #16a34a;
+}
+
+/* ===== Chatwork mock ===== */
+.cw-mock {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin: 20px 0;
+  overflow: hidden;
+  font-size: 0.8rem;
+}
+.cw-mock-header {
+  background: #e74848;
+  color: #fff;
+  padding: 8px 14px;
+  font-weight: 700;
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cw-mock-body {
+  padding: 14px 16px;
+  background: #f9f9f9;
+  white-space: pre-line;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* ===== Footer ===== */
+.page-footer {
+  border-top: 1px solid #ddd;
+  padding-top: 16px;
+  margin-top: 48px;
+  font-size: 0.75rem;
+  color: #999;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">CONTENTS</span>
+  <a class="pill" href="#purpose">本資料の目的</a>
+  <a class="pill" href="#current-flow">現状フロー</a>
+  <a class="pill" href="#data-structure">データ構造</a>
+  <a class="pill" href="#report-image">レポートイメージ</a>
+  <a class="pill" href="#delivery">配信方法</a>
+  <a class="pill" href="#questions">確認事項</a>
+</nav>
+
+<div id="main">
+
+<!-- ===== Header ===== -->
+<header class="report-header">
+  <h1>勤怠レポート 業務フロー確認書</h1>
+  <p class="subtitle">古川製剤様 / BPIO 2026年3月</p>
+  <div class="summary-box">
+    <h3>本資料の目的</h3>
+    <ul>
+      <li>弊社が把握している<strong>現在の勤怠チェック業務フロー</strong>が正しいかをご確認いただく</li>
+      <li>月次レポートの<strong>フォーマット・配信方法</strong>について認識を合わせる</li>
+      <li>不明点・相違点があれば事前にすり合わせ、スムーズな稼働開始につなげる</li>
+    </ul>
+  </div>
+</header>
+
+<!-- ===== 1. 現状フロー ===== -->
+<h2 class="section-title" id="current-flow">1. 現在の勤怠チェック業務フロー</h2>
+
+<p>打ち合わせでお伺いした内容をもとに、現在の業務フローを下記のように理解しています。</p>
+
+<div class="flow-container">
+
+  <div class="flow-step">
+    <div class="flow-timing">日々</div>
+    <div class="flow-box">
+      <strong>従業員が打刻</strong>
+      freee勤怠管理プラスで出退勤を打刻
+      <div class="note">※ タイムカードを見る習慣がない従業員が多い</div>
+    </div>
+  </div>
+  <div class="flow-arrow"><div class="flow-timing"></div><div class="arrow">&#9660;</div></div>
+
+  <div class="flow-step">
+    <div class="flow-timing">随時</div>
+    <div class="flow-box">
+      <strong>freeeからの自動アラート</strong>
+      残業が15h / 25h / 35h を超えた時点でChatworkに自動通知
+      <div class="note">※ 従業員・リーダーとも確認しておらず、ほぼ機能していない状況</div>
+    </div>
+  </div>
+  <div class="flow-arrow"><div class="flow-timing"></div><div class="arrow">&#9660;</div></div>
+
+  <div class="flow-step">
+    <div class="flow-timing">月の半ば<br>(12〜13日頃)</div>
+    <div class="flow-box">
+      <strong>打刻漏れチェック（和田様）</strong>
+      エラー一覧を出力 → Chatworkで対象者に通知
+      <div class="note">※ 反応しない人が多く、最終的に日報を確認して強制修正する場合も</div>
+    </div>
+  </div>
+  <div class="flow-arrow"><div class="flow-timing"></div><div class="arrow">&#9660;</div></div>
+
+  <div class="flow-step">
+    <div class="flow-timing">15日</div>
+    <div class="flow-box">
+      <strong>勤怠締め</strong>
+      freee勤怠管理プラスで月次の勤怠を確定
+      <div class="note">※ 締め直前にもエラー通知を複数回送信。上長に確認・承認を依頼</div>
+    </div>
+  </div>
+  <div class="flow-arrow"><div class="flow-timing"></div><div class="arrow">&#9660;</div></div>
+
+  <div class="flow-step">
+    <div class="flow-timing">締め後</div>
+    <div class="flow-box">
+      <strong>残業データ集計（和田様）</strong>
+      freeeから残業一覧をExcelに出力し、42h / 45h の超過者をリストアップ
+      <div class="note">※ 有給取得状況は別途チェック（5日取得義務）</div>
+    </div>
+  </div>
+  <div class="flow-arrow"><div class="flow-timing"></div><div class="arrow">&#9660;</div></div>
+
+  <div class="flow-step">
+    <div class="flow-timing">締め後</div>
+    <div class="flow-box" style="border-color: #e74848;">
+      <strong>報告</strong>
+      Chatworkまたは口頭でリーダー・経営層に共有
+      <div class="note">※ 現在は体系的なレポートは作成されていない。個別集計のみ</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="question-box">
+  <div class="q-label">CONFIRM 1</div>
+  <p><strong>上記のフローは現在の業務と合っていますか？</strong></p>
+  <p>異なる点や補足がありましたらお知らせください。</p>
+</div>
+
+<!-- ===== 2. データ構造 ===== -->
+<h2 class="section-title" id="data-structure">2. 把握しているデータ構造</h2>
+
+<p>お預かりした残業一覧Excelをもとに、以下のデータ構造を把握しています。</p>
+
+<h3 class="subsection-title">基本情報</h3>
+<table>
+  <tr><th>項目</th><th>内容</th></tr>
+  <tr><td>在籍者数</td><td>87名</td></tr>
+  <tr><td>部署数</td><td>34部署</td></tr>
+  <tr><td>勤怠システム</td><td>freee勤怠管理プラス（ホールディングス1社契約）</td></tr>
+  <tr><td>給与計算</td><td>人事労務freee（API連携）</td></tr>
+  <tr><td>勤怠締め日</td><td>毎月15日</td></tr>
+</table>
+
+<h3 class="subsection-title">36協定の閾値</h3>
+<table>
+  <tr><th>対象</th><th>年間休日数</th><th>残業上限</th><th>備考</th></tr>
+  <tr><td>年変形労働制の従業員</td><td>105日</td><td><strong>42時間</strong></td><td>部署コードに「105日」を含む</td></tr>
+  <tr><td>通常の従業員</td><td>115日</td><td><strong>45時間</strong></td><td>上記以外</td></tr>
+</table>
+
+<h3 class="subsection-title">固定残業時間</h3>
+<table>
+  <tr><th>パターン</th><th>説明</th></tr>
+  <tr><td>40時間</td><td>大多数の正社員</td></tr>
+  <tr><td>30時間</td><td>一部の従業員</td></tr>
+  <tr><td>20時間</td><td>一部の従業員</td></tr>
+  <tr><td>10時間</td><td>一部の従業員</td></tr>
+</table>
+
+<h3 class="subsection-title">月別残業データの項目</h3>
+<p>freeeから出力される月別の残業データには、以下の項目が含まれています。</p>
+<table>
+  <tr><th>項目</th><th>内容</th></tr>
+  <tr><td>残業時間</td><td>通常の時間外労働</td></tr>
+  <tr><td>深夜所定 / 深夜所定外 / 深夜残業</td><td>22:00以降の労働時間（内訳）</td></tr>
+  <tr><td>法定休日 所定 / 所定外 / 残業 / 深夜所定</td><td>法定休日の労働時間（内訳）</td></tr>
+  <tr><td>時間外手当（円）</td><td>固定残業を超えた分の手当金額</td></tr>
+</table>
+
+<div class="question-box">
+  <div class="q-label">CONFIRM 2</div>
+  <p><strong>上記のデータ項目に漏れや誤りはありませんか？</strong></p>
+  <p>特に、レポートに含めるべき項目として不足しているものがあればお知らせください。</p>
+</div>
+
+<!-- ===== 3. レポートイメージ ===== -->
+<h2 class="section-title" id="report-image">3. 月次レポートのイメージ</h2>
+
+<p>弊社で作成する月次レポートの構成案です。フォーマットや掲載項目についてご意見をお聞かせください。</p>
+
+<h3 class="subsection-title">A. 残業時間レポート</h3>
+
+<div class="report-mock">
+  <div class="report-mock-header">月次勤怠レポート 2026年2月度</div>
+  <div class="report-mock-body">
+
+    <div class="mock-section">
+      <div class="mock-label">概況サマリ</div>
+      <table class="mock-table">
+        <tr>
+          <th>項目</th><th>今月</th><th>前月</th><th>増減</th>
+        </tr>
+        <tr><td>在籍者数</td><td>87名</td><td>89名</td><td>-2</td></tr>
+        <tr><td>全社平均残業時間</td><td>23.8h</td><td>15.6h</td><td class="warning">+8.2h</td></tr>
+        <tr><td>45h超過者数</td><td class="danger">12名</td><td>5名</td><td class="danger">+7</td></tr>
+        <tr><td>42h超過者数（年変形）</td><td class="warning">3名</td><td>2名</td><td>+1</td></tr>
+        <tr><td>80h超過者数</td><td class="danger">2名</td><td>0名</td><td class="danger">+2</td></tr>
+      </table>
+    </div>
+
+    <div class="mock-section">
+      <div class="mock-label">36協定超過者一覧（45h超 / 42h超）</div>
+      <table class="mock-table">
+        <tr>
+          <th>名前</th><th>所属</th><th>残業時間</th><th>閾値</th><th>超過</th><th>累計超過回数</th>
+        </tr>
+        <tr class="danger"><td>森川 裕亮</td><td>工務(東海)</td><td>80.69h</td><td>45h</td><td>+35.69h</td><td>3回</td></tr>
+        <tr class="danger"><td>渡邉 貴斗</td><td>工務(東海)</td><td>76.17h</td><td>45h</td><td>+31.17h</td><td>3回</td></tr>
+        <tr><td>井上 敢太</td><td>設計部(飛騨)</td><td>56.35h</td><td>45h</td><td>+11.35h</td><td>2回</td></tr>
+        <tr><td>曽我 大介</td><td>NOZOMI(東海)</td><td>56.02h</td><td>45h</td><td>+11.02h</td><td>2回</td></tr>
+        <tr><td>安田 真也</td><td>工務(飛騨)</td><td>55.45h</td><td>45h</td><td>+10.45h</td><td>1回</td></tr>
+        <tr><td>金剛 悠斗</td><td>NOZOMI(飛騨)</td><td>54.00h</td><td>45h</td><td>+9.00h</td><td>4回</td></tr>
+        <tr><td colspan="6" style="text-align:center; color:#999;">... 他 9名 ...</td></tr>
+      </table>
+    </div>
+
+    <div class="mock-section">
+      <div class="mock-label">部署別 平均残業時間</div>
+      <table class="mock-table">
+        <tr>
+          <th>部署</th><th>人数</th><th>平均残業</th><th>最大</th><th>45h超</th>
+        </tr>
+        <tr><td>工務(東海)</td><td>8名</td><td class="danger">48.2h</td><td class="danger">80.69h</td><td class="danger">4名</td></tr>
+        <tr><td>設計部(飛騨)</td><td>6名</td><td class="warning">38.5h</td><td>56.35h</td><td>2名</td></tr>
+        <tr><td>NOZOMI(東海)</td><td>12名</td><td>28.1h</td><td>56.02h</td><td>2名</td></tr>
+        <tr><td colspan="5" style="text-align:center; color:#999;">... 他 31部署 ...</td></tr>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<div class="question-box">
+  <div class="q-label">CONFIRM 3</div>
+  <p><strong>残業レポートに関して、以下をご確認ください。</strong></p>
+  <ul class="options">
+    <li>概況サマリ・超過者一覧・部署別の3セクション構成でよいか</li>
+    <li>「累計超過回数」（今期の36協定超過累計）は必要か</li>
+    <li>「部署別」のグルーピングは現在の所属部署の単位でよいか、リーダー単位に組み替えるか</li>
+    <li>深夜残業・法定休日労働の内訳も表示するか（情報量が増える）</li>
+    <li>前月比較は必要か</li>
+  </ul>
+</div>
+
+<h3 class="subsection-title">B. 有給取得状況レポート</h3>
+
+<div class="report-mock">
+  <div class="report-mock-header">有給取得状況 2026年2月度</div>
+  <div class="report-mock-body">
+
+    <div class="mock-section">
+      <div class="mock-label">年5日取得義務 アラート対象者</div>
+      <table class="mock-table">
+        <tr>
+          <th>名前</th><th>所属</th><th>付与日</th><th>取得済</th><th>残り必須</th><th>期限まで</th><th>ステータス</th>
+        </tr>
+        <tr class="danger"><td>中谷 伸也</td><td>リラクス(飛騨)</td><td>2025/10/01</td><td>1日</td><td>4日</td><td>あと5ヶ月</td><td>要注意</td></tr>
+        <tr class="warning"><td>桑原 佑気</td><td>工務(東海)</td><td>2025/09/01</td><td>2日</td><td>3日</td><td>あと4ヶ月</td><td>注意</td></tr>
+        <tr><td colspan="7" style="text-align:center; color:#999;">... 該当者全員を表示 ...</td></tr>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<div class="question-box">
+  <div class="q-label">CONFIRM 4</div>
+  <p><strong>有給レポートに関して、以下をご確認ください。</strong></p>
+  <ul class="options">
+    <li>残業レポートと有給レポートは同じ資料にまとめるか、別にするか</li>
+    <li>有給のアラート基準: 付与後6ヶ月で0日取得 → 1次警告、以降月単位でチェック、でよいか</li>
+    <li>有給の残日数・取得日数一覧は全員分必要か、アラート対象者のみでよいか</li>
+  </ul>
+</div>
+
+<!-- ===== 4. 配信方法 ===== -->
+<h2 class="section-title" id="delivery">4. レポートの配信方法</h2>
+
+<h3 class="subsection-title">配信タイミング</h3>
+<div class="highlight-box">
+  <strong>想定:</strong> 毎月の勤怠締め（15日）後、数営業日以内にレポートを配信
+</div>
+
+<h3 class="subsection-title">Chatwork通知イメージ</h3>
+<p>レポート配信時のChatwork通知は、以下のようなイメージを想定しています。</p>
+
+<div class="cw-mock">
+  <div class="cw-mock-header">Chatwork - 古川製剤 x セブンリッチ 労務</div>
+  <div class="cw-mock-body">[info][title]2026年2月度 勤怠レポート[/title]
+お疲れ様です。2月度の勤怠レポートをお送りします。
+
+■ 概況
+・全社平均残業: 23.8h（前月比 +8.2h）
+・36協定超過者: 15名（45h超 12名 / 42h超 3名）
+・80h超過者: 2名 ← 要対応
+
+■ 80h超過（緊急）
+・森川 裕亮（工務/東海）: 80.69h ※累計3回目
+・渡邉 貴斗（工務/東海）: 76.17h ※累計3回目
+
+■ 45h超過
+・井上 敢太（設計部/飛騨）: 56.35h
+・曽我 大介（NOZOMI/東海）: 56.02h
+  ... 他10名（詳細は添付レポート参照）
+
+■ 有給取得アラート
+・年5日未達のリスクあり: 3名（詳細は添付レポート参照）
+
+詳細レポートは添付ファイルをご確認ください。[/info]</div>
+</div>
+
+<div class="question-box">
+  <div class="q-label">CONFIRM 5</div>
+  <p><strong>配信方法について、以下をご確認ください。</strong></p>
+  <ul class="options">
+    <li>Chatworkのテキスト通知 + 詳細レポート（Excel or PDF）添付、の形式でよいか</li>
+    <li>新設予定の労務専用チャンネルに配信する想定でよいか</li>
+    <li>リーダー個別へのメンション付き通知は必要か（例: 自チームの超過者がいる場合）</li>
+    <li>レポートの配信は月1回で十分か、半月ごとの中間報告もあった方がよいか</li>
+  </ul>
+</div>
+
+<!-- ===== 5. 確認事項まとめ ===== -->
+<h2 class="section-title" id="questions">5. ご確認いただきたい事項まとめ</h2>
+
+<table>
+  <tr><th>#</th><th>確認事項</th><th>セクション</th></tr>
+  <tr><td>1</td><td>現在の業務フローの認識に相違がないか</td><td><a href="#current-flow">1. 現状フロー</a></td></tr>
+  <tr><td>2</td><td>データ項目に漏れや誤りがないか</td><td><a href="#data-structure">2. データ構造</a></td></tr>
+  <tr><td>3</td><td>残業レポートの構成・掲載項目</td><td><a href="#report-image">3. レポートイメージ</a></td></tr>
+  <tr><td>4</td><td>有給レポートの構成・アラート基準</td><td><a href="#report-image">3. レポートイメージ</a></td></tr>
+  <tr><td>5</td><td>配信方法（チャンネル・頻度・形式）</td><td><a href="#delivery">4. 配信方法</a></td></tr>
+</table>
+
+<div class="confirm-box">
+  <strong>ご回答方法:</strong> 本ページの内容をご確認のうえ、Chatworkにて「問題ない」「ここが違う」等のフィードバックをいただければ幸いです。認識が合い次第、レポート作成の準備を進めてまいります。
+</div>
+
+<!-- ===== Footer ===== -->
+<div class="page-footer">
+  <p>BPIO / セブンリッチグループ &mdash; 2026年3月作成</p>
+</div>
+
+</div><!-- #main -->
+
+<script>
+// Pill navigation active state
+const pills = document.querySelectorAll('.pill');
+const sections = [...pills].map(p => document.querySelector(p.getAttribute('href')));
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      pills.forEach(p => p.classList.remove('active'));
+      const target = [...pills].find(p => p.getAttribute('href') === '#' + entry.target.id);
+      if (target) target.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -60% 0px' });
+sections.filter(Boolean).forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
