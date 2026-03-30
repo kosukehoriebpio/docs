@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MFクラウド会計 MCP検証レポート — BPIO</title>
+<style>
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color: #1a1a1a;
+  background: #fff;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ===== Sticky Pill Navigation ===== */
+#sticky-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.97);
+  border-bottom: 1px solid #ccc;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+#sticky-nav .nav-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #777;
+  letter-spacing: 0.05em;
+  margin-right: 4px;
+  white-space: nowrap;
+}
+.pill {
+  display: inline-block;
+  padding: 5px 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #555;
+  text-decoration: none;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.pill:hover, .pill.active {
+  background: #1a1a1a;
+  color: #fff;
+  border-color: #1a1a1a;
+}
+
+/* ===== Main Content ===== */
+#main {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 40px 48px 80px;
+}
+
+/* ===== Header ===== */
+.report-header {
+  border-bottom: 2px solid #1a1a1a;
+  padding-bottom: 20px;
+  margin-bottom: 32px;
+}
+.report-header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.report-header .subtitle {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 16px;
+}
+.report-header .summary-box {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 16px 20px;
+  margin-top: 16px;
+}
+.report-header .summary-box h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.report-header .summary-box ul {
+  padding-left: 20px;
+  font-size: 0.82rem;
+}
+.report-header .summary-box li {
+  margin-bottom: 4px;
+}
+
+/* ===== Section Headings ===== */
+h2.section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-bottom: 1px solid #999;
+  padding-bottom: 6px;
+  margin-top: 48px;
+  margin-bottom: 20px;
+}
+h3.subsection-title {
+  font-size: 1.0rem;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  padding-left: 10px;
+  border-left: 3px solid #555;
+}
+
+/* ===== Tables ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 20px;
+  font-size: 0.82rem;
+}
+table th, table td {
+  border: 1px solid #bbb;
+  padding: 7px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+table th {
+  background: #f0f0f0;
+  font-weight: 700;
+  white-space: nowrap;
+}
+table td {
+  background: #fff;
+}
+
+/* ===== Status Badges ===== */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 999px;
+  letter-spacing: 0.03em;
+}
+.badge-ok { background: #d4edda; color: #155724; }
+.badge-warn { background: #fff3cd; color: #856404; }
+.badge-info { background: #d1ecf1; color: #0c5460; }
+.badge-pending { background: #e2e3e5; color: #383d41; }
+
+/* ===== Flow Diagram ===== */
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 20px 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.flow-step {
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 10px 18px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+  min-width: 120px;
+}
+.flow-step.active {
+  background: #1a1a1a;
+  color: #fff;
+  border-color: #1a1a1a;
+}
+.flow-arrow {
+  font-size: 1.2rem;
+  color: #999;
+  padding: 0 4px;
+}
+
+/* ===== Highlight Box ===== */
+.highlight-box {
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 16px 20px;
+  margin: 16px 0;
+}
+.highlight-box h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.highlight-box p, .highlight-box li {
+  font-size: 0.82rem;
+}
+.highlight-box ul {
+  padding-left: 20px;
+}
+
+/* ===== Code Block ===== */
+.code-block {
+  background: #2d2d2d;
+  color: #f8f8f2;
+  padding: 16px 20px;
+  border-radius: 4px;
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  margin: 12px 0 20px;
+}
+.code-block .comment { color: #75715e; }
+.code-block .key { color: #a6e22e; }
+.code-block .string { color: #e6db74; }
+.code-block .number { color: #ae81ff; }
+
+/* ===== PL Table ===== */
+.pl-table td:nth-child(n+2) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.pl-table tr.total-row {
+  font-weight: 700;
+  background: #f7f7f7;
+}
+
+/* ===== Footer ===== */
+.report-footer {
+  margin-top: 60px;
+  padding-top: 16px;
+  border-top: 1px solid #ccc;
+  font-size: 0.72rem;
+  color: #999;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Navigation ===== -->
+<nav id="sticky-nav">
+  <span class="nav-label">SECTIONS</span>
+  <a class="pill" href="#overview">概要</a>
+  <a class="pill" href="#auth">認証</a>
+  <a class="pill" href="#phase1">Phase 1</a>
+  <a class="pill" href="#phase2">Phase 2</a>
+  <a class="pill" href="#phase3">Phase 3</a>
+  <a class="pill" href="#workflow">活用</a>
+  <a class="pill" href="#limitations">制約</a>
+</nav>
+
+<!-- ===== Main ===== -->
+<div id="main">
+
+  <!-- Header -->
+  <header class="report-header">
+    <h1>MFクラウド会計 MCP検証レポート</h1>
+    <p class="subtitle">マネーフォワード クラウド会計 公式MCPサーバーの機能検証結果 — 2026-03-30</p>
+    <div class="summary-box">
+      <h3>検証サマリー</h3>
+      <ul>
+        <li><strong>対象</strong>: MFクラウド会計 公式MCPサーバー（alpha版 / 2026-03-26 全プラン対応開始）</li>
+        <li><strong>検証環境</strong>: ダミー会社「株式会社テスト」（法人 / 2025年度）</li>
+        <li><strong>利用可能ツール</strong>: 20種（認証2 + GET系13 + POST/PUT系5）</li>
+        <li><strong>検証結果</strong>: 全エンドポイント正常動作。BPO月次業務の自動化に活用可能</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- ===== Overview ===== -->
+  <h2 class="section-title" id="overview">検証の全体像</h2>
+
+  <div class="flow">
+    <div class="flow-step active">Phase 1<br><small>疎通確認</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step active">Phase 2<br><small>データ投入</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step active">Phase 3<br><small>業務検証</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step">Phase 4<br><small>適用評価</small></div>
+  </div>
+
+  <table>
+    <tr>
+      <th>Phase</th>
+      <th>内容</th>
+      <th>状態</th>
+    </tr>
+    <tr>
+      <td>1. 疎通確認</td>
+      <td>OAuth認証フロー確認、全GETエンドポイント10種の動作検証</td>
+      <td><span class="badge badge-ok">完了</span></td>
+    </tr>
+    <tr>
+      <td>2. ダミーデータ投入</td>
+      <td>取引先3件登録、仕訳3件作成（売上・家賃・給与）、試算表反映確認</td>
+      <td><span class="badge badge-ok">完了</span></td>
+    </tr>
+    <tr>
+      <td>3. 業務活用検証</td>
+      <td>仕訳更新、推移表、ページネーション、月次チェックワークフロー</td>
+      <td><span class="badge badge-ok">完了</span></td>
+    </tr>
+    <tr>
+      <td>4. BPO業務適用評価</td>
+      <td>複数事業者切替、月次チェック自動化、実務制約の評価</td>
+      <td><span class="badge badge-pending">未着手</span></td>
+    </tr>
+  </table>
+
+  <!-- ===== Auth ===== -->
+  <h2 class="section-title" id="auth">OAuth認証フロー</h2>
+
+  <p>MCPサーバーはOAuth 2.0 Authorization Code Flowで認証します。トークン有効期限は<strong>1時間</strong>、リフレッシュトークンは発行されません。</p>
+
+  <div class="flow">
+    <div class="flow-step">authorize<br><small>認証URL発行</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step">ブラウザ認証<br><small>MFログイン+許可</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step">exchange<br><small>コード→トークン</small></div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step">API利用<br><small>1時間有効</small></div>
+  </div>
+
+  <div class="highlight-box">
+    <h4>認証の注意点</h4>
+    <ul>
+      <li>コールバックページに表示されるのは「認可コード」であり、アクセストークンではない</li>
+      <li><code>mfc_ca_exchange</code> で認可コードをアクセストークンに交換する必要がある</li>
+      <li>リフレッシュトークンは発行されないため、1時間ごとに再認証が必要</li>
+    </ul>
+  </div>
+
+  <!-- ===== Phase 1 ===== -->
+  <h2 class="section-title" id="phase1">Phase 1: 疎通確認</h2>
+
+  <p>全20ツールのうちGET系13ツールの動作を確認しました（認証2ツールは認証フロー内で確認済み）。</p>
+
+  <table>
+    <tr>
+      <th>#</th>
+      <th>エンドポイント</th>
+      <th>ツール名</th>
+      <th>結果</th>
+      <th>データ件数</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>事業者情報</td>
+      <td>currentOffice</td>
+      <td><span class="badge badge-ok">OK</span></td>
+      <td>1事業者</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>勘定科目</td>
+      <td>getAccounts</td>
+      <td><span class="badge badge-ok">OK</span></td>
+      <td>100+</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>補助科目</td>
+      <td>getSubAccounts</td>
+      <td><span class="badge badge-ok">OK</span></td>
+      <td>9件</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>部門</td>
+      <td>getDepartments</td>
+      <td><span class="badge badge-ok">OK</span></td>
+      <td>0件</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>税区分</td>
+      <td>getTaxes</td>
+      <td><span class="badge badge-ok">OK</span></td>
+      <td>100+</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>取引先</td>
+      <td>getTradePartners</td>
+      <td><span class="badge badge-ok">OK</span></td>
+      <td>0件</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>連携サービス</td>
+      <td>getConnectedAccounts</td>
+      <td><span class="badge badge-ok">OK</span></td>
+      <td>0件</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>仕訳一覧</td>
+      <td>getJournals</td>
+      <td><span class="badge badge-ok">OK</span></td>
+      <td>0件→6件</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>仕訳個別取得</td>
+      <td>getJournalById</td>
+      <td><span class="badge badge-ok">OK</span></td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>残高試算表(BS)</td>
+      <td>getReportsTrialBalanceBS</td>
+      <td><span class="badge badge-ok">OK</span></td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>残高試算表(PL)</td>
+      <td>getReportsTrialBalancePL</td>
+      <td><span class="badge badge-ok">OK</span></td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>推移表(BS)</td>
+      <td>getReportsTransitionBS</td>
+      <td><span class="badge badge-ok">OK</span></td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>推移表(PL)</td>
+      <td>getReportsTransitionPL</td>
+      <td><span class="badge badge-ok">OK</span></td>
+      <td>—</td>
+    </tr>
+  </table>
+
+  <!-- ===== Phase 2 ===== -->
+  <h2 class="section-title" id="phase2">Phase 2: ダミーデータ投入</h2>
+
+  <h3 class="subsection-title">取引先登録（3件一括）</h3>
+  <table>
+    <tr><th>コード</th><th>取引先名</th><th>用途</th></tr>
+    <tr><td>A0000000001</td><td>テスト商事株式会社</td><td>売上先</td></tr>
+    <tr><td>A0000000002</td><td>サンプル物産株式会社</td><td>仕入先（未使用）</td></tr>
+    <tr><td>A0000000003</td><td>ダミー不動産株式会社</td><td>家賃支払先</td></tr>
+  </table>
+
+  <h3 class="subsection-title">仕訳作成（3パターン）</h3>
+  <table>
+    <tr><th>#</th><th>日付</th><th>借方</th><th>貸方</th><th>金額</th><th>摘要</th></tr>
+    <tr>
+      <td>1</td><td>4/30</td>
+      <td>売掛金（対象外）</td><td>売上高（課税売上10%）</td>
+      <td style="text-align:right">1,100,000</td>
+      <td>BPO業務委託料（税込）</td>
+    </tr>
+    <tr>
+      <td>2</td><td>4/30</td>
+      <td>地代家賃（課税仕入10%）</td><td>普通預金（対象外）</td>
+      <td style="text-align:right">220,000</td>
+      <td>事務所家賃（税込）</td>
+    </tr>
+    <tr>
+      <td>3</td><td>4/25</td>
+      <td>給料賃金（対象外仕入）</td><td>普通預金 + 預り金</td>
+      <td style="text-align:right">300,000</td>
+      <td>給与支払（複合仕訳3行）</td>
+    </tr>
+  </table>
+
+  <h3 class="subsection-title">試算表に反映された結果</h3>
+
+  <table class="pl-table">
+    <tr><th>科目</th><th>4月</th><th>5月</th><th>合計</th></tr>
+    <tr><td>売上高</td><td>1,000,000</td><td>1,000,000</td><td>2,000,000</td></tr>
+    <tr><td>給料賃金</td><td>300,000</td><td>300,000</td><td>600,000</td></tr>
+    <tr><td>地代家賃</td><td>200,000</td><td>200,000</td><td>400,000</td></tr>
+    <tr class="total-row"><td>営業利益</td><td>500,000</td><td>500,000</td><td>1,000,000</td></tr>
+  </table>
+  <p style="font-size:0.78rem; color:#777;">※ 金額は税抜表示。消費税は仮払/仮受消費税に自動分離される</p>
+
+  <!-- ===== Phase 3 ===== -->
+  <h2 class="section-title" id="phase3">Phase 3: 業務活用検証</h2>
+
+  <h3 class="subsection-title">仕訳更新（putJournals）</h3>
+  <div class="highlight-box">
+    <h4>検証結果</h4>
+    <ul>
+      <li>金額変更（110万→165万）: <span class="badge badge-ok">成功</span> 消費税も自動再計算</li>
+      <li>メモ・タグの変更: <span class="badge badge-ok">成功</span></li>
+      <li>リクエスト形式はpostJournalsと同一（全フィールド再送信。差分更新ではない）</li>
+    </ul>
+  </div>
+
+  <h3 class="subsection-title">推移表（月次レポート）</h3>
+  <p><code>start_month</code> / <code>end_month</code> 指定で特定月の絞り込みが可能。BPOの月次レビューに最適。</p>
+  <table>
+    <tr><th>レポート</th><th>columns構成</th><th>特徴</th></tr>
+    <tr>
+      <td>推移表PL</td>
+      <td>4月〜3月 + 決算整理 + <strong>合計</strong></td>
+      <td>フロー（期間損益）のため合計列あり</td>
+    </tr>
+    <tr>
+      <td>推移表BS</td>
+      <td>4月〜3月 + 決算整理</td>
+      <td>ストック（残高）のため合計列なし</td>
+    </tr>
+  </table>
+
+  <h3 class="subsection-title">ページネーション</h3>
+  <table>
+    <tr><th>パラメータ</th><th>設定値</th><th>結果</th></tr>
+    <tr><td>per_page=2, page=1</td><td>2件取得</td><td>metadata: total_count=6, total_pages=3</td></tr>
+    <tr><td>per_page=2, page=2</td><td>2件取得</td><td>正しくオフセットされた次の2件</td></tr>
+    <tr><td>未指定</td><td>全6件取得</td><td>デフォルトは全件返却</td></tr>
+  </table>
+
+  <!-- ===== Workflow ===== -->
+  <h2 class="section-title" id="workflow">BPO業務で活用できるワークフロー</h2>
+
+  <table>
+    <tr><th>#</th><th>ワークフロー</th><th>使用ツール</th><th>説明</th></tr>
+    <tr>
+      <td>1</td>
+      <td><strong>月次チェック</strong></td>
+      <td>getReportsTransitionPL</td>
+      <td>前月比較で異常値を自動検知。売上・経費の急増減をアラート</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><strong>仕訳一括取得</strong></td>
+      <td>getJournals + pagination</td>
+      <td>月次仕訳データの全件取得・外部ツールとの照合</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><strong>定型仕訳投入</strong></td>
+      <td>postJournals</td>
+      <td>毎月の家賃・給与等の定型仕訳を自動投入</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><strong>仕訳修正</strong></td>
+      <td>putJournals</td>
+      <td>エラー仕訳の一括修正（金額・税区分・摘要）</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td><strong>試算表確認</strong></td>
+      <td>getReportsTrialBalance*</td>
+      <td>月次〆後のBS/PL試算表を取得・検証</td>
+    </tr>
+  </table>
+
+  <div class="highlight-box">
+    <h4>仕訳投入のリクエスト例（売上計上）</h4>
+  </div>
+  <div class="code-block">
+<span class="comment">// postJournals リクエストボディ</span>
+{
+  <span class="key">"transaction_date"</span>: <span class="string">"2025-04-30"</span>,
+  <span class="key">"journal_type"</span>: <span class="string">"journal_entry"</span>,
+  <span class="key">"tags"</span>: [<span class="string">"MCP検証"</span>],
+  <span class="key">"branches"</span>: [{
+    <span class="key">"debitor"</span>: {
+      <span class="key">"account_id"</span>: <span class="string">"売掛金ID"</span>,
+      <span class="key">"tax_id"</span>: <span class="string">"対象外"</span>,
+      <span class="key">"value"</span>: <span class="number">1100000</span>
+    },
+    <span class="key">"creditor"</span>: {
+      <span class="key">"account_id"</span>: <span class="string">"売上高ID"</span>,
+      <span class="key">"tax_id"</span>: <span class="string">"課税売上10%"</span>,
+      <span class="key">"value"</span>: <span class="number">1100000</span>
+    },
+    <span class="key">"remark"</span>: <span class="string">"4月分BPO業務委託料"</span>
+  }]
+}
+  </div>
+
+  <!-- ===== Limitations ===== -->
+  <h2 class="section-title" id="limitations">制約・注意事項</h2>
+
+  <table>
+    <tr><th>項目</th><th>状況</th><th>BPO業務への影響</th></tr>
+    <tr>
+      <td>トークン有効期限</td>
+      <td><span class="badge badge-warn">1時間</span></td>
+      <td>大量仕訳処理時に再認証が必要。リフレッシュトークンなし</td>
+    </tr>
+    <tr>
+      <td>仕訳一括投入</td>
+      <td><span class="badge badge-warn">1件ずつ</span></td>
+      <td>バルクAPIなし。並列呼び出しで対応可能か要検証</td>
+    </tr>
+    <tr>
+      <td>仕訳削除</td>
+      <td><span class="badge badge-warn">APIなし</span></td>
+      <td>Web UIからの手動削除が必要</td>
+    </tr>
+    <tr>
+      <td>複合仕訳</td>
+      <td><span class="badge badge-info">制約あり</span></td>
+      <td>各行の借方・貸方両方にvalue必須（0は不可）</td>
+    </tr>
+    <tr>
+      <td>消費税</td>
+      <td><span class="badge badge-ok">自動計算</span></td>
+      <td>税区分指定で仮払/仮受消費税が自動分離。インボイス区分も自動付与</td>
+    </tr>
+    <tr>
+      <td>複数事業者</td>
+      <td><span class="badge badge-pending">未検証</span></td>
+      <td>Phase 4で検証予定。セッション再設定が必要な見込み</td>
+    </tr>
+    <tr>
+      <td>英日辞書</td>
+      <td><span class="badge badge-info">データ空</span></td>
+      <td>alpha版のため未実装。今後データ追加の可能性</td>
+    </tr>
+  </table>
+
+  <!-- ===== Footer ===== -->
+  <div class="report-footer">
+    <p>MFクラウド会計 MCP検証レポート — p035 — Generated 2026-03-30 — BPIO co., Ltd.</p>
+  </div>
+
+</div>
+
+<script>
+// Pill navigation active state
+const pills = document.querySelectorAll('.pill');
+const sections = document.querySelectorAll('[id]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      pills.forEach(p => p.classList.remove('active'));
+      const active = document.querySelector(`.pill[href="#${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -80% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
