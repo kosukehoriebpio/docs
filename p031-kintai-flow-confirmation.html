@@ -547,12 +547,12 @@ ul li, ol li { margin-bottom: 3px; }
         <tr>
           <th>名前</th><th>所属</th><th>残業時間</th><th>閾値</th><th>超過</th><th>累計超過回数</th>
         </tr>
-        <tr class="danger"><td>山田 太郎</td><td>工務(東海)</td><td>80.69h</td><td>45h</td><td>+35.69h</td><td>3回</td></tr>
-        <tr class="danger"><td>佐藤 健一</td><td>工務(東海)</td><td>76.17h</td><td>45h</td><td>+31.17h</td><td>3回</td></tr>
-        <tr><td>鈴木 大輔</td><td>設計部(飛騨)</td><td>56.35h</td><td>45h</td><td>+11.35h</td><td>2回</td></tr>
-        <tr><td>高橋 翔太</td><td>NOZOMI(東海)</td><td>56.02h</td><td>45h</td><td>+11.02h</td><td>2回</td></tr>
-        <tr><td>田中 雄介</td><td>工務(飛騨)</td><td>55.45h</td><td>45h</td><td>+10.45h</td><td>1回</td></tr>
-        <tr><td>伊藤 拓海</td><td>NOZOMI(飛騨)</td><td>54.00h</td><td>45h</td><td>+9.00h</td><td>4回</td></tr>
+        <tr class="danger"><td>従業員A</td><td>部署X</td><td>80.69h</td><td>45h</td><td>+35.69h</td><td>3回</td></tr>
+        <tr class="danger"><td>従業員B</td><td>部署X</td><td>76.17h</td><td>45h</td><td>+31.17h</td><td>3回</td></tr>
+        <tr><td>従業員C</td><td>部署Y</td><td>56.35h</td><td>45h</td><td>+11.35h</td><td>2回</td></tr>
+        <tr><td>従業員D</td><td>部署Z</td><td>56.02h</td><td>45h</td><td>+11.02h</td><td>2回</td></tr>
+        <tr><td>従業員E</td><td>部署W</td><td>55.45h</td><td>45h</td><td>+10.45h</td><td>1回</td></tr>
+        <tr><td>従業員F</td><td>部署Z</td><td>54.00h</td><td>45h</td><td>+9.00h</td><td>4回</td></tr>
         <tr><td colspan="6" style="text-align:center; color:#999;">... 他 9名 ...</td></tr>
       </table>
     </div>
@@ -563,10 +563,10 @@ ul li, ol li { margin-bottom: 3px; }
         <tr>
           <th>部署</th><th>人数</th><th>平均残業</th><th>最大</th><th>45h超</th>
         </tr>
-        <tr><td>工務(東海)</td><td>8名</td><td class="danger">48.2h</td><td class="danger">80.69h</td><td class="danger">4名</td></tr>
-        <tr><td>設計部(飛騨)</td><td>6名</td><td class="warning">38.5h</td><td>56.35h</td><td>2名</td></tr>
-        <tr><td>NOZOMI(東海)</td><td>12名</td><td>28.1h</td><td>56.02h</td><td>2名</td></tr>
-        <tr><td colspan="5" style="text-align:center; color:#999;">... 他 31部署 ...</td></tr>
+        <tr><td>部署X</td><td>8名</td><td class="danger">48.2h</td><td class="danger">80.69h</td><td class="danger">4名</td></tr>
+        <tr><td>部署Y</td><td>6名</td><td class="warning">38.5h</td><td>56.35h</td><td>2名</td></tr>
+        <tr><td>部署Z</td><td>12名</td><td>28.1h</td><td>56.02h</td><td>2名</td></tr>
+        <tr><td colspan="5" style="text-align:center; color:#999;">... 他の部署 ...</td></tr>
       </table>
     </div>
 
@@ -597,8 +597,8 @@ ul li, ol li { margin-bottom: 3px; }
         <tr>
           <th>名前</th><th>所属</th><th>付与日</th><th>取得済</th><th>残り必須</th><th>期限まで</th><th>ステータス</th>
         </tr>
-        <tr class="danger"><td>渡辺 誠</td><td>リラクス(飛騨)</td><td>2025/10/01</td><td>1日</td><td>4日</td><td>あと5ヶ月</td><td>要注意</td></tr>
-        <tr class="warning"><td>小林 洋平</td><td>工務(東海)</td><td>2025/09/01</td><td>2日</td><td>3日</td><td>あと4ヶ月</td><td>注意</td></tr>
+        <tr class="danger"><td>従業員G</td><td>部署V</td><td>2025/10/01</td><td>1日</td><td>4日</td><td>あと5ヶ月</td><td>要注意</td></tr>
+        <tr class="warning"><td>従業員H</td><td>部署X</td><td>2025/09/01</td><td>2日</td><td>3日</td><td>あと4ヶ月</td><td>注意</td></tr>
         <tr><td colspan="7" style="text-align:center; color:#999;">... 該当者全員を表示 ...</td></tr>
       </table>
     </div>
@@ -638,12 +638,12 @@ ul li, ol li { margin-bottom: 3px; }
 ・80h超過者: 2名 ← 要対応
 
 ■ 80h超過（緊急）
-・山田 太郎（工務/東海）: 80.69h ※累計3回目
-・佐藤 健一（工務/東海）: 76.17h ※累計3回目
+・従業員A（部署X）: 80.69h ※累計3回目
+・従業員B（部署X）: 76.17h ※累計3回目
 
 ■ 45h超過
-・鈴木 大輔（設計部/飛騨）: 56.35h
-・高橋 翔太（NOZOMI/東海）: 56.02h
+・従業員C（部署Y）: 56.35h
+・従業員D（部署Z）: 56.02h
   ... 他10名（詳細は添付レポート参照）
 
 ■ 有給取得アラート
