@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>杉浦 事前面談レポート — BPIO</title>
+<style>
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color: #1a1a1a;
+  background: #fff;
+  line-height: 1.7;
+  margin: 0;
+}
+html { font-size: 15px; }
+#sticky-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.97);
+  border-bottom: 1px solid #ccc;
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+#sticky-nav .nav-label {
+  font-size: 0.72rem; font-weight: 700; color: #777;
+  letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+}
+.pill {
+  display: inline-block; padding: 5px 16px;
+  font-size: 0.78rem; font-weight: 600; color: #555;
+  text-decoration: none; border: 1px solid #ccc;
+  border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+}
+.pill:hover, .pill.active {
+  background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+}
+#main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+.report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+.report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin: 0 0 4px; }
+.report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+.report-header .summary-box {
+  background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+}
+.report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin: 0 0 10px; }
+.report-header .summary-box ul, .report-header .summary-box ol {
+  padding-left: 20px; font-size: 0.82rem; margin: 0;
+}
+.report-header .summary-box li { margin-bottom: 4px; }
+h2.section-title {
+  font-size: 1.2rem; font-weight: 700;
+  border-bottom: 1px solid #999; padding-bottom: 6px;
+  margin-top: 48px; margin-bottom: 20px;
+}
+h3.subsection-title {
+  font-size: 1.0rem; font-weight: 700;
+  margin-top: 32px; margin-bottom: 12px;
+  padding-left: 10px; border-left: 3px solid #555;
+}
+h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+table td { background: #fff; }
+table tr:nth-child(even) td { background: #fafafa; }
+p { margin-bottom: 10px; font-size: 0.88rem; }
+ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+ul li, ol li { margin-bottom: 3px; }
+.highlight-box {
+  background: #f7f7f7; border: 1px solid #ddd;
+  padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+}
+.note-box {
+  background: #fffbeb; border-left: 4px solid #f59e0b;
+  padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+}
+.info-box {
+  background: #eff6ff; border-left: 4px solid #3b82f6;
+  padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f;
+}
+.confirm-box {
+  background: #f0fdf4; border-left: 4px solid #22c55e;
+  padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #14532d;
+}
+.badge {
+  display: inline-block; padding: 2px 10px;
+  font-size: 0.72rem; font-weight: 700;
+  border-radius: 999px; letter-spacing: 0.03em;
+}
+.badge-ok { background: #d4edda; color: #155724; }
+.badge-warn { background: #fff3cd; color: #856404; }
+.badge-info { background: #d1ecf1; color: #0c5460; }
+.badge-pending { background: #e2e3e5; color: #383d41; }
+.flow {
+  display: flex; align-items: center; gap: 0;
+  margin: 20px 0; flex-wrap: wrap; justify-content: center;
+}
+.flow-step {
+  background: #f0f0f0; border: 1px solid #ccc;
+  padding: 10px 18px; font-size: 0.82rem; font-weight: 600;
+  text-align: center; min-width: 120px;
+}
+.flow-step.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+.flow-arrow { font-size: 1.2rem; color: #999; padding: 0 4px; }
+.report-footer {
+  border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+  font-size: 0.78rem; color: #777;
+}
+@media (max-width: 640px) {
+  #main { padding: 24px 20px 60px; }
+  .report-header h1 { font-size: 1.3rem; }
+  h2.section-title { font-size: 1.05rem; }
+  table { font-size: 0.78rem; }
+  table th, table td { padding: 5px 7px; }
+  #sticky-nav { padding: 10px 12px; gap: 6px; }
+  .pill { padding: 4px 12px; font-size: 0.72rem; }
+}
+@media print {
+  #sticky-nav { display: none; }
+  #main { padding: 0; max-width: 100%; }
+  body { font-size: 10pt; }
+  .report-header h1 { font-size: 16pt; }
+  h2.section-title { font-size: 13pt; page-break-after: avoid; }
+  h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+  table { font-size: 8pt; page-break-inside: avoid; }
+  table th, table td { padding: 3px 5px; }
+  .highlight-box, .note-box, .info-box {
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  table th {
+    background: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+}
+</style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">SECTIONS</span>
+  <a class="pill" href="#profile">プロファイル</a>
+  <a class="pill" href="#meeting">面談内容</a>
+  <a class="pill" href="#personality">パーソナリティ分析</a>
+  <a class="pill" href="#strengths">強み・弱み</a>
+  <a class="pill" href="#attract">アトラクト戦略</a>
+  <a class="pill" href="#observation">観察ポイント</a>
+  <a class="pill" href="#assessment">総合評価</a>
+  <a class="pill" href="#next">ネクストアクション</a>
+</nav>
+
+<div id="main">
+
+<header class="report-header">
+  <h1>杉浦 — 4月インターン事前面談レポート</h1>
+  <p class="subtitle">p021（28卒スプリングインターン メンター）｜2026-03-31 対面面談（1時間）｜メンター: 堀江孝輔</p>
+  <div class="summary-box">
+    <h3>Key Takeaways</h3>
+    <ul>
+      <li><strong>北海道大学（理系）</strong>、事業開発の経験ゼロ、対面複数日インターン初参加</li>
+      <li><strong>選考評価: A</strong> — 地頭が良く、GD通過。1,000人以上の応募から選抜</li>
+      <li><strong>思考パターン</strong>: 網羅型→収束型。選択肢を全部洗い出してから即決するが、洗い出しに時間がかかる</li>
+      <li><strong>最大の課題</strong>: 勝てるフィールド志向・損失回避型。安全圏から出る体験が不足</li>
+      <li><strong>アトラクト方針</strong>: 厳しめスタンス + 期限設定 +「腹を見せる」チャレンジを促す</li>
+    </ul>
+  </div>
+</header>
+
+<!-- ============================== -->
+<h2 class="section-title" id="profile">1. 基本プロファイル</h2>
+
+<table>
+  <tr><th>項目</th><th>内容</th></tr>
+  <tr><td>大学</td><td>北海道大学（理系）</td></tr>
+  <tr><td>居住地</td><td>札幌</td></tr>
+  <tr><td>研究室</td><td>比較的自由な環境（卒業生は全員異なる業界に進む）</td></tr>
+  <tr><td>就活開始</td><td>2026年1月末〜（GoodFind経由）</td></tr>
+  <tr><td>他社選考</td><td>Speee、レバレジーズ等（札幌開催イベント経由）</td></tr>
+  <tr><td>複数日対面インターン</td><td>今回が初（これまでオンラインのみ）</td></tr>
+  <tr><td>事業開発経験</td><td>なし</td></tr>
+  <tr><td>選考経路</td><td>GoodFind → 札幌イベント → GD通過</td></tr>
+  <tr><td>選考評価</td><td><span class="badge badge-ok">A評価</span></td></tr>
+</table>
+
+<h3 class="subsection-title">課外活動</h3>
+<div class="highlight-box">
+  <strong>北大祭 実行委員会</strong><br>
+  コロナ明け3年ぶり復活時の運営メンバー。先輩ほぼ不在・ノウハウなしの状態で当日運営を完遂。金土日で60時間稼働、1日睡眠3〜4時間。「やらないと祭り自体が死ぬ」切迫感で走り切った。
+</div>
+
+<h3 class="subsection-title">就活状況</h3>
+<table>
+  <tr><th>項目</th><th>内容</th></tr>
+  <tr><td>志望業界</td><td>未定（サマーまで広く見る方針）</td></tr>
+  <tr><td>就活軸</td><td>未確立。「会社を選ぶファクター」を見つけたい段階</td></tr>
+  <tr><td>意思決定スタイル</td><td>全選択肢を洗い出し → 絞った後は即決（洗い出しに時間をかける）</td></tr>
+  <tr><td>企業選びの基準</td><td>就職後の自分の姿が見えること（逆算型ではない）</td></tr>
+  <tr><td>事業開発への興味</td><td>1月に就活を始めて初めて知った。この時期の募集に多かったことで接点</td></tr>
+  <tr><td>2年後の理想</td><td>「この中ならどこでもいける」まで選択肢を絞り、満足いく1社を選ぶ</td></tr>
+</table>
+
+<!-- ============================== -->
+<h2 class="section-title" id="meeting">2. 面談内容</h2>
+
+<h3 class="subsection-title">面談の流れ</h3>
+<div class="flow">
+  <div class="flow-step">自己紹介<br>アイスブレイク</div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-step">インターンで<br>得たいもの</div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-step">キャリア観<br>就活状況</div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-step active">目標設定<br>議論</div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-step">堀江の<br>宿題提示</div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-step">質疑応答</div>
+</div>
+
+<h3 class="subsection-title">杉浦が語ったこと</h3>
+<h4>インターンへの期待</h4>
+<ul>
+  <li>事業開発をやったことがないので、触りの部分でも経験したい</li>
+  <li>対面複数日のインターンが初めてなので、自分の強みを発揮したい</li>
+  <li>具体的な目標は立てられない（事業開発のイメージが湧いていない）</li>
+  <li>「せっかく札幌から来るので頑張りたい」</li>
+</ul>
+
+<h4>自分の性格について</h4>
+<ul>
+  <li>真面目は自覚あり。「やって損することはない」と考えるタイプ</li>
+  <li>集団面接・GDが得意（1対1は武器が少ない）</li>
+  <li>チームのモチベーション管理・声かけには自信がある</li>
+  <li>損をしたくない気持ちが強い。情報を知らないことへの不安</li>
+  <li>選択肢が絞れたらどこでもいい（絞るまでが大変）</li>
+  <li>尖り切れないバランス型の自覚あり</li>
+</ul>
+
+<h4>意思決定の原体験</h4>
+<div class="highlight-box">
+  高校受験: 複数校受験し、受かったところから家に近い学校を選択。「ここに行きたい」ではなく「どこに行っても大丈夫」な状態を作ってから選ぶ。モバイルバッテリー、引越し先も同様のパターン。成功体験の積み重ねでこの生存戦略が強化されている。
+</div>
+
+<h3 class="subsection-title">堀江からの共有・提案</h3>
+
+<h4>キャリア経験の共有</h4>
+<ul>
+  <li>結婚式場（アニベルセル） → プルデンシャル（2年・借金経験） → 起業（5年） → 現職</li>
+  <li>自分も「勝てるフィールド志向」だったが、弱い環境に入ることで成長した</li>
+  <li>「よく見せようとしない」ことの重要性を体感で知った</li>
+</ul>
+
+<h4>事業開発のコア</h4>
+<div class="info-box">
+  <strong>「どれだけ早く試して失敗を繰り返せるか」</strong><br>
+  案を考える → 試算する → 判断する。このサイクルを誰よりも速く回せることが事業開発の強み。当日までにこの「高速PDCA力」を意識して準備してほしい。
+</div>
+
+<h4>堀江からの宿題 4点</h4>
+<table>
+  <tr><th>#</th><th>宿題</th><th>狙い</th></tr>
+  <tr><td>1</td><td>PDCAの高速回転力を磨く</td><td>事業開発の基礎スキル</td></tr>
+  <tr><td>2</td><td>チーム内のポジションを考える</td><td>主体的な役割取り</td></tr>
+  <tr><td>3</td><td>「腹を見せる」練習</td><td>安牌志向からの脱却</td></tr>
+  <tr><td>4</td><td>目標を考えてくること</td><td>自分との向き合い</td></tr>
+</table>
+
+<h3 class="subsection-title">杉浦の反応・メンターへの要望</h3>
+<div class="confirm-box">
+  <strong>「厳しく接してほしい」</strong> — 事業開発を本気で見極めたいので、普段やっている方と同じ水準で接してほしい。貴重な3日間だからこそ手加減はいらない。
+</div>
+
+<!-- ============================== -->
+<h2 class="section-title" id="personality">3. パーソナリティ分析</h2>
+
+<h3 class="subsection-title">思考スタイル: 網羅型 → 収束型</h3>
+
+<div class="flow">
+  <div class="flow-step">全選択肢の<br>洗い出し</div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-step">情報の<br>徹底比較</div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-step">「どこでもOK」<br>まで絞る</div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-step active">即決</div>
+</div>
+
+<p>このパターンは高校受験、日常の購買、住居選びなどあらゆる場面で一貫している。就活では「選択肢の洗い出し」フェーズが終わらず、エネルギーが拡散している状態。</p>
+
+<h3 class="subsection-title">動機づけ構造</h3>
+
+<table>
+  <tr><th>要素</th><th>説明</th><th>就活への影響</th></tr>
+  <tr>
+    <td><strong>損失回避</strong></td>
+    <td>「知らぬ間に損してるかもしれない」への強い恐れ。情報の非対称性を嫌う</td>
+    <td>全社見ないと気が済まない → 軸が定まらない</td>
+  </tr>
+  <tr>
+    <td><strong>勝てるフィールド志向</strong></td>
+    <td>自分の個体値が高く発揮できる環境を好む</td>
+    <td>チャレンジングな環境を避けがち</td>
+  </tr>
+  <tr>
+    <td><strong>成功体験ベース</strong></td>
+    <td>大きな挫折なく成功を積み重ねてきた</td>
+    <td>失敗への免疫が弱い可能性</td>
+  </tr>
+</table>
+
+<h3 class="subsection-title">行動パターン: スイッチ型</h3>
+<div class="note-box">
+  普段は<strong>バランス型・慎重派</strong>だが、「やらないと死ぬ」状況ではスイッチが入り圧倒的な行動力を発揮する（北大祭: 3日間60時間）。<br>
+  <strong>インターンでこのスイッチを入れられるかが最大の鍵。</strong>
+</div>
+
+<!-- ============================== -->
+<h2 class="section-title" id="strengths">4. 強み・弱みマトリクス</h2>
+
+<h3 class="subsection-title">強み（活かすべきポイント）</h3>
+<table>
+  <tr><th>強み</th><th>根拠</th><th>インターンでの活かし方</th></tr>
+  <tr>
+    <td>集団での発揮力</td>
+    <td>GD通過、チームモチベ管理に自信</td>
+    <td>チームの推進役・ファシリテーター</td>
+  </tr>
+  <tr>
+    <td>物量投入力</td>
+    <td>北大祭60h/3日の実績</td>
+    <td>誰よりも手を動かす行動量</td>
+  </tr>
+  <tr>
+    <td>情報収集・比較力</td>
+    <td>日常的な徹底リサーチ習慣</td>
+    <td>市場調査・競合分析フェーズ</td>
+  </tr>
+  <tr>
+    <td>素直さ</td>
+    <td>メンターに厳しくしてほしいと要望</td>
+    <td>フィードバックの吸収速度</td>
+  </tr>
+</table>
+
+<h3 class="subsection-title">弱み（成長機会）</h3>
+<table>
+  <tr><th>弱み</th><th>根拠</th><th>リスクシナリオ</th></tr>
+  <tr>
+    <td>判断軸の未確立</td>
+    <td>就活軸がない、絞り込めない</td>
+    <td>事業テーマ選定で意見を出せない</td>
+  </tr>
+  <tr>
+    <td>安牌志向</td>
+    <td>勝てるフィールドから出ない</td>
+    <td>チーム内で挑戦的な提案を避ける</td>
+  </tr>
+  <tr>
+    <td>恥をかく経験の不足</td>
+    <td>本人も自覚あり</td>
+    <td>失敗を恐れてPDCAが回らない</td>
+  </tr>
+  <tr>
+    <td>打算的な側面</td>
+    <td>インターン＝採用を理解した上で参加</td>
+    <td>「評価される行動」に最適化してしまう</td>
+  </tr>
+</table>
+
+<!-- ============================== -->
+<h2 class="section-title" id="attract">5. アトラクト戦略</h2>
+
+<h3 class="subsection-title">基本方針</h3>
+<div class="note-box">
+  <strong>「安全圏の外に出す」</strong><br>
+  杉浦は安全圏から選ぶタイプ。セブンリッチを「安全圏の選択肢の1つ」にさせると負ける。「ここでしか得られない経験」を体感させ、損得計算では測れない価値を感じさせることが重要。
+</div>
+
+<h3 class="subsection-title">Phase 1: インターン期間中（3日間）</h3>
+<table>
+  <tr><th>アクション</th><th>狙い</th></tr>
+  <tr><td>初日から高速PDCAを要求</td><td>「やらないと死ぬ」スイッチを入れる</td></tr>
+  <tr><td>チーム内での役割を自分で選ばせる</td><td>主体的なポジショニングの経験</td></tr>
+  <tr><td>「そんな決め方でいいの？」と繰り返し問いかける</td><td>安牌志向への自覚を深化</td></tr>
+  <tr><td>恥をかく場面を意図的に作る</td><td>「腹を見せる」体験の提供</td></tr>
+  <tr><td>1日ごとの振り返りで内省を促す</td><td>自分の変化に気づかせる</td></tr>
+</table>
+
+<h3 class="subsection-title">Phase 2: インターン後（クロージング）</h3>
+<table>
+  <tr><th>アクション</th><th>狙い</th></tr>
+  <tr><td>堀江直下で何を任せられるかを具体提示</td><td>「就職後の自分の姿が見える」に応える</td></tr>
+  <tr><td>期限を明確に切る</td><td>無期限リサーチを防止</td></tr>
+  <tr><td>業務体験の機会提供（ヒアリング→改善提案など）</td><td>事業開発の実体験を与える</td></tr>
+  <tr><td>定期的なオンライン接点</td><td>遠方ネックへの対策</td></tr>
+</table>
+
+<h3 class="subsection-title">リスクと対策</h3>
+<table>
+  <tr><th>リスク</th><th>対策</th></tr>
+  <tr>
+    <td>遠方（北海道）で接点が薄くなる</td>
+    <td>オンライン定期面談 + 具体的なリモートタスク付与</td>
+  </tr>
+  <tr>
+    <td>他社インターンで「もっと合う場所」を見つける</td>
+    <td>セブンリッチでしか得られない成長体験の差別化</td>
+  </tr>
+  <tr>
+    <td>打算的に「保険」として持つだけ</td>
+    <td>早期に期限設定、曖昧な状態を許さない</td>
+  </tr>
+  <tr>
+    <td>「ぬるま湯」と判断されてフェードアウト</td>
+    <td>高い要求水準を維持、手応えのある仕事を提供</td>
+  </tr>
+</table>
+
+<!-- ============================== -->
+<h2 class="section-title" id="observation">6. インターン当日の観察ポイント</h2>
+
+<p>以下の行動が見られるかを観察し、インターン後の評価・アトラクト判断材料とする。</p>
+
+<table>
+  <tr><th>#</th><th>観察項目</th><th>見るべきポイント</th></tr>
+  <tr>
+    <td>1</td>
+    <td><strong>スイッチが入るか</strong></td>
+    <td>北大祭のような「やるしかない」モードに入れるか</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><strong>安牌を破れるか</strong></td>
+    <td>チーム内で挑戦的な提案や「恥ずかしい」発言ができるか</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><strong>PDCAスピード</strong></td>
+    <td>仮説→検証→修正のサイクルをどれだけ速く回せるか</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><strong>チームへの影響力</strong></td>
+    <td>モチベーション管理・声かけの自信は本物か</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td><strong>判断の速さ</strong></td>
+    <td>事業テーマ選定やピボットの場面での意思決定速度</td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td><strong>素直さの深度</strong></td>
+    <td>厳しいフィードバックへの反応（表面的な受容 vs 本質的な吸収）</td>
+  </tr>
+</table>
+
+<!-- ============================== -->
+<h2 class="section-title" id="assessment">7. 総合評価</h2>
+
+<h3 class="subsection-title">ポテンシャル</h3>
+<div class="confirm-box">
+  <strong>高い</strong> — 地頭の良さ、情報処理能力、集団での発揮力、物量投入力を持つ。就活軸が未確立なのは「経験不足」が主因であり、適切な経験を与えれば急速に成長する可能性がある。
+</div>
+
+<h3 class="subsection-title">最大の課題</h3>
+<div class="note-box">
+  <strong>「勝てるフィールド志向」からの脱却</strong><br>
+  安全圏にいる限り、彼のポテンシャルは60%程度しか発揮されない。「負けるかもしれない環境」に身を置く体験が、2年後のファーストキャリア選択の質を大きく左右する。インターンの3日間でその片鱗を見せられるかが、本人にとってもセブンリッチにとっても重要な分岐点。
+</div>
+
+<h3 class="subsection-title">アトラクト難易度</h3>
+<table>
+  <tr><th>難易度</th><th>根拠</th></tr>
+  <tr>
+    <td><span class="badge badge-warn">中〜高</span></td>
+    <td>
+      頭が良いため打算的に動く傾向があり、遠方ネックも大きい。一方で「厳しく接してほしい」という要望は本音に近く、成長意欲は高い。感情ではなく<strong>「論理的に納得できる成長環境の提示」</strong>が刺さるタイプ。堀江直下でのリアルな業務経験と、期限を切った意思決定の場を提供することが有効。
+    </td>
+  </tr>
+</table>
+
+<h3 class="subsection-title">事後ブリーフィングでの議論メモ</h3>
+<div class="highlight-box">
+  <ul>
+    <li>ぬるま湯ではない環境を見せることが重要。安全圏から選ばせると負ける</li>
+    <li>「そんな決め方でいいの？」と煽り続けるアプローチが有効</li>
+    <li>ダラダラ行くと刺さらない。早期に期限を切って決断を促すべき</li>
+    <li>堀江直下で何ができるか（業務改善ヒアリング、AI活用、サービスパッケージング等）の解像度を高める</li>
+    <li>他候補（中野: 感覚派でビビッと来るものが必要 / 佐藤: 業務ベースの具体提示が響く）との差別化アプローチが必要</li>
+  </ul>
+</div>
+
+<!-- ============================== -->
+<h2 class="section-title" id="next">8. ネクストアクション</h2>
+
+<table>
+  <tr><th>担当</th><th>アクション</th><th>期限</th><th>ステータス</th></tr>
+  <tr>
+    <td>杉浦</td>
+    <td>目標・チーム内ポジション・意思決定スピードの磨き方を考える</td>
+    <td>インターン当日まで</td>
+    <td><span class="badge badge-pending">未着手</span></td>
+  </tr>
+  <tr>
+    <td>堀江</td>
+    <td>杉浦に対するアトラクト戦略を具体化（直下で何を任せ、どんな経験を積ませるか）</td>
+    <td>インターン前</td>
+    <td><span class="badge badge-pending">未着手</span></td>
+  </tr>
+  <tr>
+    <td>堀江</td>
+    <td>残り3名の事前面談を実施</td>
+    <td>インターン前</td>
+    <td><span class="badge badge-pending">未着手</span></td>
+  </tr>
+  <tr>
+    <td>堀江</td>
+    <td>クロージングを見据えた関係構築プラン策定（遠方ネック対策含む）</td>
+    <td>インターン後</td>
+    <td><span class="badge badge-pending">未着手</span></td>
+  </tr>
+</table>
+
+<div class="report-footer">
+  杉浦 事前面談レポート — p021（28卒スプリングインターン メンター） — Generated 2026-03-31 — BPIO co., Ltd.
+</div>
+
+</div>
+
+<script>
+const pills = document.querySelectorAll('.pill');
+const sections = document.querySelectorAll('[id]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      pills.forEach(p => p.classList.remove('active'));
+      const active = document.querySelector(`.pill[href="#${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -80% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
