@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BPO業務 標準工程マスター — BPIO</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 15px; }
+  body {
+    font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    color: #1a1a1a;
+    background: #fff;
+    line-height: 1.7;
+  }
+
+  /* Sticky pill nav */
+  #sticky-nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.97);
+    border-bottom: 1px solid #ccc;
+    padding: 12px 20px;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  }
+  #sticky-nav .nav-label {
+    font-size: 0.72rem; font-weight: 700; color: #777;
+    letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+  }
+  .pill {
+    display: inline-block; padding: 5px 16px;
+    font-size: 0.78rem; font-weight: 600; color: #555;
+    text-decoration: none; border: 1px solid #ccc;
+    border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+  }
+  .pill:hover, .pill.active {
+    background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+  }
+
+  /* Main container */
+  #main {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 40px 48px 80px;
+  }
+
+  /* Report header */
+  .report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+  .report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+  .report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+  .report-header .summary-box {
+    background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+  }
+  .report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+  .report-header .summary-box ul { padding-left: 20px; font-size: 0.82rem; }
+  .report-header .summary-box li { margin-bottom: 4px; }
+
+  /* Section headings */
+  h2.section-title {
+    font-size: 1.2rem; font-weight: 700;
+    border-bottom: 1px solid #999; padding-bottom: 6px;
+    margin-top: 48px; margin-bottom: 20px;
+  }
+
+  /* Mindmap wider container */
+  .mindmap-wide {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 16px;
+    overflow-x: auto;
+  }
+  .mermaid {
+    display: flex;
+    justify-content: center;
+  }
+  .mermaid svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Details / accordion */
+  details {
+    margin-bottom: 8px;
+    border: 1px solid #ddd;
+    overflow: hidden;
+  }
+  details[open] { border-color: #999; }
+  summary {
+    cursor: pointer;
+    padding: 12px 16px;
+    font-weight: 600;
+    font-size: 0.88rem;
+    background: #f7f7f7;
+    user-select: none;
+    list-style: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::before {
+    content: "\25B6";
+    display: inline-block;
+    margin-right: 8px;
+    font-size: 0.7rem;
+    transition: transform 0.15s;
+    vertical-align: middle;
+  }
+  details[open] > summary::before { transform: rotate(90deg); }
+  summary:hover { background: #f0f0f0; }
+
+  /* Category ID badge */
+  .cat-id {
+    display: inline-block;
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-right: 6px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  .pattern-count {
+    float: right;
+    font-size: 0.78rem;
+    color: #777;
+    font-weight: 400;
+  }
+
+  /* Phase groups */
+  .phase-group {
+    padding: 12px 16px 12px 24px;
+    border-top: 1px solid #f0f0f0;
+  }
+  .phase-group h4 {
+    font-size: 0.88rem;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    padding-left: 8px;
+    border-left: 3px solid #555;
+  }
+
+  /* Pattern list */
+  .pattern-list {
+    list-style: none;
+    padding: 0;
+  }
+  .pattern-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 4px 0 4px 16px;
+    font-size: 0.84rem;
+    border-bottom: 1px dotted #ddd;
+  }
+  .pattern-list li:last-child { border-bottom: none; }
+  .pattern-name { flex: 1; }
+  .pattern-tool {
+    flex-shrink: 0;
+    margin-left: 12px;
+    font-size: 0.73rem;
+    color: #777;
+    text-align: right;
+    max-width: 200px;
+  }
+
+  /* Footer */
+  .report-footer {
+    border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+    font-size: 0.78rem; color: #777;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    #main { padding: 24px 16px 60px; }
+    .report-header h1 { font-size: 1.3rem; }
+    h2.section-title { font-size: 1.05rem; margin-top: 32px; }
+    .mindmap-wide { padding: 0 8px; }
+    .pattern-list li { flex-direction: column; }
+    .pattern-tool { margin-left: 16px; margin-top: 2px; }
+    #sticky-nav { padding: 8px 12px; }
+  }
+
+  /* Print */
+  @media print {
+    #sticky-nav { display: none; }
+    #main { max-width: 100%; padding: 20px; }
+    .mindmap-wide { max-width: 100%; }
+    details { break-inside: avoid; }
+    details[open] { border-color: #999; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">SECTIONS</span>
+  <a href="#mindmap" class="pill">マインドマップ</a>
+  <a href="#details" class="pill">詳細一覧</a>
+</nav>
+
+<div id="main">
+
+  <div class="report-header">
+    <h1>BPO業務 標準工程マスター</h1>
+    <p class="subtitle">p027 BPO業務ナレッジ体系化プロジェクト</p>
+    <div class="summary-box">
+      <h3>概要</h3>
+      <ul>
+        <li>12カテゴリ / 37フェーズ / 183工程パターン</li>
+        <li>データソース: タスクDB 32,333件</li>
+        <li>R1（月末振込）検証済み100%</li>
+        <li>R2-R12 95%以上達成</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="section-title" id="mindmap">マインドマップ</h2>
+</div>
+
+<div class="mindmap-wide">
+<pre class="mermaid">
+mindmap
+  root((BPO標準工程))
+    月末振込(47パターン)
+      A. 請求書回収・登録(7)
+      B. 振込一覧表(4)
+      C. FBデータ・振込実行(5)
+      D. 振込結果(4)
+      E. 資金管理(6)
+      F. エラー対応(10)
+      G. バクラク固有(5)
+      H. その他(6)
+    税金納付(26パターン)
+      A. 集計・データ準備(4)
+      B. レビュー・承認(3)
+      C. データセット・申告(5)
+      D. 振込・納付実行(4)
+      E. ペイジー情報管理(3)
+      F. 結果確認・保管(4)
+      G. 仕訳・会計処理(3)
+    グループ経理(21パターン)
+      A. 見積書・請求書発行(7)
+      B. 支払申請管理(11)
+      C. 入金管理(3)
+    給与振込(14パターン)
+      A. データ受領・準備(1)
+      B. レビュー(1)
+      C. FBデータ・振込(3)
+      D. 結果確認・報告(3)
+      E. 組戻し対応(4)
+      F. 資金管理(2)
+    資金繰り管理(10パターン)
+      A. 資金繰り表更新(10)
+    試算表作成(16パターン)
+      A. 仕訳入力(7)
+      B. 月次決算(9)
+    給与計算(7パターン)
+      A. データ準備(3)
+      B. 計算・レビュー(2)
+      C. 報告・納品(2)
+    立替経費精算(8パターン)
+      A. データ集計・レビュー(2)
+      B. 振込・報告(6)
+    入金管理(9パターン)
+      A. データ取得・照合(3)
+      B. レビュー・報告(6)
+    経理その他(15パターン)
+      A. 定期業務(15)
+    売上請求書発行(6パターン)
+      A. 請求書作成(6)
+    システム管理・労務その他(4パターン)
+      A. 定期タスク(4)
+</pre>
+</div>
+
+<div id="main-details">
+<div id="details" style="max-width: 920px; margin: 0 auto; padding: 0 48px 80px;">
+
+  <h2 class="section-title">カテゴリ別 詳細一覧</h2>
+
+  <!-- FRK: 月末振込 -->
+  <details>
+    <summary><span class="cat-id">FRK</span>月末振込<span class="pattern-count">47パターン / 8フェーズ</span></summary>
+    <div class="phase-group">
+      <h4>A. 請求書回収・登録（7パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">FRK-P001 請求書受領・回収</span><span class="pattern-tool">Google Drive / メール / Slack</span></li>
+        <li><span class="pattern-name">FRK-P002 請求書を支払ツールへ登録</span><span class="pattern-tool">バクラク / MF</span></li>
+        <li><span class="pattern-name">FRK-P003 請求書登録データのレビュー</span><span class="pattern-tool">バクラク / MF / スプシ</span></li>
+        <li><span class="pattern-name">FRK-P004 請求書の不備・不足をCLへ報告</span><span class="pattern-tool">Slack</span></li>
+        <li><span class="pattern-name">FRK-P005 回答を請求書登録データへ反映</span><span class="pattern-tool">バクラク / MF / スプシ</span></li>
+        <li><span class="pattern-name">FRK-P006 請求書支払ツールの承認・申請</span><span class="pattern-tool">バクラク / MF</span></li>
+        <li><span class="pattern-name">FRK-P045 請求書件数チェック</span><span class="pattern-tool">バクラク / スプシ</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>B. 振込一覧表（4パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">FRK-P007 振込一覧表SS作成</span><span class="pattern-tool">バクラク / MF / Sheets</span></li>
+        <li><span class="pattern-name">FRK-P008 振込一覧表SSレビュー</span><span class="pattern-tool">Sheets</span></li>
+        <li><span class="pattern-name">FRK-P009 振込一覧表SS納品</span><span class="pattern-tool">Slack / Google Drive</span></li>
+        <li><span class="pattern-name">FRK-P010 振込一覧表SS承認（CL）</span><span class="pattern-tool">Slack</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>C. FBデータ・振込実行（5パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">FRK-P011 FBデータ作成</span><span class="pattern-tool">バクラク / MF</span></li>
+        <li><span class="pattern-name">FRK-P012 FBデータ銀行アップロード・振込明細出力</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">FRK-P013 振込明細の振込日・内容確認</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">FRK-P014 FBデータ承認</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">FRK-P015 振込申請・CL連絡</span><span class="pattern-tool">バクラク / Slack</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>D. 振込結果（4パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">FRK-P016 振込結果確認</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">FRK-P017 振込結果レビュー</span><span class="pattern-tool">スプシ / 銀行IB</span></li>
+        <li><span class="pattern-name">FRK-P018 振込結果報告（CL）</span><span class="pattern-tool">Slack / メール</span></li>
+        <li><span class="pattern-name">FRK-P019 振込明細(結果)格納</span><span class="pattern-tool">Google Drive / Share</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>E. 資金管理（6パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">FRK-P020 資金残高確認・移動額報告</span><span class="pattern-tool">銀行IB / Slack</span></li>
+        <li><span class="pattern-name">FRK-P021 資金移動額レビュー</span><span class="pattern-tool">スプシ</span></li>
+        <li><span class="pattern-name">FRK-P022 資金移動案内・依頼</span><span class="pattern-tool">Slack</span></li>
+        <li><span class="pattern-name">FRK-P023 資金移動実行</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">FRK-P024 資金移動結果確認</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">FRK-P025 口座確認</span><span class="pattern-tool">銀行IB</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>F. エラー対応（10パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">FRK-P026 振込結果確認（エラー）</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">FRK-P027 振込明細確認（エラー）</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">FRK-P028 再振込データ作成・明細出力（エラー）</span><span class="pattern-tool">バクラク / 銀行IB</span></li>
+        <li><span class="pattern-name">FRK-P029 再振込データ申請（エラー）</span><span class="pattern-tool">バクラク / 銀行IB</span></li>
+        <li><span class="pattern-name">FRK-P030 再振込データ承認（エラー）</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">FRK-P031 再振込データレビュー（エラー）</span><span class="pattern-tool">スプシ / 銀行IB</span></li>
+        <li><span class="pattern-name">FRK-P032 振込明細(結果)格納（エラー）</span><span class="pattern-tool">Google Drive / Share</span></li>
+        <li><span class="pattern-name">FRK-P033 振込情報マスタ修正（エラー）</span><span class="pattern-tool">バクラク / 銀行IB</span></li>
+        <li><span class="pattern-name">FRK-P034 組戻し確認</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">FRK-P035 組戻し対応・再振込</span><span class="pattern-tool">銀行IB</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>G. バクラク固有（5パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">FRK-P036 バクラクアップロード</span><span class="pattern-tool">バクラク</span></li>
+        <li><span class="pattern-name">FRK-P037 バクラクチェック（OCR結果検証）</span><span class="pattern-tool">バクラク</span></li>
+        <li><span class="pattern-name">FRK-P038 バクラク登録（ラベル付け・仕訳）</span><span class="pattern-tool">バクラク</span></li>
+        <li><span class="pattern-name">FRK-P039 バクラク未処理→処理中変更</span><span class="pattern-tool">バクラク</span></li>
+        <li><span class="pattern-name">FRK-P040 バクラク→MF仕訳計上</span><span class="pattern-tool">バクラク / MF会計Plus</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>H. その他（6パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">FRK-P041 支払状況レポートチェック</span><span class="pattern-tool">バクラク / スプシ</span></li>
+        <li><span class="pattern-name">FRK-P042 アルバイト給与振込予約</span><span class="pattern-tool">銀行IB / MF給与</span></li>
+        <li><span class="pattern-name">FRK-P043 アルバイト給与振込実行確認</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">FRK-P044 小口補充・特殊振込</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">FRK-P046 ファイル回収・格納（Share/Drive）</span><span class="pattern-tool">Google Drive / Share</span></li>
+        <li><span class="pattern-name">FRK-P047 スケジュール管理・その他</span><span class="pattern-tool">Sheets / Slack</span></li>
+      </ul>
+    </div>
+  </details>
+
+  <!-- ZEI: 税金納付 -->
+  <details>
+    <summary><span class="cat-id">ZEI</span>税金納付<span class="pattern-count">26パターン / 7フェーズ</span></summary>
+    <div class="phase-group">
+      <h4>A. 集計・データ準備（4パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">ZEI-P001 給与源泉所得税額の把握・集計</span><span class="pattern-tool">MF給与 / スプシ</span></li>
+        <li><span class="pattern-name">ZEI-P002 その他源泉所得税額の把握・集計</span><span class="pattern-tool">MF会計 / スプシ</span></li>
+        <li><span class="pattern-name">ZEI-P003 源泉税額の合計集計</span><span class="pattern-tool">スプシ</span></li>
+        <li><span class="pattern-name">ZEI-P004 住民税徴収額の集計</span><span class="pattern-tool">MF給与 / スプシ</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>B. レビュー・承認（3パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">ZEI-P005 集計データのレビュー</span><span class="pattern-tool">スプシ</span></li>
+        <li><span class="pattern-name">ZEI-P006 納付用データのレビュー</span><span class="pattern-tool">e-tax / eLTAX / スプシ</span></li>
+        <li><span class="pattern-name">ZEI-P007 CLに報告・承認取得</span><span class="pattern-tool">Slack</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>C. データセット・申告（5パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">ZEI-P008 納付用データのセット</span><span class="pattern-tool">e-tax / eLTAX / 銀行IB</span></li>
+        <li><span class="pattern-name">ZEI-P009 e-tax申告（源泉税）</span><span class="pattern-tool">e-tax</span></li>
+        <li><span class="pattern-name">ZEI-P010 eLTAX申告（住民税）</span><span class="pattern-tool">eLTAX</span></li>
+        <li><span class="pattern-name">ZEI-P011 送信（e-tax/eLTAX）</span><span class="pattern-tool">e-tax / eLTAX</span></li>
+        <li><span class="pattern-name">ZEI-P012 送信データの保管</span><span class="pattern-tool">Google Drive / Share</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>D. 振込・納付実行（4パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">ZEI-P013 FBデータ承認・送信</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">ZEI-P014 ペイジー納付実行</span><span class="pattern-tool">銀行IB / ペイジー</span></li>
+        <li><span class="pattern-name">ZEI-P015 ダイレクト納付実行</span><span class="pattern-tool">e-tax / eLTAX</span></li>
+        <li><span class="pattern-name">ZEI-P016 ダイレクト納付設定</span><span class="pattern-tool">e-tax / eLTAX / 銀行IB</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>E. ペイジー情報管理（3パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">ZEI-P017 ペイジー情報取得</span><span class="pattern-tool">e-tax / eLTAX</span></li>
+        <li><span class="pattern-name">ZEI-P018 ペイジー情報CL納品</span><span class="pattern-tool">Slack</span></li>
+        <li><span class="pattern-name">ZEI-P019 ペイジーデータ承認・送信</span><span class="pattern-tool">銀行IB</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>F. 結果確認・保管（4パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">ZEI-P020 振込実施確認</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">ZEI-P021 振込結果保管</span><span class="pattern-tool">Google Drive / Share / Dropbox</span></li>
+        <li><span class="pattern-name">ZEI-P022 CL納付完了報告</span><span class="pattern-tool">Slack</span></li>
+        <li><span class="pattern-name">ZEI-P023 納付結果SS更新</span><span class="pattern-tool">Sheets</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>G. 仕訳・会計処理（3パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">ZEI-P024 MF仕訳登録（源泉税預り金）</span><span class="pattern-tool">MF会計Plus</span></li>
+        <li><span class="pattern-name">ZEI-P025 社会保険料関連</span><span class="pattern-tool">ペイジー / 銀行IB</span></li>
+        <li><span class="pattern-name">ZEI-P026 ネットバンク納付</span><span class="pattern-tool">銀行IB</span></li>
+      </ul>
+    </div>
+  </details>
+
+  <!-- GRP: グループ経理 -->
+  <details>
+    <summary><span class="cat-id">GRP</span>グループ経理<span class="pattern-count">21パターン / 3フェーズ</span></summary>
+    <div class="phase-group">
+      <h4>A. 見積書・請求書発行（7パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">GRP-P001 バクラク発行申請確認</span><span class="pattern-tool">バクラク</span></li>
+        <li><span class="pattern-name">GRP-P002 MF請求書で見積書/請求書作成</span><span class="pattern-tool">MF請求書</span></li>
+        <li><span class="pattern-name">GRP-P003 申請者へ内容確認依頼</span><span class="pattern-tool">Slack</span></li>
+        <li><span class="pattern-name">GRP-P004 バクラク申請承認</span><span class="pattern-tool">バクラク</span></li>
+        <li><span class="pattern-name">GRP-P009 MF請求書メール送付</span><span class="pattern-tool">MF請求書</span></li>
+        <li><span class="pattern-name">GRP-P014 バクラク申請・レビュー</span><span class="pattern-tool">バクラク</span></li>
+        <li><span class="pattern-name">GRP-P020 請求書発行申請・承認依頼</span><span class="pattern-tool">Zendesk / メール</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>B. 支払申請管理（11パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">GRP-P005 支払申請登録</span><span class="pattern-tool">バクラク</span></li>
+        <li><span class="pattern-name">GRP-P006 請求書格納・記載依頼</span><span class="pattern-tool">Google Drive / Slack</span></li>
+        <li><span class="pattern-name">GRP-P007 支払管理表更新・チェック</span><span class="pattern-tool">Sheets</span></li>
+        <li><span class="pattern-name">GRP-P010 クレカ明細確認・証憑管理</span><span class="pattern-tool">バクラク / スプシ</span></li>
+        <li><span class="pattern-name">GRP-P011 預金仕訳入力（ポチポチ）</span><span class="pattern-tool">MF会計</span></li>
+        <li><span class="pattern-name">GRP-P015 DASH更新・月次作業</span><span class="pattern-tool">Sheets / 社内ツール</span></li>
+        <li><span class="pattern-name">GRP-P016 立替経費処理</span><span class="pattern-tool">MF経費 / スプシ</span></li>
+        <li><span class="pattern-name">GRP-P017 BS整理・仕訳按分</span><span class="pattern-tool">MF会計 / Sheets</span></li>
+        <li><span class="pattern-name">GRP-P018 資金繰り表更新・共有</span><span class="pattern-tool">Sheets / Slack</span></li>
+        <li><span class="pattern-name">GRP-P019 会社間精算シート更新・差異調整</span><span class="pattern-tool">Sheets</span></li>
+        <li><span class="pattern-name">GRP-P021 制作委員会入力・原価反映</span><span class="pattern-tool">Sheets</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>C. 入金管理（3パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">GRP-P008 入金状況ダブルチェック</span><span class="pattern-tool">バクラク / Sheets</span></li>
+        <li><span class="pattern-name">GRP-P012 事業部への報告・連絡</span><span class="pattern-tool">Slack</span></li>
+        <li><span class="pattern-name">GRP-P013 入出金明細消込</span><span class="pattern-tool">MF請求書 / スプシ</span></li>
+      </ul>
+    </div>
+  </details>
+
+  <!-- KYU: 給与振込 -->
+  <details>
+    <summary><span class="cat-id">KYU</span>給与振込<span class="pattern-count">14パターン / 6フェーズ</span></summary>
+    <div class="phase-group">
+      <h4>A. データ受領・準備（1パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">KYU-P001 給与振込一覧表受領</span><span class="pattern-tool">Slack / Google Drive</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>B. レビュー（1パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">KYU-P002 振込明細レビュー</span><span class="pattern-tool">スプシ</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>C. FBデータ・振込（3パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">KYU-P003 FBデータ作成・銀行登録</span><span class="pattern-tool">MF給与 / 銀行IB</span></li>
+        <li><span class="pattern-name">KYU-P004 FBデータ承認</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">KYU-P005 CL振込申請報告</span><span class="pattern-tool">Slack</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>D. 結果確認・報告（3パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">KYU-P006 振込結果確認</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">KYU-P007 振込結果CLへ報告</span><span class="pattern-tool">Slack</span></li>
+        <li><span class="pattern-name">KYU-P008 振込明細保存</span><span class="pattern-tool">Google Drive</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>E. 組戻し対応（4パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">KYU-P009 組戻し再振込登録</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">KYU-P010 組戻し振込内容レビュー</span><span class="pattern-tool">スプシ / 銀行IB</span></li>
+        <li><span class="pattern-name">KYU-P011 組戻し結果報告</span><span class="pattern-tool">Slack</span></li>
+        <li><span class="pattern-name">KYU-P013 組戻し確認</span><span class="pattern-tool">銀行IB</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>F. 資金管理（2パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">KYU-P012 資金残高確認・移動報告</span><span class="pattern-tool">銀行IB / Slack</span></li>
+        <li><span class="pattern-name">KYU-P014 海外振込対応</span><span class="pattern-tool">銀行 / Slack / Drive</span></li>
+      </ul>
+    </div>
+  </details>
+
+  <!-- SIK: 資金繰り管理 -->
+  <details>
+    <summary><span class="cat-id">SIK</span>資金繰り管理<span class="pattern-count">10パターン / 1フェーズ</span></summary>
+    <div class="phase-group">
+      <h4>A. 資金繰り表更新（10パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">SIK-P001 預金残高・入出金明細の反映</span><span class="pattern-tool">銀行IB / Sheets</span></li>
+        <li><span class="pattern-name">SIK-P002 資金繰り表レビュー</span><span class="pattern-tool">Sheets</span></li>
+        <li><span class="pattern-name">SIK-P003 バクラク情報反映</span><span class="pattern-tool">バクラク / Sheets</span></li>
+        <li><span class="pattern-name">SIK-P004 スケジュール確認・更新日決定</span><span class="pattern-tool">Calendar / Slack</span></li>
+        <li><span class="pattern-name">SIK-P005 資金繰り表各行更新</span><span class="pattern-tool">Sheets</span></li>
+        <li><span class="pattern-name">SIK-P006 報告・納品</span><span class="pattern-tool">Slack / Google Drive</span></li>
+        <li><span class="pattern-name">SIK-P007 入出金明細格納</span><span class="pattern-tool">Google Drive / Share</span></li>
+        <li><span class="pattern-name">SIK-P008 資金移動</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">SIK-P009 キャッシュフロー計算書作成</span><span class="pattern-tool">Sheets</span></li>
+        <li><span class="pattern-name">SIK-P010 事業計画反映</span><span class="pattern-tool">Sheets</span></li>
+      </ul>
+    </div>
+  </details>
+
+  <!-- SIS: 試算表作成 -->
+  <details>
+    <summary><span class="cat-id">SIS</span>試算表作成<span class="pattern-count">16パターン / 2フェーズ</span></summary>
+    <div class="phase-group">
+      <h4>A. 仕訳入力（7パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">SIS-P001 預金データ入力（ポチポチ）</span><span class="pattern-tool">MF会計 / 銀行IB</span></li>
+        <li><span class="pattern-name">SIS-P002 クレカ決済入力</span><span class="pattern-tool">MF会計</span></li>
+        <li><span class="pattern-name">SIS-P003 給与・社保計上</span><span class="pattern-tool">MF会計 / MF給与</span></li>
+        <li><span class="pattern-name">SIS-P004 売上計上</span><span class="pattern-tool">MF会計</span></li>
+        <li><span class="pattern-name">SIS-P008 未払金・経過勘定計上</span><span class="pattern-tool">MF会計 / バクラク</span></li>
+        <li><span class="pattern-name">SIS-P009 連携仕訳入力（MF/バクラク）</span><span class="pattern-tool">MF会計 / バクラク</span></li>
+        <li><span class="pattern-name">SIS-P013 原価計算</span><span class="pattern-tool">Sheets / MF会計</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>B. 月次決算（9パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">SIS-P005 BS整理・証憑格納</span><span class="pattern-tool">MF会計 / Google Drive</span></li>
+        <li><span class="pattern-name">SIS-P006 試算表確認・レビュー</span><span class="pattern-tool">MF会計 / Sheets</span></li>
+        <li><span class="pattern-name">SIS-P007 資料回収状況確認</span><span class="pattern-tool">Slack / Google Drive</span></li>
+        <li><span class="pattern-name">SIS-P010 試算表作成・納品</span><span class="pattern-tool">MF会計 / Sheets</span></li>
+        <li><span class="pattern-name">SIS-P011 質問・不明取引対応</span><span class="pattern-tool">Slack / Sheets</span></li>
+        <li><span class="pattern-name">SIS-P012 会計レビュー依頼・処理</span><span class="pattern-tool">MF会計 / Slack</span></li>
+        <li><span class="pattern-name">SIS-P014 概算PL作成・報告</span><span class="pattern-tool">Sheets / Slack</span></li>
+        <li><span class="pattern-name">SIS-P015 連結業績管理表更新・納品</span><span class="pattern-tool">Sheets / Slack</span></li>
+        <li><span class="pattern-name">SIS-P016 法人カード利用報告更新・連絡</span><span class="pattern-tool">Sheets / Slack</span></li>
+      </ul>
+    </div>
+  </details>
+
+  <!-- KYS: 給与計算 -->
+  <details>
+    <summary><span class="cat-id">KYS</span>給与計算<span class="pattern-count">7パターン / 3フェーズ</span></summary>
+    <div class="phase-group">
+      <h4>A. データ準備（3パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">KYS-P001 従業員情報登録・変更</span><span class="pattern-tool">MF給与</span></li>
+        <li><span class="pattern-name">KYS-P002 勤怠データ確認・取込</span><span class="pattern-tool">KOT / MF給与</span></li>
+        <li><span class="pattern-name">KYS-P007 社会保険・電子申請</span><span class="pattern-tool">e-Gov / 社労士ツール</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>B. 計算・レビュー（2パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">KYS-P003 給与計算実施</span><span class="pattern-tool">MF給与</span></li>
+        <li><span class="pattern-name">KYS-P004 給与レビュー</span><span class="pattern-tool">MF給与 / Sheets</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>C. 報告・納品（2パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">KYS-P005 給与計算完了報告・納品</span><span class="pattern-tool">Slack / Google Drive</span></li>
+        <li><span class="pattern-name">KYS-P006 振込セット・承認依頼</span><span class="pattern-tool">銀行IB / Slack</span></li>
+      </ul>
+    </div>
+  </details>
+
+  <!-- TAT: 立替経費精算 -->
+  <details>
+    <summary><span class="cat-id">TAT</span>立替経費精算<span class="pattern-count">8パターン / 2フェーズ</span></summary>
+    <div class="phase-group">
+      <h4>A. データ集計・レビュー（2パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">TAT-P001 経費情報集計</span><span class="pattern-tool">バクラク / Sheets</span></li>
+        <li><span class="pattern-name">TAT-P002 レポート正確性検証</span><span class="pattern-tool">Sheets</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>B. 振込・報告（6パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">TAT-P003 FBデータセット・確認</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">TAT-P004 FBデータ承認</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">TAT-P005 振込結果確認・報告</span><span class="pattern-tool">銀行IB / Slack</span></li>
+        <li><span class="pattern-name">TAT-P006 給与担当者への共有</span><span class="pattern-tool">Slack</span></li>
+        <li><span class="pattern-name">TAT-P007 組戻し対応</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">TAT-P008 MF仕訳登録</span><span class="pattern-tool">MF会計Plus / バクラク</span></li>
+      </ul>
+    </div>
+  </details>
+
+  <!-- NYU: 入金管理 -->
+  <details>
+    <summary><span class="cat-id">NYU</span>入金管理<span class="pattern-count">9パターン / 2フェーズ</span></summary>
+    <div class="phase-group">
+      <h4>A. データ取得・照合（3パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">NYU-P001 銀行明細・請求データ取得</span><span class="pattern-tool">銀行IB / バクラク / Sheets</span></li>
+        <li><span class="pattern-name">NYU-P002 入金照合</span><span class="pattern-tool">Sheets</span></li>
+        <li><span class="pattern-name">NYU-P005 奉行入金処理</span><span class="pattern-tool">奉行</span></li>
+      </ul>
+    </div>
+    <div class="phase-group">
+      <h4>B. レビュー・報告（6パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">NYU-P003 照合結果レビュー</span><span class="pattern-tool">Sheets</span></li>
+        <li><span class="pattern-name">NYU-P004 照合結果CL報告</span><span class="pattern-tool">Slack</span></li>
+        <li><span class="pattern-name">NYU-P006 会計消込・仕訳</span><span class="pattern-tool">MF会計 / freee / バクラク</span></li>
+        <li><span class="pattern-name">NYU-P007 個別入金確認・報告</span><span class="pattern-tool">銀行IB / Slack</span></li>
+        <li><span class="pattern-name">NYU-P008 入金管理スプレッドシート更新・納品</span><span class="pattern-tool">Sheets / Share</span></li>
+        <li><span class="pattern-name">NYU-P009 入出金明細共有・バクラク突合</span><span class="pattern-tool">バクラク / Sheets / Share</span></li>
+      </ul>
+    </div>
+  </details>
+
+  <!-- ETC: 経理その他 -->
+  <details>
+    <summary><span class="cat-id">ETC</span>経理その他<span class="pattern-count">15パターン / 1フェーズ</span></summary>
+    <div class="phase-group">
+      <h4>A. 定期業務（15パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">ETC-P001 スケジュール作成</span><span class="pattern-tool">Sheets</span></li>
+        <li><span class="pattern-name">ETC-P002 予実分析</span><span class="pattern-tool">Sheets / PowerPoint</span></li>
+        <li><span class="pattern-name">ETC-P003 都度振込</span><span class="pattern-tool">銀行IB</span></li>
+        <li><span class="pattern-name">ETC-P004 債務登録</span><span class="pattern-tool">バクラク</span></li>
+        <li><span class="pattern-name">ETC-P005 訪問・対面業務</span><span class="pattern-tool">対面</span></li>
+        <li><span class="pattern-name">ETC-P006 DASH/売上データ更新</span><span class="pattern-tool">Sheets</span></li>
+        <li><span class="pattern-name">ETC-P007 請求書発行・集計・報告</span><span class="pattern-tool">MF請求書 / Slack</span></li>
+        <li><span class="pattern-name">ETC-P008 メール対応・外部連携</span><span class="pattern-tool">メール / 社内ツール</span></li>
+        <li><span class="pattern-name">ETC-P009 売上データ照合・集計</span><span class="pattern-tool">ACUSIS / Sheets</span></li>
+        <li><span class="pattern-name">ETC-P010 修正対応・連絡</span><span class="pattern-tool">Slack</span></li>
+        <li><span class="pattern-name">ETC-P011 紹介料計算</span><span class="pattern-tool">Sheets</span></li>
+        <li><span class="pattern-name">ETC-P012 褒賞金計算・報告</span><span class="pattern-tool">Sheets / Slack</span></li>
+        <li><span class="pattern-name">ETC-P013 私有車・在留資格期限確認</span><span class="pattern-tool">Forms / Sheets / メール</span></li>
+        <li><span class="pattern-name">ETC-P014 課金売上分配金精算</span><span class="pattern-tool">Sheets / バクラク / 銀行</span></li>
+        <li><span class="pattern-name">ETC-P015 アルバイトシフト提出確認</span><span class="pattern-tool">Slack / Sheets</span></li>
+      </ul>
+    </div>
+  </details>
+
+  <!-- URI: 売上請求書発行 -->
+  <details>
+    <summary><span class="cat-id">URI</span>売上請求書発行<span class="pattern-count">6パターン / 1フェーズ</span></summary>
+    <div class="phase-group">
+      <h4>A. 請求書作成（6パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">URI-P001 請求書作成</span><span class="pattern-tool">MF請求書 / バクラク</span></li>
+        <li><span class="pattern-name">URI-P002 請求書レビュー</span><span class="pattern-tool">スプシ</span></li>
+        <li><span class="pattern-name">URI-P003 請求書納品・送付</span><span class="pattern-tool">Slack / メール</span></li>
+        <li><span class="pattern-name">URI-P004 請求書保管</span><span class="pattern-tool">Google Drive / Share</span></li>
+        <li><span class="pattern-name">URI-P005 支払通知書・バクラク連携</span><span class="pattern-tool">バクラク / Slack</span></li>
+        <li><span class="pattern-name">URI-P006 売上仕訳登録</span><span class="pattern-tool">MF会計 / freee</span></li>
+      </ul>
+    </div>
+  </details>
+
+  <!-- SYS: システム管理・労務その他 -->
+  <details>
+    <summary><span class="cat-id">SYS</span>システム管理・労務その他<span class="pattern-count">4パターン / 1フェーズ</span></summary>
+    <div class="phase-group">
+      <h4>A. 定期タスク（4パターン）</h4>
+      <ul class="pattern-list">
+        <li><span class="pattern-name">SYS-P001 勤怠打刻漏れリマインド</span><span class="pattern-tool">KOT / Slack</span></li>
+        <li><span class="pattern-name">SYS-P002 休暇付与・確認</span><span class="pattern-tool">ロウムメイト</span></li>
+        <li><span class="pattern-name">SYS-P003 入退社処理</span><span class="pattern-tool">ロウムメイト</span></li>
+        <li><span class="pattern-name">SYS-P004 契約管理</span><span class="pattern-tool">クラウドサイン / ロウムメイト</span></li>
+      </ul>
+    </div>
+  </details>
+
+  <div class="report-footer">
+    BPO業務 標準工程マスター -- p027 -- Generated 2026-04-02 -- BPIO co., Ltd.
+  </div>
+
+</div>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    mindmap: {
+      padding: 16,
+      useMaxWidth: true
+    },
+    securityLevel: 'loose'
+  });
+
+  // IntersectionObserver for pill nav
+  document.addEventListener('DOMContentLoaded', function() {
+    var sections = document.querySelectorAll('#mindmap, #details');
+    var pills = document.querySelectorAll('#sticky-nav .pill');
+    var pillMap = {};
+    pills.forEach(function(pill) {
+      var href = pill.getAttribute('href');
+      if (href) pillMap[href.replace('#', '')] = pill;
+    });
+
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        var id = entry.target.id;
+        if (entry.isIntersecting && pillMap[id]) {
+          pills.forEach(function(p) { p.classList.remove('active'); });
+          pillMap[id].classList.add('active');
+        }
+      });
+    }, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+
+    sections.forEach(function(section) {
+      observer.observe(section);
+    });
+  });
+</script>
+
+</body>
+</html>
