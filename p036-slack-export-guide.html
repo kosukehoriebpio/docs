@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slackデータエクスポート手順書 — BPIO</title>
+  <style>
+    body {
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: #1a1a1a;
+      background: #fff;
+      line-height: 1.7;
+      margin: 0;
+      padding: 0;
+    }
+    html { font-size: 15px; }
+    * { box-sizing: border-box; }
+    #sticky-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.97);
+      border-bottom: 1px solid #ccc;
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    #sticky-nav .nav-label {
+      font-size: 0.72rem; font-weight: 700; color: #777;
+      letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+    }
+    .pill {
+      display: inline-block; padding: 5px 16px;
+      font-size: 0.78rem; font-weight: 600; color: #555;
+      text-decoration: none; border: 1px solid #ccc;
+      border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+    }
+    .pill:hover, .pill.active {
+      background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+    }
+    #main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+    .report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+    .report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+    .report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+    .report-header .summary-box {
+      background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+    }
+    .report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; margin-top: 0; }
+    .report-header .summary-box ul {
+      padding-left: 20px; font-size: 0.82rem; margin: 0;
+    }
+    .report-header .summary-box li { margin-bottom: 4px; }
+    h2.section-title {
+      font-size: 1.2rem; font-weight: 700;
+      border-bottom: 1px solid #999; padding-bottom: 6px;
+      margin-top: 48px; margin-bottom: 20px;
+    }
+    h3.subsection-title {
+      font-size: 1.0rem; font-weight: 700;
+      margin-top: 32px; margin-bottom: 12px;
+      padding-left: 10px; border-left: 3px solid #555;
+    }
+    h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+    table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+    table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+    table td { background: #fff; }
+    table tr:nth-child(even) td { background: #fafafa; }
+    p { margin-bottom: 10px; font-size: 0.88rem; }
+    ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+    ul li, ol li { margin-bottom: 3px; }
+    .highlight-box {
+      background: #f7f7f7; border: 1px solid #ddd;
+      padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+    }
+    .highlight-box strong { display: block; margin-bottom: 6px; }
+    .info-box {
+      background: #eff6ff; border-left: 4px solid #3b82f6;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f;
+    }
+    .note-box {
+      background: #fffbeb; border-left: 4px solid #f59e0b;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+    }
+    .confirm-box {
+      background: #f0fdf4; border-left: 4px solid #22c55e;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #14532d;
+    }
+    .badge {
+      display: inline-block; padding: 2px 10px;
+      font-size: 0.72rem; font-weight: 700;
+      border-radius: 999px; letter-spacing: 0.03em;
+    }
+    .badge-info { background: #d1ecf1; color: #0c5460; }
+    .badge-warn { background: #fff3cd; color: #856404; }
+    .step-card {
+      border: 1px solid #ddd; margin: 16px 0; padding: 0;
+    }
+    .step-card-header {
+      background: #f0f0f0; padding: 10px 16px; font-weight: 700; font-size: 0.9rem;
+      border-bottom: 1px solid #ddd;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .step-number {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; background: #1a1a1a; color: #fff;
+      font-size: 0.82rem; font-weight: 700; border-radius: 999px; flex-shrink: 0;
+    }
+    .step-card-body { padding: 14px 16px; font-size: 0.85rem; }
+    .step-card-body p { margin-bottom: 8px; }
+    .step-card-body ul { margin-bottom: 8px; padding-left: 20px; }
+    .step-card-body li { margin-bottom: 2px; font-size: 0.84rem; }
+    .flow {
+      display: flex; align-items: center; gap: 0;
+      margin: 20px 0; flex-wrap: wrap; justify-content: center;
+    }
+    .flow-step {
+      background: #f0f0f0; border: 1px solid #ccc;
+      padding: 10px 18px; font-size: 0.82rem; font-weight: 600;
+      text-align: center; min-width: 120px;
+    }
+    .flow-step.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .flow-arrow { font-size: 1.2rem; color: #999; padding: 0 4px; }
+    .report-footer {
+      border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+      font-size: 0.78rem; color: #777;
+    }
+    @media (max-width: 640px) {
+      #main { padding: 24px 20px 60px; }
+      .report-header h1 { font-size: 1.3rem; }
+      h2.section-title { font-size: 1.05rem; }
+      table { font-size: 0.78rem; }
+      table th, table td { padding: 5px 7px; }
+      #sticky-nav { padding: 10px 12px; gap: 6px; }
+      .pill { padding: 4px 12px; font-size: 0.72rem; }
+      .flow { flex-direction: column; align-items: stretch; }
+      .flow-arrow { transform: rotate(90deg); text-align: center; padding: 4px 0; }
+      .flow-step { min-width: auto; }
+    }
+    @media print {
+      #sticky-nav { display: none; }
+      #main { padding: 0; max-width: 100%; }
+      body { font-size: 10pt; }
+      .report-header h1 { font-size: 16pt; }
+      h2.section-title { font-size: 13pt; page-break-after: avoid; }
+      h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+      table { font-size: 8pt; page-break-inside: avoid; }
+      table th, table td { padding: 3px 5px; }
+      .highlight-box, .note-box, .info-box, .confirm-box {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      table th {
+        background: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav id="sticky-nav">
+    <span class="nav-label">SECTIONS</span>
+    <a class="pill" href="#overview">概要</a>
+    <a class="pill" href="#before">事前確認</a>
+    <a class="pill" href="#steps">エクスポート手順</a>
+    <a class="pill" href="#share">データの共有</a>
+    <a class="pill" href="#channels">対象チャンネル</a>
+    <a class="pill" href="#faq">FAQ</a>
+  </nav>
+
+  <div id="main">
+    <header class="report-header">
+      <h1>Slackデータ エクスポート手順書</h1>
+      <p class="subtitle">TEN EXPERIENCE ナレッジAI構築プロジェクト — データ提供のお願い</p>
+      <div class="summary-box">
+        <h3>お願いしたいこと</h3>
+        <ul>
+          <li>御社Slackワークスペースから、<strong>クリニック立ち上げ関連チャンネル</strong>のデータをエクスポートしてください</li>
+          <li>エクスポートしたZIPファイルを、指定の方法で堀江までお送りください</li>
+          <li>このデータをもとに、AIナレッジ化の<strong>初期テスト</strong>（どの程度の成果物が出せるか検証）を実施します</li>
+          <li>所要時間: <strong>約5〜10分</strong></li>
+        </ul>
+      </div>
+    </header>
+
+    <!-- 概要 -->
+    <h2 class="section-title" id="overview">全体の流れ</h2>
+
+    <div class="flow">
+      <div class="flow-step active">Slackプラン<br>確認</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">エクスポート<br>実行</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">ZIPファイル<br>ダウンロード</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">堀江に<br>送付</div>
+    </div>
+
+    <!-- 事前確認 -->
+    <h2 class="section-title" id="before">事前確認</h2>
+
+    <h3 class="subsection-title">Slackプランの確認</h3>
+
+    <p>エクスポート機能はSlackのプランによって範囲が異なります。</p>
+
+    <table>
+      <tr><th>プラン</th><th>エクスポート範囲</th><th>備考</th></tr>
+      <tr>
+        <td>Free</td>
+        <td>パブリックチャンネルのみ（直近90日）</td>
+        <td>90日以前のメッセージは取得不可</td>
+      </tr>
+      <tr>
+        <td>Pro</td>
+        <td>パブリックチャンネルのみ（全期間）</td>
+        <td>プライベートチャンネル・DMは対象外</td>
+      </tr>
+      <tr>
+        <td>Business+ / Enterprise Grid</td>
+        <td>全チャンネル（申請制）</td>
+        <td>管理者がコーポレートエクスポートを申請可能</td>
+      </tr>
+    </table>
+
+    <div class="info-box">
+      パブリックチャンネルのエクスポートだけでもテストには十分です。プライベートチャンネルにしか情報がない場合は、別途ご相談ください。
+    </div>
+
+    <h3 class="subsection-title">必要な権限</h3>
+    <p>エクスポートを実行するには、<strong>ワークスペースのオーナーまたは管理者</strong>の権限が必要です。権限がない場合は、管理者の方にこの手順書を共有してご依頼ください。</p>
+
+    <!-- エクスポート手順 -->
+    <h2 class="section-title" id="steps">エクスポート手順</h2>
+
+    <div class="step-card">
+      <div class="step-card-header"><span class="step-number">1</span> エクスポート画面を開く</div>
+      <div class="step-card-body">
+        <p>Slackのブラウザ版またはデスクトップアプリで、以下の手順で進みます。</p>
+        <ol>
+          <li>左上の<strong>ワークスペース名</strong>をクリック</li>
+          <li>メニューから<strong>「設定と管理」</strong>を選択</li>
+          <li><strong>「ワークスペースの設定」</strong>をクリック</li>
+          <li>ブラウザで設定画面が開きます</li>
+        </ol>
+        <div class="info-box">
+          または、ブラウザで直接 <strong>https://{ワークスペース名}.slack.com/services/export</strong> にアクセスしてもOKです。
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header"><span class="step-number">2</span> エクスポートページに移動</div>
+      <div class="step-card-body">
+        <p>設定画面の左メニューから:</p>
+        <ol>
+          <li><strong>「データのインポート/エクスポート」</strong>をクリック</li>
+          <li>上部のタブから<strong>「エクスポート」</strong>タブを選択</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header"><span class="step-number">3</span> エクスポート期間を選択</div>
+      <div class="step-card-body">
+        <p>日付範囲を指定します。</p>
+        <div class="highlight-box">
+          <strong>推奨設定</strong>
+          できるだけ多くのデータがある方がテスト精度が上がります。<strong>「全期間」</strong>を選択してください。特定の期間に絞りたい場合は、直近1年以上を推奨します。
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header"><span class="step-number">4</span> エクスポートを開始</div>
+      <div class="step-card-body">
+        <p><strong>「エクスポート開始」</strong>ボタンをクリックします。</p>
+        <ul>
+          <li>データ量によって数分〜数時間かかる場合があります</li>
+          <li>完了すると、Slackbot またはメールで通知が届きます</li>
+          <li>この間、Slackは通常通り使えます</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header"><span class="step-number">5</span> ZIPファイルをダウンロード</div>
+      <div class="step-card-body">
+        <p>エクスポートが完了したら:</p>
+        <ol>
+          <li>通知内のリンク、または同じエクスポートページに戻る</li>
+          <li><strong>「ダウンロード準備完了」</strong>と表示されたリンクをクリック</li>
+          <li>ZIPファイルがダウンロードされます</li>
+        </ol>
+        <div class="note-box">
+          ダウンロードリンクには有効期限があります。通知が届いたら早めにダウンロードしてください。
+        </div>
+      </div>
+    </div>
+
+    <!-- データの共有 -->
+    <h2 class="section-title" id="share">データの共有方法</h2>
+
+    <p>ダウンロードしたZIPファイルを、以下のいずれかの方法で堀江までお送りください。</p>
+
+    <table>
+      <tr><th>方法</th><th>手順</th><th>備考</th></tr>
+      <tr>
+        <td>Google Drive</td>
+        <td>ZIPをDriveにアップロード → 共有リンクを送付</td>
+        <td>大容量でも安定。推奨</td>
+      </tr>
+      <tr>
+        <td>Slack DM</td>
+        <td>プロジェクトチャンネルまたはDMでファイル送信</td>
+        <td>ファイルサイズ上限あり（プランによる）</td>
+      </tr>
+      <tr>
+        <td>メール添付</td>
+        <td>kosuke.horie@sevenrich.jp 宛に送信</td>
+        <td>25MB以上はDrive経由を推奨</td>
+      </tr>
+    </table>
+
+    <div class="confirm-box">
+      お送りいただいたデータは、本プロジェクトのAIナレッジ化テスト目的のみに使用します。テスト完了後の取り扱いについては別途ご相談させてください。
+    </div>
+
+    <!-- 対象チャンネル -->
+    <h2 class="section-title" id="channels">特に欲しいデータ</h2>
+
+    <p>エクスポートはワークスペース全体のパブリックチャンネルが対象になりますが、AI学習の観点で特に価値が高いのは以下のようなチャンネルです。</p>
+
+    <table>
+      <tr><th>チャンネルの種類</th><th>期待される知見</th><th>優先度</th></tr>
+      <tr>
+        <td>案件・プロジェクト別チャンネル</td>
+        <td>立ち上げプロセスの実例、判断の経緯、課題と解決策</td>
+        <td><span class="badge badge-info">最優先</span></td>
+      </tr>
+      <tr>
+        <td>業務ノウハウ共有チャンネル</td>
+        <td>物件選定・内装・マーケティング等のベストプラクティス</td>
+        <td><span class="badge badge-info">最優先</span></td>
+      </tr>
+      <tr>
+        <td>質問・相談チャンネル</td>
+        <td>よくある疑問とその回答（FAQ化の素材）</td>
+        <td><span class="badge badge-info">最優先</span></td>
+      </tr>
+      <tr>
+        <td>経営・戦略チャンネル</td>
+        <td>事業判断の軸、ブランド戦略、市場分析</td>
+        <td><span class="badge badge-warn">あれば</span></td>
+      </tr>
+      <tr>
+        <td>雑談・日常チャンネル</td>
+        <td>（テストには不要）</td>
+        <td>不要</td>
+      </tr>
+    </table>
+
+    <div class="info-box">
+      エクスポート自体はワークスペース全体で問題ありません。こちらで必要なチャンネルを選別して分析します。チャンネル名のリストを別途いただけると、優先順位をつけやすくなります。
+    </div>
+
+    <!-- FAQ -->
+    <h2 class="section-title" id="faq">よくある質問</h2>
+
+    <h4>Q. エクスポートすると他のメンバーに通知されますか？</h4>
+    <p>パブリックチャンネルのエクスポートは通知されません。ただし、ワークスペースの管理者には操作ログが残ります。</p>
+
+    <h4>Q. エクスポート中もSlackは使えますか？</h4>
+    <p>はい、通常通り使えます。エクスポート処理はバックグラウンドで行われます。</p>
+
+    <h4>Q. ファイルや画像も含まれますか？</h4>
+    <p>エクスポートにはメッセージのテキストデータ（JSON形式）が含まれます。添付ファイルや画像はURLとして記録されますが、ファイル本体はダウンロードリンクとして参照される形です。テキストデータだけでテストには十分です。</p>
+
+    <h4>Q. エクスポートの権限がありません</h4>
+    <p>ワークスペースのオーナーまたは管理者に依頼してください。この手順書のURLを共有いただければスムーズです。</p>
+
+    <h4>Q. データの安全性は？</h4>
+    <p>お送りいただいたデータは、ローカル環境でのみ処理し、外部サービスへのアップロードは行いません。テスト完了後の取り扱い（削除・保持）については別途ご相談させてください。</p>
+
+    <div class="report-footer">
+      Slackデータ エクスポート手順書 — p036 TEN EXPERIENCE ナレッジAI構築 — Generated 2026-04-02 — BPIO co., Ltd.
+    </div>
+  </div>
+
+  <script>
+    const pills = document.querySelectorAll('.pill');
+    const sections = document.querySelectorAll('[id]');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          pills.forEach(p => p.classList.remove('active'));
+          const active = document.querySelector('.pill[href="#' + entry.target.id + '"]');
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-80px 0px -80% 0px' });
+    sections.forEach(s => observer.observe(s));
+  </script>
+</body>
+</html>
