@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>服部峻介リサーチ — レビュー済み確定版 — BPIO</title>
+  <style>
+    html { font-size: 15px; }
+    body {
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: #1a1a1a; background: #fff; line-height: 1.7; margin: 0; padding: 0;
+    }
+    #sticky-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.97);
+      border-bottom: 1px solid #ccc;
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    #sticky-nav .nav-label {
+      font-size: 0.72rem; font-weight: 700; color: #777;
+      letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+    }
+    .pill {
+      display: inline-block; padding: 5px 16px;
+      font-size: 0.78rem; font-weight: 600; color: #555;
+      text-decoration: none; border: 1px solid #ccc;
+      border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+    }
+    .pill:hover, .pill.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    #main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+    .report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+    .report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin: 0 0 4px; }
+    .report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+    .report-header .summary-box {
+      background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+    }
+    .report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin: 0 0 10px; }
+    .report-header .summary-box ul { padding-left: 20px; font-size: 0.82rem; margin: 0; }
+    .report-header .summary-box li { margin-bottom: 4px; }
+    h2.section-title {
+      font-size: 1.2rem; font-weight: 700;
+      border-bottom: 1px solid #999; padding-bottom: 6px;
+      margin-top: 48px; margin-bottom: 20px;
+    }
+    h3.subsection-title {
+      font-size: 1.0rem; font-weight: 700;
+      margin-top: 32px; margin-bottom: 12px;
+      padding-left: 10px; border-left: 3px solid #555;
+    }
+    h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+    table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+    table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+    table td { background: #fff; }
+    table tr:nth-child(even) td { background: #fafafa; }
+    p { margin-bottom: 10px; font-size: 0.88rem; }
+    ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+    ul li, ol li { margin-bottom: 3px; }
+    .highlight-box {
+      background: #f7f7f7; border: 1px solid #ddd;
+      padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+    }
+    .note-box {
+      background: #fffbeb; border-left: 4px solid #f59e0b;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+    }
+    .info-box {
+      background: #eff6ff; border-left: 4px solid #3b82f6;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f;
+    }
+    a { color: #1a1a1a; text-decoration: underline; }
+    a:hover { color: #555; }
+    .source-list { list-style: none; padding-left: 0; }
+    .source-list li { margin-bottom: 8px; font-size: 0.82rem; padding-left: 16px; position: relative; }
+    .source-list li::before { content: "\2014"; position: absolute; left: 0; color: #999; }
+    .source-list li a { word-break: break-all; }
+    .report-footer {
+      border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+      font-size: 0.78rem; color: #777;
+    }
+    @media (max-width: 640px) {
+      #main { padding: 24px 20px 60px; }
+      .report-header h1 { font-size: 1.3rem; }
+      h2.section-title { font-size: 1.05rem; }
+      table { font-size: 0.78rem; }
+      table th, table td { padding: 5px 7px; }
+      #sticky-nav { padding: 10px 12px; gap: 6px; }
+      .pill { padding: 4px 12px; font-size: 0.72rem; }
+    }
+    @media print {
+      #sticky-nav { display: none; }
+      #main { padding: 0; max-width: 100%; }
+      body { font-size: 10pt; }
+      .report-header h1 { font-size: 16pt; }
+      h2.section-title { font-size: 13pt; page-break-after: avoid; }
+      h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+      table { font-size: 8pt; page-break-inside: avoid; }
+      table th, table td { padding: 3px 5px; }
+      .highlight-box, .note-box, .info-box {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      table th {
+        background: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav id="sticky-nav">
+    <span class="nav-label">SECTIONS</span>
+    <a class="pill" href="#summary">結論</a>
+    <a class="pill" href="#facts">高確度ファクト</a>
+    <a class="pill" href="#timeline">年表</a>
+    <a class="pill" href="#internal">社内資料</a>
+    <a class="pill" href="#interpretation">解釈と仮説</a>
+    <a class="pill" href="#usage">使いどころ</a>
+    <a class="pill" href="#sources">主要ソース</a>
+  </nav>
+
+  <div id="main">
+    <header class="report-header">
+      <h1>服部峻介リサーチ — レビュー済み確定版</h1>
+      <div class="subtitle">SEVENRICH GROUP 代表・服部峻介氏に関する社内外リサーチ整理 | 2026-04-02</div>
+      <div class="summary-box">
+        <h3>この文書の目的</h3>
+        <p style="font-size:0.82rem; margin-bottom:8px;">本書は、SEVENRICH GROUP 代表・服部峻介氏に関する社内外リサーチを、事実と解釈を分けて再整理したレビュー済み確定版である。</p>
+        <h3>前回版からの主な修正点</h3>
+        <ul>
+          <li>社内議事録から言えることを「会議参加の確認」までに限定した</li>
+          <li>人数推移は同一基準の連続系列ではなく、各時点の公開・社内表記として扱った</li>
+          <li>人物像や経営スタイルの記述は、事実と解釈を分けた</li>
+        </ul>
+      </div>
+    </header>
+
+    <!-- 2. 結論サマリー -->
+    <h2 class="section-title" id="summary">結論サマリー</h2>
+    <p>服部峻介氏は、公認会計士・税理士・行政書士を基盤に、2011年7月7日に SEVENRICH Accounting を創業した人物である。公開情報を通じて確認できる経営思想の核は、以下の3点に集約できる。</p>
+    <ul>
+      <li>身近な人の力になりたい</li>
+      <li>いい人とだけ仕事をしたい</li>
+      <li>会計事務所を「経営者の左腕」として、守りだけでなく攻めまで支援する</li>
+    </ul>
+    <p>この思想に沿って、SEVENRICH GROUP は会計を起点に、ファイナンス、人材、マーケティング、飲食、ウェルネス、テクノロジー、投資、M&amp;Aへと支援領域を拡張してきた。</p>
+    <p>2025年7月には M&amp;A推進室 と SEVENRICH CAPITAL を同時設立しており、2025年中盤以降は、投資・M&amp;Aを組織機能として明確化するフェーズに入っていることが確認できる。</p>
+
+    <!-- 3. 高確度ファクト -->
+    <h2 class="section-title" id="facts">高確度ファクト</h2>
+
+    <h3 class="subsection-title">3-1. 本人略歴</h3>
+    <table>
+      <thead>
+        <tr><th>時期</th><th>内容</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1983年6月</td><td>北海道札幌市出身</td></tr>
+        <tr><td>2006年3月</td><td>北海道大学経済学部卒業</td></tr>
+        <tr><td>2006年3月</td><td>監査法人トーマツ入所</td></tr>
+        <tr><td>2009年8月</td><td>公認会計士登録</td></tr>
+        <tr><td>2010年1月</td><td>トーマツ退職、会計コンサルティング会社取締役就任</td></tr>
+        <tr><td>2011年4月</td><td>税理士・行政書士登録</td></tr>
+        <tr><td>2011年7月</td><td>株式会社Seven Rich Accounting設立</td></tr>
+      </tbody>
+    </table>
+    <div class="note-box">
+      <strong>注記:</strong> 上記略歴は社内資料断片に基づく。氏名表記は当該資料では「服部俊介」だが、今回の依頼では表記揺れとして「服部峻介」に統一する。
+    </div>
+
+    <h3 class="subsection-title">3-2. 肩書き・資格・事業の原点</h3>
+    <ul>
+      <li>公式会社情報では、服部氏の肩書きは「代表取締役社長・所長」</li>
+      <li>資格は「公認会計士・税理士・行政書士」</li>
+      <li>会計事業の理念は「経営者の左腕として "守り" の視点からビジネスを支え続けること」</li>
+      <li>公式メッセージでは、会計の枠を超えて事業発展まで力になりたいと明示している</li>
+    </ul>
+
+    <h3 class="subsection-title">3-3. 公開情報で確認できる経営思想</h3>
+    <ul>
+      <li>2021年7月の10周年noteで、創業の原点を「身近な人の力になりたい」と説明</li>
+      <li>同noteで、顧客・仲間の基準を「いい人」と明示</li>
+      <li>同noteで、提供サービスは「なんでも」とし、関係起点で事業を増やしてきたことを説明</li>
+      <li>TACの対外インタビューでも、近い価値観として「いい人とだけ仕事をしたい」旨の発言が確認できる</li>
+    </ul>
+
+    <h3 class="subsection-title">3-4. 事業拡張の流れ</h3>
+    <ul>
+      <li>2011年創業時点の母体は会計事務所</li>
+      <li>2021年時点で、ウェルネス、飲食、コーチング、人材、マーケティング、クリエイティブ等へ展開</li>
+      <li>2025年7月に M&amp;A推進室 と SEVENRICH CAPITAL を設立</li>
+      <li>2025年4月には BPIO を通じて CCIForward 設立に参画</li>
+    </ul>
+
+    <h3 class="subsection-title">3-5. 人数規模</h3>
+    <p>人数については定義が揺れているため、以下は「各時点の公開・社内表記」として扱う。</p>
+    <table>
+      <thead>
+        <tr><th>時点</th><th>人数</th><th>備考</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>2021年7月</td><td>300名超</td><td>10周年note</td></tr>
+        <tr><td>2022年4月</td><td>総従業員350名</td><td></td></tr>
+        <tr><td>2023年7月</td><td>500名超</td><td>12周年note</td></tr>
+        <tr><td>2024年7月末</td><td>875名</td><td></td></tr>
+        <tr><td>公式グループ会社ページ</td><td>900名</td><td></td></tr>
+        <tr><td>2025年12月</td><td>約1,000名</td><td>14期振り返りnote</td></tr>
+        <tr><td>2026年1月（社内資料）</td><td>1,150名</td><td></td></tr>
+      </tbody>
+    </table>
+    <div class="note-box">
+      <strong>注記:</strong> 「総従業員」「社員」「グループ構成員」「従業員数」で表現が揺れる。そのため、厳密な同比較ではなく、急拡大の方向感を示す材料として使うべき。
+    </div>
+
+    <!-- 4. 年表 -->
+    <h2 class="section-title" id="timeline">年表</h2>
+    <table>
+      <thead>
+        <tr><th>日付</th><th>出来事</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>2006-03</td><td>北海道大学経済学部卒業、監査法人トーマツ入所</td></tr>
+        <tr><td>2011-07-07</td><td>SEVENRICH Accounting 創業</td></tr>
+        <tr><td>2021-01-21</td><td>TesTee グループ化に関する公開発信</td></tr>
+        <tr><td>2021-07-13</td><td>10周年note 公開</td></tr>
+        <tr><td>2022-07-28</td><td>11周年note 公開</td></tr>
+        <tr><td>2023-07-07</td><td>12周年note 公開</td></tr>
+        <tr><td>2024-07-05</td><td>PTX 関連株式譲渡のPR公開</td></tr>
+        <tr><td>2024-09-02</td><td>13周年note 公開</td></tr>
+        <tr><td>2025-04-23</td><td>CCIForward 設立PR公開</td></tr>
+        <tr><td>2025-07</td><td>M&amp;A推進室、SEVENRICH CAPITAL 設立</td></tr>
+        <tr><td>2025-12-05</td><td>14期振り返りnote 公開</td></tr>
+      </tbody>
+    </table>
+
+    <!-- 5. 社内資料から言えること -->
+    <h2 class="section-title" id="internal">社内資料から言えること</h2>
+    <p>社内ワークスペース上で、服部氏の専用リサーチログは見つからなかった。2026-04-02 の社内ログでも、3月中に実施した大規模リサーチの記憶はあるが、コミットや専用ドキュメントは見つからなかったと記録されている。</p>
+    <p>一方で、社内 Notion エクスポート上では、以下の会議タイトルと参加者として服部氏の名前を確認できる。</p>
+    <table>
+      <thead>
+        <tr><th>日付</th><th>会議タイトル</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>2025-07-30</td><td>LayerX鈴木さん</td></tr>
+        <tr><td>2025-10-16</td><td>パソナ_アライアンス協議</td></tr>
+        <tr><td>2025-12-01</td><td>ビーウィズ</td></tr>
+        <tr><td>2025-12-22</td><td>デロイト</td></tr>
+      </tbody>
+    </table>
+    <div class="info-box">
+      ここから言えるのは、服部氏が業務提携・アライアンス系の会議に参加していることまでであり、意思決定の主導度や実務責任の範囲までは断定できない。
+    </div>
+
+    <!-- 6. 解釈と仮説 -->
+    <h2 class="section-title" id="interpretation">解釈と仮説</h2>
+    <div class="note-box">以下は事実ではなく、公開情報からの解釈である。</div>
+
+    <h3 class="subsection-title">6-1. 妥当性の高い解釈</h3>
+    <ul>
+      <li>服部氏は「会計事務所経営者」よりも、「会計を起点に周辺課題を次々事業化する経営者」と捉える方が実態に近い</li>
+      <li>SEVENRICH GROUP の拡張は、事業計画先行というより、顧客や身近な人の課題起点で広がった色合いが強い</li>
+      <li>2025年中盤以降は、投資・M&amp;Aを個別案件ではなく、組織機能として扱う段階に進んでいる</li>
+    </ul>
+
+    <h3 class="subsection-title">6-2. 注意が必要な解釈</h3>
+    <ul>
+      <li>「外部連携を服部氏が主導している」とまでは現時点資料では断定できない</li>
+      <li>人数推移を厳密な同一基準で並べるのは不適切</li>
+    </ul>
+
+    <!-- 7. 使いどころ -->
+    <h2 class="section-title" id="usage">使いどころ</h2>
+
+    <h3 class="subsection-title">このリサーチが向く用途</h3>
+    <ul>
+      <li>面談前ブリーフィング</li>
+      <li>人物理解メモ</li>
+      <li>経営思想の整理</li>
+      <li>SEVENRICH GROUP の拡張史の把握</li>
+      <li>Claude Code や他エージェントへの調査引き継ぎ</li>
+    </ul>
+
+    <h3 class="subsection-title">追加検証が必要な用途</h3>
+    <ul>
+      <li>ネガティブ情報を含む対外説明</li>
+      <li>登記・持株比率・役職変遷の厳密確認</li>
+      <li>服部氏個人の投資案件一覧化</li>
+    </ul>
+
+    <!-- 8. 主要ソース -->
+    <h2 class="section-title" id="sources">主要ソース</h2>
+
+    <h3 class="subsection-title">社内ソース</h3>
+    <ul class="source-list">
+      <li>マル勝髙田商店 会社紹介資料（社内PDF抽出テキスト）</li>
+      <li>SEVENRICH会計事務所 会社概要資料（社内PDF抽出テキスト）</li>
+      <li>SRGカンパニーガイド テキスト抽出版</li>
+      <li>活動ログ 2026-04-02（リサーチログ捜索記録）</li>
+      <li>Notion議事録DB — LayerX鈴木さん（2025-07-30）</li>
+      <li>Notion議事録DB — パソナ_アライアンス協議（2025-10-16）</li>
+      <li>Notion議事録DB — ビーウィズ（2025-12-01）</li>
+      <li>Notion議事録DB — デロイト（2025-12-22）</li>
+    </ul>
+
+    <h3 class="subsection-title">社外ソース</h3>
+    <ul class="source-list">
+      <li>SEVENRICH Accounting 会社情報<br><a href="https://sevenrich-ac.com/company/" target="_blank" rel="noopener">https://sevenrich-ac.com/company/</a></li>
+      <li>SEVENRICH GROUP 会社情報<br><a href="https://sevenrich.jp/company/" target="_blank" rel="noopener">https://sevenrich.jp/company/</a></li>
+      <li>SEVENRICH公式note 10周年記事<br><a href="https://note.com/sevenrich/n/n60cc89e47184" target="_blank" rel="noopener">https://note.com/sevenrich/n/n60cc89e47184</a></li>
+      <li>SEVENRICH公式note 11周年記事<br><a href="https://note.com/sevenrich/n/n9f9183edd702" target="_blank" rel="noopener">https://note.com/sevenrich/n/n9f9183edd702</a></li>
+      <li>SEVENRICH公式note 12周年記事<br><a href="https://note.com/sevenrich/n/ne06afd95d893" target="_blank" rel="noopener">https://note.com/sevenrich/n/ne06afd95d893</a></li>
+      <li>SEVENRICH公式note 13周年記事<br><a href="https://note.com/sevenrich/n/n6eb60835efb7" target="_blank" rel="noopener">https://note.com/sevenrich/n/n6eb60835efb7</a></li>
+      <li>SEVENRICH公式note 14期振り返り記事<br><a href="https://note.com/sevenrich/n/n3c19086f64f2" target="_blank" rel="noopener">https://note.com/sevenrich/n/n3c19086f64f2</a></li>
+      <li>SEVENRICH公式note M&amp;A推進室・SEVENRICH CAPITAL 記事<br><a href="https://note.com/sevenrich/n/n74db1f70c643" target="_blank" rel="noopener">https://note.com/sevenrich/n/n74db1f70c643</a></li>
+      <li>PR TIMES CCIForward 設立記事<br><a href="https://prtimes.jp/main/html/rd/p/000000036.000066722.html" target="_blank" rel="noopener">https://prtimes.jp/main/html/rd/p/000000036.000066722.html</a></li>
+      <li>PR TIMES PTX 関連記事<br><a href="https://prtimes.jp/main/html/rd/p/000000024.000066722.html" target="_blank" rel="noopener">https://prtimes.jp/main/html/rd/p/000000024.000066722.html</a></li>
+      <li>TAC 対外インタビュー<br><a href="https://www.tac-school.co.jp/tacnewsweb/professional/pro202001.html" target="_blank" rel="noopener">https://www.tac-school.co.jp/tacnewsweb/professional/pro202001.html</a></li>
+    </ul>
+
+    <div class="report-footer">
+      服部峻介リサーチ — レビュー済み確定版 — Generated 2026-04-02 — BPIO co., Ltd.
+    </div>
+  </div>
+
+  <script>
+    const pills = document.querySelectorAll('.pill');
+    const sectionIds = Array.from(pills).map(p => p.getAttribute('href').replace('#',''));
+    const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          pills.forEach(p => p.classList.remove('active'));
+          const active = document.querySelector('.pill[href="#' + entry.target.id + '"]');
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-80px 0px -80% 0px' });
+    sections.forEach(s => observer.observe(s));
+  </script>
+</body>
+</html>
