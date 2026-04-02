@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TEN EXPERIENCE ナレッジAI構築 プロジェクト概要 — BPIO</title>
+  <style>
+    body {
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: #1a1a1a;
+      background: #fff;
+      line-height: 1.7;
+      margin: 0;
+      padding: 0;
+    }
+    html { font-size: 15px; }
+    * { box-sizing: border-box; }
+    #sticky-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.97);
+      border-bottom: 1px solid #ccc;
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    #sticky-nav .nav-label {
+      font-size: 0.72rem; font-weight: 700; color: #777;
+      letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+    }
+    .pill {
+      display: inline-block; padding: 5px 16px;
+      font-size: 0.78rem; font-weight: 600; color: #555;
+      text-decoration: none; border: 1px solid #ccc;
+      border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+    }
+    .pill:hover, .pill.active {
+      background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+    }
+    #main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+    .report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+    .report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+    .report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+    .report-header .summary-box {
+      background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+    }
+    .report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; margin-top: 0; }
+    .report-header .summary-box ul, .report-header .summary-box ol {
+      padding-left: 20px; font-size: 0.82rem; margin: 0;
+    }
+    .report-header .summary-box li { margin-bottom: 4px; }
+    h2.section-title {
+      font-size: 1.2rem; font-weight: 700;
+      border-bottom: 1px solid #999; padding-bottom: 6px;
+      margin-top: 48px; margin-bottom: 20px;
+    }
+    h3.subsection-title {
+      font-size: 1.0rem; font-weight: 700;
+      margin-top: 32px; margin-bottom: 12px;
+      padding-left: 10px; border-left: 3px solid #555;
+    }
+    h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+    table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+    table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+    table td { background: #fff; }
+    table tr:nth-child(even) td { background: #fafafa; }
+    p { margin-bottom: 10px; font-size: 0.88rem; }
+    ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+    ul li, ol li { margin-bottom: 3px; }
+    .highlight-box {
+      background: #f7f7f7; border: 1px solid #ddd;
+      padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+    }
+    .highlight-box strong { display: block; margin-bottom: 6px; }
+    .info-box {
+      background: #eff6ff; border-left: 4px solid #3b82f6;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f;
+    }
+    .note-box {
+      background: #fffbeb; border-left: 4px solid #f59e0b;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+    }
+    .badge {
+      display: inline-block; padding: 2px 10px;
+      font-size: 0.72rem; font-weight: 700;
+      border-radius: 999px; letter-spacing: 0.03em;
+    }
+    .badge-info { background: #d1ecf1; color: #0c5460; }
+    .badge-pending { background: #e2e3e5; color: #383d41; }
+    .badge-ok { background: #d4edda; color: #155724; }
+    .flow {
+      display: flex; align-items: center; gap: 0;
+      margin: 20px 0; flex-wrap: wrap; justify-content: center;
+    }
+    .flow-step {
+      background: #f0f0f0; border: 1px solid #ccc;
+      padding: 10px 18px; font-size: 0.82rem; font-weight: 600;
+      text-align: center; min-width: 120px;
+    }
+    .flow-step.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .flow-arrow { font-size: 1.2rem; color: #999; padding: 0 4px; }
+    .action-list { list-style: none; padding-left: 0; }
+    .action-list li {
+      padding: 10px 14px; margin-bottom: 8px;
+      background: #fafafa; border: 1px solid #ddd; font-size: 0.85rem;
+    }
+    .action-list li .who {
+      display: inline-block; font-weight: 700; font-size: 0.78rem;
+      background: #1a1a1a; color: #fff; padding: 1px 8px; border-radius: 999px;
+      margin-right: 6px;
+    }
+    .report-footer {
+      border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+      font-size: 0.78rem; color: #777;
+    }
+    @media (max-width: 640px) {
+      #main { padding: 24px 20px 60px; }
+      .report-header h1 { font-size: 1.3rem; }
+      h2.section-title { font-size: 1.05rem; }
+      table { font-size: 0.78rem; }
+      table th, table td { padding: 5px 7px; }
+      #sticky-nav { padding: 10px 12px; gap: 6px; }
+      .pill { padding: 4px 12px; font-size: 0.72rem; }
+      .flow { flex-direction: column; align-items: stretch; }
+      .flow-arrow { transform: rotate(90deg); text-align: center; padding: 4px 0; }
+      .flow-step { min-width: auto; }
+    }
+    @media print {
+      #sticky-nav { display: none; }
+      #main { padding: 0; max-width: 100%; }
+      body { font-size: 10pt; }
+      .report-header h1 { font-size: 16pt; }
+      h2.section-title { font-size: 13pt; page-break-after: avoid; }
+      h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+      table { font-size: 8pt; page-break-inside: avoid; }
+      table th, table td { padding: 3px 5px; }
+      .highlight-box, .note-box, .info-box {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      table th {
+        background: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav id="sticky-nav">
+    <span class="nav-label">SECTIONS</span>
+    <a class="pill" href="#background">背景</a>
+    <a class="pill" href="#process">立ち上げプロセス</a>
+    <a class="pill" href="#goals">プロジェクト目標</a>
+    <a class="pill" href="#approach">技術アプローチ</a>
+    <a class="pill" href="#roadmap">進め方</a>
+    <a class="pill" href="#actions">ネクストアクション</a>
+    <a class="pill" href="#team">体制</a>
+  </nav>
+
+  <div id="main">
+    <header class="report-header">
+      <h1>TEN EXPERIENCE ナレッジAI構築</h1>
+      <p class="subtitle">プロジェクト概要・現状報告 — p036 <span class="badge badge-info">Planning</span></p>
+      <div class="summary-box">
+        <h3>このプロジェクトについて</h3>
+        <ul>
+          <li>TEN EXPERIENCE（10Xエクスペリエンス）が持つ<strong>クリニック立ち上げのノウハウ</strong>をAIで構造化・活用するプロジェクト</li>
+          <li>社内Slackのやり取りを自動学習し、<strong>集合知として検索・回答できるAI</strong>の構築を目指す</li>
+          <li>本質的なゴールは<strong>労働集約型 → ノウハウ販売型への事業転換</strong>（知的財産化）</li>
+          <li>まずはSlackデータを用いた初期テストから着手し、アジャイルに進行</li>
+        </ul>
+      </div>
+    </header>
+
+    <!-- 背景 -->
+    <h2 class="section-title" id="background">背景・課題認識</h2>
+
+    <p>TEN EXPERIENCE（10Xエクスペリエンス）は、複数ブランドでクリニックを直営・FCなどの形で展開しています。目標は<strong>10ブランド100院</strong>。クリニック立ち上げのノウハウを持ち、その支援を業務委託としても提供しています。</p>
+
+    <h3 class="subsection-title">本質的な課題</h3>
+
+    <div class="highlight-box">
+      <strong>労働集約型ビジネスからの脱却</strong>
+      AI活用はあくまで手段。根本的な課題は、案件ごとに人手をかけるモデルから、<strong>ノウハウやブランドそのものに対して報酬を得る「知的財産化」</strong>への転換にあります。クライアントが「お金を払う価値がある」と感じるアウトプットの形を模索しています。
+    </div>
+
+    <div class="info-box">
+      ブランド価値の販売をAIで実現するには、クライアントが持つ<strong>暗黙知や判断軸を言語化</strong>し、AIに入力することが不可欠です。これがプロジェクト全体の鍵になります。
+    </div>
+
+    <!-- 立ち上げプロセス -->
+    <h2 class="section-title" id="process">クリニック立ち上げプロセス</h2>
+
+    <p>クリニックの立ち上げは約<strong>9ヶ月</strong>のプロセスで、ほぼ全ての案件で共通しています。この共通性がナレッジ化・AI活用の大きなポテンシャルです。</p>
+
+    <div class="flow">
+      <div class="flow-step">事業計画<br>策定</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">物件探し</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">内装</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">システム<br>調達</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">オペレーション<br>設計</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">マーケティング<br>戦略</div>
+    </div>
+
+    <p>各工程で発生する課題やソリューションも案件間で類似しており、これらを体系化することで再利用可能なナレッジベースが構築できます。</p>
+
+    <!-- プロジェクト目標 -->
+    <h2 class="section-title" id="goals">プロジェクト目標</h2>
+
+    <h3 class="subsection-title">目標 1: 事業計画の自動生成</h3>
+    <p>場所・診療科目・資本規模などの初期条件を入力すると、最適な事業計画やコンセプトをAIがアウトプットする仕組みを構築します。</p>
+    <table>
+      <tr><th>入力</th><th>出力</th></tr>
+      <tr><td>場所（エリア・立地条件）</td><td rowspan="3">最適な事業計画書<br>コンセプト提案<br>収支シミュレーション</td></tr>
+      <tr><td>診療科目</td></tr>
+      <tr><td>資本規模・投資額</td></tr>
+    </table>
+
+    <h3 class="subsection-title">目標 2: Slack集合知（社内ナレッジAI）</h3>
+    <p>社内Slackチャンネルの内容をAIに学習させ、メンバーが問い合わせなくても過去の知見から回答が得られる状態を目指します。</p>
+    <table>
+      <tr><th>項目</th><th>内容</th></tr>
+      <tr><td>情報ソース</td><td>社内Slackチャンネルのやり取り</td></tr>
+      <tr><td>期待する効果</td><td>問い合わせ対応の削減、ナレッジの属人化解消</td></tr>
+      <tr><td>利用イメージ</td><td>チャットで質問 → 過去のやり取り・ノウハウから回答</td></tr>
+    </table>
+
+    <h3 class="subsection-title">目標 3: 説得力のある成果物</h3>
+    <p>出資者が収益性をイメージできるような、説得力のある資料（30〜100枚程度）の自動生成。形式はスライドに固執せず、Web形式も含めて最適な方法を検討します。</p>
+
+    <!-- 技術アプローチ -->
+    <h2 class="section-title" id="approach">技術アプローチ</h2>
+
+    <h3 class="subsection-title">ハイブリッド方式（段階的構築）</h3>
+    <p>一気に完成形を目指すのではなく、段階的にテスト・検証しながら構築します。</p>
+
+    <table>
+      <tr><th>フェーズ</th><th>内容</th><th>概要</th></tr>
+      <tr>
+        <td><span class="badge badge-ok">Phase 1</span></td>
+        <td>構造化ナレッジの枠組み構築</td>
+        <td>プロセスマップ・課題DBなど、ナレッジの骨格を設計。Slackデータで初期テスト</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-pending">Phase 2</span></td>
+        <td>Slack連携で自動収集・分類</td>
+        <td>Slack APIと連携し、やり取りを自動的にナレッジベースに取り込む仕組みを構築</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-pending">Phase 3</span></td>
+        <td>質問応答インターフェース</td>
+        <td>RAG（検索拡張生成）型のチャットUIで、ナレッジに基づく回答を提供</td>
+      </tr>
+    </table>
+
+    <div class="note-box">
+      Phase 1のSlackテスト結果を見て、Phase 2以降の具体的な技術選定を行います。テスト結果によっては方針を柔軟に調整します。
+    </div>
+
+    <!-- 進め方 -->
+    <h2 class="section-title" id="roadmap">進め方</h2>
+
+    <p>アジャイル的に、小さく試して議論を重ねる方針で合意しています。</p>
+
+    <div class="flow">
+      <div class="flow-step active">Slackテスト<br><small>現在ここ</small></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">資料受領・<br>分析</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">プロトタイプ<br>構築</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">臨床テスト<br>（クリニック）</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">本番運用</div>
+    </div>
+
+    <table>
+      <tr><th>ステップ</th><th>内容</th><th>担当</th><th>状況</th></tr>
+      <tr>
+        <td>1</td>
+        <td>Slackデータを用いた初期テスト — やり取りからどの程度の成果物が出せるか検証</td>
+        <td>堀江</td>
+        <td><span class="badge badge-info">着手予定</span></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>既存資料の受領・分析（提案スライド・営業資料・会社資料）</td>
+        <td>関</td>
+        <td><span class="badge badge-pending">待ち</span></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>テスト結果をもとに技術方針を確定、プロトタイプ構築</td>
+        <td>堀江</td>
+        <td><span class="badge badge-pending">未着手</span></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>知り合いのクリニック・病院で製品テスト</td>
+        <td>関</td>
+        <td><span class="badge badge-pending">未着手</span></td>
+      </tr>
+    </table>
+
+    <!-- ネクストアクション -->
+    <h2 class="section-title" id="actions">ネクストアクション</h2>
+
+    <ul class="action-list">
+      <li><span class="who">関</span> 10Xの事業概要等の関連資料を堀江に送付</li>
+      <li><span class="who">関</span> 提案スライド・営業資料・会社関連資料を提供</li>
+      <li><span class="who">堀江</span> Slackデータを用いた初期テスト実施</li>
+      <li><span class="who">堀江</span> プロジェクト用Slackチャンネル設定</li>
+      <li><span class="who">関</span> プロトタイプ完成後、知り合いのクリニック・病院に製品テスト依頼を手配</li>
+      <li><span class="who">関</span> 事務会（クリニック事務スタッフの集まり）に山科を招待</li>
+    </ul>
+
+    <!-- 体制 -->
+    <h2 class="section-title" id="team">プロジェクト体制</h2>
+
+    <p>BPIOのAIアクセラレータープログラムの一環として実施します。</p>
+
+    <table>
+      <tr><th>名前</th><th>所属</th><th>役割</th></tr>
+      <tr><td>関 侑人</td><td>TEN EXPERIENCE（10X）</td><td>依頼者・クリニック立ち上げノウハウの知財化推進</td></tr>
+      <tr><td>山科 克騎</td><td>BPIO BPO事業部</td><td>レセプトBPO検討・医療事務領域の知見提供</td></tr>
+      <tr><td>堀江 孝輔</td><td>BPIO BPO事業部</td><td>技術担当・AI活用・ナレッジ構築</td></tr>
+    </table>
+
+    <div class="report-footer">
+      TEN EXPERIENCE ナレッジAI構築 プロジェクト概要 — p036 — Generated 2026-04-02 — BPIO co., Ltd.
+    </div>
+  </div>
+
+  <script>
+    const pills = document.querySelectorAll('.pill');
+    const sections = document.querySelectorAll('[id]');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          pills.forEach(p => p.classList.remove('active'));
+          const active = document.querySelector('.pill[href="#' + entry.target.id + '"]');
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-80px 0px -80% 0px' });
+    sections.forEach(s => observer.observe(s));
+  </script>
+</body>
+</html>
