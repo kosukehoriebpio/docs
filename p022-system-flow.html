@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>勤怠チェック自動化 システムフロー — BPIO</title>
+<style>
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color: #1a1a1a; background: #fff; line-height: 1.7; margin: 0;
+}
+html { font-size: 15px; }
+
+#sticky-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.97);
+  border-bottom: 1px solid #ccc;
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+#sticky-nav .nav-label {
+  font-size: 0.72rem; font-weight: 700; color: #777;
+  letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+}
+.pill {
+  display: inline-block; padding: 5px 16px;
+  font-size: 0.78rem; font-weight: 600; color: #555;
+  text-decoration: none; border: 1px solid #ccc;
+  border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+}
+.pill:hover, .pill.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+#main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+
+.report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+.report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+.report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+.report-header .summary-box {
+  background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+}
+.report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+.report-header .summary-box ul { padding-left: 20px; font-size: 0.82rem; }
+.report-header .summary-box li { margin-bottom: 4px; }
+
+h2.section-title {
+  font-size: 1.2rem; font-weight: 700;
+  border-bottom: 1px solid #999; padding-bottom: 6px;
+  margin-top: 48px; margin-bottom: 20px;
+}
+h3.subsection-title {
+  font-size: 1.0rem; font-weight: 700;
+  margin-top: 32px; margin-bottom: 12px;
+  padding-left: 10px; border-left: 3px solid #555;
+}
+h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+table td { background: #fff; }
+table tr:nth-child(even) td { background: #fafafa; }
+
+p { margin-bottom: 10px; font-size: 0.88rem; }
+ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+ul li, ol li { margin-bottom: 3px; }
+
+.highlight-box {
+  background: #f7f7f7; border: 1px solid #ddd;
+  padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+}
+.note-box {
+  background: #fffbeb; border-left: 4px solid #f59e0b;
+  padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+}
+.info-box {
+  background: #eff6ff; border-left: 4px solid #3b82f6;
+  padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f;
+}
+.badge {
+  display: inline-block; padding: 2px 10px;
+  font-size: 0.72rem; font-weight: 700;
+  border-radius: 999px; letter-spacing: 0.03em;
+}
+.badge-ok { background: #d4edda; color: #155724; }
+.badge-warn { background: #fff3cd; color: #856404; }
+.badge-info { background: #d1ecf1; color: #0c5460; }
+.badge-pending { background: #e2e3e5; color: #383d41; }
+
+.flow {
+  display: flex; align-items: center; gap: 0;
+  margin: 20px 0; flex-wrap: wrap; justify-content: center;
+}
+.flow-step {
+  background: #f0f0f0; border: 1px solid #ccc;
+  padding: 10px 18px; font-size: 0.82rem; font-weight: 600;
+  text-align: center; min-width: 120px;
+}
+.flow-step.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+.flow-arrow { font-size: 1.2rem; color: #999; padding: 0 4px; }
+
+.flow-vertical { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 20px 0; }
+.flow-vertical .flow-arrow { transform: rotate(90deg); padding: 4px 0; }
+
+.kpi-row { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0 24px; }
+.kpi-card {
+  flex: 1; min-width: 120px; text-align: center;
+  background: #f7f7f7; border: 1px solid #ddd; padding: 16px 12px;
+}
+.kpi-card .num { font-size: 1.8rem; font-weight: 700; }
+.kpi-card .label { font-size: 0.72rem; color: #777; margin-top: 2px; }
+
+.source-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 12px 0 20px; }
+.source-card { background: #fafafa; border: 1px solid #ddd; padding: 12px 16px; }
+.source-card .name { font-weight: 700; font-size: 0.88rem; margin-bottom: 4px; }
+.source-card .desc { font-size: 0.78rem; color: #777; margin-bottom: 6px; }
+
+.cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 12px 0 20px; }
+.cat-card { background: #fafafa; border: 1px solid #ddd; padding: 14px 16px; }
+.cat-card h4 { font-size: 0.85rem; margin-top: 0; margin-bottom: 8px; }
+.cat-card .items { font-size: 0.78rem; color: #555; line-height: 1.9; }
+.cat-card .items .tag {
+  display: inline-block; background: #f0f0f0; border: 1px solid #ddd;
+  padding: 1px 8px; font-size: 0.72rem; margin: 2px 2px;
+}
+
+.output-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 12px 0 20px; }
+.output-card { background: #fafafa; border: 1px solid #ddd; padding: 16px; text-align: center; }
+.output-card h4 { font-size: 0.88rem; margin-top: 0; margin-bottom: 4px; }
+.output-card p { font-size: 0.78rem; color: #777; margin-bottom: 0; }
+
+.timeline { padding-left: 32px; position: relative; margin: 16px 0 24px; }
+.timeline::before { content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px; width: 2px; background: #ccc; }
+.tl-item { position: relative; margin-bottom: 20px; }
+.tl-item::before {
+  content: ''; position: absolute; left: -28px; top: 6px;
+  width: 10px; height: 10px; border: 2px solid #999; background: #fff;
+  border-radius: 999px;
+}
+.tl-item.highlight::before { background: #1a1a1a; border-color: #1a1a1a; }
+.tl-label { font-size: 0.75rem; color: #777; font-weight: 700; }
+.tl-content { font-size: 0.85rem; }
+
+.roadmap-step { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px; padding: 14px 18px; background: #fafafa; border: 1px solid #ddd; }
+.roadmap-num { font-size: 1.4rem; font-weight: 700; color: #999; min-width: 32px; text-align: center; }
+.roadmap-body h4 { font-size: 0.88rem; margin: 0 0 4px; }
+.roadmap-body p { font-size: 0.78rem; color: #555; margin: 0; }
+
+.error-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 12px 0 20px; }
+.error-box { background: #fafafa; border: 1px solid #ddd; padding: 16px; }
+.error-box h4 { font-size: 0.85rem; margin-top: 0; margin-bottom: 8px; }
+.error-box p { font-size: 0.78rem; color: #555; margin-bottom: 0; }
+
+.tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0 20px; }
+.tech-card { background: #fafafa; border: 1px solid #ddd; padding: 14px; text-align: center; }
+.tech-card .tech-name { font-weight: 700; font-size: 0.88rem; }
+.tech-card .tech-detail { font-size: 0.72rem; color: #777; margin-top: 2px; }
+
+.report-footer {
+  border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+  font-size: 0.78rem; color: #777;
+}
+
+@media (max-width: 640px) {
+  #main { padding: 24px 20px 60px; }
+  .report-header h1 { font-size: 1.3rem; }
+  h2.section-title { font-size: 1.05rem; }
+  table { font-size: 0.78rem; }
+  table th, table td { padding: 5px 7px; }
+  #sticky-nav { padding: 10px 12px; gap: 6px; }
+  .pill { padding: 4px 12px; font-size: 0.72rem; }
+  .kpi-row { gap: 8px; }
+  .kpi-card { min-width: 80px; padding: 10px 8px; }
+  .kpi-card .num { font-size: 1.4rem; }
+  .output-grid { grid-template-columns: 1fr; }
+  .error-grid { grid-template-columns: 1fr; }
+}
+
+@media print {
+  #sticky-nav { display: none; }
+  #main { padding: 0; max-width: 100%; }
+  body { font-size: 10pt; }
+  .report-header h1 { font-size: 16pt; }
+  h2.section-title { font-size: 13pt; page-break-after: avoid; }
+  h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+  table { font-size: 8pt; page-break-inside: avoid; }
+  table th, table td { padding: 3px 5px; }
+  .highlight-box, .note-box, .info-box {
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  table th {
+    background: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+}
+</style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">SECTIONS</span>
+  <a class="pill" href="#overview">概要</a>
+  <a class="pill" href="#flow">システムフロー</a>
+  <a class="pill" href="#timeline">月次タイムライン</a>
+  <a class="pill" href="#checks">28チェック項目</a>
+  <a class="pill" href="#error">エラー対策</a>
+  <a class="pill" href="#roadmap">ロードマップ</a>
+  <a class="pill" href="#tech">技術スタック</a>
+</nav>
+
+<div id="main">
+
+  <!-- ===== HEADER ===== -->
+  <header class="report-header">
+    <h1>SR1 勤怠チェック自動化システム</h1>
+    <div class="subtitle">p022（グループSR1 労務業務効率化）Phase 2 設計 — 最終更新: 2026-04-02</div>
+    <div class="summary-box">
+      <h3>このページについて</h3>
+      <ul>
+        <li>月次給与締め作業に関わる<strong>28項目のチェック</strong>を自動化するシステムのフロー全体像</li>
+        <li>MFクラウド勤怠パートナーAPI（OAuth 2.0）によるデータ自動取得が<strong>主経路</strong>（2026-04-02確定）</li>
+        <li>全てルールベース（AI/LLM不使用）。判定ロジックは数値比較・閾値判定・データ突合のみ</li>
+        <li>出力先: 給与計算メモSS（自動書き込み）/ Slack Bot（通知・確認）/ GitHub Pages（進捗ボード）</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- ===== OVERVIEW ===== -->
+  <h2 class="section-title" id="overview">概要</h2>
+
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="num">28</div><div class="label">チェック項目</div></div>
+    <div class="kpi-card"><div class="num">21</div><div class="label">API利用可能</div></div>
+    <div class="kpi-card"><div class="num">57</div><div class="label">MF APIエンドポイント</div></div>
+    <div class="kpi-card"><div class="num">4</div><div class="label">外部システム</div></div>
+    <div class="kpi-card"><div class="num">5</div><div class="label">実装ステップ</div></div>
+  </div>
+
+  <div class="info-box">
+    <strong>設計方針:</strong> 給与関連データは同一入力 → 同一出力が必須。確実性・コスト・速度・監査性の観点から、生成AIのAPIは一切使用しない。
+  </div>
+
+  <!-- ===== SYSTEM FLOW ===== -->
+  <h2 class="section-title" id="flow">システム全体フロー</h2>
+
+  <h3 class="subsection-title">Step 1: データ取得レイヤー</h3>
+  <p>外部システムからデータを収集する。MF勤怠はAPIが主経路、他はAPI or CSV。</p>
+
+  <div class="source-grid">
+    <div class="source-card">
+      <div class="name">MF クラウド勤怠</div>
+      <div class="desc">勤怠・従業員・休暇・アラート・ワークフロー</div>
+      <span class="badge badge-ok">API（OAuth 2.0）主経路</span>
+    </div>
+    <div class="source-card">
+      <div class="name">MF クラウド経費</div>
+      <div class="desc">経費申請ステータス</div>
+      <span class="badge badge-pending">API未確認 / CSV</span>
+    </div>
+    <div class="source-card">
+      <div class="name">kintone</div>
+      <div class="desc">歯科有給申請データ</div>
+      <span class="badge badge-pending">API未確認 / CSV</span>
+    </div>
+    <div class="source-card">
+      <div class="name">エアシフト</div>
+      <div class="desc">歯科・薬局シフトデータ</div>
+      <span class="badge badge-warn">CSV手動（API無し）</span>
+    </div>
+  </div>
+
+  <div class="flow">
+    <span class="flow-arrow">&darr;</span>
+  </div>
+
+  <h3 class="subsection-title">Step 2: 正規化レイヤー</h3>
+  <p>取得方法に関わらず、共通の<strong>統一JSON</strong>に変換する。チェックエンジンはこのJSONのみを読む。</p>
+
+  <div class="highlight-box">
+    <div class="flow">
+      <div class="flow-step">MF API JSON</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-step">API正規化アダプタ</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-step active">統一JSON</div>
+    </div>
+    <div class="flow" style="margin-top:8px">
+      <div class="flow-step">CSV (Shift_JIS/UTF-8)</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-step">CSV正規化スクリプト</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-step active">統一JSON</div>
+    </div>
+    <p style="text-align:center;font-size:0.78rem;color:#777;margin-top:10px;margin-bottom:0">API経路とCSV経路で同一フォーマットのJSONを出力 &rarr; 下流は完全に共通</p>
+  </div>
+
+  <div class="flow">
+    <span class="flow-arrow">&darr;</span>
+  </div>
+
+  <h3 class="subsection-title">Step 3: チェックエンジン（28項目）</h3>
+  <p>全てルールベース。設定シート（Google スプレッドシート）を参照して閾値・ルールを判定する。</p>
+
+  <div class="cat-grid">
+    <div class="cat-card">
+      <h4>自動完結型（8項目）</h4>
+      <p style="font-size:0.78rem;color:#777;margin-bottom:8px">結果をSSに直接書き込み</p>
+      <div class="items">
+        <span class="tag">#4 欠勤転記</span>
+        <span class="tag">#6 控除転記</span>
+        <span class="tag">#9 通勤手当</span>
+        <span class="tag">#10 残業超過</span>
+        <span class="tag">#16 皆勤</span>
+        <span class="tag">#18 看護手当</span>
+        <span class="tag">#19 年末年始</span>
+        <span class="tag">#23 4週4休</span>
+      </div>
+    </div>
+    <div class="cat-card">
+      <h4>通知型（4項目）</h4>
+      <p style="font-size:0.78rem;color:#777;margin-bottom:8px">Slackで自動通知</p>
+      <div class="items">
+        <span class="tag">#1 勤怠リマインド</span>
+        <span class="tag">#1b 打刻漏れ</span>
+        <span class="tag">#8 休憩異常</span>
+        <span class="tag">#11 経費リマインド</span>
+      </div>
+    </div>
+    <div class="cat-card">
+      <h4>上長確認型（6項目）</h4>
+      <p style="font-size:0.78rem;color:#777;margin-bottom:8px">Slack確認依頼 &rarr; 回答 &rarr; SS反映</p>
+      <div class="items">
+        <span class="tag">#5 遅刻早退</span>
+        <span class="tag">#7 割増</span>
+        <span class="tag">#20 シフト相違</span>
+        <span class="tag">#22 BOX</span>
+        <span class="tag">#24 フレックス</span>
+        <span class="tag">#25 みなし0</span>
+      </div>
+    </div>
+    <div class="cat-card">
+      <h4>半自動型（6項目）</h4>
+      <p style="font-size:0.78rem;color:#777;margin-bottom:8px">差分レポート &rarr; 労務チーム確認</p>
+      <div class="items">
+        <span class="tag">#2 有給突合</span>
+        <span class="tag">#3 有給(バイト)</span>
+        <span class="tag">#14/15 フレックス</span>
+        <span class="tag">#17 AS突合</span>
+        <span class="tag">#21 b-stoic</span>
+        <span class="tag">#26 特別休暇</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow">
+    <span class="flow-arrow">&darr;</span>
+  </div>
+
+  <h3 class="subsection-title">Step 4: 出力先</h3>
+  <div class="output-grid">
+    <div class="output-card">
+      <h4>給与計算メモSS</h4>
+      <p>チェック結果・転記データを自動書き込み（Google Sheets API）</p>
+    </div>
+    <div class="output-card">
+      <h4>Slack Bot</h4>
+      <p>リマインド・上長確認・アラート通知（Web API）</p>
+    </div>
+    <div class="output-card">
+      <h4>進捗ボード</h4>
+      <p>28項目 &times; 事業部のマトリクス（GitHub Pages）</p>
+    </div>
+  </div>
+
+  <!-- ===== TIMELINE ===== -->
+  <h2 class="section-title" id="timeline">月次運用タイムライン</h2>
+
+  <div class="timeline">
+    <div class="tl-item highlight">
+      <div class="tl-label">月中（随時） <span class="badge badge-ok">API化で新規</span></div>
+      <div class="tl-content">日次: 打刻漏れ検出 &rarr; Slack通知 / 週次: 残業途中経過 &rarr; 超過予測アラート</div>
+    </div>
+    <div class="tl-item highlight">
+      <div class="tl-label">月末</div>
+      <div class="tl-content">MF勤怠API &rarr; 自動取得（主経路）/ エアシフト &rarr; CSV手動配置</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-label">翌月1日〜</div>
+      <div class="tl-content">チェックエンジン実行 &rarr; Phase 1: リマインド自動送信</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-label">翌月3日〜</div>
+      <div class="tl-content">Phase 2: データ確認・SS書き込み / Phase 3: 上長確認Slack送信 &rarr; 回答受付</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-label">翌月7日〜9日</div>
+      <div class="tl-content">Phase 4: 労務チーム最終レビュー（進捗ボードで状況確認）</div>
+    </div>
+  </div>
+
+  <div class="note-box">
+    <strong>API化以前との違い:</strong> 労務チームの「MF管理画面 &rarr; CSVダウンロード &rarr; Drive配置」作業が不要になった。月中にも軽量チェック（打刻漏れ・残業途中経過）を自動実行可能。
+  </div>
+
+  <!-- ===== CHECK ITEMS ===== -->
+  <h2 class="section-title" id="checks">全28チェック項目一覧</h2>
+
+  <div style="overflow-x:auto">
+  <table>
+    <thead>
+      <tr><th>#</th><th>チェック項目</th><th>入力データ</th><th>API</th><th>種別</th><th>出力先</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>勤怠提出リマインド</td><td>MF勤怠</td><td><span class="badge badge-ok">API</span></td><td>通知</td><td>Slack</td></tr>
+      <tr><td>1b</td><td>打刻漏れ・申請漏れ</td><td>MF勤怠</td><td><span class="badge badge-ok">API</span></td><td>通知</td><td>Slack</td></tr>
+      <tr><td>2</td><td>有給突合</td><td>MF/kintone/SS</td><td><span class="badge badge-ok">API</span></td><td>半自動</td><td>SS + Slack</td></tr>
+      <tr><td>3</td><td>有給日数転記（バイト）</td><td>MF + マスタ</td><td><span class="badge badge-ok">API</span></td><td>半自動</td><td>SS</td></tr>
+      <tr><td>4</td><td>欠勤日数転記</td><td>MF勤怠</td><td><span class="badge badge-ok">API</span></td><td>自動</td><td>SS</td></tr>
+      <tr><td>5</td><td>遅刻早退 &rarr; 上長確認</td><td>MF勤怠</td><td><span class="badge badge-ok">API</span></td><td>上長確認</td><td>Slack</td></tr>
+      <tr><td>6</td><td>遅刻早退控除転記</td><td>上長回答</td><td><span class="badge badge-pending">&mdash;</span></td><td>自動</td><td>SS</td></tr>
+      <tr><td>7</td><td>割増判断 &rarr; 上長確認</td><td>MF勤怠</td><td><span class="badge badge-ok">API</span></td><td>上長確認</td><td>Slack</td></tr>
+      <tr><td>8</td><td>休憩・休暇異常値</td><td>MF勤怠</td><td><span class="badge badge-ok">API</span></td><td>通知</td><td>Slack</td></tr>
+      <tr><td>9</td><td>通勤手当判定</td><td>MF勤怠</td><td><span class="badge badge-ok">API</span></td><td>自動</td><td>SS</td></tr>
+      <tr><td>10</td><td>残業超過アラート</td><td>MF勤怠</td><td><span class="badge badge-ok">API</span></td><td>自動</td><td>SS + Slack</td></tr>
+      <tr><td>11</td><td>経費リマインド</td><td>MF経費</td><td><span class="badge badge-pending">別API</span></td><td>通知</td><td>Slack</td></tr>
+      <tr><td>12</td><td>経費締め</td><td>MF経費</td><td><span class="badge badge-pending">別API</span></td><td>&mdash;</td><td>進捗ボード</td></tr>
+      <tr><td>13</td><td>インセンティブ転記</td><td>事業部報告</td><td><span class="badge badge-pending">&mdash;</span></td><td>手動</td><td>SS</td></tr>
+      <tr><td>14/15</td><td>フレックス総枠+コアタイム</td><td>MF + SS</td><td><span class="badge badge-ok">API</span></td><td>半自動</td><td>SS + Slack</td></tr>
+      <tr><td>16</td><td>皆勤手当</td><td>エアシフト</td><td><span class="badge badge-warn">CSV</span></td><td>自動</td><td>SS</td></tr>
+      <tr><td>16-b</td><td>所定内/外残業（歯科）</td><td>AS + MF</td><td><span class="badge badge-info">部分API</span></td><td>自動</td><td>SS</td></tr>
+      <tr><td>17</td><td>出勤簿 &harr; AS突合</td><td>AS CSV</td><td><span class="badge badge-warn">CSV</span></td><td>半自動</td><td>SS + Slack</td></tr>
+      <tr><td>18</td><td>看護・事務手当</td><td>MF勤怠</td><td><span class="badge badge-ok">API</span></td><td>自動</td><td>SS</td></tr>
+      <tr><td>19</td><td>年末年始手当</td><td>MF / AS</td><td><span class="badge badge-info">部分API</span></td><td>自動</td><td>SS</td></tr>
+      <tr><td>20</td><td>8h稼働+シフト相違</td><td>MF + シフト</td><td><span class="badge badge-ok">API</span></td><td>上長確認</td><td>Slack</td></tr>
+      <tr><td>21</td><td>b-stoicチェック</td><td>MF勤怠</td><td><span class="badge badge-ok">API</span></td><td>半自動</td><td>SS + Slack</td></tr>
+      <tr><td>22</td><td>BOX控除確認</td><td>MF勤怠</td><td><span class="badge badge-ok">API</span></td><td>上長確認</td><td>Slack</td></tr>
+      <tr><td>23</td><td>4週4休</td><td>MF勤怠</td><td><span class="badge badge-ok">API</span></td><td>自動</td><td>SS + Slack</td></tr>
+      <tr><td>24</td><td>フレックス総枠不足控除</td><td>MF + SS</td><td><span class="badge badge-ok">API</span></td><td>上長確認</td><td>Slack</td></tr>
+      <tr><td>25</td><td>みなし0残業</td><td>MF + SS</td><td><span class="badge badge-ok">API</span></td><td>上長確認</td><td>Slack</td></tr>
+      <tr><td>26</td><td>特別休暇付与管理</td><td>人事マスタ</td><td><span class="badge badge-info">部分API</span></td><td>半自動</td><td>SS</td></tr>
+      <tr><td>27</td><td>四半期インセンティブ</td><td>事業部報告</td><td><span class="badge badge-pending">&mdash;</span></td><td>手動</td><td>SS</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p style="font-size:0.78rem;color:#777">
+    <span class="badge badge-ok">API</span> MF勤怠API対応 (19項目) &nbsp;
+    <span class="badge badge-info">部分API</span> MF部分のみ (3項目) &nbsp;
+    <span class="badge badge-warn">CSV</span> エアシフト系 &nbsp;
+    <span class="badge badge-pending">&mdash;</span> API対象外 (7項目)
+  </p>
+
+  <!-- ===== ERROR HANDLING ===== -->
+  <h2 class="section-title" id="error">エラーハンドリング・フォールバック</h2>
+
+  <div class="error-grid">
+    <div class="error-box">
+      <h4>通常経路</h4>
+      <div class="flow" style="margin:8px 0">
+        <div class="flow-step active">MF API</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step">API正規化</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step active">統一JSON</div>
+      </div>
+      <p>OAuth 2.0でデータ自動取得。401時は自動リフレッシュ。</p>
+    </div>
+    <div class="error-box">
+      <h4>フォールバック経路</h4>
+      <div class="flow" style="margin:8px 0">
+        <div class="flow-step">CSV手動</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step">CSV正規化</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-step active">統一JSON</div>
+      </div>
+      <p>API障害時にCSVに自動切替。下流は完全に共通。</p>
+    </div>
+  </div>
+
+  <table>
+    <thead><tr><th>エラー種別</th><th>対応</th></tr></thead>
+    <tbody>
+      <tr><td>429 Rate Limit</td><td>Retry-After秒数だけ待機 &rarr; リトライ。同時リクエスト最大3並列</td></tr>
+      <tr><td>5xx Server Error</td><td>指数バックオフ（1s &rarr; 2s &rarr; 4s &rarr; 8s）最大3回リトライ</td></tr>
+      <tr><td>401 Unauthorized</td><td>Refresh Tokenで自動リフレッシュ。失敗時は管理者にSlack通知</td></tr>
+      <tr><td>50%以上取得失敗</td><td>CSVフォールバック自動切替 + Slack #グループ労務 に障害通知</td></tr>
+      <tr><td>従業員単位の失敗</td><td>スキップしてエラーログに記録。他の従業員は続行</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===== ROADMAP ===== -->
+  <h2 class="section-title" id="roadmap">実装ロードマップ</h2>
+
+  <div class="roadmap-step"><div class="roadmap-num">1</div><div class="roadmap-body"><h4>基盤構築</h4><p>MF勤怠OAuthセットアップ / API正規化アダプタ / 設定シート作成 / Slack Bot設置</p></div></div>
+  <div class="roadmap-step"><div class="roadmap-num">2</div><div class="roadmap-body"><h4>自動完結型 8項目</h4><p>#4 欠勤 / #6 控除 / #9 通勤 / #10 残業 / #16 皆勤 / #18 看護 / #19 年末年始 / #23 4週4休</p></div></div>
+  <div class="roadmap-step"><div class="roadmap-num">3</div><div class="roadmap-body"><h4>通知系 3項目</h4><p>#1 勤怠リマインド / #8 休憩異常 / #11 経費リマインド</p></div></div>
+  <div class="roadmap-step"><div class="roadmap-num">4</div><div class="roadmap-body"><h4>上長確認フロー 6項目</h4><p>#5 遅刻早退 / #7 割増 / #20 シフト / #22 BOX / #24 フレックス / #25 みなし0</p></div></div>
+  <div class="roadmap-step"><div class="roadmap-num">5</div><div class="roadmap-body"><h4>半自動型 + 進捗ボード</h4><p>#2 有給突合 / #3 有給(バイト) / #14/15 フレックス / #17 AS突合 / #21 b-stoic / #26 特別休暇 + GitHub Pages</p></div></div>
+
+  <!-- ===== TECH STACK ===== -->
+  <h2 class="section-title" id="tech">技術スタック</h2>
+
+  <div class="tech-grid">
+    <div class="tech-card"><div class="tech-name">Node.js</div><div class="tech-detail">TypeScript / チェックエンジン</div></div>
+    <div class="tech-card"><div class="tech-name">MF API</div><div class="tech-detail">OAuth 2.0 / 勤怠データ取得</div></div>
+    <div class="tech-card"><div class="tech-name">Google Sheets</div><div class="tech-detail">設定シート・SS書き込み</div></div>
+    <div class="tech-card"><div class="tech-name">Google Drive</div><div class="tech-detail">CSVフォールバック保管</div></div>
+    <div class="tech-card"><div class="tech-name">Slack Web API</div><div class="tech-detail">通知・上長確認・回答</div></div>
+    <div class="tech-card"><div class="tech-name">GitHub</div><div class="tech-detail">Pages + Actions / 進捗ボード</div></div>
+  </div>
+
+  <div class="highlight-box" style="text-align:center">
+    <strong>AI / LLM 不使用</strong> &mdash; 全てルールベースのロジック。確実性・コスト・速度・監査性を重視。
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <div class="report-footer">
+    SR1 勤怠チェック自動化 システムフロー &mdash; p022 &mdash; Generated 2026-04-03 &mdash; BPIO co., Ltd.
+  </div>
+
+</div>
+
+<script>
+const pills = document.querySelectorAll('.pill');
+const sections = document.querySelectorAll('[id]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      pills.forEach(p => p.classList.remove('active'));
+      const active = document.querySelector('.pill[href="#' + entry.target.id + '"]');
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -80% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
