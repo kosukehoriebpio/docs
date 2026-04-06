@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SR-ONE AI開発PJ管理基盤構築 計画書 — BPIO</title>
+<style>
+body{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:#1a1a1a;background:#fff;line-height:1.7;margin:0}
+html{font-size:15px}
+#sticky-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.97);border-bottom:1px solid #ccc;padding:12px 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#sticky-nav .nav-label{font-size:0.72rem;font-weight:700;color:#777;letter-spacing:0.05em;margin-right:4px;white-space:nowrap}
+.pill{display:inline-block;padding:5px 16px;font-size:0.78rem;font-weight:600;color:#555;text-decoration:none;border:1px solid #ccc;border-radius:999px;transition:all 0.2s ease;white-space:nowrap}
+.pill:hover,.pill.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+#main{max-width:920px;margin:0 auto;padding:40px 48px 80px}
+.report-header{border-bottom:2px solid #1a1a1a;padding-bottom:20px;margin-bottom:32px}
+.report-header h1{font-size:1.6rem;font-weight:700;line-height:1.3;margin:0 0 4px}
+.report-header .subtitle{font-size:0.9rem;color:#555;margin-bottom:16px}
+.report-header .summary-box{background:#f7f7f7;border:1px solid #ddd;padding:16px 20px;margin-top:16px}
+.report-header .summary-box h3{font-size:0.85rem;font-weight:700;margin:0 0 10px}
+.report-header .summary-box ul{padding-left:20px;font-size:0.82rem;margin:0}
+.report-header .summary-box li{margin-bottom:4px}
+h2.section-title{font-size:1.2rem;font-weight:700;border-bottom:1px solid #999;padding-bottom:6px;margin-top:48px;margin-bottom:20px}
+h3.subsection-title{font-size:1.0rem;font-weight:700;margin-top:32px;margin-bottom:12px;padding-left:10px;border-left:3px solid #555}
+h4{font-size:0.9rem;font-weight:700;margin-top:20px;margin-bottom:8px}
+table{width:100%;border-collapse:collapse;margin:12px 0 20px;font-size:0.82rem}
+table th,table td{border:1px solid #bbb;padding:7px 10px;text-align:left;vertical-align:top}
+table th{background:#f0f0f0;font-weight:700;white-space:nowrap}
+table td{background:#fff}
+table tr:nth-child(even) td{background:#fafafa}
+p{margin-bottom:10px;font-size:0.88rem}
+ul,ol{margin-bottom:10px;padding-left:22px;font-size:0.88rem}
+ul li,ol li{margin-bottom:3px}
+.highlight-box{background:#f7f7f7;border:1px solid #ddd;padding:14px 18px;margin:12px 0 20px;font-size:0.85rem}
+.note-box{background:#fffbeb;border-left:4px solid #f59e0b;padding:10px 16px;margin:12px 0 20px;font-size:0.82rem;color:#78350f}
+.info-box{background:#eff6ff;border-left:4px solid #3b82f6;padding:10px 16px;margin:12px 0 20px;font-size:0.82rem;color:#1e3a5f}
+.confirm-box{background:#f0fdf4;border-left:4px solid #22c55e;padding:10px 16px;margin:12px 0 20px;font-size:0.82rem;color:#14532d}
+.question-box{background:#faf5ff;border:2px solid #a855f7;border-radius:6px;padding:16px 20px;margin:16px 0 24px;font-size:0.85rem;color:#3b0764}
+.badge{display:inline-block;padding:2px 10px;font-size:0.72rem;font-weight:700;border-radius:999px;letter-spacing:0.03em}
+.badge-ok{background:#d4edda;color:#155724}
+.badge-warn{background:#fff3cd;color:#856404}
+.badge-info{background:#d1ecf1;color:#0c5460}
+.badge-pending{background:#e2e3e5;color:#383d41}
+.flow{display:flex;align-items:center;gap:0;margin:20px 0;flex-wrap:wrap;justify-content:center}
+.flow-step{background:#f0f0f0;border:1px solid #ccc;padding:10px 18px;font-size:0.82rem;font-weight:600;text-align:center;min-width:120px}
+.flow-step.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.flow-arrow{font-size:1.2rem;color:#999;padding:0 4px}
+.code-block{background:#2d2d2d;color:#f8f8f2;padding:16px 20px;border-radius:4px;font-family:"Consolas","Monaco",monospace;font-size:0.78rem;line-height:1.6;overflow-x:auto;margin:12px 0 20px;white-space:pre}
+.report-footer{border-top:1px solid #999;margin-top:48px;padding-top:16px;font-size:0.78rem;color:#777}
+.stakeholder-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:12px 0 20px}
+.stakeholder-card{background:#f7f7f7;border:1px solid #ddd;padding:12px 16px}
+.stakeholder-card .name{font-weight:700;font-size:0.88rem}
+.stakeholder-card .org{font-size:0.78rem;color:#555}
+.stakeholder-card .role{font-size:0.78rem;color:#777;margin-top:2px}
+blockquote{background:#f7f7f7;border-left:3px solid #999;margin:12px 0 20px;padding:12px 18px;font-size:0.85rem;color:#333}
+blockquote p{margin-bottom:6px}
+.checklist{list-style:none;padding-left:0}
+.checklist li{padding:4px 0 4px 24px;position:relative;font-size:0.85rem}
+.checklist li::before{content:"\2610";position:absolute;left:0;color:#999}
+@media(max-width:640px){
+#main{padding:24px 20px 60px}
+.report-header h1{font-size:1.3rem}
+h2.section-title{font-size:1.05rem}
+table{font-size:0.78rem}
+table th,table td{padding:5px 7px}
+#sticky-nav{padding:10px 12px;gap:6px}
+.pill{padding:4px 12px;font-size:0.72rem}
+.stakeholder-grid{grid-template-columns:1fr}
+.flow{flex-direction:column;align-items:stretch}
+.flow-arrow{transform:rotate(90deg);text-align:center}
+}
+@media print{
+#sticky-nav{display:none}
+#main{padding:0;max-width:100%}
+body{font-size:10pt}
+.report-header h1{font-size:16pt}
+h2.section-title{font-size:13pt;page-break-after:avoid}
+h3.subsection-title{font-size:11pt;page-break-after:avoid}
+table{font-size:8pt;page-break-inside:avoid}
+table th,table td{padding:3px 5px}
+.highlight-box,.note-box,.info-box,.confirm-box,.question-box{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+table th{background:#f0f0f0 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+<span class="nav-label">SECTIONS</span>
+<a class="pill" href="#background">背景</a>
+<a class="pill" href="#infra">現状</a>
+<a class="pill" href="#requirements">要件</a>
+<a class="pill" href="#db-design">3DB設計</a>
+<a class="pill" href="#flow">運用フロー</a>
+<a class="pill" href="#slack-integration">Slack連携</a>
+<a class="pill" href="#phases">実装計画</a>
+<a class="pill" href="#decisions">判断ポイント</a>
+<a class="pill" href="#risks">リスク</a>
+</nav>
+
+<div id="main">
+
+<header class="report-header">
+<h1>SR-ONE AI開発PJ管理基盤構築</h1>
+<p class="subtitle">p039 — 計画書 v1.0 — 2026-04-06</p>
+<div class="summary-box">
+<h3>概要</h3>
+<ul>
+<li>SR-ONEグループ全体のAI開発案件を一元管理するNotionベースのチケット管理基盤を構築</li>
+<li>3DB構成: アイディアバックログ / プロダクトバックログ / ラン・メンテナンスバックログ</li>
+<li>Slack⇔Claude Code⇔Notion連携で運用負荷を最小化</li>
+<li>進捗レポートBotによるSlackへの定期配信</li>
+</ul>
+</div>
+</header>
+
+<h4>関係者</h4>
+<div class="stakeholder-grid">
+<div class="stakeholder-card">
+<div class="name">藤田 陽介</div>
+<div class="org">SR-ONE</div>
+<div class="role">意思決定者 / 優先度決定</div>
+</div>
+<div class="stakeholder-card">
+<div class="name">外林 洋輝</div>
+<div class="org">SRA</div>
+<div class="role">要望元 / 技術連携</div>
+</div>
+<div class="stakeholder-card">
+<div class="name">山科 克騎</div>
+<div class="org">SR-ONE</div>
+<div class="role">将来PdM候補</div>
+</div>
+<div class="stakeholder-card">
+<div class="name">堀江 孝輔</div>
+<div class="org">BPIO</div>
+<div class="role">実装担当 / 暫定PdM</div>
+</div>
+</div>
+
+<!-- Section 1: 背景 -->
+<h2 class="section-title" id="background">1. 背景・課題</h2>
+<p>SR-ONEグループ全体でAI開発案件が急増し、以下の問題が発生している：</p>
+<table>
+<tr><th>課題</th><th>詳細</th></tr>
+<tr><td>全体像が見えない</td><td>どのAI PJが進行中か誰も把握できていない</td></tr>
+<tr><td>優先度が不明</td><td>何から手をつけるべきか意思決定の基盤がない</td></tr>
+<tr><td>リリース後の管理がない</td><td>稼働中エージェントの監視・改善が属人的</td></tr>
+<tr><td>アイデアが散逸</td><td>Slackの各チャンネルにアイデアが散らばっている</td></tr>
+</table>
+
+<!-- Section 2: 現状インフラ -->
+<h2 class="section-title" id="infra">2. 現状のインフラ</h2>
+<table>
+<tr><th>資産</th><th>状態</th><th>備考</th></tr>
+<tr><td>Slackアイデア投稿ch</td><td><span class="badge badge-ok">稼働中</span></td><td>投稿 → Notion自動追加が動作中</td></tr>
+<tr><td>Slack進捗報告ch</td><td><span class="badge badge-pending">Bot未接続</span></td><td>アイデアchとは別チャンネル</td></tr>
+<tr><td>AI自動化アイデアボード（Notion）</td><td><span class="badge badge-ok">稼働中</span></td><td>25件+蓄積。Slack連携で自動登録中</td></tr>
+<tr><td>Slack → Notion自動登録</td><td><span class="badge badge-warn">要確認</span></td><td>管理者・実装方式は未確認</td></tr>
+</table>
+
+<!-- Section 3: 要件 -->
+<h2 class="section-title" id="requirements">3. 藤田さん要件</h2>
+<blockquote>
+<p><strong>① アイディアバックログ（Idea Backlog）</strong><br>フラッシュアイディアや未検討のものをすべて入れるDB</p>
+<p><strong>② プロダクトバックログ（Product Backlog）</strong><br>開発対象を管理するDB。Priority / Owner / Due 必須。Priority順で運用</p>
+<p><strong>③ ラン / メンテナンスバックログ（Run / Maintenance Backlog）</strong><br>リリース済みエージェントの運用タスク（監視・改善・不具合対応）</p>
+<p><strong>運用ルール:</strong> アイディアは①に追加 → 開発するものだけ②へ移動 → リリース後は③で管理</p>
+</blockquote>
+
+<p><strong>ゴール:</strong> Notion上に3DB構成のチケット管理基盤を構築し、AI開発の全ライフサイクル（アイデア → 開発 → 運用）を一元管理する。加えて、Slack⇔Claude Code⇔Notionの連携でメンバーの運用負荷を最小化する。</p>
+
+<!-- Section 4: DB設計 -->
+<h2 class="section-title" id="db-design">4. 提案: 3DB設計</h2>
+
+<h3 class="subsection-title">4.1 ① アイディアバックログ（既存DB改修）</h3>
+<p><strong>方針:</strong> 既存の「AI自動化アイデアボード」（25件+蓄積済み）を改修して流用。データ移行不要。</p>
+
+<div class="info-box">
+<strong>現状スキーマ:</strong> タイトル / ユーザー / カテゴリ / ステータス(アイデア→検討中→開発中→完了) / 概要 / 実装メモ / AI整理済 / 原文 / 登録日
+</div>
+
+<h4>改修内容</h4>
+<table>
+<tr><th>変更</th><th>プロパティ</th><th>型</th><th>説明</th></tr>
+<tr><td>追加</td><td>起案者</td><td>Person</td><td>誰のアイデアか（既存「ユーザー」テキスト型はそのまま残す）</td></tr>
+<tr><td>追加</td><td>インパクト</td><td>Select</td><td>大 / 中 / 小 — トリアージ時の判断材料</td></tr>
+<tr><td>追加</td><td>実現難易度</td><td>Select</td><td>低 / 中 / 高 — 技術的な難しさ</td></tr>
+<tr><td>追加</td><td>→ プロダクトBL</td><td>Relation</td><td>②に昇格した場合のリンク</td></tr>
+<tr><td>変更</td><td>ステータス</td><td>Status</td><td><strong>アイデア → トリアージ待ち → 採用（②へ） / 保留 / 却下</strong></td></tr>
+<tr><td>維持</td><td>ユーザー, カテゴリ, 概要, 原文, 登録日, 実装メモ</td><td>—</td><td>そのまま活用</td></tr>
+<tr><td>廃止</td><td>AI整理済</td><td>—</td><td>ステータスで管理するため不要</td></tr>
+</table>
+
+<h4>ビュー構成</h4>
+<ul>
+<li><strong>全件一覧:</strong> テーブル、登録日降順</li>
+<li><strong>トリアージ待ち:</strong> 「トリアージ待ち」ステータスのみ表示（定例で使用）</li>
+<li><strong>インパクト×難易度マトリクス:</strong> ボード形式、インパクト別グループ</li>
+</ul>
+
+<h3 class="subsection-title">4.2 ② プロダクトバックログ（新規DB）</h3>
+<p><strong>目的:</strong> 「開発する」と決まったものだけを管理。ここにあるものだけを開発する。</p>
+
+<div class="highlight-box">
+<strong>チケット粒度ガイドライン:</strong>
+<ul>
+<li>1チケット = <strong>独立してリリースできる最小のデリバリー単位</strong></li>
+<li>大きなPJはエピック（親チケット）+ 個別チケットに分解</li>
+<li>目安: 1チケット = 1〜2週間で完了できる粒度。1ヶ月超は分割すべきサイン</li>
+</ul>
+</div>
+
+<table>
+<tr><th>プロパティ</th><th>型</th><th>必須</th><th>説明</th></tr>
+<tr><td>タイトル</td><td>Title</td><td>Yes</td><td>PJ / 機能名</td></tr>
+<tr><td>概要</td><td>Text</td><td>Yes</td><td>何を作るか・なぜ作るか</td></tr>
+<tr><td>Priority</td><td>Select</td><td>Yes</td><td><strong>P0（緊急）/ P1（高）/ P2（中）/ P3（低）</strong></td></tr>
+<tr><td>Owner</td><td>Person</td><td>Yes</td><td>開発担当者</td></tr>
+<tr><td>Due</td><td>Date</td><td>Yes</td><td>完了期限</td></tr>
+<tr><td>ステータス</td><td>Status</td><td>Yes</td><td><strong>Backlog → Ready → In Progress → Review → Done → 中止</strong></td></tr>
+<tr><td>カテゴリ</td><td>Multi-Select</td><td>—</td><td>社内ツール / 顧客向け / インフラ / 分析 等</td></tr>
+<tr><td>サイズ</td><td>Select</td><td>—</td><td>S / M / L / XL（工数の目安）</td></tr>
+<tr><td>スプリント</td><td>Select</td><td>—</td><td>Sprint 1, 2, 3...（運用に慣れてから導入可）</td></tr>
+<tr><td>完了条件</td><td>Text</td><td>—</td><td>何をもって完了とするか</td></tr>
+<tr><td>技術メモ</td><td>Text</td><td>—</td><td>実装方針・アーキテクチャメモ</td></tr>
+<tr><td>← アイディアBL</td><td>Relation</td><td>—</td><td>①からのリンク（出自の追跡）</td></tr>
+<tr><td>→ ラン/メンテBL</td><td>Relation</td><td>—</td><td>③へのリンク（リリース後の追跡）</td></tr>
+</table>
+
+<h4>ビュー構成</h4>
+<ul>
+<li><strong>Priority順:</strong> テーブル、Priority昇順 → Due昇順（メインビュー）</li>
+<li><strong>ボード（ステータス別）:</strong> カンバン形式で進捗を可視化</li>
+<li><strong>Owner別:</strong> グループ化で誰が何を持っているか一目瞭然</li>
+<li><strong>今週のスプリント:</strong> スプリントフィルタ（将来用）</li>
+</ul>
+
+<h3 class="subsection-title">4.3 ③ ラン / メンテナンスバックログ（新規DB）</h3>
+<p><strong>目的:</strong> リリース済みエージェント・ツールの運用タスクを管理。</p>
+
+<table>
+<tr><th>プロパティ</th><th>型</th><th>必須</th><th>説明</th></tr>
+<tr><td>タイトル</td><td>Title</td><td>Yes</td><td>タスク名</td></tr>
+<tr><td>エージェント名</td><td>Select</td><td>Yes</td><td>対象のエージェント / ツール名</td></tr>
+<tr><td>種別</td><td>Select</td><td>Yes</td><td><strong>監視 / 改善 / 不具合 / その他</strong></td></tr>
+<tr><td>ステータス</td><td>Status</td><td>Yes</td><td><strong>Open → 対応中 → 完了</strong></td></tr>
+<tr><td>Owner</td><td>Person</td><td>Yes</td><td>対応担当者</td></tr>
+<tr><td>Due</td><td>Date</td><td>—</td><td>対応期限</td></tr>
+<tr><td>優先度</td><td>Select</td><td>—</td><td>高 / 中 / 低</td></tr>
+<tr><td>概要</td><td>Text</td><td>—</td><td>詳細説明</td></tr>
+<tr><td>対応ログ</td><td>Text</td><td>—</td><td>対応内容の記録</td></tr>
+<tr><td>← プロダクトBL</td><td>Relation</td><td>—</td><td>②からのリンク（元の開発チケット）</td></tr>
+</table>
+
+<div class="note-box">
+<strong>運用ルール:</strong> 新エージェントを②からリリースして③にエントリ作成する際、③の「エージェント名」Selectに選択肢がなければその場で追加する。
+</div>
+
+<!-- Section 5: 運用フロー -->
+<h2 class="section-title" id="flow">5. 運用フロー設計</h2>
+
+<h3 class="subsection-title">5.1 基本フロー</h3>
+
+<div class="flow">
+<div class="flow-step">Slack投稿<br>口頭 / 思いつき</div>
+<span class="flow-arrow">→</span>
+<div class="flow-step active">① アイディアBL<br>に登録</div>
+<span class="flow-arrow">→</span>
+<div class="flow-step">定例トリアージ<br>（週次 or 隔週）</div>
+<span class="flow-arrow">→</span>
+<div class="flow-step active">② プロダクトBL<br>で開発管理</div>
+<span class="flow-arrow">→</span>
+<div class="flow-step">リリース</div>
+<span class="flow-arrow">→</span>
+<div class="flow-step active">③ ラン/メンテBL<br>で運用管理</div>
+</div>
+
+<p><strong>定例トリアージ:</strong> 固定参加は藤田さん + 堀江の最小2名。他の関係者は非同期（Notionコメント or Slack）で参加。</p>
+
+<h3 class="subsection-title">5.2 例外フロー</h3>
+<table>
+<tr><th>ケース</th><th>対応</th></tr>
+<tr><td>②のチケットが技術的に不可能と判明</td><td>ステータスを「中止」に変更。①のリンク先を「保留」に戻す。定例で共有</td></tr>
+<tr><td>③の不具合が大規模改修を要する</td><td>②に新チケットを直接起票（①を経由しない）。③チケットに②へのリンクを追記</td></tr>
+<tr><td>緊急依頼（P0）</td><td>②に直接起票OK（①を経由しない）。ただし定例で事後報告</td></tr>
+<tr><td>リリース前に仕様変更</td><td>②の既存チケットを更新（新チケット不要）</td></tr>
+</table>
+
+<h3 class="subsection-title">5.3 定例トリアージのアジェンダ案（30分）</h3>
+<ol>
+<li><strong>①の新規アイデア確認</strong>（5分）: 新着をざっと確認、不明点は起案者に質問</li>
+<li><strong>採用/却下判定</strong>（10分）: インパクト×難易度で判断、採用なら②に移動</li>
+<li><strong>②の進捗確認</strong>（10分）: ステータス更新、ブロッカー確認</li>
+<li><strong>③の運用状況</strong>（5分）: 不具合・改善要望の確認</li>
+</ol>
+
+<div class="info-box">
+<strong>初期トリアージの進め方:</strong> 既存25件+を一度にやらない。初回は「既に開発中/完了済み」を②③に振り分けるのみ。未検討アイデアは5件/回ずつ段階的にトリアージする。
+</div>
+
+<h3 class="subsection-title">5.4 進捗更新の動機設計</h3>
+<ul>
+<li><strong>進捗レポートBotに「未更新チケット」を表示:</strong> 1週間以上ステータス変更がないチケットをOwner名付きで表示</li>
+<li><strong>低摩擦な更新手段:</strong> Claude Codeスキルからワンコマンドでステータス変更可能に</li>
+<li><strong>定例でのステータス確認:</strong> ②のOwner全員の進捗を口頭確認</li>
+</ul>
+
+<!-- Section 6: Slack連携 -->
+<h2 class="section-title" id="slack-integration">6. Slack⇔Claude Code⇔Notion連携</h2>
+
+<h3 class="subsection-title">6.1 構築する連携</h3>
+
+<h4>A. 進捗レポートBot（Slack進捗報告チャンネル向け）</h4>
+<p>定期的に3DBの状況をサマリーしてSlackに投稿する。</p>
+<div class="code-block">📊 AI開発PJ 週次レポート（2026-04-07）
+━━━━━━━━━━━━━━━━━━━━━━━
+
+■ アイディアBL: 28件（新着 +3）
+  トリアージ待ち: 5件
+
+■ プロダクトBL: 12件
+  In Progress: 3件 | Review: 1件 | Done: 5件
+  ⚠ 期限超過: 1件（〇〇 — Owner: △△）
+  ⚠ 1週間未更新: 2件
+
+■ ラン/メンテBL: 8件
+  Open不具合: 2件
+
+■ 今週のハイライト
+  ✅ 完了: 請求書自動アップロード
+  🚀 開始: 勤怠チェック自動化
+━━━━━━━━━━━━━━━━━━━━━━━</div>
+<p><strong>実装方式:</strong> cronジョブでスクリプト実行 → Notion API 3DB横断クエリ → テンプレート整形 → Slack Incoming Webhook POST</p>
+
+<h4>B. Claude Codeスキル</h4>
+<div class="note-box">
+<strong>初期の利用者モデル:</strong> Phase 1-2ではスキルは堀江が代行操作する前提。SRAメンバーが自律利用する方式はPhase 3で検討する。
+</div>
+<table>
+<tr><th>スキル名</th><th>機能</th><th>トリガー例</th></tr>
+<tr><td><code>ai-idea</code></td><td>①にアイデア登録</td><td>「アイデア登録: 〇〇」</td></tr>
+<tr><td><code>ai-backlog</code></td><td>②の一覧・更新</td><td>「バックログ確認」「ステータス更新」</td></tr>
+<tr><td><code>ai-ops</code></td><td>③のチケット起票</td><td>「不具合報告: 〇〇」</td></tr>
+<tr><td><code>ai-triage</code></td><td>①→②の昇格操作</td><td>「採用: [アイデアタイトル]」</td></tr>
+<tr><td><code>ai-report</code></td><td>進捗レポート生成+Slack投稿</td><td>「AI PJ状況報告」</td></tr>
+</table>
+
+<h4>C. 既存Slack→Notion自動登録の活用</h4>
+<p>現在のSlackアイデアch → Notionの自動登録は<strong>そのまま維持</strong>。改修後のスキーマに合わせて、自動登録時のデフォルトステータスを「トリアージ待ち」に変更予定。</p>
+
+<!-- Section 7: 実装計画 -->
+<h2 class="section-title" id="phases">7. 実装計画</h2>
+
+<h3 class="subsection-title">Phase 0: 準備（実装着手前に完了すべき）</h3>
+<ul class="checklist">
+<li>藤田さんへスキーマレビュー依頼（本ドキュメントのセクション4を確認してもらう）</li>
+<li>Notion権限設定の更新（②③のDB作成許可）</li>
+<li>Slack自動登録の管理者確認（設定変更可能か）</li>
+<li>Slackワークスペースの権限確認（Webhook設定に必要）</li>
+</ul>
+
+<h3 class="subsection-title">Phase 1a: DB構築（今週末目標）</h3>
+<ul class="checklist">
+<li>①の既存AI自動化アイデアボードにプロパティ追加・ステータス変更</li>
+<li>②プロダクトバックログDB新規作成</li>
+<li>③ラン/メンテナンスバックログDB新規作成</li>
+<li>3DB間のリレーション設定</li>
+<li>既に開発中/完了のものを②③に振り分け</li>
+<li>藤田さん・外林さんにDB共有、初期フィードバック収集</li>
+</ul>
+
+<h3 class="subsection-title">Phase 1b: Slack連携構築（翌週前半）</h3>
+<ul class="checklist">
+<li>Slack進捗報告chのWebhook URL取得</li>
+<li>進捗レポートBotスクリプト実装（cron実行）</li>
+<li>Claude Codeスキル <code>ai-idea</code> <code>ai-backlog</code> <code>ai-ops</code> 実装</li>
+<li>既存Slack→Notion自動登録のデフォルトステータス変更</li>
+</ul>
+
+<h3 class="subsection-title">Phase 2: 運用開始・定着（翌週後半〜）</h3>
+<ul class="checklist">
+<li>初回トリアージ会議の実施（藤田さん+堀江）</li>
+<li>既存アイデア25件+の段階的トリアージ開始（5件/回）</li>
+<li><code>ai-triage</code> <code>ai-report</code> スキル実装</li>
+<li>進捗レポートBotの配信頻度調整（日次 or 週次）</li>
+<li>山科さんをオブザーバーとして定例に参加</li>
+</ul>
+
+<h3 class="subsection-title">Phase 3: 拡張・移譲（運用2-3週間後〜）</h3>
+<ul class="checklist">
+<li>外林さんの「Skills」要件をヒアリング → SRAメンバー自律利用の設計</li>
+<li>山科さんへのPdM機能の段階的移譲</li>
+<li>運用データに基づくビュー最適化</li>
+<li>スプリント管理の導入検討</li>
+</ul>
+
+<h3 class="subsection-title">待ち事項</h3>
+<table>
+<tr><th>項目</th><th>誰から</th><th>影響するフェーズ</th></tr>
+<tr><td>Slackアイデア投稿チャンネルID</td><td>堀江</td><td>Phase 1b</td></tr>
+<tr><td>Slack進捗報告チャンネルID</td><td>堀江</td><td>Phase 1b</td></tr>
+<tr><td>Slack→Notion自動登録の管理者・実装方式</td><td>要確認</td><td>Phase 1b</td></tr>
+<tr><td>藤田さんのスキーマ承認</td><td>藤田さん</td><td>Phase 1a着手前</td></tr>
+<tr><td>外林さんの「Skills」要件の具体イメージ</td><td>外林さん</td><td>Phase 3</td></tr>
+</table>
+
+<!-- Section 8: 判断ポイント -->
+<h2 class="section-title" id="decisions">8. 判断ポイント</h2>
+
+<div class="question-box">
+<p>本計画を進めるにあたり、以下の判断が必要です。ご確認をお願いします。</p>
+<ol>
+<li><strong>スキーマ承認:</strong> セクション4の3DB設計でOKか？追加・変更したいプロパティはあるか？</li>
+<li><strong>チケット粒度:</strong> 「1チケット = 独立してリリースできる最小単位」でよいか？エピック概念は必要か？</li>
+<li><strong>定例頻度:</strong> 週次でよいか？隔週の方がよいか？</li>
+<li><strong>定例参加者:</strong> 固定は藤田+堀江の2名、他は非同期参加でよいか？</li>
+<li><strong>Priority体系:</strong> P0-P3の4段階でよいか？MoSCoW（Must/Should/Could/Won't）の方がよいか？</li>
+<li><strong>Phase 1aのスコープ:</strong> DB構築のみ先行でよいか？Slack連携を待ちたいか？</li>
+<li><strong>初期のスキル利用者:</strong> 堀江が代行操作する前提でOKか？SRAメンバーに最初から使ってもらいたいか？</li>
+</ol>
+</div>
+
+<!-- Section 9: リスク -->
+<h2 class="section-title" id="risks">9. リスクと対策</h2>
+<table>
+<tr><th>リスク</th><th>影響</th><th>対策</th></tr>
+<tr><td>藤田さんからスキーマ変更要求</td><td>DB再構築の手戻り</td><td>Phase 0で事前承認を得る</td></tr>
+<tr><td>Notion権限設定が間に合わない</td><td>Phase 1a着手不可</td><td>手動でNotion UIから構築する代替手段あり</td></tr>
+<tr><td>堀江の他PJ負荷でスケジュール遅延</td><td>全Phase遅延</td><td>Phase 1aはDB構築のみに絞り最小成果物を最速で出す</td></tr>
+<tr><td>メンバーがNotionを更新しない</td><td>②の進捗が見えない</td><td>レポートBotで未更新チケットを表示。低摩擦な更新手段を提供</td></tr>
+<tr><td>利用者が定着しない</td><td>3DB構造が形骸化</td><td>MVPとして「②プロダクトBLだけ先に運用開始」も可。①③は定着後に段階導入</td></tr>
+</table>
+
+<div class="report-footer">
+SR-ONE AI開発PJ管理基盤構築 計画書 — p039 — Generated 2026-04-06 — BPIO co., Ltd.
+</div>
+
+</div>
+
+<script>
+const pills=document.querySelectorAll('.pill');
+const sections=document.querySelectorAll('[id]');
+const observer=new IntersectionObserver(entries=>{
+entries.forEach(entry=>{
+if(entry.isIntersecting){
+pills.forEach(p=>p.classList.remove('active'));
+const active=document.querySelector(`.pill[href="#${entry.target.id}"]`);
+if(active)active.classList.add('active');
+}
+});
+},{rootMargin:'-80px 0px -80% 0px'});
+sections.forEach(s=>observer.observe(s));
+</script>
+</body>
+</html>
