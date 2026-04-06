@@ -331,6 +331,32 @@ section { padding: var(--space-3xl) var(--space-lg); }
   overflow-x: auto;
 }
 
+/* ===== Full List ===== */
+.list-section { padding: var(--space-3xl) var(--space-lg); }
+.list-cat-title {
+  font-size: 16px; font-weight: 600; color: var(--on-surface);
+  margin: var(--space-xl) 0 var(--space-md) 0; padding-bottom: var(--space-sm);
+  border-bottom: 2px solid var(--outline-variant);
+  display: flex; align-items: center; gap: 8px;
+}
+.list-cat-title:first-of-type { margin-top: 0; }
+.list-cat-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.uc-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 8px; }
+.uc-item {
+  font-size: 13px; line-height: 1.5; padding: 10px 14px;
+  background: var(--surface-container-lowest); border-radius: var(--shape-sm);
+  border: 1px solid var(--outline-variant); color: var(--on-surface);
+  transition: background var(--duration) var(--ease);
+}
+.uc-item:hover { background: var(--surface-container); }
+.uc-item strong { font-weight: 500; }
+.uc-item .uc-desc { color: var(--on-surface-variant); margin-left: 4px; }
+.list-count {
+  text-align: center; margin-bottom: var(--space-xl);
+  font-size: 14px; color: var(--on-surface-variant);
+}
+.list-count strong { font-size: 32px; font-weight: 400; color: var(--primary); vertical-align: middle; margin-right: 4px; }
+
 /* ===== Footer ===== */
 .site-footer {
   padding: var(--space-2xl) var(--space-lg);
@@ -413,6 +439,7 @@ section { padding: var(--space-3xl) var(--space-lg); }
         <li><a href="#architecture">構成図</a></li>
         <li><a href="#results">成果</a></li>
         <li><a href="#start">始め方</a></li>
+        <li><a href="#full-list">全72件</a></li>
       </ul>
     </nav>
   </div>
@@ -853,13 +880,165 @@ description: 月次給与チェック<br>
   </div>
 </section>
 
+<!-- ===== Full Use Case List ===== -->
+<section id="full-list" class="list-section section-alt" aria-labelledby="list-title">
+  <div class="section-inner">
+    <p class="section-label reveal" lang="en">Full List</p>
+    <h2 class="section-title reveal" id="list-title">72のユースケース一覧</h2>
+    <p class="list-count reveal"><strong>72</strong> ユースケースを 16 カテゴリで運用中</p>
+
+    <!-- 1. ナレッジ管理 -->
+    <h3 class="list-cat-title reveal"><span class="list-cat-dot" style="background:var(--cat-agent)"></span>ナレッジ管理・情報検索</h3>
+    <ul class="uc-list reveal">
+      <li class="uc-item"><strong>Knowledge Brain</strong><span class="uc-desc">— 7DB横断・多段推論による統合検索</span></li>
+      <li class="uc-item"><strong>朝夕ダイジェスト自動生成</strong><span class="uc-desc">— タスク・スケジュール・受信を統合</span></li>
+      <li class="uc-item"><strong>Notion同期・変更検出</strong><span class="uc-desc">— DB更新の自動検出と再取得</span></li>
+      <li class="uc-item"><strong>ナレッジインデックス再生成</strong><span class="uc-desc">— 検索用インデックスの自動更新</span></li>
+    </ul>
+
+    <!-- 2. BPO業務自動化 -->
+    <h3 class="list-cat-title reveal"><span class="list-cat-dot" style="background:var(--cat-pipe)"></span>BPO業務プロセス自動化</h3>
+    <ul class="uc-list reveal">
+      <li class="uc-item"><strong>月次給与突合チェック</strong><span class="uc-desc">— 勤怠API×給与API×スプレッドシート自動照合</span></li>
+      <li class="uc-item"><strong>勤怠異常検出パッケージ</strong><span class="uc-desc">— 複数拠点の勤怠データ自動集計・異常検出</span></li>
+      <li class="uc-item"><strong>ダウンロードフォルダ自動整理</strong><span class="uc-desc">— 分類・重複削除・Driveアーカイブ</span></li>
+      <li class="uc-item"><strong>BPOナレッジ体系化</strong><span class="uc-desc">— 暗黙知の可視化・スコアリング</span></li>
+      <li class="uc-item"><strong>男女賃金差異公表対応</strong><span class="uc-desc">— 法令対応データの自動生成</span></li>
+      <li class="uc-item"><strong>労務勤怠締め自動化</strong><span class="uc-desc">— 勤怠データの自動集計・検証</span></li>
+    </ul>
+
+    <!-- 3. 営業・提案 -->
+    <h3 class="list-cat-title reveal"><span class="list-cat-dot" style="background:var(--cat-human)"></span>営業・提案支援</h3>
+    <ul class="uc-list reveal">
+      <li class="uc-item"><strong>クライアント事業モデル分析</strong><span class="uc-desc">— 20社分の5章構成ページを自動生成</span></li>
+      <li class="uc-item"><strong>スカウト文面カスタマイズ</strong><span class="uc-desc">— 候補者経歴に応じた文面自動最適化</span></li>
+      <li class="uc-item"><strong>面談AIフィードバック</strong><span class="uc-desc">— 顧客面談の自動分析・提案書反映</span></li>
+      <li class="uc-item"><strong>補助金・融資基礎分析</strong><span class="uc-desc">— 審査用7章構成データの自動生成</span></li>
+      <li class="uc-item"><strong>地方銀行BPOサービス調査</strong><span class="uc-desc">— 市場調査・事業化可能性評価</span></li>
+    </ul>
+
+    <!-- 4. 研修・コンテンツ制作 -->
+    <h3 class="list-cat-title reveal"><span class="list-cat-dot" style="background:var(--cat-evolve)"></span>研修・コンテンツ制作</h3>
+    <ul class="uc-list reveal">
+      <li class="uc-item"><strong>HTMLスライド自動生成</strong><span class="uc-desc">— MD台本→デザインシステム準拠HTML</span></li>
+      <li class="uc-item"><strong>TTS台本生成</strong><span class="uc-desc">— スライド+元文書→GCP TTS向け録音台本</span></li>
+      <li class="uc-item"><strong>PDF→PNG高画質変換</strong><span class="uc-desc">— 研修スライドの画像化（300DPI）</span></li>
+      <li class="uc-item"><strong>研修台本リファクタリング</strong><span class="uc-desc">— 動画向け台本への自動変換</span></li>
+      <li class="uc-item"><strong>研修動画台本制作</strong><span class="uc-desc">— 経理・労務・総務 30-50本の企画・台本化</span></li>
+      <li class="uc-item"><strong>レセプトBPOカリキュラム</strong><span class="uc-desc">— 医療レセプト業務の28ファイル・5フェーズ体系化</span></li>
+      <li class="uc-item"><strong>バクラク導入勉強会資料</strong><span class="uc-desc">— 経費管理SaaS導入用スライド自動作成</span></li>
+      <li class="uc-item"><strong>3周年インフォグラフィック</strong><span class="uc-desc">— 実績データのビジュアライゼーション</span></li>
+    </ul>
+
+    <!-- 5. SEO -->
+    <h3 class="list-cat-title reveal"><span class="list-cat-dot" style="background:var(--cat-agent)"></span>SEO・サイト分析</h3>
+    <ul class="uc-list reveal">
+      <li class="uc-item"><strong>SEOフル監査</strong><span class="uc-desc">— 15専門エージェント並列実行</span></li>
+      <li class="uc-item"><strong>技術SEO分析</strong><span class="uc-desc">— クロール・インデックス・CWV・JS描画</span></li>
+      <li class="uc-item"><strong>コンテンツ品質分析</strong><span class="uc-desc">— E-E-A-T・読みやすさ・AI引用適性</span></li>
+      <li class="uc-item"><strong>Schema.org検証・生成</strong><span class="uc-desc">— JSON-LD構造化データの自動生成</span></li>
+      <li class="uc-item"><strong>ローカルSEO分析</strong><span class="uc-desc">— GBP・NAP・レビュー・ローカルスキーマ</span></li>
+      <li class="uc-item"><strong>GEO/AI検索最適化</strong><span class="uc-desc">— AI Overviews・ChatGPT・Perplexity対応</span></li>
+      <li class="uc-item"><strong>サウナ事業SEOコンテンツ</strong><span class="uc-desc">— 月8-10本の半自動コンテンツ生成</span></li>
+      <li class="uc-item"><strong>Maps地理分析</strong><span class="uc-desc">— ジオグリッドランク・GBP監査・競合マップ</span></li>
+      <li class="uc-item"><strong>サイトマップ検証・生成</strong><span class="uc-desc">— XML構造の自動バリデーション</span></li>
+      <li class="uc-item"><strong>パフォーマンス分析</strong><span class="uc-desc">— Core Web Vitals計測・改善提案</span></li>
+      <li class="uc-item"><strong>画像SEO最適化</strong><span class="uc-desc">— alt・サイズ・フォーマット・遅延読込</span></li>
+      <li class="uc-item"><strong>プログラマティックSEO</strong><span class="uc-desc">— データ駆動型ページの大量生成設計</span></li>
+      <li class="uc-item"><strong>多言語hreflang監査</strong><span class="uc-desc">— 国際SEO対応の検証・生成</span></li>
+      <li class="uc-item"><strong>競合比較ページ生成</strong><span class="uc-desc">— 「X vs Y」レイアウトの自動作成</span></li>
+    </ul>
+
+    <!-- 6. ワークフロー自動化 -->
+    <h3 class="list-cat-title reveal"><span class="list-cat-dot" style="background:var(--cat-pipe)"></span>ワークフロー自動化</h3>
+    <ul class="uc-list reveal">
+      <li class="uc-item"><strong>議事録→Notion→タスク同期</strong><span class="uc-desc">— 音声テキスト→構造化→自動タスク生成</span></li>
+      <li class="uc-item"><strong>カレンダー→タスク生成</strong><span class="uc-desc">— イベントからコンテキスト抽出→タスク化</span></li>
+      <li class="uc-item"><strong>外部サービス一括同期</strong><span class="uc-desc">— Calendar/Gmail/Drive/News/GitHub</span></li>
+      <li class="uc-item"><strong>HTML公開ページ自動デプロイ</strong><span class="uc-desc">— 生成→GitHub Pagesへ即時公開</span></li>
+      <li class="uc-item"><strong>ヘルスダッシュボード生成</strong><span class="uc-desc">— タスク消化率・サービス稼働状況の集計</span></li>
+      <li class="uc-item"><strong>会議準備自動化</strong><span class="uc-desc">— 参加者情報・過去議事録の自動収集</span></li>
+    </ul>
+
+    <!-- 7. 学習・改善 -->
+    <h3 class="list-cat-title reveal"><span class="list-cat-dot" style="background:var(--cat-evolve)"></span>学習ループ・継続改善</h3>
+    <ul class="uc-list reveal">
+      <li class="uc-item"><strong>Lesson抽出・蓄積</strong><span class="uc-desc">— セッションからミス・発見を自動抽出</span></li>
+      <li class="uc-item"><strong>Rule/Hook/Skill昇格</strong><span class="uc-desc">— 高信頼度Lessonの恒久化提案</span></li>
+      <li class="uc-item"><strong>週次レビュー自動集計</strong><span class="uc-desc">— 活動・タスク・コミット・進捗の可視化</span></li>
+      <li class="uc-item"><strong>ハーネス自己更新</strong><span class="uc-desc">— ミス発生時のルール・バリデーション強化</span></li>
+    </ul>
+
+    <!-- 8. プロジェクト管理 -->
+    <h3 class="list-cat-title reveal"><span class="list-cat-dot" style="background:var(--cat-human)"></span>プロジェクト・タスク管理</h3>
+    <ul class="uc-list reveal">
+      <li class="uc-item"><strong>38プロジェクト一元管理</strong><span class="uc-desc">— overview/AGENT.md/タスク/議事録の体系化</span></li>
+      <li class="uc-item"><strong>日次活動ログ自動記録</strong><span class="uc-desc">— 時系列の種別分類ログ</span></li>
+      <li class="uc-item"><strong>タスクID自動採番・期限管理</strong><span class="uc-desc">— 作成→完了→アーカイブの自動フロー</span></li>
+      <li class="uc-item"><strong>停滞プロジェクト検知</strong><span class="uc-desc">— 30日/60日未更新の自動警告</span></li>
+    </ul>
+
+    <!-- 9. AIガバナンス -->
+    <h3 class="list-cat-title reveal"><span class="list-cat-dot" style="background:var(--cat-human)"></span>AIガバナンス</h3>
+    <ul class="uc-list reveal">
+      <li class="uc-item"><strong>CLAUDE.md動作ルール</strong><span class="uc-desc">— AIの基本行動規範・権限定義</span></li>
+      <li class="uc-item"><strong>Hook多層バリデーション</strong><span class="uc-desc">— SessionStart/PreToolUse/PostToolUse/Stop</span></li>
+      <li class="uc-item"><strong>Notion書き込み制御</strong><span class="uc-desc">— 許可リスト制のDB別権限管理</span></li>
+      <li class="uc-item"><strong>ドメイン別ルール集</strong><span class="uc-desc">— Notion/Git/Slack/スプレッドシート個別制御</span></li>
+    </ul>
+
+    <!-- 10. エージェント -->
+    <h3 class="list-cat-title reveal"><span class="list-cat-dot" style="background:var(--cat-agent)"></span>AIエージェント・スキル統合</h3>
+    <ul class="uc-list reveal">
+      <li class="uc-item"><strong>10種マルチエージェント</strong><span class="uc-desc">— knowledge-brain/researcher/project-specialist等</span></li>
+      <li class="uc-item"><strong>61スキル（スラッシュコマンド）</strong><span class="uc-desc">— /brain /digest /seo /learn /evolve等</span></li>
+      <li class="uc-item"><strong>エージェント委譲ルール</strong><span class="uc-desc">— dispatch-rules.mdによる自動振り分け</span></li>
+    </ul>
+
+    <!-- 11. 人材育成 -->
+    <h3 class="list-cat-title reveal"><span class="list-cat-dot" style="background:var(--cat-human)"></span>人材育成・研修</h3>
+    <ul class="uc-list reveal">
+      <li class="uc-item"><strong>研修事業プラットフォーム</strong><span class="uc-desc">— 32チャプター・3段階カリキュラム設計</span></li>
+      <li class="uc-item"><strong>新卒研修育成プログラム</strong><span class="uc-desc">— AI教材生成・進捗トラッキング</span></li>
+      <li class="uc-item"><strong>インターンメンタリング</strong><span class="uc-desc">— AIサポート付き実務体験</span></li>
+    </ul>
+
+    <!-- 12. ドメイン専門 -->
+    <h3 class="list-cat-title reveal"><span class="list-cat-dot" style="background:var(--cat-pipe)"></span>ドメイン特化</h3>
+    <ul class="uc-list reveal">
+      <li class="uc-item"><strong>レセプトBPOサービス構築</strong><span class="uc-desc">— 医療レセプト業務の事業化</span></li>
+      <li class="uc-item"><strong>ナレッジAI構築（外部企業）</strong><span class="uc-desc">— Knowledge Brainの水平展開</span></li>
+      <li class="uc-item"><strong>会計効率化ナレッジ共有</strong><span class="uc-desc">— 会計SaaS運用ノウハウの体系化</span></li>
+      <li class="uc-item"><strong>会計MCP検証</strong><span class="uc-desc">— 会計APIのMCP連携可能性評価</span></li>
+      <li class="uc-item"><strong>勤怠・給与チャット統合</strong><span class="uc-desc">— ChatWorkベースの承認フロー自動化</span></li>
+    </ul>
+
+    <!-- 13. 社内自動化 -->
+    <h3 class="list-cat-title reveal"><span class="list-cat-dot" style="background:var(--cat-pipe)"></span>社内自動化</h3>
+    <ul class="uc-list reveal">
+      <li class="uc-item"><strong>空き時間検索Slack Bot</strong><span class="uc-desc">— GAS+Geminiによるカレンダー空き検索</span></li>
+      <li class="uc-item"><strong>Google Docs構造化作成</strong><span class="uc-desc">— テンプレート化された文書自動生成</span></li>
+      <li class="uc-item"><strong>リポジトリ効率化</strong><span class="uc-desc">— ファイル構造・スキル定義の定期レビュー</span></li>
+    </ul>
+
+    <!-- 14. Hooks -->
+    <h3 class="list-cat-title reveal"><span class="list-cat-dot" style="background:var(--cat-evolve)"></span>Hooks自動フロー</h3>
+    <ul class="uc-list reveal">
+      <li class="uc-item"><strong>SessionStart朝ブリーフィング</strong><span class="uc-desc">— セッション開始時の自動状況報告</span></li>
+      <li class="uc-item"><strong>PreToolUse安全性チェック</strong><span class="uc-desc">— Notion/Git/GCloud操作前バリデーション</span></li>
+      <li class="uc-item"><strong>PostToolUse自動ログ</strong><span class="uc-desc">— ファイル変更の活動ログ自動記録</span></li>
+      <li class="uc-item"><strong>Stop引き継ぎ生成</strong><span class="uc-desc">— セッション終了時の自動ハンドオフ</span></li>
+    </ul>
+
+  </div>
+</section>
+
 </main>
 
 <!-- ===== Footer ===== -->
 <footer class="site-footer" role="contentinfo">
   <div class="footer-inner">
-    <p><strong>Bpio Inc.</strong> — セブンリッチグループ BPO事業会社</p>
-    <p style="margin-top:8px;">72件の全ユースケースリストは別途ご覧いただけます</p>
+    <p><strong>Bpio Inc.</strong></p>
     <p style="margin-top: var(--space-lg); font-size: 12px; opacity: 0.5;">
       © 2026 Bpio Inc. / Powered by Claude Code
     </p>
