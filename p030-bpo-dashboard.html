@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>地方銀行BPOサービス調査ダッシュボード — BPIO</title>
+<style>
+body{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:#1a1a1a;background:#fff;line-height:1.7;margin:0}
+html{font-size:15px}
+#sticky-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.97);border-bottom:1px solid #ccc;padding:12px 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#sticky-nav .nav-label{font-size:0.72rem;font-weight:700;color:#777;letter-spacing:0.05em;margin-right:4px;white-space:nowrap}
+.pill{display:inline-block;padding:5px 16px;font-size:0.78rem;font-weight:600;color:#555;text-decoration:none;border:1px solid #ccc;border-radius:999px;transition:all 0.2s ease;white-space:nowrap}
+.pill:hover,.pill.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+#main{max-width:960px;margin:0 auto;padding:40px 48px 80px}
+.report-header{border-bottom:2px solid #1a1a1a;padding-bottom:20px;margin-bottom:32px}
+.report-header h1{font-size:1.6rem;font-weight:700;line-height:1.3;margin:0 0 4px}
+.report-header .subtitle{font-size:0.9rem;color:#555;margin-bottom:16px}
+.report-header .summary-box{background:#f7f7f7;border:1px solid #ddd;padding:16px 20px;margin-top:16px}
+.report-header .summary-box h3{font-size:0.85rem;font-weight:700;margin:0 0 10px}
+.report-header .summary-box ul{padding-left:20px;font-size:0.82rem;margin:0}
+.report-header .summary-box li{margin-bottom:4px}
+h2.section-title{font-size:1.2rem;font-weight:700;border-bottom:1px solid #999;padding-bottom:6px;margin-top:48px;margin-bottom:20px}
+h3.subsection-title{font-size:1.0rem;font-weight:700;margin-top:32px;margin-bottom:12px;padding-left:10px;border-left:3px solid #555}
+h4{font-size:0.9rem;font-weight:700;margin-top:20px;margin-bottom:8px}
+p{margin-bottom:10px;font-size:0.88rem}
+ul,ol{margin-bottom:10px;padding-left:22px;font-size:0.88rem}
+ul li,ol li{margin-bottom:3px}
+table{width:100%;border-collapse:collapse;margin:12px 0 20px;font-size:0.82rem}
+table th,table td{border:1px solid #bbb;padding:7px 10px;text-align:left;vertical-align:top}
+table th{background:#f0f0f0;font-weight:700;white-space:nowrap}
+table td{background:#fff}
+table tr:nth-child(even) td{background:#fafafa}
+.badge{display:inline-block;padding:2px 10px;font-size:0.72rem;font-weight:700;border-radius:999px;letter-spacing:0.03em}
+.badge-a{background:#1a1a1a;color:#fff}
+.badge-b{background:#555;color:#fff}
+.badge-c{background:#ccc;color:#333}
+.badge-d{background:#e8e8e8;color:#999}
+.badge-ok{background:#d4edda;color:#155724}
+.badge-warn{background:#fff3cd;color:#856404}
+.badge-info{background:#d1ecf1;color:#0c5460}
+.badge-pending{background:#e2e3e5;color:#383d41}
+.highlight-box{background:#f7f7f7;border:1px solid #ddd;padding:14px 18px;margin:12px 0 20px;font-size:0.85rem}
+.note-box{background:#fffbeb;border-left:4px solid #f59e0b;padding:10px 16px;margin:12px 0 20px;font-size:0.82rem;color:#78350f}
+.info-box{background:#eff6ff;border-left:4px solid #3b82f6;padding:10px 16px;margin:12px 0 20px;font-size:0.82rem;color:#1e3a5f}
+.report-footer{border-top:1px solid #999;margin-top:48px;padding-top:16px;font-size:0.78rem;color:#777}
+
+/* === KPI Strip === */
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#ddd;border:1px solid #ddd;margin:20px 0 32px}
+.kpi-card{background:#fff;padding:20px 16px;text-align:center}
+.kpi-card .kpi-value{font-size:2rem;font-weight:700;line-height:1}
+.kpi-card .kpi-label{font-size:0.72rem;color:#777;margin-top:6px;letter-spacing:0.05em}
+.kpi-card .kpi-sub{font-size:0.78rem;color:#555;margin-top:2px}
+
+/* === Regional Map Grid === */
+.region-map{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,auto);gap:8px;margin:20px 0}
+.region-card{border:1px solid #ddd;padding:12px;min-height:80px}
+.region-card .region-name{font-size:0.78rem;font-weight:700;margin-bottom:8px}
+.region-card .region-bar{display:flex;height:8px;margin-bottom:6px;overflow:hidden}
+.region-card .bar-a{background:#1a1a1a}
+.region-card .bar-b{background:#666}
+.region-card .bar-c{background:#bbb}
+.region-card .bar-d{background:#e5e5e5}
+.region-card .region-banks{font-size:0.7rem;color:#555;line-height:1.5}
+.region-card .region-banks strong{color:#1a1a1a}
+.region-card .region-count{font-size:0.7rem;color:#999;margin-bottom:4px}
+
+/* === Donut Chart === */
+.chart-container{display:flex;align-items:center;gap:40px;margin:20px 0 32px;flex-wrap:wrap}
+.donut-wrap{position:relative;width:200px;height:200px;flex-shrink:0}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.donut-center .donut-big{font-size:2rem;font-weight:700;line-height:1}
+.donut-center .donut-label{font-size:0.72rem;color:#777}
+.legend{display:flex;flex-direction:column;gap:10px}
+.legend-item{display:flex;align-items:center;gap:10px;font-size:0.82rem}
+.legend-dot{width:14px;height:14px;flex-shrink:0}
+
+/* === Tier Cards === */
+.tier-section{margin:20px 0}
+.tier-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.tier-header h3{margin:0;font-size:0.95rem;font-weight:700}
+.tier-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px}
+.tier-card{border:1px solid #ddd;padding:14px 16px}
+.tier-card .tc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.tier-card .tc-name{font-size:0.88rem;font-weight:700}
+.tier-card .tc-loc{font-size:0.72rem;color:#777}
+.tier-card .tc-body{font-size:0.78rem;color:#555;line-height:1.6}
+.tier-card .tc-bpo{font-size:0.75rem;color:#333;margin-top:4px}
+.tier-card .tc-point{font-size:0.75rem;color:#1a1a1a;margin-top:6px;padding-top:6px;border-top:1px solid #eee}
+
+/* === Domain Matrix === */
+.matrix-wrap{overflow-x:auto;margin:16px 0 24px}
+.matrix{border-collapse:collapse;font-size:0.75rem;width:100%;min-width:700px}
+.matrix th,.matrix td{border:1px solid #ccc;padding:6px 8px;text-align:center;vertical-align:middle}
+.matrix th{background:#f0f0f0;font-weight:700;font-size:0.72rem}
+.matrix td.bank-name{text-align:left;font-weight:600;white-space:nowrap;background:#fff}
+.matrix .cell-yes{background:#1a1a1a;color:#fff;font-weight:700}
+.matrix .cell-partial{background:#999;color:#fff}
+.matrix .cell-no{background:#fafafa;color:#ddd}
+.matrix .col-header{writing-mode:vertical-rl;text-orientation:mixed;padding:10px 4px;min-width:30px}
+
+/* === Positioning Map === */
+.pos-map{position:relative;width:100%;max-width:700px;height:400px;border:1px solid #ccc;margin:20px auto;background:#fafafa}
+.pos-axis-x{position:absolute;bottom:0;left:0;right:0;height:1px;background:#999}
+.pos-axis-y{position:absolute;top:0;bottom:0;left:0;width:1px;background:#999}
+.pos-label-x{position:absolute;bottom:-24px;font-size:0.7rem;color:#777;white-space:nowrap}
+.pos-label-y{position:absolute;left:-10px;font-size:0.7rem;color:#777;white-space:nowrap;transform:rotate(-90deg);transform-origin:left bottom}
+.pos-dot{position:absolute;transform:translate(-50%,-50%);text-align:center;z-index:2}
+.pos-dot .dot-circle{width:12px;height:12px;border-radius:999px;margin:0 auto 3px}
+.pos-dot .dot-label{font-size:0.68rem;font-weight:600;white-space:nowrap}
+.pos-quadrant{position:absolute;font-size:0.65rem;color:#bbb;font-weight:600}
+
+/* === Flow === */
+.flow{display:flex;align-items:center;gap:0;margin:20px 0;flex-wrap:wrap;justify-content:center}
+.flow-step{background:#f0f0f0;border:1px solid #ccc;padding:10px 18px;font-size:0.82rem;font-weight:600;text-align:center;min-width:120px}
+.flow-step.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.flow-arrow{font-size:1.2rem;color:#999;padding:0 4px}
+
+/* === Strategy Cards === */
+.strat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:16px 0}
+.strat-card{border:1px solid #ddd;padding:16px 18px}
+.strat-card .strat-num{font-size:0.72rem;color:#999;font-weight:700;margin-bottom:4px}
+.strat-card .strat-title{font-size:0.92rem;font-weight:700;margin-bottom:8px}
+.strat-card .strat-body{font-size:0.8rem;color:#555;line-height:1.6}
+
+@media(max-width:640px){
+  #main{padding:24px 20px 60px}
+  .report-header h1{font-size:1.3rem}
+  h2.section-title{font-size:1.05rem}
+  table{font-size:0.78rem}
+  table th,table td{padding:5px 7px}
+  #sticky-nav{padding:10px 12px;gap:6px}
+  .pill{padding:4px 12px;font-size:0.72rem}
+  .kpi-strip{grid-template-columns:repeat(2,1fr)}
+  .region-map{grid-template-columns:repeat(2,1fr)}
+  .chart-container{flex-direction:column;align-items:flex-start}
+  .tier-grid{grid-template-columns:1fr}
+  .strat-grid{grid-template-columns:1fr}
+  .pos-map{height:300px}
+}
+@media print{
+  #sticky-nav{display:none}
+  #main{padding:0;max-width:100%}
+  body{font-size:10pt}
+  .report-header h1{font-size:16pt}
+  h2.section-title{font-size:13pt;page-break-after:avoid}
+  h3.subsection-title{font-size:11pt;page-break-after:avoid}
+  table{font-size:8pt;page-break-inside:avoid}
+  table th,table td{padding:3px 5px}
+  .highlight-box,.note-box,.info-box{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  table th{background:#f0f0f0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .kpi-strip{page-break-inside:avoid}
+  .region-map{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">SECTIONS</span>
+  <a class="pill" href="#overview">概況</a>
+  <a class="pill" href="#map">全国マップ</a>
+  <a class="pill" href="#breakdown">確度分布</a>
+  <a class="pill" href="#targets">営業ターゲット</a>
+  <a class="pill" href="#matrix">業務領域マトリクス</a>
+  <a class="pill" href="#positioning">競合構造</a>
+  <a class="pill" href="#strategy">戦略</a>
+</nav>
+
+<div id="main">
+
+<header class="report-header">
+  <h1>地方銀行BPOサービス調査ダッシュボード</h1>
+  <p class="subtitle">p030 — 全96行精密調査結果のビジュアライズ &nbsp;|&nbsp; 調査日: 2026-03-26</p>
+  <div class="summary-box">
+    <h3>エグゼクティブサマリー</h3>
+    <ul>
+      <li>全国96行（地銀61+第二地銀35）を5ステップで全数スキャン。<strong>14行が外部向けBPOを明確に展開</strong></li>
+      <li>2021年改正銀行法が後押しとなり、BPO子会社設立が加速。特に2024〜2025年に新設ラッシュ</li>
+      <li>北國銀行（CCIForward）は<strong>セブンリッチが既に関与</strong>。この成功事例の横展開が最も説得力あるストーリー</li>
+      <li>SMBC×freee「インクループ」が地域金融機関チャネルでの全国展開を計画中 — 先行してポジション確保が急務</li>
+    </ul>
+  </div>
+</header>
+
+<!-- ===== SECTION: Overview KPI ===== -->
+<section id="overview">
+<h2 class="section-title">概況サマリー</h2>
+
+<div class="kpi-strip">
+  <div class="kpi-card">
+    <div class="kpi-value">96</div>
+    <div class="kpi-label">調査対象（全数）</div>
+    <div class="kpi-sub">地銀61 + 第二地銀35</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-value">14</div>
+    <div class="kpi-label">確度A（BPO展開済み）</div>
+    <div class="kpi-sub">外部向けBPOを明確に提供</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-value">20</div>
+    <div class="kpi-label">確度B（BPO的サービス）</div>
+    <div class="kpi-sub">給与計算代行・事務受託等</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-value">25</div>
+    <div class="kpi-label">営業ターゲット</div>
+    <div class="kpi-sub">Tier 1〜4 選定済み</div>
+  </div>
+</div>
+</section>
+
+<!-- ===== SECTION: Regional Map ===== -->
+<section id="map">
+<h2 class="section-title">全国エリア別 BPO展開状況</h2>
+<p>各地域の銀行を確度別に色分け表示。<span class="badge badge-a">A</span> BPO明確展開 &nbsp;<span class="badge badge-b">B</span> BPO的サービス &nbsp;<span class="badge badge-c">C</span> 方向性あり &nbsp;<span class="badge badge-d">D/E</span> 該当なし</p>
+
+<div class="region-map">
+  <!-- Row 1: 北海道 -->
+  <div style="grid-column:4/6;grid-row:1">
+    <div class="region-card">
+      <div class="region-name">北海道</div>
+      <div class="region-count">2行中</div>
+      <div class="region-bar">
+        <div class="bar-a" style="width:50%"></div>
+        <div class="bar-c" style="width:50%"></div>
+      </div>
+      <div class="region-banks"><strong>A: 北洋銀行</strong>（経理BPO月額15.5万〜95万円）</div>
+    </div>
+  </div>
+
+  <!-- Row 2: 東北 -->
+  <div style="grid-column:3/6;grid-row:2">
+    <div class="region-card">
+      <div class="region-name">東北</div>
+      <div class="region-count">14行中 A:1 B:6 C:4 D:3</div>
+      <div class="region-bar">
+        <div class="bar-a" style="width:7%"></div>
+        <div class="bar-b" style="width:43%"></div>
+        <div class="bar-c" style="width:29%"></div>
+        <div class="bar-d" style="width:21%"></div>
+      </div>
+      <div class="region-banks"><strong>A: 七十七銀行</strong>（BPO子会社2024年設立）<br>B: 北都・荘内・山形・東邦・仙台・きらやか</div>
+    </div>
+  </div>
+
+  <!-- Row 3: 関東 + 中部・北陸 -->
+  <div style="grid-column:3/5;grid-row:3">
+    <div class="region-card">
+      <div class="region-name">関東</div>
+      <div class="region-count">15行中 A:2 B:2 C:4 D:7</div>
+      <div class="region-bar">
+        <div class="bar-a" style="width:13%"></div>
+        <div class="bar-b" style="width:13%"></div>
+        <div class="bar-c" style="width:27%"></div>
+        <div class="bar-d" style="width:47%"></div>
+      </div>
+      <div class="region-banks"><strong>A: 千葉銀行</strong>（2001年〜経理受託）<br><strong>A: きらぼし銀行</strong>（KBOS+SBI・OBC提携）<br>B: 群馬（頭取がBPO参入表明）・常陽（450社給与計算）</div>
+    </div>
+  </div>
+
+  <div style="grid-column:2/4;grid-row:4">
+    <div class="region-card">
+      <div class="region-name">中部・北陸</div>
+      <div class="region-count">16行中 A:1 B:3 C:6 D:6</div>
+      <div class="region-bar">
+        <div class="bar-a" style="width:6%"></div>
+        <div class="bar-b" style="width:19%"></div>
+        <div class="bar-c" style="width:38%"></div>
+        <div class="bar-d" style="width:37%"></div>
+      </div>
+      <div class="region-banks"><strong>A: 北國銀行</strong>（CCIForward = セブンリッチ関与）<br>B: 山梨中央・八十二長野・スルガ</div>
+    </div>
+  </div>
+
+  <!-- Row 4: 近畿 -->
+  <div style="grid-column:1/3;grid-row:4">
+    <div class="region-card">
+      <div class="region-name">近畿・東海</div>
+      <div class="region-count">12行中 A:3 B:4 C:2 D:3</div>
+      <div class="region-bar">
+        <div class="bar-a" style="width:25%"></div>
+        <div class="bar-b" style="width:33%"></div>
+        <div class="bar-c" style="width:17%"></div>
+        <div class="bar-d" style="width:25%"></div>
+      </div>
+      <div class="region-banks"><strong>A: 京都銀行</strong>（TIS連携DXプラットフォーム）<br><strong>A: 池田泉州HD</strong>（BPO明記子会社）<br><strong>A: あいち銀行</strong>（AAST M&A取得）<br>B: 百五・南都（給与80社5,200人）・紀陽・名古屋</div>
+    </div>
+  </div>
+
+  <!-- Row 5: 中国 + 四国 -->
+  <div style="grid-column:1/3;grid-row:5">
+    <div class="region-card">
+      <div class="region-name">中国・四国</div>
+      <div class="region-count">17行中 A:3 B:2 C:8 D:4</div>
+      <div class="region-bar">
+        <div class="bar-a" style="width:18%"></div>
+        <div class="bar-b" style="width:12%"></div>
+        <div class="bar-c" style="width:47%"></div>
+        <div class="bar-d" style="width:23%"></div>
+      </div>
+      <div class="region-banks"><strong>A: 広島銀行</strong>（ひろぎんITS約30社実績）<br><strong>A: 中国銀行</strong>（BPOロードマップ公表）<br><strong>A: 伊予銀行</strong>（いよぎんDS 1,787件相談）<br>B: 山口・もみじ（YMFG）</div>
+    </div>
+  </div>
+
+  <!-- Row 5-6: 九州・沖縄 -->
+  <div style="grid-column:1/3;grid-row:6">
+    <div class="region-card">
+      <div class="region-name">九州・沖縄</div>
+      <div class="region-count">20行中 A:3 B:5 C:5 D:7</div>
+      <div class="region-bar">
+        <div class="bar-a" style="width:15%"></div>
+        <div class="bar-b" style="width:25%"></div>
+        <div class="bar-c" style="width:25%"></div>
+        <div class="bar-d" style="width:35%"></div>
+      </div>
+      <div class="region-banks"><strong>A: 福岡銀行</strong>（FFG+BIZSHIP）<br><strong>A: 肥後銀行</strong>（九州DS+肥銀OB）<br><strong>A: 鹿児島銀行</strong>（九州DS共有）<br>B: 佐賀・十八親和・琉球・沖縄海邦・沖縄</div>
+    </div>
+  </div>
+</div>
+
+<div class="note-box">
+  <strong>注目エリア:</strong> 近畿・東海（A率25%で最高）と中国・四国（伊予銀行がCからAに格上げ）が最もBPO展開が進んでいる。関東は規模は大きいがD率47%と未展開が多く、チャネル開拓の余地が大きい。
+</div>
+</section>
+
+<!-- ===== SECTION: Donut Chart ===== -->
+<section id="breakdown">
+<h2 class="section-title">確度別分布</h2>
+
+<div class="chart-container">
+  <div class="donut-wrap">
+    <svg viewBox="0 0 120 120" width="200" height="200">
+      <!-- D/E: 35行 = 131.3deg -->
+      <circle cx="60" cy="60" r="45" fill="none" stroke="#e5e5e5" stroke-width="18"
+        stroke-dasharray="103.0 179.7" stroke-dashoffset="0"
+        transform="rotate(-90 60 60)"/>
+      <!-- C: 27行 -->
+      <circle cx="60" cy="60" r="45" fill="none" stroke="#bbb" stroke-width="18"
+        stroke-dasharray="79.5 203.2" stroke-dashoffset="-103.0"
+        transform="rotate(-90 60 60)"/>
+      <!-- B: 20行 -->
+      <circle cx="60" cy="60" r="45" fill="none" stroke="#666" stroke-width="18"
+        stroke-dasharray="58.9 223.8" stroke-dashoffset="-182.5"
+        transform="rotate(-90 60 60)"/>
+      <!-- A: 14行 -->
+      <circle cx="60" cy="60" r="45" fill="none" stroke="#1a1a1a" stroke-width="18"
+        stroke-dasharray="41.2 241.5" stroke-dashoffset="-241.4"
+        transform="rotate(-90 60 60)"/>
+    </svg>
+    <div class="donut-center">
+      <div class="donut-big">96</div>
+      <div class="donut-label">行</div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#1a1a1a"></div>
+      <div><strong>確度A &mdash; 14行（14.6%）</strong><br><span style="color:#777;font-size:0.78rem">外部企業向けBPOを明確に展開</span></div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#666"></div>
+      <div><strong>確度B &mdash; 20行（20.8%）</strong><br><span style="color:#777;font-size:0.78rem">給与計算代行・事務受託等のBPO的サービス</span></div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#bbb"></div>
+      <div><strong>確度C &mdash; 27行（28.1%）</strong><br><span style="color:#777;font-size:0.78rem">非金融拡大の方向性あり（DX支援等）</span></div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#e5e5e5;border:1px solid #ccc"></div>
+      <div><strong>確度D/E &mdash; 35行（36.5%）</strong><br><span style="color:#777;font-size:0.78rem">BPO関連の情報なし / 展開余地なし</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="highlight-box">
+  <strong>読み取りポイント:</strong> 全体の約35%（A+B=34行）が何らかのBPO・事務受託を展開。改正銀行法以降の参入加速を考慮すると、確度Cの27行（特に中計でDX/非金融強化を明記）も中期的にはBPO展開に向かう可能性が高い。
+</div>
+</section>
+
+<!-- ===== SECTION: Sales Targets ===== -->
+<section id="targets">
+<h2 class="section-title">営業ターゲット Tier別</h2>
+
+<div class="tier-section">
+  <div class="tier-header">
+    <h3>Tier 1 &mdash; 最優先ターゲット</h3>
+    <span class="badge badge-ok">協業提案先</span>
+  </div>
+  <p style="font-size:0.82rem;color:#555">既にBPO事業を展開。協業・サービス補完の提案が有効。</p>
+  <div class="tier-grid">
+    <div class="tier-card">
+      <div class="tc-header"><span class="tc-name">北國銀行（北國FHD）</span><span class="badge badge-a">A</span></div>
+      <div class="tc-loc">石川県金沢市</div>
+      <div class="tc-bpo">CCIForward（セブンリッチ×MF×CCI）</div>
+      <div class="tc-point">自社グループが既に関与。連携深化・横展開の余地大。持株会社「CCIグループ」に社名変更予定</div>
+    </div>
+    <div class="tier-card">
+      <div class="tc-header"><span class="tc-name">広島銀行（ひろぎんHD）</span><span class="badge badge-a">A</span></div>
+      <div class="tc-loc">広島県広島市</div>
+      <div class="tc-bpo">ひろぎんITソリューションズ（約30社実績）</div>
+      <div class="tc-point">Bill Oneパートナー。経理DX推進中で専門BPOとの連携ニーズあり</div>
+    </div>
+    <div class="tier-card">
+      <div class="tc-header"><span class="tc-name">七十七銀行</span><span class="badge badge-a">A</span></div>
+      <div class="tc-loc">宮城県仙台市</div>
+      <div class="tc-bpo">七十七ビジネスウィズ（2024年設立）</div>
+      <div class="tc-point">設立直後で外部展開フェーズに入る前。パートナー提案の好機</div>
+    </div>
+    <div class="tier-card">
+      <div class="tc-header"><span class="tc-name">中国銀行（ちゅうぎんFG）</span><span class="badge badge-a">A</span></div>
+      <div class="tc-loc">岡山県岡山市</div>
+      <div class="tc-bpo">Cキューブ・コンサルティング連携</div>
+      <div class="tc-point">BPOロードマップ公表済み。外部専門パートナーを求める可能性</div>
+    </div>
+    <div class="tier-card">
+      <div class="tc-header"><span class="tc-name">肥後銀行（九州FG）</span><span class="badge badge-a">A</span></div>
+      <div class="tc-loc">熊本県熊本市</div>
+      <div class="tc-bpo">肥銀OB+九州DS+肥銀BS 3社体制</div>
+      <div class="tc-point">最も成熟したBPO体制。経理・労務の専門性で補完余地あり</div>
+    </div>
+  </div>
+</div>
+
+<div class="tier-section">
+  <div class="tier-header">
+    <h3>Tier 2 &mdash; 有力ターゲット</h3>
+    <span class="badge badge-info">提携提案先</span>
+  </div>
+  <p style="font-size:0.82rem;color:#555">BPO的サービスを展開中。外部BPO企業との提携ニーズが見込まれる。</p>
+  <div class="tier-grid">
+    <div class="tier-card">
+      <div class="tc-header"><span class="tc-name">ふくおかFG（福岡銀行等）</span><span class="badge badge-a">A</span></div>
+      <div class="tc-loc">福岡県福岡市</div>
+      <div class="tc-bpo">FFGコンピューターサービス+BIZSHIP</div>
+      <div class="tc-point">DX伴走支援400件超。ビジネスマッチング先として入る余地</div>
+    </div>
+    <div class="tier-card">
+      <div class="tc-header"><span class="tc-name">千葉銀行</span><span class="badge badge-a">A</span></div>
+      <div class="tc-loc">千葉県千葉市</div>
+      <div class="tc-bpo">ちばぎんキャリアサービス（2001年〜）</div>
+      <div class="tc-point">TSUBASAアライアンス中核。法人取引基盤が厚い。AMLセンターも運営</div>
+    </div>
+    <div class="tier-card">
+      <div class="tc-header"><span class="tc-name">常陽銀行（めぶきFG）</span><span class="badge badge-b">B</span></div>
+      <div class="tc-loc">茨城県水戸市</div>
+      <div class="tc-bpo">常陽コンピューターサービス（450社超給与計算）</div>
+      <div class="tc-point">北関東の大手地銀。経理・労務BPOの連携先として有望</div>
+    </div>
+    <div class="tier-card">
+      <div class="tc-header"><span class="tc-name">南都銀行</span><span class="badge badge-b">B</span></div>
+      <div class="tc-loc">奈良県奈良市</div>
+      <div class="tc-bpo">南都CS（80社5,200人給与計算）</div>
+      <div class="tc-point">MFエックス・IBMと経理統合デジタルサービス共同開発中（2027年秋）</div>
+    </div>
+    <div class="tier-card">
+      <div class="tc-header"><span class="tc-name">伊予銀行</span><span class="badge badge-a">A</span></div>
+      <div class="tc-loc">愛媛県松山市</div>
+      <div class="tc-bpo">いよぎんデジタルソリューションズ（BPO明示）</div>
+      <div class="tc-point">相談1,787件実績。内閣府地方創生事例受賞。四国エリアの橋頭堡</div>
+    </div>
+  </div>
+</div>
+
+<div class="tier-section">
+  <div class="tier-header">
+    <h3>Tier 3 &mdash; ポテンシャルターゲット</h3>
+    <span class="badge badge-warn">チャネル開拓先</span>
+  </div>
+  <p style="font-size:0.82rem;color:#555">BPO事業は未展開だが、取引先基盤が厚くビジネスマッチング提携が有効。</p>
+  <table>
+    <tr><th>#</th><th>金融機関</th><th>所在地</th><th>選定理由</th></tr>
+    <tr><td>11</td><td>群馬銀行</td><td>群馬県前橋市</td><td>頭取がBPO参入意欲を公言。第四北越FGとの統合も視野</td></tr>
+    <tr><td>12</td><td>きらぼし銀行</td><td>東京都港区</td><td>KBOS設立+SBI・OBC提携。都内スタートアップ向けBPO展開中</td></tr>
+    <tr><td>13</td><td>京都銀行</td><td>京都府京都市</td><td>TIS連携SeamlessLink 2026年5月開始。アセットライト型で外部パートナー歓迎の可能性</td></tr>
+    <tr><td>14</td><td>静岡銀行</td><td>静岡県静岡市</td><td>法人DXポータル展開済み。県内法人基盤厚い</td></tr>
+    <tr><td>15</td><td>西日本シティ銀行</td><td>福岡県福岡市</td><td>NCBビジネスステーション12,000社超</td></tr>
+    <tr><td>16</td><td>第四北越銀行</td><td>新潟県新潟市</td><td>2027年4月群馬銀行と統合。事務集中化の流れ</td></tr>
+    <tr><td>17</td><td>北洋銀行</td><td>北海道札幌市</td><td>HKPが経理BPOを有料提供中（月額15.5万〜95万円）。26,000社取引先</td></tr>
+    <tr><td>18</td><td>あいち銀行</td><td>愛知県名古屋市</td><td>AAST M&A取得。デジタル化診断サービス88件実績</td></tr>
+    <tr><td>19</td><td>紀陽銀行</td><td>和歌山県和歌山市</td><td>紀陽情報システムが事務代行を明記展開</td></tr>
+    <tr><td>20</td><td>スルガ銀行</td><td>静岡県沼津市</td><td>スルガBSが給与計算代行〜売掛金回収まで一貫提供</td></tr>
+  </table>
+</div>
+
+<div class="tier-section">
+  <div class="tier-header">
+    <h3>Tier 4 &mdash; 信金チャネル</h3>
+    <span class="badge badge-pending">中長期検討</span>
+  </div>
+  <p style="font-size:0.82rem;color:#555">信金は取引先との密着度が高く、BPO紹介チャネルとしてのポテンシャルあり。</p>
+  <table>
+    <tr><th>#</th><th>対象</th><th>営業ポイント</th></tr>
+    <tr><td>21</td><td>信金中央金庫「ケイエール」</td><td>全国254信金のプラットフォーム。ここに入れば一気に全国展開可能</td></tr>
+    <tr><td>22</td><td>京都中央信用金庫</td><td>預金量トップの信金。京都エリアの中小企業基盤</td></tr>
+    <tr><td>23</td><td>城南信用金庫</td><td>東京南部エリア。中小企業支援に積極的</td></tr>
+    <tr><td>24</td><td>岡崎信用金庫</td><td>愛知県。製造業中小企業が多いエリア</td></tr>
+    <tr><td>25</td><td>多摩信用金庫</td><td>東京多摩エリア。ビジネスマッチングに積極的</td></tr>
+  </table>
+</div>
+</section>
+
+<!-- ===== SECTION: Domain Matrix ===== -->
+<section id="matrix">
+<h2 class="section-title">BPO対象業務マトリクス</h2>
+<p>確度A 14行の提供業務領域を比較。セブンリッチの強み（経理・労務）との補完関係を可視化。</p>
+
+<div class="matrix-wrap">
+<table class="matrix">
+  <thead>
+    <tr>
+      <th style="text-align:left;min-width:110px">金融機関</th>
+      <th class="col-header">経理・会計</th>
+      <th class="col-header">給与計算</th>
+      <th class="col-header">社保・労務</th>
+      <th class="col-header">勤怠管理</th>
+      <th class="col-header">総務・事務</th>
+      <th class="col-header">データ入力</th>
+      <th class="col-header">IT・DX</th>
+      <th class="col-header">CC</th>
+      <th class="col-header">文書・印刷</th>
+      <th class="col-header">販売管理</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="bank-name">北國銀行</td>
+      <td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td>
+      <td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+    </tr>
+    <tr>
+      <td class="bank-name">広島銀行</td>
+      <td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td>
+      <td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-yes">&#10003;</td>
+    </tr>
+    <tr>
+      <td class="bank-name">七十七銀行</td>
+      <td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+      <td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+    </tr>
+    <tr>
+      <td class="bank-name">肥後銀行</td>
+      <td class="cell-no">&middot;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+      <td class="cell-no">&middot;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td>
+    </tr>
+    <tr>
+      <td class="bank-name">中国銀行</td>
+      <td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td>
+      <td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+    </tr>
+    <tr>
+      <td class="bank-name">池田泉州HD</td>
+      <td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+      <td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td>
+    </tr>
+    <tr>
+      <td class="bank-name">ふくおかFG</td>
+      <td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+      <td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+    </tr>
+    <tr>
+      <td class="bank-name">北洋銀行</td>
+      <td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+      <td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+    </tr>
+    <tr>
+      <td class="bank-name">千葉銀行</td>
+      <td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+      <td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-partial">IT</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+    </tr>
+    <tr>
+      <td class="bank-name">きらぼし銀行</td>
+      <td class="cell-partial">経費</td><td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-yes">&#10003;</td>
+      <td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-partial">帳票</td><td class="cell-no">&middot;</td>
+    </tr>
+    <tr>
+      <td class="bank-name">京都銀行</td>
+      <td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+      <td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+    </tr>
+    <tr>
+      <td class="bank-name">あいち銀行</td>
+      <td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+      <td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+    </tr>
+    <tr>
+      <td class="bank-name">伊予銀行</td>
+      <td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+      <td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+    </tr>
+    <tr>
+      <td class="bank-name">鹿児島銀行</td>
+      <td class="cell-no">&middot;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+      <td class="cell-yes">&#10003;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td><td class="cell-no">&middot;</td>
+    </tr>
+    <tr style="background:#f7f7f7;font-weight:700">
+      <td class="bank-name" style="background:#f7f7f7">カバー率</td>
+      <td>8/14</td><td>6/14</td><td>3/14</td><td>2/14</td>
+      <td>7/14</td><td>2/14</td><td>6/14</td><td>1/14</td><td>3/14</td><td>1/14</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="info-box">
+  <strong>セブンリッチの補完ポイント:</strong> 「社保・労務」（3/14）と「勤怠管理」（2/14）のカバー率が低い。セブンリッチの労務BPO（給与計算・社保手続き・勤怠管理）は、多くの地銀系BPOが未対応の領域であり、差別化ポイントとなる。
+</div>
+</section>
+
+<!-- ===== SECTION: Competitive Positioning ===== -->
+<section id="positioning">
+<h2 class="section-title">競合構造マップ</h2>
+<p>横軸: 経理・労務の専門性 &nbsp;/&nbsp; 縦軸: 展開規模（地域密着 ← → 全国）</p>
+
+<div class="pos-map">
+  <!-- Axes -->
+  <div style="position:absolute;bottom:40px;left:60px;right:20px;height:1px;background:#ccc"></div>
+  <div style="position:absolute;top:20px;bottom:40px;left:60px;width:1px;background:#ccc"></div>
+  <!-- Axis labels -->
+  <div style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:0.7rem;color:#999">経理・労務の専門性 &rarr;</div>
+  <div style="position:absolute;top:50%;left:8px;transform:rotate(-90deg) translateX(-50%);font-size:0.7rem;color:#999;white-space:nowrap;transform-origin:left center">展開規模 &rarr;</div>
+  <!-- Quadrant labels -->
+  <div class="pos-quadrant" style="top:30px;right:30px">全国展開 &times; 高専門性</div>
+  <div class="pos-quadrant" style="top:30px;left:70px">全国展開 &times; 汎用</div>
+  <div class="pos-quadrant" style="bottom:50px;right:30px">地域密着 &times; 高専門性</div>
+
+  <!-- Dots -->
+  <div class="pos-dot" style="top:30%;right:15%">
+    <div class="dot-circle" style="background:#1a1a1a;width:16px;height:16px"></div>
+    <div class="dot-label">セブンリッチ</div>
+  </div>
+  <div class="pos-dot" style="top:22%;right:25%">
+    <div class="dot-circle" style="background:#1a1a1a;width:14px;height:14px;border:2px solid #999"></div>
+    <div class="dot-label" style="color:#555">インクループ<br><span style="font-size:0.6rem;color:#999">SMBC&times;freee</span></div>
+  </div>
+  <div class="pos-dot" style="top:60%;right:30%">
+    <div class="dot-circle" style="background:#666"></div>
+    <div class="dot-label" style="color:#666">CCIForward<br><span style="font-size:0.6rem;color:#999">北國銀行</span></div>
+  </div>
+  <div class="pos-dot" style="top:55%;right:18%">
+    <div class="dot-circle" style="background:#666"></div>
+    <div class="dot-label" style="color:#666">ひろぎんITS</div>
+  </div>
+  <div class="pos-dot" style="top:65%;left:35%">
+    <div class="dot-circle" style="background:#999"></div>
+    <div class="dot-label" style="color:#999">肥銀OB</div>
+  </div>
+  <div class="pos-dot" style="top:70%;right:35%">
+    <div class="dot-circle" style="background:#999"></div>
+    <div class="dot-label" style="color:#999">七十七BW</div>
+  </div>
+  <div class="pos-dot" style="top:50%;right:40%">
+    <div class="dot-circle" style="background:#999"></div>
+    <div class="dot-label" style="color:#999">千葉銀CS</div>
+  </div>
+  <div class="pos-dot" style="top:15%;left:20%">
+    <div class="dot-circle" style="background:#ccc"></div>
+    <div class="dot-label" style="color:#aaa">大手BPO<br><span style="font-size:0.6rem">パソナ等</span></div>
+  </div>
+  <div class="pos-dot" style="top:58%;left:18%">
+    <div class="dot-circle" style="background:#ccc"></div>
+    <div class="dot-label" style="color:#aaa">九州DS<br><span style="font-size:0.6rem">肥後&times;鹿児島</span></div>
+  </div>
+</div>
+
+<div class="highlight-box">
+  <strong>ポジショニングの示唆:</strong><br>
+  &bull; セブンリッチは「経理・労務特化 &times; 全国展開力」で独自のポジション<br>
+  &bull; 地銀系BPOは「地域密着 &times; 汎用」に集中。専門性が弱点<br>
+  &bull; <strong>インクループ（SMBC&times;freee）</strong>がセブンリッチと最も近いポジションを狙っている &mdash; 先行確保が急務<br>
+  &bull; 地銀系BPOへの「ホワイトラベル提供」は、セブンリッチの専門性を地銀の信頼性で包むモデル
+</div>
+</section>
+
+<!-- ===== SECTION: Strategy ===== -->
+<section id="strategy">
+<h2 class="section-title">戦略サマリー</h2>
+
+<div class="flow">
+  <div class="flow-step active">北國銀行実績</div>
+  <div class="flow-arrow">&rarr;</div>
+  <div class="flow-step">横展開ストーリー</div>
+  <div class="flow-arrow">&rarr;</div>
+  <div class="flow-step">Tier 1 協業</div>
+  <div class="flow-arrow">&rarr;</div>
+  <div class="flow-step">Tier 2-3 チャネル</div>
+  <div class="flow-arrow">&rarr;</div>
+  <div class="flow-step">信金プラットフォーム</div>
+</div>
+
+<div class="strat-grid">
+  <div class="strat-card">
+    <div class="strat-num">STRATEGY 01</div>
+    <div class="strat-title">北國銀行の成功事例を横展開</div>
+    <div class="strat-body">CCIForward（セブンリッチ&times;MF&times;CCI）の実績は最大の武器。「北國銀行グループとの実績」をレファレンスとして他行に提案。特に七十七銀行（設立直後）・中国銀行（事業化途中）は好機。</div>
+  </div>
+  <div class="strat-card">
+    <div class="strat-num">STRATEGY 02</div>
+    <div class="strat-title">ビジネスマッチング型で量産</div>
+    <div class="strat-body">大半の地銀はBPO自社提供のリソースがない。「銀行の取引先企業にBPOサービスを紹介してもらう」提携モデルが最も量産しやすい。横浜銀行&times;TOKIUMのモデルが参考。</div>
+  </div>
+  <div class="strat-card">
+    <div class="strat-num">STRATEGY 03</div>
+    <div class="strat-title">労務・社保で差別化</div>
+    <div class="strat-body">地銀系BPOの多くは経理・事務に偏重。「社保・労務」「勤怠管理」をカバーしている地銀はごく少数。セブンリッチの労務BPO専門性は、地銀系BPOが埋められていない領域。</div>
+  </div>
+  <div class="strat-card">
+    <div class="strat-num">STRATEGY 04</div>
+    <div class="strat-title">インクループへの先行対抗</div>
+    <div class="strat-body">SMBC&times;freee「インクループ」は地域金融機関チャネルでの全国展開を計画中。freeeベースのため、MFベースのセブンリッチとは差別化可能だが、チャネルの先行確保が急務。</div>
+  </div>
+</div>
+
+<h3 class="subsection-title">地銀BPOの構造的弱点 = セブンリッチの強み</h3>
+<table>
+  <tr><th>比較軸</th><th>地銀系BPO</th><th>セブンリッチ</th></tr>
+  <tr><td>信頼性</td><td>銀行ブランドで高い</td><td>実績ベースで構築</td></tr>
+  <tr><td>専門性</td><td>汎用事務が中心。経理・労務は限定的</td><td><strong>経理・労務・給与に特化</strong></td></tr>
+  <tr><td>対応範囲</td><td>自行取引先エリアに限定</td><td>全国対応可能</td></tr>
+  <tr><td>スケーラビリティ</td><td>30社程度が上限（ひろぎんITS実績）</td><td>専業として拡張可能</td></tr>
+  <tr><td>テクノロジー</td><td>導入支援が中心</td><td>MFクラウド基盤で実務運用</td></tr>
+</table>
+
+<div class="note-box">
+  <strong>次のアクション:</strong> Tier 1の5行（北國・広島・七十七・中国・肥後）に対して、CCIForwardの実績を軸にした協業提案資料を作成し、アプローチを開始する。
+</div>
+</section>
+
+<div class="report-footer">
+  地方銀行BPOサービス調査ダッシュボード — p030 — Generated 2026-04-07 — BPIO co., Ltd.
+</div>
+
+</div>
+
+<script>
+const pills=document.querySelectorAll('.pill');
+const sections=document.querySelectorAll('[id]');
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      pills.forEach(p=>p.classList.remove('active'));
+      const active=document.querySelector(`.pill[href="#${entry.target.id}"]`);
+      if(active)active.classList.add('active');
+    }
+  });
+},{rootMargin:'-80px 0px -80% 0px'});
+sections.forEach(s=>observer.observe(s));
+</script>
+
+</body>
+</html>
