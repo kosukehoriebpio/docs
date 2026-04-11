@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SR-ONE AI開発PJ管理基盤 — 全容ガイド — BPIO</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: #1a1a1a;
+      background: #fff;
+      line-height: 1.7;
+    }
+    html { font-size: 15px; }
+
+    /* ── Sticky Nav ── */
+    #sticky-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.97);
+      border-bottom: 1px solid #ccc;
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    #sticky-nav .nav-label {
+      font-size: 0.72rem; font-weight: 700; color: #777;
+      letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+    }
+    .pill {
+      display: inline-block; padding: 5px 16px;
+      font-size: 0.78rem; font-weight: 600; color: #555;
+      text-decoration: none; border: 1px solid #ccc;
+      border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+    }
+    .pill:hover, .pill.active {
+      background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+    }
+
+    /* ── Main ── */
+    #main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+
+    /* ── Header ── */
+    .report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+    .report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+    .report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+    .report-header .summary-box {
+      background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+    }
+    .report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+    .report-header .summary-box ul { padding-left: 20px; font-size: 0.82rem; }
+    .report-header .summary-box li { margin-bottom: 4px; }
+
+    /* ── Headings ── */
+    h2.section-title {
+      font-size: 1.2rem; font-weight: 700;
+      border-bottom: 1px solid #999; padding-bottom: 6px;
+      margin-top: 48px; margin-bottom: 20px;
+    }
+    h3.subsection-title {
+      font-size: 1.0rem; font-weight: 700;
+      margin-top: 32px; margin-bottom: 12px;
+      padding-left: 10px; border-left: 3px solid #555;
+    }
+    h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+
+    /* ── Tables ── */
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+    table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+    table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+    table td { background: #fff; }
+    table tr:nth-child(even) td { background: #fafafa; }
+
+    /* ── Text ── */
+    p { margin-bottom: 10px; font-size: 0.88rem; }
+    ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+    ul li, ol li { margin-bottom: 3px; }
+
+    /* ── Boxes ── */
+    .highlight-box {
+      background: #f7f7f7; border: 1px solid #ddd;
+      padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+    }
+    .note-box {
+      background: #fffbeb; border-left: 4px solid #f59e0b;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+    }
+    .info-box {
+      background: #eff6ff; border-left: 4px solid #3b82f6;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f;
+    }
+    .confirm-box {
+      background: #f0fdf4; border-left: 4px solid #22c55e;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #14532d;
+    }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-block; padding: 2px 10px;
+      font-size: 0.72rem; font-weight: 700;
+      border-radius: 999px; letter-spacing: 0.03em;
+    }
+    .badge-ok { background: #d4edda; color: #155724; }
+    .badge-warn { background: #fff3cd; color: #856404; }
+    .badge-info { background: #d1ecf1; color: #0c5460; }
+    .badge-pending { background: #e2e3e5; color: #383d41; }
+
+    /* ── Code Block ── */
+    .code-block {
+      background: #2d2d2d; color: #f8f8f2;
+      padding: 14px 18px;
+      font-family: "Consolas", "Monaco", monospace;
+      font-size: 0.78rem; line-height: 1.6; overflow-x: auto;
+      margin: 10px 0 18px;
+    }
+
+    /* ── Flow Diagram ── */
+    .flow-wrap { margin: 24px 0; }
+    .flow-vertical {
+      display: flex; flex-direction: column; align-items: center; gap: 0;
+    }
+    .flow-step {
+      background: #f0f0f0; border: 1px solid #ccc;
+      padding: 12px 24px; font-size: 0.84rem; font-weight: 600;
+      text-align: center; width: 320px; max-width: 100%;
+    }
+    .flow-step.highlight { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .flow-step.sub {
+      background: #fff; border: 1px dashed #aaa;
+      font-size: 0.78rem; font-weight: 400; color: #555;
+      width: 360px;
+    }
+    .flow-arrow-down {
+      font-size: 1.3rem; color: #999; line-height: 1.2;
+      padding: 4px 0;
+    }
+    .flow-branch {
+      display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; justify-content: center;
+      margin-top: 0;
+    }
+    .flow-branch-item {
+      background: #f7f7f7; border: 1px solid #ccc;
+      padding: 10px 16px; font-size: 0.78rem; text-align: center;
+      min-width: 110px;
+    }
+    .flow-branch-item.ok { border-color: #22c55e; color: #14532d; }
+    .flow-branch-item.hold { border-color: #f59e0b; color: #78350f; }
+    .flow-branch-item.ng { border-color: #ef4444; color: #7f1d1d; }
+
+    /* ── DB Card ── */
+    .db-cards { display: flex; gap: 16px; flex-wrap: wrap; margin: 20px 0; }
+    .db-card {
+      flex: 1; min-width: 220px;
+      border: 1px solid #bbb; padding: 18px 20px;
+    }
+    .db-card .db-num {
+      font-size: 1.4rem; font-weight: 900; color: #1a1a1a;
+      line-height: 1; margin-bottom: 6px;
+    }
+    .db-card .db-name {
+      font-size: 0.88rem; font-weight: 700; margin-bottom: 4px;
+    }
+    .db-card .db-desc {
+      font-size: 0.78rem; color: #555; margin-bottom: 10px;
+    }
+    .db-card .db-status-list {
+      display: flex; flex-wrap: wrap; gap: 4px;
+    }
+    .db-status {
+      display: inline-block; font-size: 0.7rem;
+      border: 1px solid #ccc; padding: 2px 8px; color: #555;
+    }
+    .db-status.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+    /* ── Slack Chat Bubbles ── */
+    .chat-demo { margin: 16px 0 24px; }
+    .chat-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+    .chat-row.bot { flex-direction: row-reverse; }
+    .chat-avatar {
+      width: 32px; height: 32px; border: 1px solid #ccc;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 700; flex-shrink: 0;
+      background: #f0f0f0;
+    }
+    .chat-row.bot .chat-avatar { background: #1a1a1a; color: #fff; }
+    .chat-bubble {
+      max-width: 75%; background: #f7f7f7; border: 1px solid #ddd;
+      padding: 8px 12px; font-size: 0.8rem; line-height: 1.5;
+    }
+    .chat-row.bot .chat-bubble {
+      background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+    }
+    .chat-name { font-size: 0.7rem; color: #777; margin-bottom: 2px; }
+    .chat-row.bot .chat-name { text-align: right; }
+    .chat-meta { font-size: 0.68rem; color: #999; margin-top: 4px; }
+
+    /* ── Phase Progress ── */
+    .phase-list { margin: 16px 0; }
+    .phase-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 14px 0; border-bottom: 1px solid #eee;
+    }
+    .phase-item:last-child { border-bottom: none; }
+    .phase-num {
+      font-size: 0.72rem; font-weight: 700; color: #777;
+      white-space: nowrap; min-width: 56px;
+    }
+    .phase-body { flex: 1; }
+    .phase-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; }
+    .phase-detail { font-size: 0.78rem; color: #555; }
+
+    /* ── Persons ── */
+    .person-grid { display: flex; gap: 12px; flex-wrap: wrap; margin: 12px 0 20px; }
+    .person-card {
+      flex: 1; min-width: 180px; border: 1px solid #ddd;
+      padding: 12px 16px; font-size: 0.82rem;
+    }
+    .person-card .person-name { font-weight: 700; margin-bottom: 2px; }
+    .person-card .person-org { font-size: 0.72rem; color: #777; margin-bottom: 4px; }
+    .person-card .person-role { font-size: 0.78rem; color: #555; }
+
+    /* ── Footer ── */
+    .report-footer {
+      border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+      font-size: 0.78rem; color: #777;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      #main { padding: 24px 20px 60px; }
+      .report-header h1 { font-size: 1.3rem; }
+      h2.section-title { font-size: 1.05rem; }
+      table { font-size: 0.78rem; }
+      table th, table td { padding: 5px 7px; }
+      #sticky-nav { padding: 10px 12px; gap: 6px; }
+      .pill { padding: 4px 12px; font-size: 0.72rem; }
+      .db-cards { flex-direction: column; }
+      .flow-step { width: 100%; }
+      .person-grid { flex-direction: column; }
+    }
+
+    /* ── Print ── */
+    @media print {
+      #sticky-nav { display: none; }
+      #main { padding: 0; max-width: 100%; }
+      body { font-size: 10pt; }
+      .report-header h1 { font-size: 16pt; }
+      h2.section-title { font-size: 13pt; page-break-after: avoid; }
+      h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+      table { font-size: 8pt; page-break-inside: avoid; }
+      table th, table td { padding: 3px 5px; }
+      .highlight-box, .note-box, .info-box, .confirm-box {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      table th { background: #f0f0f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .db-card { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">SECTIONS</span>
+  <a class="pill" href="#background">背景・目的</a>
+  <a class="pill" href="#structure">3DB構成</a>
+  <a class="pill" href="#flow">運用フロー</a>
+  <a class="pill" href="#slack">SlackBot機能</a>
+  <a class="pill" href="#status">現在のステータス</a>
+  <a class="pill" href="#members">関係者</a>
+</nav>
+
+<div id="main">
+  <header class="report-header">
+    <div class="subtitle">p039 — SR-ONE AI開発PJ管理基盤構築 | 2026-04-11</div>
+    <h1>SR-ONE AI開発PJ管理基盤<br>全容ガイド</h1>
+    <div class="summary-box">
+      <h3>このページについて</h3>
+      <ul>
+        <li>SR-ONEグループのAI開発プロジェクトを一元管理するNotionベースの基盤の全体像をまとめた共有資料です</li>
+        <li>Notionの3DB構成・運用フロー・Slack Botでできること を網羅しています</li>
+        <li>対象: 藤田さん・外林さん・山科さん・堀江および今後参加するメンバー全員</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- ── 背景・目的 ── -->
+  <section id="background">
+    <h2 class="section-title">1. 背景・なぜ作ったか</h2>
+    <p>SR-ONEグループ全体でAI開発案件が急増し、以下の問題が顕在化してきました。</p>
+    <table>
+      <tr>
+        <th style="width:30%">課題</th>
+        <th>具体的な問題</th>
+      </tr>
+      <tr>
+        <td>全体像が見えない</td>
+        <td>どのAI PJが進行中か、誰も把握できていない</td>
+      </tr>
+      <tr>
+        <td>優先度が不明</td>
+        <td>何から手をつけるべきか意思決定の基盤がない</td>
+      </tr>
+      <tr>
+        <td>リリース後の管理がない</td>
+        <td>稼働中エージェントの監視・改善が属人的になっている</td>
+      </tr>
+      <tr>
+        <td>アイデアが散逸</td>
+        <td>Slackの各チャンネルにアイデアが散らばり、埋もれていく</td>
+      </tr>
+    </table>
+    <div class="confirm-box">
+      <strong>解決策:</strong> Notion上に3DB構成のチケット管理基盤を構築し、AI開発の全ライフサイクル（アイデア → 開発 → 運用）を一元管理。加えて、Slack Botによって誰でも手軽に操作・確認できる仕組みを整備しました。
+    </div>
+  </section>
+
+  <!-- ── 3DB構成 ── -->
+  <section id="structure">
+    <h2 class="section-title">2. Notionの3DB構成</h2>
+    <p>AI開発の全フェーズを、3つのNotionデータベースで管理します。</p>
+
+    <div class="db-cards">
+      <div class="db-card">
+        <div class="db-num">①</div>
+        <div class="db-name">アイデアバックログ</div>
+        <div class="db-desc">フラッシュアイデアや未検討のものをすべて入れる場所。誰でも登録OK。Slackからの自動登録も稼働中。</div>
+        <div class="db-status-list">
+          <span class="db-status">アイデア</span>
+          <span class="db-status active">トリアージ待ち</span>
+          <span class="db-status">採用</span>
+          <span class="db-status">保留</span>
+          <span class="db-status">却下</span>
+        </div>
+      </div>
+      <div class="db-card">
+        <div class="db-num">②</div>
+        <div class="db-name">プロダクトバックログ</div>
+        <div class="db-desc">「開発する」と決まったものだけを管理。Priority / Owner / Due が必須。Priority順で着手する。</div>
+        <div class="db-status-list">
+          <span class="db-status">Backlog</span>
+          <span class="db-status">Ready</span>
+          <span class="db-status active">In Progress</span>
+          <span class="db-status">Review</span>
+          <span class="db-status">Done</span>
+          <span class="db-status">中止</span>
+        </div>
+      </div>
+      <div class="db-card">
+        <div class="db-num">③</div>
+        <div class="db-name">ラン/メンテナンスBL</div>
+        <div class="db-desc">リリース済みエージェント・ツールの運用タスク管理。不具合・監視・改善を一元管理する。</div>
+        <div class="db-status-list">
+          <span class="db-status active">Open</span>
+          <span class="db-status">対応中</span>
+          <span class="db-status">完了</span>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="subsection-title">② プロダクトバックログの優先度体系</h3>
+    <table>
+      <tr><th style="width:18%">Priority</th><th>意味</th><th>例</th></tr>
+      <tr><td><strong>P0</strong>（緊急）</td><td>今すぐ対応が必要なもの。ビジネスに直接影響</td><td>本番稼働中のBot障害</td></tr>
+      <tr><td><strong>P1</strong>（高）</td><td>今スプリントで必ず着手すべきもの</td><td>月内リリース必須の機能</td></tr>
+      <tr><td><strong>P2</strong>（中）</td><td>重要だが急がないもの</td><td>改善・精度向上</td></tr>
+      <tr><td><strong>P3</strong>（低）</td><td>あれば良いもの</td><td>将来の拡張機能</td></tr>
+    </table>
+
+    <h3 class="subsection-title">③ ラン/メンテBLの種別</h3>
+    <table>
+      <tr><th>種別</th><th>内容</th></tr>
+      <tr><td>不具合</td><td>エラー・障害・想定外の動作</td></tr>
+      <tr><td>監視</td><td>定期的な稼働確認・KPI確認</td></tr>
+      <tr><td>改善</td><td>精度向上・UX改善・機能追加</td></tr>
+      <tr><td>その他</td><td>上記に分類できないもの</td></tr>
+    </table>
+  </section>
+
+  <!-- ── 運用フロー ── -->
+  <section id="flow">
+    <h2 class="section-title">3. 運用フロー</h2>
+
+    <h3 class="subsection-title">基本フロー — アイデアから運用まで</h3>
+    <div class="flow-wrap">
+      <div class="flow-vertical">
+        <div class="flow-step">💡 アイデア発生<br><span style="font-weight:400;font-size:0.75rem;">Slack / 口頭 / 思いつき</span></div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-step">① アイデアBL に登録<br><span style="font-weight:400;font-size:0.75rem;">誰でも登録OK。Slackから自動登録も可</span></div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-step highlight">📋 週次トリアージ<br><span style="font-weight:400;font-size:0.78rem;">藤田さん ＋ 堀江｜インパクト×難易度で評価</span></div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-branch">
+          <div class="flow-branch-item ok">✅ 採用<br>→ ②へ昇格<br>Priority/Owner/Due設定</div>
+          <div class="flow-branch-item hold">⏸ 保留<br>→ 再検討</div>
+          <div class="flow-branch-item ng">✕ 却下<br>→ クローズ</div>
+        </div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-step">② プロダクトBL で開発管理<br><span style="font-weight:400;font-size:0.75rem;">Priority順で着手・Ownerが進捗更新</span></div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-step">🚀 リリース</div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-step">③ ラン/メンテBL にエントリ作成<br><span style="font-weight:400;font-size:0.75rem;">定期監視・不具合対応・改善を継続管理</span></div>
+      </div>
+    </div>
+
+    <h3 class="subsection-title">例外フロー</h3>
+    <table>
+      <tr><th>ケース</th><th>対応</th></tr>
+      <tr><td>②のチケットが技術的に不可能と判明</td><td>ステータスを「中止」に変更。①のリンク先を「保留」に戻す。定例で共有</td></tr>
+      <tr><td>③の不具合が大規模改修を要する</td><td>②に新チケットを直接起票（①を経由しない）。③チケットに②へのリンクを追記</td></tr>
+      <tr><td>緊急依頼（P0）</td><td>②に直接起票OK（①を経由しない）。ただし定例で事後報告</td></tr>
+    </table>
+
+    <h3 class="subsection-title">週次トリアージのアジェンダ（30分）</h3>
+    <table>
+      <tr><th style="width:15%">時間</th><th>内容</th></tr>
+      <tr><td>5分</td><td>①の新規アイデア確認（新着をざっと確認）</td></tr>
+      <tr><td>10分</td><td>採用/却下判定（インパクト×難易度で判断、採用なら②に移動）</td></tr>
+      <tr><td>10分</td><td>②の進捗確認（ステータス更新、ブロッカー確認）</td></tr>
+      <tr><td>5分</td><td>③の運用状況（不具合・改善要望の確認）</td></tr>
+    </table>
+    <div class="note-box">
+      <strong>初期トリアージの進め方:</strong> 既存アイデアを一度に全処理しない。初回は「既に開発中/完了済み」を②③に振り分けるのみ。未検討アイデアは5件/回ずつ段階的に処理します。
+    </div>
+  </section>
+
+  <!-- ── Slack Bot ── -->
+  <section id="slack">
+    <h2 class="section-title">4. Slack Botでできること</h2>
+
+    <div class="info-box">
+      進捗報告チャンネルで <strong>@AI PJ Manager</strong> にメンションするだけ。自然な日本語で話しかけてOKです。<br>
+      変更が伴う操作は必ず確認メッセージが表示され、👍リアクションで承認後に実行されます。
+    </div>
+
+    <h3 class="subsection-title">ダッシュボード確認</h3>
+    <div class="chat-demo">
+      <div class="chat-row">
+        <div>
+          <div class="chat-name">堀江</div>
+          <div class="chat-avatar">堀</div>
+        </div>
+        <div>
+          <div class="chat-bubble">@AI PJ Manager AI PJ状況教えて</div>
+        </div>
+      </div>
+      <div class="chat-row bot">
+        <div>
+          <div class="chat-name" style="text-align:right;">AI PJ Manager</div>
+          <div class="chat-avatar">AI</div>
+        </div>
+        <div>
+          <div class="chat-bubble">
+            📊 AI開発PJ ダッシュボード（2026-04-11）<br>
+            ━━━━━━━━━━━━━━━<br>
+            ① アイデアBL: 28件（トリアージ待ち 5件）<br>
+            ② プロダクトBL: 12件<br>
+            　In Progress: 3件｜Review: 1件｜Done: 5件<br>
+            　⚠ 期限超過: 1件<br>
+            ③ ラン/メンテBL: 8件（Open: 3件）
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="subsection-title">トリアージ操作（① → ②）</h3>
+    <div class="chat-demo">
+      <div class="chat-row">
+        <div>
+          <div class="chat-name">堀江</div>
+          <div class="chat-avatar">堀</div>
+        </div>
+        <div>
+          <div class="chat-bubble">@AI PJ Manager トリアージ待ち一覧見せて</div>
+        </div>
+      </div>
+      <div class="chat-row bot">
+        <div>
+          <div class="chat-name" style="text-align:right;">AI PJ Manager</div>
+          <div class="chat-avatar">AI</div>
+        </div>
+        <div>
+          <div class="chat-bubble">
+            📋 トリアージ待ち: 5件<br>
+            1. 請求書自動振り分けBot <a style="color:#7dd3fc;" href="#">Notionで開く</a><br>
+            2. 採用候補者スクリーニング自動化 <a style="color:#7dd3fc;" href="#">Notionで開く</a><br>
+            ...
+          </div>
+        </div>
+      </div>
+      <div class="chat-row">
+        <div>
+          <div class="chat-name">堀江</div>
+          <div class="chat-avatar">堀</div>
+        </div>
+        <div>
+          <div class="chat-bubble">@AI PJ Manager 請求書自動振り分けBot を採用、P1、5月末まで</div>
+        </div>
+      </div>
+      <div class="chat-row bot">
+        <div>
+          <div class="chat-name" style="text-align:right;">AI PJ Manager</div>
+          <div class="chat-avatar">AI</div>
+        </div>
+        <div>
+          <div class="chat-bubble">
+            ✅ 以下の操作を実行します。確認してください（👍で承認）<br>
+            ・① 「請求書自動振り分けBot」を「採用」に変更<br>
+            ・② プロダクトBLに新チケット作成（Priority: P1、Due: 2026-05-31）
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <table>
+      <tr><th style="width:40%">操作</th><th>メッセージ例</th></tr>
+      <tr><td>トリアージ待ち一覧</td><td>「トリアージ待ち一覧見せて」</td></tr>
+      <tr><td>採用（①→②昇格）</td><td>「〇〇を採用、P1、5月末まで」</td></tr>
+      <tr><td>保留</td><td>「〇〇を保留にして」</td></tr>
+      <tr><td>却下</td><td>「〇〇を却下して」</td></tr>
+    </table>
+
+    <h3 class="subsection-title">ステータス更新（②）</h3>
+    <div class="chat-demo">
+      <div class="chat-row">
+        <div>
+          <div class="chat-name">外林</div>
+          <div class="chat-avatar">外</div>
+        </div>
+        <div>
+          <div class="chat-bubble">@AI PJ Manager 勤怠チェック自動化をIn Progressに変えて</div>
+        </div>
+      </div>
+      <div class="chat-row bot">
+        <div>
+          <div class="chat-name" style="text-align:right;">AI PJ Manager</div>
+          <div class="chat-avatar">AI</div>
+        </div>
+        <div>
+          <div class="chat-bubble">
+            ✅ 「勤怠チェック自動化」のステータスを In Progress に変更します（👍で承認）
+          </div>
+        </div>
+      </div>
+    </div>
+    <table>
+      <tr><th style="width:40%">操作</th><th>メッセージ例</th></tr>
+      <tr><td>ステータスを進める</td><td>「〇〇をIn Progressに変えて」「〇〇をReviewに」</td></tr>
+      <tr><td>完了にする</td><td>「〇〇を完了にして」</td></tr>
+      <tr><td>Priority変更</td><td>「〇〇の優先度をP0に変えて」</td></tr>
+    </table>
+
+    <h3 class="subsection-title">運用管理（③）</h3>
+    <div class="chat-demo">
+      <div class="chat-row">
+        <div>
+          <div class="chat-name">外林</div>
+          <div class="chat-avatar">外</div>
+        </div>
+        <div>
+          <div class="chat-bubble">@AI PJ Manager 面談FBBot でエラーが出た。不具合チケット起票して</div>
+        </div>
+      </div>
+      <div class="chat-row bot">
+        <div>
+          <div class="chat-name" style="text-align:right;">AI PJ Manager</div>
+          <div class="chat-avatar">AI</div>
+        </div>
+        <div>
+          <div class="chat-bubble">
+            ✅ ③ ラン/メンテBL に不具合チケットを起票します（👍で承認）<br>
+            ・タイトル: 「面談FBBot エラー発生」<br>
+            ・種別: 不具合 ｜ 優先度: 高 ｜ ステータス: Open
+          </div>
+        </div>
+      </div>
+    </div>
+    <table>
+      <tr><th style="width:40%">操作</th><th>メッセージ例</th></tr>
+      <tr><td>Open不具合一覧</td><td>「Open不具合一覧見せて」</td></tr>
+      <tr><td>不具合チケット起票</td><td>「〇〇でエラーが出た。不具合チケット起票して」</td></tr>
+      <tr><td>監視タスク起票</td><td>「〇〇の定期監視タスクを追加して」</td></tr>
+      <tr><td>対応完了</td><td>「チケット〇〇を完了にして」</td></tr>
+    </table>
+
+    <h3 class="subsection-title">記憶・履歴機能</h3>
+    <div class="highlight-box">
+      <strong>Botは会話・変更履歴を記憶しています。</strong><br>
+      誰がいつ何を変更したかをNotionページとBot記憶に自動記録。「誰が〇〇を変えた？」「最近の変更内容は？」といった質問にも答えられます。
+    </div>
+  </section>
+
+  <!-- ── ステータス ── -->
+  <section id="status">
+    <h2 class="section-title">5. 現在のステータス（2026-04-11）</h2>
+
+    <div class="phase-list">
+      <div class="phase-item">
+        <div class="phase-num">Phase 0</div>
+        <div class="phase-body">
+          <div class="phase-title">準備 <span class="badge badge-ok">✅ 完了</span></div>
+          <div class="phase-detail">スキーマレビュー（藤田さん承認済み）・Notion権限設定・Slack App作成</div>
+        </div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-num">Phase 1a</div>
+        <div class="phase-body">
+          <div class="phase-title">Notion 3DB構築 <span class="badge badge-ok">✅ 完了</span> <small style="color:#777;">2026-04-07</small></div>
+          <div class="phase-detail">①②③の3DB作成・リレーション設定・テストデータ投入</div>
+        </div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-num">Phase 1b</div>
+        <div class="phase-body">
+          <div class="phase-title">Slack Bot・スキル構築 <span class="badge badge-ok">✅ 完了</span> <small style="color:#777;">2026-04-11</small></div>
+          <div class="phase-detail">
+            slack-ai-pm Bot PM2で24時間稼働中 ／ /ai-pm /ai-triage /ai-ops スキル利用可能<br>
+            Notionページリンク埋め込み・変更履歴自動記録・Opusレビュー全22件修正完了
+          </div>
+        </div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-num">Phase 2</div>
+        <div class="phase-body">
+          <div class="phase-title">運用開始・定着 <span class="badge badge-warn">🚧 進行中</span></div>
+          <div class="phase-detail">
+            <ul style="margin-top:4px;">
+              <li>初回トリアージ会議の実施（藤田さん+堀江）— <strong>次のアクション</strong></li>
+              <li>既存アイデア25件+の段階的トリアージ開始（5件/回）</li>
+              <li>山科さんをオブザーバーとして参加</li>
+              <li>フィードバック収集 → スキーマ・フロー微調整</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-num">Phase 3</div>
+        <div class="phase-body">
+          <div class="phase-title">拡張・移譲 <span class="badge badge-pending">⏳ 未着手</span></div>
+          <div class="phase-detail">外林さんへのヒアリング・山科さんへのPdM移譲・SRAメンバーへのスキル配布</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 関係者 ── -->
+  <section id="members">
+    <h2 class="section-title">6. 関係者</h2>
+    <div class="person-grid">
+      <div class="person-card">
+        <div class="person-name">藤田 陽介</div>
+        <div class="person-org">SR-ONE</div>
+        <div class="person-role">意思決定者。優先度決定・スキーマ承認</div>
+      </div>
+      <div class="person-card">
+        <div class="person-name">外林 洋輝</div>
+        <div class="person-org">SRA</div>
+        <div class="person-role">要望元。Slack⇔Claude Code⇔Notion連携の主な利用者</div>
+      </div>
+      <div class="person-card">
+        <div class="person-name">山科 克騎</div>
+        <div class="person-org">SR-ONE</div>
+        <div class="person-role">将来的なPdM候補。Phase 3で段階的移譲予定</div>
+      </div>
+      <div class="person-card">
+        <div class="person-name">堀江 孝輔</div>
+        <div class="person-org">BPIO</div>
+        <div class="person-role">実装担当・暫定PdM</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="report-footer">
+    SR-ONE AI開発PJ管理基盤 — 全容ガイド — p039 — Generated 2026-04-11 — BPIO co., Ltd.
+  </div>
+</div>
+
+<script>
+  const pills = document.querySelectorAll('.pill');
+  const sections = document.querySelectorAll('[id]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        pills.forEach(p => p.classList.remove('active'));
+        const active = document.querySelector(`.pill[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-80px 0px -80% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
