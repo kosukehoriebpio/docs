@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slack Salvage セットアップガイド — BPIO</title>
+  <style>
+    body {
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: #1a1a1a; background: #fff; line-height: 1.7; margin: 0;
+    }
+    html { font-size: 15px; }
+
+    /* Sticky Nav */
+    #sticky-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.97);
+      border-bottom: 1px solid #ccc;
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    #sticky-nav .nav-label {
+      font-size: 0.72rem; font-weight: 700; color: #777;
+      letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+    }
+    .pill {
+      display: inline-block; padding: 5px 16px;
+      font-size: 0.78rem; font-weight: 600; color: #555;
+      text-decoration: none; border: 1px solid #ccc;
+      border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+    }
+    .pill:hover, .pill.active {
+      background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+    }
+
+    /* Main */
+    #main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+
+    /* Header */
+    .report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+    .report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+    .report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+    .report-header .summary-box {
+      background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+    }
+    .report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; margin-top: 0; }
+    .report-header .summary-box ul { padding-left: 20px; font-size: 0.82rem; margin: 0; }
+    .report-header .summary-box li { margin-bottom: 4px; }
+
+    /* Headings */
+    h2.section-title {
+      font-size: 1.2rem; font-weight: 700;
+      border-bottom: 1px solid #999; padding-bottom: 6px;
+      margin-top: 48px; margin-bottom: 20px;
+    }
+    h3.subsection-title {
+      font-size: 1.0rem; font-weight: 700;
+      margin-top: 32px; margin-bottom: 12px;
+      padding-left: 10px; border-left: 3px solid #555;
+    }
+    h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+    table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+    table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+    table td { background: #fff; }
+    table tr:nth-child(even) td { background: #fafafa; }
+
+    /* Text */
+    p { margin-bottom: 10px; font-size: 0.88rem; }
+    ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+    ul li, ol li { margin-bottom: 3px; }
+
+    /* Boxes */
+    .highlight-box {
+      background: #f7f7f7; border: 1px solid #ddd;
+      padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+    }
+    .note-box {
+      background: #fffbeb; border-left: 4px solid #f59e0b;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+    }
+    .info-box {
+      background: #eff6ff; border-left: 4px solid #3b82f6;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f;
+    }
+    .confirm-box {
+      background: #f0fdf4; border-left: 4px solid #22c55e;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #14532d;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block; padding: 2px 10px;
+      font-size: 0.72rem; font-weight: 700;
+      border-radius: 999px; letter-spacing: 0.03em;
+    }
+    .badge-ok { background: #d4edda; color: #155724; }
+    .badge-warn { background: #fff3cd; color: #856404; }
+    .badge-info { background: #d1ecf1; color: #0c5460; }
+    .badge-pending { background: #e2e3e5; color: #383d41; }
+
+    /* Code */
+    .code-block {
+      background: #2d2d2d; color: #f8f8f2;
+      padding: 16px 20px;
+      font-family: "Consolas", "Monaco", monospace;
+      font-size: 0.78rem; line-height: 1.6; overflow-x: auto;
+      margin: 12px 0 20px;
+    }
+    code {
+      font-family: "Consolas", "Monaco", monospace;
+      background: #f0f0f0; padding: 1px 5px; font-size: 0.82em;
+    }
+
+    /* Flow */
+    .flow {
+      display: flex; align-items: center; gap: 0;
+      margin: 20px 0; flex-wrap: wrap; justify-content: center;
+    }
+    .flow-step {
+      background: #f0f0f0; border: 1px solid #ccc;
+      padding: 10px 18px; font-size: 0.82rem; font-weight: 600;
+      text-align: center; min-width: 100px;
+    }
+    .flow-step.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .flow-arrow { font-size: 1.2rem; color: #999; padding: 0 4px; }
+
+    /* Step number */
+    .step-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px;
+      background: #1a1a1a; color: #fff;
+      font-size: 0.8rem; font-weight: 700;
+      border-radius: 999px; margin-right: 8px; flex-shrink: 0;
+    }
+    .step-row {
+      display: flex; align-items: flex-start; gap: 0;
+      margin-bottom: 20px;
+    }
+    .step-content { flex: 1; }
+
+    /* Output card */
+    .output-card {
+      border: 1px solid #bbb; padding: 16px 20px; margin: 8px 0 16px;
+      font-size: 0.82rem;
+    }
+    .output-card .oc-header {
+      font-weight: 700; font-size: 0.88rem; margin-bottom: 8px;
+      padding-bottom: 6px; border-bottom: 1px solid #ddd;
+    }
+    .output-card .oc-meta { color: #555; font-size: 0.78rem; margin-bottom: 6px; }
+    .output-card .oc-body { margin-bottom: 8px; }
+    .output-card .oc-action {
+      background: #f7f7f7; padding: 6px 10px;
+      font-size: 0.78rem; border-left: 3px solid #555;
+    }
+
+    /* Footer */
+    .report-footer {
+      border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+      font-size: 0.78rem; color: #777;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      #main { padding: 24px 20px 60px; }
+      .report-header h1 { font-size: 1.3rem; }
+      h2.section-title { font-size: 1.05rem; }
+      table { font-size: 0.78rem; }
+      table th, table td { padding: 5px 7px; }
+      #sticky-nav { padding: 10px 12px; gap: 6px; }
+      .pill { padding: 4px 12px; font-size: 0.72rem; }
+      .flow { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); }
+    }
+
+    /* Print */
+    @media print {
+      #sticky-nav { display: none; }
+      #main { padding: 0; max-width: 100%; }
+      body { font-size: 10pt; }
+      .report-header h1 { font-size: 16pt; }
+      h2.section-title { font-size: 13pt; page-break-after: avoid; }
+      h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+      table { font-size: 8pt; page-break-inside: avoid; }
+      table th, table td { padding: 3px 5px; }
+      .highlight-box, .note-box, .info-box, .confirm-box {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      table th {
+        background: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">SECTIONS</span>
+  <a class="pill" href="#overview">概要</a>
+  <a class="pill" href="#setup">セットアップ</a>
+  <a class="pill" href="#usage">使い方</a>
+  <a class="pill" href="#output">出力の見方</a>
+  <a class="pill" href="#tips">Tips</a>
+</nav>
+
+<div id="main">
+
+  <header class="report-header">
+    <h1>Slack Salvage — セットアップ&使い方ガイド</h1>
+    <p class="subtitle">Claude Code で動く Slack 非公式プロジェクト掘り起こしツール</p>
+    <div class="summary-box">
+      <h3>このガイドでわかること</h3>
+      <ul>
+        <li>Slack App の作成・User Token 取得方法（5分で完了）</li>
+        <li>Claude Code への MCP 設定方法</li>
+        <li><code>/slack-salvage</code> コマンドの実行方法と引数の使い方</li>
+        <li>出力結果の読み方（完了 / 進行中 / 中断 / 自然消滅 の判定）</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- 概要 -->
+  <section id="overview">
+    <h2 class="section-title">概要 — このツールは何をするのか</h2>
+
+    <p>
+      <strong>/slack-salvage</strong> は、あなたが参加している Slack の全チャンネル・DM を横断スキャンして、
+      <strong>「チケットやタスク管理ツールに登録されないまま止まってしまった非公式プロジェクト」</strong>を掘り起こすツールです。
+    </p>
+
+    <div class="highlight-box">
+      <strong>こんな状況に心当たりがあれば使ってみてください：</strong>
+      <ul style="margin:8px 0 0; padding-left: 20px;">
+        <li>「あの件、誰かやるって言ってたよね？」が追えていない</li>
+        <li>「やった方がいいよね」で止まったまま数ヶ月経っている</li>
+        <li>Slack でいい議論をしたのに、誰も動かずそのまま消えた</li>
+        <li>自分が「承知しました」と言ったまま完了報告を忘れていた</li>
+      </ul>
+    </div>
+
+    <h3 class="subsection-title">何が出てくるか</h3>
+
+    <table>
+      <thead>
+        <tr><th>状態</th><th>意味</th><th>件数が多いと…</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>⏸️ <strong>中断</strong></td>
+          <td>誰かがコミットしたが、その後 7 日以上活動がない</td>
+          <td>要フォローアップ</td>
+        </tr>
+        <tr>
+          <td>💀 <strong>自然消滅</strong></td>
+          <td>議論はあったが誰も動かないまま 30 日以上が経過</td>
+          <td>今でも必要か判断が必要</td>
+        </tr>
+        <tr>
+          <td>🔄 <strong>進行中</strong></td>
+          <td>直近 7 日以内に活動あり</td>
+          <td>念のため確認</td>
+        </tr>
+        <tr>
+          <td>✅ <strong>完了</strong></td>
+          <td>完了報告が確認できた</td>
+          <td>参考表示</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="flow">
+      <div class="flow-step">Slack チャンネル<br>全スキャン</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step active">スレッドを<br>非公式PJ として検出</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">完了状態を<br>AI が判定</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">優先度付きで<br>一覧出力</div>
+    </div>
+  </section>
+
+  <!-- セットアップ -->
+  <section id="setup">
+    <h2 class="section-title">セットアップ（初回のみ・約 10 分）</h2>
+
+    <div class="info-box">
+      <strong>前提：</strong> Claude Code がインストール済みであること。Node.js（v18 以上）が使えること。
+    </div>
+
+    <h3 class="subsection-title">Step 1 ： Slack App を作成する</h3>
+
+    <ol>
+      <li><a href="https://api.slack.com/apps" target="_blank">https://api.slack.com/apps</a> にアクセスしてログインする</li>
+      <li>右上の「<strong>Create New App</strong>」をクリック</li>
+      <li>「<strong>From scratch</strong>」を選択</li>
+      <li>App Name に任意の名前（例：<em>Claude Salvage</em>）を入力</li>
+      <li>Workspace で対象のワークスペースを選択して「Create App」</li>
+    </ol>
+
+    <h3 class="subsection-title">Step 2 ： User Token Scopes を設定する</h3>
+
+    <p>左メニューの「<strong>OAuth &amp; Permissions</strong>」を開き、<strong>User Token Scopes</strong> セクションに以下の権限をすべて追加します。</p>
+
+    <table>
+      <thead>
+        <tr><th>Scope</th><th>用途</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>channels:history</code></td><td>パブリックチャンネルの履歴を読む</td></tr>
+        <tr><td><code>channels:read</code></td><td>パブリックチャンネルの一覧を取得</td></tr>
+        <tr><td><code>groups:history</code></td><td>プライベートチャンネルの履歴を読む</td></tr>
+        <tr><td><code>groups:read</code></td><td>プライベートチャンネルの一覧を取得</td></tr>
+        <tr><td><code>im:history</code></td><td>DM の履歴を読む</td></tr>
+        <tr><td><code>im:read</code></td><td>DM の一覧を取得</td></tr>
+        <tr><td><code>mpim:history</code></td><td>グループ DM の履歴を読む</td></tr>
+        <tr><td><code>mpim:read</code></td><td>グループ DM の一覧を取得</td></tr>
+        <tr><td><code>search:read</code></td><td>メッセージを検索する</td></tr>
+        <tr><td><code>users:read</code></td><td>ユーザー名・表示名を解決する</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note-box">
+      <strong>注意：</strong>「Bot Token Scopes」ではなく、<strong>「User Token Scopes」</strong>に追加してください。Bot では自分の DM やプライベートチャンネルにアクセスできません。
+    </div>
+
+    <h3 class="subsection-title">Step 3 ： アプリをインストールして User Token を取得する</h3>
+
+    <ol>
+      <li>同じページ（OAuth &amp; Permissions）の上部にある「<strong>Install to Workspace</strong>」をクリック</li>
+      <li>権限の確認画面で「<strong>許可する</strong>」をクリック</li>
+      <li>インストール後に表示される「<strong>User OAuth Token</strong>（<code>xoxp-</code> から始まる文字列）」をコピーしておく</li>
+    </ol>
+
+    <div class="note-box">
+      <strong>Workspace ID の確認方法：</strong> ブラウザで Slack を開いたときの URL が
+      <code>https://app.slack.com/client/T<em>xxxxxxxx</em>/...</code> の形式になっています。
+      <code>T</code> から始まる部分がワークスペース ID です。
+    </div>
+
+    <h3 class="subsection-title">Step 4 ： .mcp.json に設定を追記する</h3>
+
+    <p>作業用のプロジェクトフォルダ（どこでも OK）のルートに <code>.mcp.json</code> ファイルを作成し、以下を記述します。</p>
+
+    <div class="code-block">{
+  "mcpServers": {
+    "slack": {
+      "command": "npx",
+      "args": ["-y", "@korotovsky/slack-mcp-server"],
+      "env": {
+        "SLACK_USER_TOKEN": "xoxp-ここにStep3でコピーしたトークンを貼り付け",
+        "SLACK_TEAM_ID": "TxxxxxxxxのワークスペースID"
+      }
+    }
+  }
+}</div>
+
+    <div class="note-box">
+      <strong>セキュリティ注意：</strong> <code>.mcp.json</code> には User Token が含まれます。このファイルを Git にコミットしたり、他人と共有したりしないでください。<code>.gitignore</code> に <code>.mcp.json</code> を追加することを推奨します。
+    </div>
+
+    <h3 class="subsection-title">Step 5 ： スキルファイルを配置する</h3>
+
+    <p>堀江から受け取った <code>SKILL.md</code> を以下のパスに配置します：</p>
+
+    <div class="code-block">.claude/skills/slack-salvage/SKILL.md</div>
+
+    <p>フォルダがない場合は作成してください：</p>
+
+    <div class="code-block">mkdir -p .claude/skills/slack-salvage</div>
+
+    <h3 class="subsection-title">Step 6 ： Claude Code を再起動する</h3>
+
+    <p>設定を反映させるため、Claude Code を一度終了して再起動します。</p>
+
+    <div class="code-block"># Claude Code を終了後、プロジェクトフォルダで再起動
+claude</div>
+
+    <div class="confirm-box">
+      ✅ 再起動後に <code>/slack-salvage setup</code> と入力して、セットアップ内容が表示されれば設定完了です。
+    </div>
+  </section>
+
+  <!-- 使い方 -->
+  <section id="usage">
+    <h2 class="section-title">使い方</h2>
+
+    <h3 class="subsection-title">基本的な実行方法</h3>
+
+    <p>Claude Code のチャット画面に以下を入力するだけです：</p>
+
+    <div class="code-block">/slack-salvage</div>
+
+    <p>直近 60 日間の全チャンネル・DM をスキャンします。チャンネル数の確認が入るので「y」と答えると実行が始まります。</p>
+
+    <h3 class="subsection-title">引数一覧</h3>
+
+    <table>
+      <thead>
+        <tr><th>コマンド</th><th>動作</th><th>おすすめの使いどころ</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>/slack-salvage</code></td>
+          <td>直近 60 日間の全チャンネル+DM をスキャン</td>
+          <td>まず試すときはこれ</td>
+        </tr>
+        <tr>
+          <td><code>/slack-salvage days:180</code></td>
+          <td>直近 180 日間をスキャン</td>
+          <td>半年分まとめて掘り起こしたいとき</td>
+        </tr>
+        <tr>
+          <td><code>/slack-salvage channel:general</code></td>
+          <td>指定チャンネルのみスキャン</td>
+          <td>特定チャンネルに絞りたいとき</td>
+        </tr>
+        <tr>
+          <td><code>/slack-salvage dm</code></td>
+          <td>DM とグループ DM のみスキャン</td>
+          <td>1対1のやり取りだけ確認したいとき</td>
+        </tr>
+        <tr>
+          <td><code>/slack-salvage status:stalled</code></td>
+          <td>中断・自然消滅のみ絞り込み表示</td>
+          <td>要対応のものだけ見たいとき</td>
+        </tr>
+        <tr>
+          <td><code>/slack-salvage setup</code></td>
+          <td>セットアップ手順を表示</td>
+          <td>設定を確認したいとき</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">実行後のインタラクション</h3>
+
+    <p>結果が表示されたら、以下の操作が可能です：</p>
+
+    <table>
+      <thead>
+        <tr><th>入力</th><th>動作</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>番号（例：<code>1</code>）</td><td>そのアイテムの詳細表示・フォローアップ文案の生成</td></tr>
+        <tr><td><code>save</code></td><td>全結果を <code>slack-salvage-YYYY-MM-DD.md</code> に保存</td></tr>
+        <tr><td><code>ticket:1</code></td><td>1番のアイテムをタスク登録するための情報を整形出力</td></tr>
+        <tr><td><code>close:1</code></td><td>1番を「対応不要」としてリストから除外</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 出力の見方 -->
+  <section id="output">
+    <h2 class="section-title">出力の見方</h2>
+
+    <p>スキャン結果は以下の 4 区分で表示されます。特に <strong>⏸️ 中断</strong> と <strong>💀 自然消滅</strong> が要確認です。</p>
+
+    <h3 class="subsection-title">⏸️ 中断 — コミットしたまま止まっている</h3>
+
+    <div class="output-card">
+      <div class="oc-header">⏸️ 中断 &nbsp; <span class="badge badge-warn">要フォロー</span> &nbsp; 採用ページのコピー改善</div>
+      <div class="oc-meta">チャンネル: #marketing &nbsp;｜&nbsp; 期間: 2026-02-10 〜 2026-02-14（58日前に止まった）&nbsp;｜&nbsp; 参加者: 田中, 佐藤, 山田</div>
+      <div class="oc-body">
+        <strong>何をするプロジェクトだったか：</strong><br>
+        採用ページの訴求文を刷新し、応募率を改善する<br><br>
+        <strong>誰が何をコミットしたか：</strong><br>
+        ・田中さん：「木曜までにドラフト作ります」（2/10）<br>
+        ・佐藤さん：「レビューします」（2/11）<br><br>
+        <strong>止まった理由（推定）：</strong><br>
+        ドラフト共有後、フィードバックのやり取りが2往復で途絶えた。「最終版どうする？」への返信がないまま終了
+      </div>
+      <div class="oc-action">推奨アクション → 田中さんに「採用ページの件、その後どうなりましたか？」と確認する</div>
+    </div>
+
+    <h3 class="subsection-title">💀 自然消滅 — 議論したが誰も動かなかった</h3>
+
+    <div class="output-card">
+      <div class="oc-header">💀 自然消滅 &nbsp; <span class="badge badge-pending">今も必要か確認</span> &nbsp; 経費精算フロー自動化の検討</div>
+      <div class="oc-meta">チャンネル: #ops-internal &nbsp;｜&nbsp; 期間: 2025-11-20 〜 2025-11-22（143日前）&nbsp;｜&nbsp; 参加者: 山田, 小林, 堀江</div>
+      <div class="oc-body">
+        <strong>何の議論だったか：</strong><br>
+        経費精算の手入力作業を API で自動化できないか検討。3名で「やろう」という雰囲気になった。<br><br>
+        <strong>どこで止まったか：</strong><br>
+        具体的な担当者が決まらないまま、「まず調べてみます」で終わりその後なし
+      </div>
+      <div class="oc-action">今も有効か → 状況が変わっている可能性あり。今でも必要なら改めてスレッドを立て直す価値あり</div>
+    </div>
+
+    <h3 class="subsection-title">🔄 進行中 ／ ✅ 完了</h3>
+
+    <div class="highlight-box">
+      <strong>🔄 進行中</strong>は念のための確認です。直近 7 日以内に活動があるため、基本は問題ありません。<br>
+      <strong>✅ 完了</strong>は参考情報として表示されます。対応不要です。
+    </div>
+  </section>
+
+  <!-- Tips -->
+  <section id="tips">
+    <h2 class="section-title">Tips &amp; よくある質問</h2>
+
+    <h3 class="subsection-title">スキャン時間の目安</h3>
+
+    <table>
+      <thead>
+        <tr><th>チャンネル数</th><th>期間</th><th>目安時間</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>〜20件</td><td>30日</td><td>5〜10分</td></tr>
+        <tr><td>〜50件</td><td>60日</td><td>15〜25分</td></tr>
+        <tr><td>50件超</td><td>60日</td><td>30分〜（上位40件に絞ることを推奨）</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">よくある質問</h3>
+
+    <h4>Q. プライベートチャンネルも見られますか？</h4>
+    <p>A. 自分が参加しているプライベートチャンネルは対象になります。自分が入っていないチャンネルは対象外です。</p>
+
+    <h4>Q. 他の人のDMを読まれますか？</h4>
+    <p>A. 自分が参加しているDM・グループDMのみ対象です。他の人同士のDMは読みません。</p>
+
+    <h4>Q. Slackのフリープランでも使えますか？</h4>
+    <p>A. 使えますが、フリープランはメッセージ履歴が直近 90 日までです。それ以前のデータは取得できません。</p>
+
+    <h4>Q. エラーが出た場合は？</h4>
+    <p>A. レート制限エラーが出た場合は少し待ってから再実行してください。Token エラーが出た場合は <code>xoxp-</code> トークンと Workspace ID を再確認してください。</p>
+
+    <h4>Q. 「あのスレッド」が出てこない場合は？</h4>
+    <p>A. <code>/slack-salvage days:180</code> で期間を延ばす、または <code>channel:チャンネル名</code> で特定チャンネルを指定してみてください。</p>
+
+    <div class="note-box">
+      <strong>問題が解決しない場合は</strong>堀江（kosuke.horie@sevenrich.jp）にお問い合わせください。
+    </div>
+  </section>
+
+  <div class="report-footer">
+    Slack Salvage セットアップガイド — Generated 2026-04-13 — BPIO co., Ltd.
+  </div>
+
+</div>
+
+<script>
+  const pills = document.querySelectorAll('.pill');
+  const sections = document.querySelectorAll('[id]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        pills.forEach(p => p.classList.remove('active'));
+        const active = document.querySelector(`.pill[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-80px 0px -80% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
