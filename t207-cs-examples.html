@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ToBカスタマーサクセス研修 アクション別事例集 — BPIO</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: #1a1a1a; background: #fff; line-height: 1.7;
+    }
+    html { font-size: 15px; }
+
+    /* Sticky Nav */
+    #sticky-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.97);
+      border-bottom: 1px solid #ccc;
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    #sticky-nav .nav-label {
+      font-size: 0.72rem; font-weight: 700; color: #777;
+      letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+    }
+    .pill {
+      display: inline-block; padding: 5px 16px;
+      font-size: 0.78rem; font-weight: 600; color: #555;
+      text-decoration: none; border: 1px solid #ccc;
+      border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+    }
+    .pill:hover, .pill.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+    /* Main */
+    #main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+
+    /* Report Header */
+    .report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+    .report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+    .report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+    .report-header .summary-box { background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px; }
+    .report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+    .report-header .summary-box ul { padding-left: 20px; font-size: 0.82rem; }
+    .report-header .summary-box li { margin-bottom: 4px; }
+
+    /* Section Headings */
+    h2.section-title {
+      font-size: 1.2rem; font-weight: 700;
+      border-bottom: 1px solid #999; padding-bottom: 6px;
+      margin-top: 48px; margin-bottom: 20px;
+    }
+    h3.subsection-title {
+      font-size: 1.0rem; font-weight: 700;
+      margin-top: 36px; margin-bottom: 10px;
+      padding-left: 10px; border-left: 3px solid #555;
+    }
+    h4 { font-size: 0.88rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; color: #444; }
+
+    /* Text */
+    p { margin-bottom: 10px; font-size: 0.88rem; }
+    ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+    ul li, ol li { margin-bottom: 3px; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+    table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+    table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+    table td { background: #fff; }
+    table tr:nth-child(even) td { background: #fafafa; }
+
+    /* Example pair */
+    .example-pair { margin: 12px 0 18px; }
+    .example-situation {
+      font-size: 0.82rem; color: #555; background: #f7f7f7;
+      border-left: 3px solid #ccc; padding: 8px 12px; margin-bottom: 10px;
+    }
+    .example-situation strong { color: #1a1a1a; }
+    .example-bad {
+      background: #fff8f8; border-left: 4px solid #bbb;
+      padding: 10px 14px; margin-bottom: 6px; font-size: 0.85rem;
+    }
+    .example-good {
+      background: #f0fdf4; border-left: 4px solid #4ade80;
+      padding: 10px 14px; font-size: 0.85rem;
+    }
+    .example-label {
+      font-size: 0.72rem; font-weight: 700;
+      display: block; margin-bottom: 5px;
+    }
+    .label-bad { color: #999; }
+    .label-good { color: #166534; }
+
+    /* Point box */
+    .point-box {
+      background: #eff6ff; border-left: 4px solid #3b82f6;
+      padding: 10px 16px; margin: 10px 0 24px; font-size: 0.82rem; color: #1e3a5f;
+    }
+    .point-box strong { font-weight: 700; }
+
+    /* Note box */
+    .note-box {
+      background: #fffbeb; border-left: 4px solid #f59e0b;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+    }
+
+    /* Highlight box */
+    .highlight-box {
+      background: #f7f7f7; border: 1px solid #ddd;
+      padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+    }
+
+    /* Chapter header */
+    .chapter-header {
+      background: #f0f0f0; border: 1px solid #ccc;
+      padding: 12px 18px; margin-bottom: 20px;
+    }
+    .chapter-header .ch-num { font-size: 0.75rem; font-weight: 700; color: #777; letter-spacing: 0.05em; }
+    .chapter-header .ch-title { font-size: 1.05rem; font-weight: 700; margin-top: 2px; }
+    .chapter-header .ch-goal { font-size: 0.82rem; color: #555; margin-top: 4px; }
+    .chapter-header .ch-scope { font-size: 0.78rem; color: #c05600; font-weight: 600; margin-top: 4px; }
+
+    /* Footer */
+    .report-footer {
+      border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+      font-size: 0.78rem; color: #777;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      #main { padding: 24px 20px 60px; }
+      .report-header h1 { font-size: 1.3rem; }
+      h2.section-title { font-size: 1.05rem; }
+      table { font-size: 0.78rem; }
+      table th, table td { padding: 5px 7px; }
+      #sticky-nav { padding: 10px 12px; gap: 6px; }
+      .pill { padding: 4px 12px; font-size: 0.72rem; }
+    }
+
+    /* Print */
+    @media print {
+      #sticky-nav { display: none; }
+      #main { padding: 0; max-width: 100%; }
+      body { font-size: 10pt; }
+      .report-header h1 { font-size: 16pt; }
+      h2.section-title { font-size: 13pt; page-break-after: avoid; }
+      h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+      table { font-size: 8pt; page-break-inside: avoid; }
+      table th, table td { padding: 3px 5px; }
+      .point-box, .note-box, .highlight-box, .example-bad, .example-good, .example-situation {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      table th { background: #f0f0f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">CHAPTER</span>
+  <a class="pill" href="#overview">概要</a>
+  <a class="pill" href="#ch1">Ch1 CSとは</a>
+  <a class="pill" href="#ch2">Ch2 アウトカム</a>
+  <a class="pill" href="#ch3">Ch3 スコープ</a>
+  <a class="pill" href="#ch4">Ch4 担当者解像度</a>
+  <a class="pill" href="#ch5">Ch5 スタンス</a>
+  <a class="pill" href="#ch6">Ch6 場面別</a>
+  <a class="pill" href="#summary">パターンまとめ</a>
+</nav>
+
+<div id="main">
+
+  <header class="report-header" id="overview">
+    <p class="subtitle">T207 — p001（研修事業） — 2026-04-13</p>
+    <h1>ToBカスタマーサクセス研修<br>アクション別事例集</h1>
+    <div class="summary-box">
+      <h3>本資料について</h3>
+      <ul>
+        <li><strong>文脈</strong>: 採用アウトソース（スカウト送付・日程調整・採用進捗管理）</li>
+        <li><strong>対象</strong>: 第二新卒・ToB CS未経験者</li>
+        <li><strong>構成</strong>: 6章 × 全27アクション — 各アクションに「❌ 悪い例（アウトプット視点）」と「✅ 良い例（アウトカム視点）」を対比表示</li>
+        <li><strong>読み方</strong>: 良い例と悪い例の差は「何を伝えているか」ではなく「<strong>何のために伝えているか</strong>」</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Chapter 1 -->
+  <section id="ch1">
+    <h2 class="section-title">Chapter 1 — ToBカスタマーサクセスとは</h2>
+    <div class="chapter-header">
+      <div class="ch-num">CHAPTER 1</div>
+      <div class="ch-title">ToBカスタマーサクセスとは</div>
+      <div class="ch-goal">ゴール: CS担当者の仕事の全体像をつかむ。「作業者」と「CS担当者」の違いを最初に理解する。</div>
+    </div>
+
+    <h3 class="subsection-title">1-1: CS担当者としての役割を理解する</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 入社して最初の顧客担当になった。担当業務は「採用BPOの運用」。何をする人なのかを自分で整理する。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例（アウトプット視点）</span>
+        「スカウトを送って、日程を調整して、報告すればいいんですよね」
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例（アウトカム視点）</span>
+        「お客様が採用目標を達成できるよう、スカウト・日程・報告を通じて採用プロセスが止まらない状態を維持するのが自分の役割」
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> CS担当者は「作業をこなす人」ではなく「顧客の目標達成を支援する人」。最初にここを誤解すると、全ての行動がアウトプット視点になる。</div>
+
+    <h3 class="subsection-title">1-2: つまずきパターン① スカウト数は達成したのにクレームが来た</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 月間スカウト送付500件の目標を達成。しかし顧客から「採用できていない」と連絡が来た。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例（アウトプット視点）</span>
+        「契約通りスカウトは500件送りました。採用できるかどうかは候補者次第です」と返す
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例（アウトカム視点）</span>
+        「送付数は達成しましたが、書類通過率が先月より5%下がっています。ターゲット要件を一度見直しませんか」と提案する
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> スカウト送付はアウトプット。顧客が求めているのは「採用決定」というアウトカム。数字を達成しても顧客のアウトカムに近づいていなければCSの仕事は完結しない。</div>
+
+    <h3 class="subsection-title">1-3: つまずきパターン② 日程調整の遅れで候補者が離脱した</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 候補者への面接日程調整を担当。返信が遅れていたが「まだ大丈夫だろう」と放置した結果、候補者が辞退した。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例（アウトプット視点）</span>
+        辞退連絡を顧客に報告するだけ。「今回はご縁がなかったです」と説明
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例（アウトカム視点）</span>
+        「日程調整の初回連絡から48時間以上空いていました。今後は24時間以内に初回連絡するルールを設けます」と再発防止策をセットで報告
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 問題発生後の報告だけでは信頼を失う。何が原因でアウトカム（内定承諾）が損なわれたかを示し、次の打ち手を提示することがCSの仕事。</div>
+
+    <h3 class="subsection-title">1-4: つまずきパターン③ 定例で何を報告すればいいかわからない</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 初めての顧客定例MTG。前任者のフォーマットを引き継いだが、数字を読み上げるだけになってしまった。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例（アウトプット視点）</span>
+        「今月のスカウト送付数は423件、書類通過は38名、面接設定は22名です」（数字の羅列で終わり）
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例（アウトカム視点）</span>
+        「今月は書類通過率が先月比3%下がりました。原因はターゲット職種のスカウト返信率低下と見ています。来月はメッセージ文面を改善するので、数字が戻るか一緒に見ていただけますか」
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 数字を読み上げることはアウトプット。「何が起きていて、どうしたいか」まで伝えることがアウトカム視点の報告。</div>
+  </section>
+
+  <!-- Chapter 2 -->
+  <section id="ch2">
+    <h2 class="section-title">Chapter 2 — アウトカムの重要性</h2>
+    <div class="chapter-header">
+      <div class="ch-num">CHAPTER 2</div>
+      <div class="ch-title">アウトカムの重要性</div>
+      <div class="ch-goal">ゴール: 「作業を頑張る」から「顧客が何を得るか」に思考を切り替える</div>
+      <div class="ch-scope">⚠ スコープ注記: コンサル・PL・PM的な戦略提案は対象外。オペレーション業務の中で「何を届けているか」を明確にする範囲に限定。</div>
+    </div>
+
+    <h3 class="subsection-title">2-1: アウトカムとアウトプットを区別する</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 月次報告書を作成する。今月は数字的に特段の変化はなかった。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例（アウトプット視点）</span>
+        「スカウト送付: 510件 / 書類通過: 42名 / 面接設定: 25名 / 内定: 3名」と表に並べて終わり
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例（アウトカム視点）</span>
+        「内定3名（目標5名に対し進捗60%）。不足の主因は面接→内定フェーズの通過率低下（先月比-8%）。面接フィードバックを確認のうえ、来月中に要因分析をお届けします」
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 同じ数字でも、目標との差・原因・次のアクションを加えると「アウトカムへの道筋」が見える報告になる。</div>
+
+    <h3 class="subsection-title">2-2: 顧客のアウトカムを問いかけで把握する</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 新規顧客のオンボーディング初日。まず「何を達成したいか」を確認する。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例（アウトプット視点）</span>
+        「今月のスカウト送付希望件数と対象職種を教えてください」（作業の入力収集から始める）
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例（アウトカム視点）</span>
+        「今期の採用目標は何名で、いつまでに達成したいですか？今一番詰まっているフェーズはどこですか？」（ゴールと課題を先に把握）
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 作業量を決める前に「何のための採用か」「どこで困っているか」を聞くことで、適切なアクション量・優先度が決まる。</div>
+
+    <h3 class="subsection-title">2-3: 追うべき数値を選ぶ（オペレーション範囲内）</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 定例報告で使うKPIを設計する。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例（アウトプット視点）</span>
+        「送付件数・通過件数・面接設定件数」だけ追う（工程の数量のみで各フェーズのボトルネックが見えない）
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例（アウトカム視点）</span>
+        「送付件数・返信率・書類通過率・日程調整完了率・内定承諾率」を追い、各フェーズの転換率でボトルネックを可視化する
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 各フェーズの「率」を追うことで、どこで詰まっているかが見える。数量だけでは「たくさんやっている」しか伝わらない。</div>
+
+    <h3 class="subsection-title">2-4: 数字を使った定例報告の組み立て</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 今月、日程調整完了率が先月より10%下がった。定例で報告する。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例（アウトプット視点）</span>
+        「日程調整完了率が先月の82%から72%に下がりました」で終わる
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例（アウトカム視点）</span>
+        「日程調整完了率が72%（先月比-10%）です。候補者への日程提示が48時間以上かかるケースが増えており、日程の幅が狭いことが主因と見ています。御社から候補者への第一連絡を3日以内にしていただけると、完了率が回復する見込みです」
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 数字の変化 → 原因の仮説 → 改善のアクション（顧客側・自社側それぞれ）をセットで伝える。</div>
+  </section>
+
+  <!-- Chapter 3 -->
+  <section id="ch3">
+    <h2 class="section-title">Chapter 3 — スコープの話</h2>
+    <div class="chapter-header">
+      <div class="ch-num">CHAPTER 3</div>
+      <div class="ch-title">スコープの話</div>
+      <div class="ch-goal">ゴール: 「何をやる・やらない」を最初に握ることで、後の混乱を防ぐ</div>
+    </div>
+
+    <h3 class="subsection-title">3-1: スコープを最初に握る</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> キックオフMTGで担当範囲を確認する。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        「では弊社でスカウト送付と日程調整を担当します。よろしくお願いします」と宣言して終わり（やらないことを言っていない）
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        「弊社の担当範囲はスカウト原稿作成・送付・日程調整・進捗報告です。面接の合否判定・内定条件の交渉はお客様側でお願いします。このご認識で合っていますか？」と境界を双方で確認する
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> スコープは「やること」だけでなく「やらないこと」まで言語化して合意する。言わなかった範囲は「やってくれると思っていた」になる。</div>
+
+    <h3 class="subsection-title">3-2: スコープ外依頼への断り方</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 担当者から「採用要件の設計も手伝ってほしい」と依頼が来た。契約範囲外。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        「それは弊社の契約範囲外なので対応できません」と即答する
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        「採用要件の設計は今の契約外になりますが、現在の要件でスカウト返信率が低い傾向があります。まず弊社で返信率データをまとめてお届けするので、それをもとに要件を見直すかどうかご検討いただけますか」
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 「できません」だけでは関係が悪化する。契約内でできることで顧客の課題に近づく代替案をセットで返す。</div>
+
+    <h3 class="subsection-title">3-3: 期待値コントロール</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 顧客から「来月中に5名採用できますか？」と聞かれた。現在の進捗では難しい。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        「頑張ってみます」「できる限り対応します」と曖昧に答える
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        「現在の書類通過率と面接設定ペースだと、来月中に内定まで至るのは2〜3名が現実的な見込みです。5名を目指すには、スカウト送付数を今月比1.5倍にするか、ターゲット要件を緩和する必要があります。どちらを優先しますか？」
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 曖昧な返答は「やってくれると思っていた」を生む。数字ベースで現実の見通しを伝え、顧客に選択肢を渡す。</div>
+
+    <h3 class="subsection-title">3-4: スコープが広がるサインの早期検知</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 定例MTGで担当者から「ちょっとこれも見てもらえる?」が毎回続いている。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        「もちろんです！」と毎回引き受け、気づいたら作業量が2倍になっている
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        「今回のご依頼は弊社の標準スコープ外になります。とても重要な課題だと思いますので、追加対応として正式にご依頼いただく形にすることは可能ですか？」と早期に線引きする
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 「ちょっと」が積み重なるとスコープが無限に広がる。親切心で引き受け続けると、CS担当者自身が疲弊し品質も落ちる。</div>
+  </section>
+
+  <!-- Chapter 4 -->
+  <section id="ch4">
+    <h2 class="section-title">Chapter 4 — ToB担当者の解像度リアル</h2>
+    <div class="chapter-header">
+      <div class="ch-num">CHAPTER 4</div>
+      <div class="ch-title">ToB担当者の解像度リアル</div>
+      <div class="ch-goal">ゴール: 「担当者はわかってくれている」という前提を捨て、正しい伝え方を身につける</div>
+    </div>
+    <div class="note-box">「ちゃんと理解してくれている」は幻想。担当者はサービスを1〜2割しか理解していないと思って行動することが出発点。</div>
+
+    <h3 class="subsection-title">4-1: 担当者の理解度を確認する</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> スカウト原稿を作成するため、ターゲット要件を担当者にヒアリングする。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        「どんな人材を採用したいですか？」と聞いて、「営業経験3年以上で主体性のある人」という回答をそのままターゲットにする
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        「営業経験3年以上とのことですが、現在活躍しているメンバーのご経歴を1〜2名教えていただけますか？また『主体性のある人』とは、具体的にどんな行動をしている人のことですか？」と深掘りする
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 担当者が最初に言う要件は、実際に必要な要件の表面だけ。具体例を聞くことで本当のターゲット像が見えてくる。</div>
+
+    <h3 class="subsection-title">4-2: 「わかった」を信用しない</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> スカウト原稿の確認をお願いした。「いいですよ」と返ってきたが、送付後に「これは違う」と言われた。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        「確認いただけたと思っていました…」と言い訳する
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        次回から「原稿確認の際、『ここが意図と違う場合はNG』という具体チェック項目を添えてお送りする」「承認後の変更はスケジュールに影響する旨を最初に伝える」
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 「確認OK」は「全部読んだOK」ではない。確認してほしいポイントを明示し、齟齬が出たときのルールを事前に決めておく。</div>
+
+    <h3 class="subsection-title">4-3: 報告書は斜め読みされる前提で作る</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 月次レポートを作成する。今月は採用数が目標未達。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        経緯・数字・分析・原因・対策を順番に書いた5ページのレポートを送る（担当者は1枚目しか読まない）
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        1枚目に「今月の結果: 内定2名（目標5名）/ 主因: 面接通過率の低下 / 来月の対策: 面接フィードバックシートの導入」をまとめ、詳細は2枚目以降に添付する
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 担当者が最初に見るのは1枚目の上半分。「何が起きて、次どうするか」がそこで読み取れないと、詳細は読まれない。</div>
+
+    <h3 class="subsection-title">4-4: テキストで催促する（返信がない場合）</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 候補者への面接案内を先方担当者に依頼して3日経つが返信がない。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        「先日お送りした件、いかがでしょうか」と同じ文面で再送する
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        「○○様、先週ご連絡した△△さんの面接日程の件です。候補者の方には今週中にご連絡したい旨お伝えしており、<strong>本日中にご確認いただけますと助かります</strong>。ご都合はいかがでしょうか？」（期限・理由・簡潔な確認を明示）
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 返信がない理由は「忘れている」「忙しい」がほとんど。催促するときは「なぜ今日までに必要か」の理由と、「何を確認してほしいか」を1行で添える。</div>
+
+    <h3 class="subsection-title">4-5: 専門用語を使わずに伝える</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> スカウト返信率が下がっていることを担当者に説明する。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        「今月のレスポンスレートが6.2%で、先月比でCVRが低下しています」
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        「今月は100件スカウトを送って6人しか返信をいただけていません。先月は9人でした。メッセージの書き方を変えると改善できる可能性があります」
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 担当者はBPOの業務指標の用語には慣れていない。数字を実感できる表現に変えると、担当者が課題を自分事として捉えやすくなる。</div>
+
+    <h3 class="subsection-title">4-6:（応用）担当者のサービス理解を育てる</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 定例で毎回同じ質問をされる。「スカウト返信率ってどのくらいが普通なの?」</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        毎回「業界平均は5〜10%です」と答えるだけ（担当者の理解は毎回リセット）
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        「業界平均は5〜10%ですが、御社は現在6%です。弊社の他の支援先と比較すると、職種・メッセージ内容・送付時間帯の3つが主な変動要因です。過去3ヶ月のデータをグラフでお見せします」と可視化して渡す
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 同じ質問への答えを毎回「提供」するのではなく、担当者が「自分で判断できる状態」に少しずつ近づけることが、長期的な信頼につながる。</div>
+  </section>
+
+  <!-- Chapter 5 -->
+  <section id="ch5">
+    <h2 class="section-title">Chapter 5 — CSのスタンスと社内連携</h2>
+    <div class="chapter-header">
+      <div class="ch-num">CHAPTER 5</div>
+      <div class="ch-title">CSのスタンスと社内連携</div>
+      <div class="ch-goal">ゴール: 担当者の解像度リアルを踏まえた上で、CSとして何をどうするかを行動レベルで決める</div>
+    </div>
+
+    <h3 class="subsection-title">5-1: 先回り提案をする</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 来月、顧客企業の新卒入社が重なりIT担当者が不在になることが分かった。日程調整に影響が出そう。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        問題が起きてから「先方のご担当者が不在で日程調整が遅延しています」と報告
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        2週間前に「来月○週は担当者様が不在とのこと、その期間の日程調整は△△様に代行いただくか、事前に候補日を複数確保する形にしませんか」と提案する
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 「起きてから報告」は信頼を損なう。「起きる前に提案」がCSの価値。担当者のカレンダーやイベントを把握しておくのはそのため。</div>
+
+    <h3 class="subsection-title">5-2: 悪いニュースを伝える</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 今月の内定者が0名になりそう。定例で報告する。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        「今月は内定が出ませんでした。来月頑張ります」
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        「今月の内定者数は現時点で0名です（事実）。面接設定まで進んだ3名全員が辞退しており、日程提示のリードタイムが長かったことが主因です（原因）。来月は48時間以内の初回連絡を徹底します（対策）」
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 悪い報告ほど「事実 → 原因 → 対策」の順で伝える。謝罪や言い訳から入ると信頼が回復しにくい。</div>
+
+    <h3 class="subsection-title">5-3: 社内の営業に情報を渡す</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 顧客が「来期は採用ポジションを3つに増やしたい」と言っていた。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        「そういえば言ってましたよ」と口頭で営業に伝えるだけ
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        「○月○日の定例で、来期3ポジション追加の話が出ました。現在の契約範囲では対応できない可能性があります。営業から先方へのヒアリングを来月末までにお願いできますか？」とメモで共有し期日を添える
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> CS担当者が持っている顧客情報は、営業にとって最も価値のあるインテリジェンス。口頭で流すだけでなく記録に残し、アクションを促す。</div>
+
+    <h3 class="subsection-title">5-4: ツールに記録を残す</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 顧客からSlackで「次回の定例は延期したい」と来た。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        「了解です」とSlackで返し、メモはしない（担当者が変わったら情報が消える）
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        「了解です」と返しつつ、CRM/タスク管理ツールに「○月定例: ○日に延期（先方都合）」と記録。次回定例のアジェンダも更新する
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> CSの仕事は担当者が変わっても継続する。記録がなければ「聞いていた話と違う」「前の担当者はやってくれていた」が起きる。</div>
+  </section>
+
+  <!-- Chapter 6 -->
+  <section id="ch6">
+    <h2 class="section-title">Chapter 6 — 場面別アクション集</h2>
+    <div class="chapter-header">
+      <div class="ch-num">CHAPTER 6</div>
+      <div class="ch-title">場面別アクション集</div>
+      <div class="ch-goal">ゴール: 前章の判断軸を採用BPO実務の具体場面に当てはめ、迷わず動けるようにする</div>
+    </div>
+
+    <h3 class="subsection-title">6-1: 採用BPOオンボーディング（最初の30日）</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 新規顧客の初月。体制を立ち上げる。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        キックオフ後すぐにスカウト送付を開始。ターゲット要件は大まかに確認しただけ。定例は翌月から。
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        ①スカウトターゲット要件の詳細ヒアリング（活躍社員の事例を3名分収集）→ ②スカウト原稿の初稿を作り先方で確認 → ③日程調整フロー（誰が・どのツールで・何時間以内に）を書面で合意 → ④1週目が終わった時点でミニ振り返りを実施
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 最初の30日で「体制の合意」を取りきることが、その後の運用の安定度を決める。速く走り始めるより、走り方を合わせることが先。</div>
+
+    <h3 class="subsection-title">6-2: 顧客定例のファシリテーション</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 月次の顧客定例MTG（30分）を主催する。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        数字を読み上げる→「何かご質問はありますか？」→終了。毎回同じ流れで担当者の関与が薄れていく。
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        ①先月の振り返り（数字＋1つの発見） → ②今月の焦点（どのフェーズを改善するか） → ③先方への確認事項（1〜2点に絞る） → ④次回までのアクション確認（CS側・顧客側それぞれ）で終了
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 定例は「報告の場」ではなく「次のアクションを合意する場」。顧客が定例後に「何をすればいいか」を明確に持って帰れるようにする。</div>
+
+    <h3 class="subsection-title">6-3: 担当者交代時の引き継ぎ</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 顧客側の採用担当者が異動になった。新担当者に引き継ぎが必要。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        旧担当者に「新しい方によろしく伝えておいてください」とお願いするだけ
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        ①引き継ぎ資料を自社で作成（現在の進捗・スコープ・ルール・過去の経緯）→ ②新旧担当者＋CSの三者で30分の引き継ぎMTGを設定 → ③新担当者から「理解できた」の確認を書面でもらう
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 引き継ぎの主体はCS担当者。顧客側に任せると「聞いていなかった」が必ず起きる。自社で資料を作り、三者で確認する。</div>
+
+    <h3 class="subsection-title">6-4: クレーム・不満を受け止める</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 担当者から「なんか最近対応が遅い気がする」とSlackが来た。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        「対応時間は契約通りです。SLAに違反していないか確認します」と返す（防御から入る）
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        「ご不便をおかけして申し訳ありません。具体的にどの対応が遅いとお感じでしたか？事実を確認したうえで、改善策をお伝えします」と聞く
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 最初の返答は「受け止め」が最優先。事実確認・弁解は後。顧客が「ちゃんと聞いてもらえた」と感じることが、怒りを収める最初のステップ。</div>
+
+    <h3 class="subsection-title">6-5: 解約リスクを感じたときのアクション</h3>
+    <div class="example-pair">
+      <div class="example-situation"><strong>状況:</strong> 最近、定例の欠席が増え、レスポンスも遅くなってきた。担当者の反応も薄い。</div>
+      <div class="example-bad">
+        <span class="example-label label-bad">❌ 悪い例</span>
+        「最近忙しいのかな」と思いながら様子を見る（最悪の対応）
+      </div>
+      <div class="example-good">
+        <span class="example-label label-good">✅ 良い例</span>
+        ①シグナルを記録（欠席回数・レスポンス時間の変化）→ ②「最近ご状況はいかがでしょうか」と個別で連絡し温度感を確認 → ③「現在の支援で課題に感じている点はありますか？」と率直に聞く → ④問題があれば改善提案を1週間以内に出す
+      </div>
+    </div>
+    <div class="point-box"><strong>ポイント:</strong> 解約の意思決定は静かに進む。シグナルに気づいた時点で動き始める。「様子を見る」は最悪の対応。</div>
+  </section>
+
+  <!-- Summary -->
+  <section id="summary">
+    <h2 class="section-title">パターンまとめ — 良い例・悪い例の共通法則</h2>
+    <div class="highlight-box">全27アクションの良い例・悪い例を横断すると、以下の8つのパターンに集約される。</div>
+    <table>
+      <thead>
+        <tr>
+          <th>❌ 悪い例のパターン</th>
+          <th>✅ 良い例のパターン</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>作業の完了を報告する</td>
+          <td>アウトカムへの影響を説明する</td>
+        </tr>
+        <tr>
+          <td>事実だけを伝える</td>
+          <td>事実 ＋ 原因 ＋ 次のアクションを伝える</td>
+        </tr>
+        <tr>
+          <td>「できません」で終わる</td>
+          <td>「代わりにこれができます」を添える</td>
+        </tr>
+        <tr>
+          <td>聞かれてから答える</td>
+          <td>聞かれる前に提案する</td>
+        </tr>
+        <tr>
+          <td>数字を羅列する</td>
+          <td>数字の変化の意味を説明する</td>
+        </tr>
+        <tr>
+          <td>担当者の「わかった」を信じる</td>
+          <td>具体例や確認ポイントで齟齬を防ぐ</td>
+        </tr>
+        <tr>
+          <td>問題が起きてから報告する</td>
+          <td>問題が起きる前に共有する</td>
+        </tr>
+        <tr>
+          <td>記録を残さない</td>
+          <td>CRM・タスク管理ツールに即記録する</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="report-footer">
+    ToBカスタマーサクセス研修 アクション別事例集 — T207 / p001（研修事業） — Generated 2026-04-13 — BPIO co., Ltd.
+  </div>
+
+</div>
+
+<script>
+  const pills = document.querySelectorAll('.pill');
+  const sections = document.querySelectorAll('section[id], header[id]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        pills.forEach(p => p.classList.remove('active'));
+        const active = document.querySelector(`.pill[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-80px 0px -80% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
