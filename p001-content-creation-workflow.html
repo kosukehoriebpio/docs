@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>研修コンテンツ作成ワークフロー — BPIO</title>
+  <style>
+    body {
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: #1a1a1a;
+      background: #fff;
+      line-height: 1.7;
+      margin: 0;
+    }
+    html { font-size: 15px; }
+
+    #sticky-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.97);
+      border-bottom: 1px solid #ccc;
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    #sticky-nav .nav-label {
+      font-size: 0.72rem; font-weight: 700; color: #777;
+      letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+    }
+    .pill {
+      display: inline-block; padding: 5px 16px;
+      font-size: 0.78rem; font-weight: 600; color: #555;
+      text-decoration: none; border: 1px solid #ccc;
+      border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+    }
+    .pill:hover, .pill.active {
+      background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+    }
+
+    #main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+
+    .report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+    .report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+    .report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+    .report-header .summary-box {
+      background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+    }
+    .report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+    .report-header .summary-box ul, .report-header .summary-box ol {
+      padding-left: 20px; font-size: 0.82rem;
+    }
+    .report-header .summary-box li { margin-bottom: 4px; }
+
+    h2.section-title {
+      font-size: 1.2rem; font-weight: 700;
+      border-bottom: 1px solid #999; padding-bottom: 6px;
+      margin-top: 48px; margin-bottom: 20px;
+    }
+    h3.subsection-title {
+      font-size: 1.0rem; font-weight: 700;
+      margin-top: 32px; margin-bottom: 12px;
+      padding-left: 10px; border-left: 3px solid #555;
+    }
+    h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+    table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+    table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+    table td { background: #fff; }
+    table tr:nth-child(even) td { background: #fafafa; }
+
+    p { margin-bottom: 10px; font-size: 0.88rem; }
+    ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+    ul li, ol li { margin-bottom: 3px; }
+
+    .highlight-box {
+      background: #f7f7f7; border: 1px solid #ddd;
+      padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+    }
+    .note-box {
+      background: #fffbeb; border-left: 4px solid #f59e0b;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+    }
+    .info-box {
+      background: #eff6ff; border-left: 4px solid #3b82f6;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f;
+    }
+
+    .badge {
+      display: inline-block; padding: 2px 10px;
+      font-size: 0.72rem; font-weight: 700;
+      border-radius: 999px; letter-spacing: 0.03em;
+    }
+    .badge-ok { background: #d4edda; color: #155724; }
+    .badge-warn { background: #fff3cd; color: #856404; }
+    .badge-info { background: #d1ecf1; color: #0c5460; }
+    .badge-pending { background: #e2e3e5; color: #383d41; }
+
+    .code-block {
+      background: #2d2d2d; color: #f8f8f2;
+      padding: 16px 20px; border-radius: 4px;
+      font-family: "Consolas", "Monaco", monospace;
+      font-size: 0.78rem; line-height: 1.6; overflow-x: auto;
+      margin: 12px 0 20px;
+    }
+
+    .flow {
+      display: flex; align-items: center; gap: 0;
+      margin: 20px 0; flex-wrap: wrap;
+    }
+    .flow-step {
+      background: #f0f0f0; border: 1px solid #ccc;
+      padding: 10px 18px; font-size: 0.82rem; font-weight: 600;
+      text-align: center; min-width: 100px;
+    }
+    .flow-step.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .flow-step.ai { background: #f0f0f0; border-color: #999; }
+    .flow-step.human { background: #fff; border: 1px solid #ccc; }
+    .flow-arrow { font-size: 1.2rem; color: #999; padding: 0 4px; }
+
+    .route-label {
+      display: inline-block; padding: 3px 12px;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;
+      border: 1px solid #1a1a1a; margin-bottom: 12px;
+    }
+
+    .step-card {
+      border: 1px solid #ddd; margin-bottom: 20px;
+    }
+    .step-card-header {
+      background: #f0f0f0; border-bottom: 1px solid #ddd;
+      padding: 10px 16px; display: flex; align-items: baseline; gap: 12px;
+    }
+    .step-card-header .step-num {
+      font-size: 0.72rem; font-weight: 700; color: #777; white-space: nowrap;
+    }
+    .step-card-header .step-title {
+      font-size: 0.95rem; font-weight: 700;
+    }
+    .step-card-header .step-badge {
+      margin-left: auto; white-space: nowrap;
+    }
+    .step-card-body { padding: 14px 16px; }
+    .step-card-body p { margin-bottom: 6px; }
+    .step-meta { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 10px; }
+    .step-meta-item { font-size: 0.8rem; }
+    .step-meta-item strong { color: #555; }
+
+    .report-footer {
+      border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+      font-size: 0.78rem; color: #777;
+    }
+
+    @media (max-width: 640px) {
+      #main { padding: 24px 20px 60px; }
+      .report-header h1 { font-size: 1.3rem; }
+      h2.section-title { font-size: 1.05rem; }
+      table { font-size: 0.78rem; }
+      table th, table td { padding: 5px 7px; }
+      #sticky-nav { padding: 10px 12px; gap: 6px; }
+      .pill { padding: 4px 12px; font-size: 0.72rem; }
+      .flow { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); }
+      .step-meta { flex-direction: column; gap: 4px; }
+    }
+
+    @media print {
+      #sticky-nav { display: none; }
+      #main { padding: 0; max-width: 100%; }
+      body { font-size: 10pt; }
+      .report-header h1 { font-size: 16pt; }
+      h2.section-title { font-size: 13pt; page-break-after: avoid; }
+      h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+      table { font-size: 8pt; page-break-inside: avoid; }
+      table th, table td { padding: 3px 5px; }
+      .highlight-box, .note-box, .info-box {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      table th {
+        background: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      .step-card-header {
+        background: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">SECTIONS</span>
+  <a class="pill" href="#overview">概要</a>
+  <a class="pill" href="#common">共通フェーズ</a>
+  <a class="pill" href="#route-a">テキスト教材</a>
+  <a class="pill" href="#route-b-slide">スライド制作</a>
+  <a class="pill" href="#route-b-voice">音声制作</a>
+  <a class="pill" href="#route-b-video">動画制作</a>
+  <a class="pill" href="#cheatsheet">早見表</a>
+  <a class="pill" href="#tools">ツール一覧</a>
+  <a class="pill" href="#files">ファイル配置</a>
+  <a class="pill" href="#trouble">トラブル対処</a>
+</nav>
+
+<div id="main">
+  <header class="report-header">
+    <h1>研修コンテンツ作成ワークフロー</h1>
+    <div class="subtitle">p001 研修事業（ビピトレ）— 作成: 2026-04-13</div>
+    <div class="summary-box">
+      <h3>このドキュメントについて</h3>
+      <ul>
+        <li>1コンテンツ（1テーマ）を完成させるまでの全工程を再現できるようにまとめたワークフローガイド</li>
+        <li>対象: BPIO研修事業でコンテンツを作成するすべての担当者（他事業部含む）</li>
+        <li>制作ルートは2種類: <strong>[A] テキスト教材</strong>（HTML閲覧型）と <strong>[B] 動画教材</strong>（LMS配信型）</li>
+        <li>STEP 1〜2（テーマ決定・原稿作成）は両ルート共通。以降で分岐する</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- ============================================================ -->
+  <section id="overview">
+    <h2 class="section-title">概要：2つの制作ルート</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ルート</th>
+          <th>成果物</th>
+          <th>向いている用途</th>
+          <th>所要時間の目安</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>[A] テキスト教材</strong></td>
+          <td>Web閲覧型HTMLページ</td>
+          <td>自己学習・リファレンス・読み物</td>
+          <td>半日〜1日 / 1コース</td>
+        </tr>
+        <tr>
+          <td><strong>[B] 動画教材</strong></td>
+          <td>動画ファイル（LMS配信）</td>
+          <td>レクチャー・手順解説・eラーニング</td>
+          <td>3〜5日 / 1コース</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">全体フロー</h3>
+    <div class="flow">
+      <div class="flow-step active">STEP 1<br><small>テーマ決定</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step active">STEP 2<br><small>原稿作成</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="background:#e8e8e8;min-width:200px;text-align:center;padding:10px 12px;">
+        <div style="font-size:0.72rem;color:#555;margin-bottom:4px;">ここで分岐</div>
+        <div style="display:flex;gap:8px;justify-content:center;">
+          <div class="flow-step" style="min-width:80px;font-size:0.75rem;padding:6px 8px;">[A]<br>HTML化</div>
+          <div class="flow-step" style="min-width:80px;font-size:0.75rem;padding:6px 8px;">[B]<br>動画化</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>AI自動化の範囲:</strong> STEP 1〜2（原稿作成）、[A]全工程、[B]のSTEP B-1〜B-4（スライド〜台本）はAIが実行。[B]のSTEP B-5以降（音声確認・動画編集・LMS登録）は人間が担当。
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section id="common">
+    <h2 class="section-title">共通フェーズ：テーマ決定〜原稿作成</h2>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <span class="step-num">STEP 1</span>
+        <span class="step-title">テーマ決定とカリキュラム設計</span>
+        <span class="step-badge"><span class="badge badge-warn">人間 + AI</span></span>
+      </div>
+      <div class="step-card-body">
+        <div class="step-meta">
+          <div class="step-meta-item"><strong>ツール:</strong> Claude（AI補助）</div>
+          <div class="step-meta-item"><strong>出力:</strong> <code>00-curriculum-overview.md</code></div>
+        </div>
+        <p>研修テーマを決定し、対象受講者・前提知識・習得目標を定義する。モジュール分割（章立て）・Phase分割・前提関係を設計し、全体カリキュラムをMDファイルに書き出す。</p>
+        <div class="highlight-box">
+          <strong>設計の単位:</strong><br>
+          <ul style="margin:6px 0 0;padding-left:18px;">
+            <li><strong>Phase</strong> = 受講順序の大きな区切り（例: Phase1=基礎、Phase2=実務）</li>
+            <li><strong>モジュール</strong> = 1動画・1ページに対応する学習単位</li>
+            <li>1モジュールの目安: 学習時間10〜20分、スライド枚数15〜25枚</li>
+          </ul>
+        </div>
+        <p><strong>出力パス:</strong> <code>data/projects/active/{project-id}/docs/training/00-curriculum-overview.md</code></p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <span class="step-num">STEP 2</span>
+        <span class="step-title">モジュール原稿（MDファイル）作成</span>
+        <span class="step-badge"><span class="badge badge-info">AI初稿 → 人間レビュー</span></span>
+      </div>
+      <div class="step-card-body">
+        <div class="step-meta">
+          <div class="step-meta-item"><strong>ツール:</strong> Claude Code</div>
+          <div class="step-meta-item"><strong>出力:</strong> <code>0N-{slug}.md</code>、<code>glossary.md</code></div>
+        </div>
+        <p>カリキュラム概要に基づき、モジュールごとのMDファイルを作成する。</p>
+        <p><strong>各MDファイルに含める要素:</strong></p>
+        <ul>
+          <li>学習目標（3〜5項目）</li>
+          <li>本文解説（BPO視点のコラム含む）</li>
+          <li>業務との接続（実務でどう使うか）</li>
+          <li>チェックリスト or 演習問題</li>
+        </ul>
+        <div class="code-block">Claudeへの指示例:
+カリキュラム概要（00-curriculum-overview.md）に基づいて、
+モジュール01「医療保険制度の基礎」のMDファイルを作成してください。
+対象者はBPO業務の初学者。学習目標3項目、本文解説、BPO視点コラム、チェックリストを含めること。</div>
+        <p><strong>出力パス:</strong> <code>data/projects/active/{project-id}/docs/training/0N-{slug}.md</code></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section id="route-a">
+    <h2 class="section-title">[A] テキスト教材ルート</h2>
+    <div class="route-label">[A] テキスト教材</div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <span class="step-num">STEP A-1</span>
+        <span class="step-title">Phase別HTML教材ページの作成</span>
+        <span class="step-badge"><span class="badge badge-ok">AI</span></span>
+      </div>
+      <div class="step-card-body">
+        <div class="step-meta">
+          <div class="step-meta-item"><strong>ツール:</strong> Claude Code（カスタムHTML生成）</div>
+          <div class="step-meta-item"><strong>出力:</strong> <code>index.html</code>, <code>phase2.html</code>…</div>
+        </div>
+        <p>複数のモジュールMDファイルを1つのリッチHTMLページにまとめる。Phase単位でHTMLを生成し、サイドバーナビ・Mermaid図表・用語集タブ付きのページを作成する。</p>
+        <div class="code-block">Claudeへの指示例:
+モジュール01〜03のMDと用語集から、Phase1のHTML教材ページを作成してください。
+サイドバーナビ・Mermaid図表付き。デザインはBPIOスタイルで。</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <span class="step-num">STEP A-2</span>
+        <span class="step-title">GitHub Pagesで公開</span>
+        <span class="step-badge"><span class="badge badge-ok">AI</span></span>
+      </div>
+      <div class="step-card-body">
+        <div class="step-meta">
+          <div class="step-meta-item"><strong>ツール:</strong> <code>/publish-page</code> スキル</div>
+          <div class="step-meta-item"><strong>出力:</strong> 公開URL（kosukehoriebpio.github.io/docs/）</div>
+        </div>
+        <p>生成したHTMLをGitHub Pagesに公開し、公開URLを関係者に共有する。</p>
+        <div class="code-block">/publish-page</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section id="route-b-slide">
+    <h2 class="section-title">[B] 動画教材ルート — フェーズ1：スライド制作</h2>
+    <div class="route-label">[B] 動画教材</div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <span class="step-num">STEP B-1</span>
+        <span class="step-title">HTMLスライド生成</span>
+        <span class="step-badge"><span class="badge badge-ok">AI</span></span>
+      </div>
+      <div class="step-card-body">
+        <div class="step-meta">
+          <div class="step-meta-item"><strong>ツール:</strong> <code>/slide</code> スキル</div>
+          <div class="step-meta-item"><strong>出力:</strong> <code>{slug}-{N}.html</code></div>
+        </div>
+        <p>STEP 2で作成したMD原稿を元にHTMLスライドを生成する。1回の生成は最大20枚。超える場合はPart分割で実行する。生成前にAIがスライド構成案を提示するので、承認してから生成する。</p>
+        <table>
+          <thead><tr><th>パターン</th><th>用途</th></tr></thead>
+          <tbody>
+            <tr><td>A: 表紙</td><td>章の冒頭</td></tr>
+            <tr><td>B: 目次</td><td>章の構成説明</td></tr>
+            <tr><td>C: 画像＋リスト</td><td>図解説明</td></tr>
+            <tr><td>D: 4列カード</td><td>並列概念の整理</td></tr>
+            <tr><td>E: 2×2カード</td><td>比較・マトリクス</td></tr>
+            <tr><td>F: まとめ</td><td>章の振り返り</td></tr>
+          </tbody>
+        </table>
+        <p><strong>出力パス:</strong> <code>data/projects/active/p023-slide-html-generator/output/{course}/html/</code></p>
+        <div class="code-block">/slide
+# AIが構成案を提示 → 確認・承認 → 生成</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <span class="step-num">STEP B-2</span>
+        <span class="step-title">PDF化</span>
+        <span class="step-badge"><span class="badge badge-ok">AI</span></span>
+      </div>
+      <div class="step-card-body">
+        <div class="step-meta">
+          <div class="step-meta-item"><strong>ツール:</strong> Playwright + PyMuPDF（自動）</div>
+          <div class="step-meta-item"><strong>出力:</strong> <code>{slug}-{N}.pdf</code></div>
+        </div>
+        <p>HTMLスライドをPDFに変換する。複数HTMLは1PDFに統合される。</p>
+        <div class="note-box">手動で行う場合: <strong>CubePDF</strong> で複数PDFを統合し、<strong>ilovePDF</strong>（https://www.ilovepdf.com/ja/pdf_to_jpg）でJPG変換も可。</div>
+        <p><strong>出力パス:</strong> <code>data/projects/active/p023-slide-html-generator/output/{course}/pdf/</code></p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <span class="step-num">STEP B-3</span>
+        <span class="step-title">PNG変換（スライド画像化）</span>
+        <span class="step-badge"><span class="badge badge-ok">AI</span></span>
+      </div>
+      <div class="step-card-body">
+        <div class="step-meta">
+          <div class="step-meta-item"><strong>ツール:</strong> <code>/pdf2img</code> スキル（PyMuPDF、300DPI）</div>
+          <div class="step-meta-item"><strong>出力:</strong> <code>{slug}_page{NN}.png</code></div>
+        </div>
+        <p>PDFを1ページ = 1PNG画像に変換する。動画編集ソフトで1枚ずつ使用するため必須の工程。</p>
+        <div class="code-block">/pdf2img</div>
+        <p><strong>出力パス:</strong> <code>data/projects/active/p023-slide-html-generator/output/{course}/images/</code></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section id="route-b-voice">
+    <h2 class="section-title">[B] 動画教材ルート — フェーズ2：音声制作</h2>
+    <div class="route-label">[B] 動画教材</div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <span class="step-num">STEP B-4</span>
+        <span class="step-title">録音用台本生成</span>
+        <span class="step-badge"><span class="badge badge-ok">AI</span></span>
+      </div>
+      <div class="step-card-body">
+        <div class="step-meta">
+          <div class="step-meta-item"><strong>ツール:</strong> <code>/tts-script</code> スキル</div>
+          <div class="step-meta-item"><strong>出力:</strong> <code>{コース名}_台本_{N}章.md</code></div>
+        </div>
+        <p>HTMLスライドと元のMD原稿を入力として台本を生成する。<strong>1スライド = 1トラック</strong>の原則。「頼れる先輩」トーンのFM帯パーソナリティ風の語り口に自動調整される。</p>
+        <div class="highlight-box">
+          <strong>台本品質基準（自動チェック済み）:</strong>
+          <ul style="margin:6px 0 0;padding-left:18px;">
+            <li>音読み熟語 → 訓読み和語に変換（例: 「確認」→「たしかめ」）</li>
+            <li>文末表現5パターンローテーション</li>
+            <li>話し言葉系接続詞を使用</li>
+            <li>問い → 答え構造</li>
+          </ul>
+        </div>
+        <div class="code-block">/tts-script</div>
+        <p><strong>出力パス:</strong> <code>data/projects/active/p001-kenshu-jigyo/training-video/output/scripts/{course}/</code></p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <span class="step-num">STEP B-5</span>
+        <span class="step-title">台本の確認・修正</span>
+        <span class="step-badge"><span class="badge badge-warn">人間</span></span>
+      </div>
+      <div class="step-card-body">
+        <p>生成された台本を一読し、不自然な箇所・誤りを修正する。</p>
+        <table>
+          <thead><tr><th>確認ポイント</th><th>対処法</th></tr></thead>
+          <tbody>
+            <tr><td>業務用語の読み方が不明確</td><td>ふりがなや読み方の指示を追記する</td></tr>
+            <tr><td>文末が「〜す」で途切れそう</td><td>文末に余裕を持たせるか文章を短くする</td></tr>
+            <tr><td>スピードが変わりやすいフレーズ</td><td>短いフレーズに分割する</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <span class="step-num">STEP B-6</span>
+        <span class="step-title">音声生成（GCPTS）</span>
+        <span class="step-badge"><span class="badge badge-warn">人間</span></span>
+      </div>
+      <div class="step-card-body">
+        <div class="step-meta">
+          <div class="step-meta-item"><strong>ツール:</strong> Google Cloud Text-to-Speech</div>
+          <div class="step-meta-item"><strong>アカウント:</strong> BP@7.jp</div>
+        </div>
+        <table>
+          <thead><tr><th>パラメータ</th><th>設定値</th></tr></thead>
+          <tbody>
+            <tr><td>言語</td><td>日本語</td></tr>
+            <tr><td>モデル</td><td>aChild（男性）/ Child_Riot</td></tr>
+            <tr><td>スピード</td><td>1.03</td></tr>
+          </tbody>
+        </table>
+        <p><strong>手順:</strong></p>
+        <ol>
+          <li>GCPTSを開く（BP@7.jpアカウントでログイン）</li>
+          <li>台本の1スライド分のテキストを貼り付ける</li>
+          <li>上記設定で音声を生成する</li>
+          <li>スライドとの対応がわかるファイル名で保存する（例: <code>売上請求書発行_036.wav</code>）</li>
+          <li>台本の枚数分繰り返す</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <span class="step-num">STEP B-7</span>
+        <span class="step-title">音声確認・NGフィルタリング</span>
+        <span class="step-badge"><span class="badge badge-warn">人間</span></span>
+      </div>
+      <div class="step-card-body">
+        <p>生成された音声を1つずつ再生して確認する。OKテイクが10個まとまったらSlackで共有し、レビュー担当からフィードバックをもらう（キャッチボール形式）。</p>
+        <table>
+          <thead><tr><th>NGの判定基準</th><th>対処法</th></tr></thead>
+          <tbody>
+            <tr><td>噛んでいる・不自然なイントネーション</td><td>再生成（2回変わらなければ台本の文章を変える）</td></tr>
+            <tr><td>スピードが極端に変わる</td><td>再生成</td></tr>
+            <tr><td>文末が途切れる（「〜で」で止まる等）</td><td>再生成 or 台本修正</td></tr>
+          </tbody>
+        </table>
+        <div class="note-box">イントネーションが2回再生成しても変わらない場合は、台本の文章自体を書き換えること。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section id="route-b-video">
+    <h2 class="section-title">[B] 動画教材ルート — フェーズ3：動画制作〜公開</h2>
+    <div class="route-label">[B] 動画教材</div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <span class="step-num">STEP B-8</span>
+        <span class="step-title">動画編集</span>
+        <span class="step-badge"><span class="badge badge-warn">人間</span></span>
+      </div>
+      <div class="step-card-body">
+        <div class="step-meta">
+          <div class="step-meta-item"><strong>ツール:</strong> Microsoft Clipchamp（Windows標準）</div>
+        </div>
+        <ol>
+          <li>Clipchampを開き「空の動画」からプロジェクトを作成する</li>
+          <li>「マイメディア」→「メディアのインポート」でスライドPNG画像と音声ファイルを一括インポートする</li>
+          <li>まず音声ファイルをタイムラインに配置する</li>
+          <li>各音声に対応するスライド画像を音声の長さに合わせて配置する</li>
+        </ol>
+        <div class="note-box">メディアのインポートは50個を超えるとアプリが落ちることが多い。分割してインポートすること。</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <span class="step-num">STEP B-9</span>
+        <span class="step-title">エクスポート</span>
+        <span class="step-badge"><span class="badge badge-warn">人間</span></span>
+      </div>
+      <div class="step-card-body">
+        <div class="step-meta">
+          <div class="step-meta-item"><strong>ツール:</strong> Microsoft Clipchamp</div>
+        </div>
+        <p>画面右上の「エクスポート」ボタンをクリックして動画を書き出す。</p>
+        <table>
+          <thead><tr><th>項目</th><th>仕様</th></tr></thead>
+          <tbody>
+            <tr><td>フォーマット</td><td>MP4 / WebM / MOV（MP4推奨）</td></tr>
+            <tr><td>サイズ上限</td><td>100MB</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-card-header">
+        <span class="step-num">STEP B-10</span>
+        <span class="step-title">LMSアップロード</span>
+        <span class="step-badge"><span class="badge badge-warn">人間</span></span>
+      </div>
+      <div class="step-card-body">
+        <div class="step-meta">
+          <div class="step-meta-item"><strong>ツール:</strong> LMS管理画面</div>
+        </div>
+        <ol>
+          <li>LMS管理画面にアクセスする</li>
+          <li>対応コースに動画ファイルをアップロードする（MP4推奨）</li>
+          <li>コンテンツ管理台帳（スプレッドシート）のステータスを更新する</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section id="cheatsheet">
+    <h2 class="section-title">全ステップ早見表</h2>
+
+    <h3 class="subsection-title">[A] テキスト教材ルート</h3>
+    <table>
+      <thead>
+        <tr><th>#</th><th>ステップ</th><th>担当</th><th>ツール</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>テーマ・カリキュラム設計</td><td>人間 + AI</td><td>Claude</td></tr>
+        <tr><td>2</td><td>モジュール原稿MD作成</td><td>AI → 人間レビュー</td><td>Claude Code</td></tr>
+        <tr><td>A-1</td><td>Phase別HTML教材ページ化</td><td>AI</td><td>Claude Code</td></tr>
+        <tr><td>A-2</td><td>GitHub Pages公開</td><td>AI</td><td><code>/publish-page</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">[B] 動画教材ルート</h3>
+    <table>
+      <thead>
+        <tr><th>#</th><th>ステップ</th><th>担当</th><th>ツール</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>テーマ・カリキュラム設計</td><td>人間 + AI</td><td>Claude</td></tr>
+        <tr><td>2</td><td>モジュール原稿MD作成</td><td>AI → 人間レビュー</td><td>Claude Code</td></tr>
+        <tr><td>B-1</td><td>HTMLスライド生成</td><td>AI</td><td><code>/slide</code></td></tr>
+        <tr><td>B-2</td><td>PDF化</td><td>AI</td><td>Playwright + PyMuPDF</td></tr>
+        <tr><td>B-3</td><td>PNG変換（スライド画像化）</td><td>AI</td><td><code>/pdf2img</code></td></tr>
+        <tr><td>B-4</td><td>録音用台本生成</td><td>AI</td><td><code>/tts-script</code></td></tr>
+        <tr><td>B-5</td><td>台本確認・修正</td><td>人間</td><td>—</td></tr>
+        <tr><td>B-6</td><td>音声生成</td><td>人間</td><td>GCPTS（BP@7.jp）</td></tr>
+        <tr><td>B-7</td><td>音声確認・フィルタリング</td><td>人間</td><td>Slack共有 → レビュー</td></tr>
+        <tr><td>B-8</td><td>動画編集</td><td>人間</td><td>Microsoft Clipchamp</td></tr>
+        <tr><td>B-9</td><td>エクスポート</td><td>人間</td><td>Clipchamp</td></tr>
+        <tr><td>B-10</td><td>LMSアップロード</td><td>人間</td><td>LMS管理画面</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============================================================ -->
+  <section id="tools">
+    <h2 class="section-title">使用ツール一覧</h2>
+
+    <table>
+      <thead>
+        <tr><th>ツール</th><th>用途</th><th>区分</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Claude Code</td><td>原稿生成・スライド生成・台本生成・HTML化</td><td><span class="badge badge-ok">AI（無料）</span></td></tr>
+        <tr><td><code>/slide</code> スキル</td><td>HTMLスライド生成（BPIOデザインシステム準拠）</td><td><span class="badge badge-ok">AI</span></td></tr>
+        <tr><td><code>/pdf2img</code> スキル</td><td>PDF→PNG変換（300DPI）</td><td><span class="badge badge-ok">AI</span></td></tr>
+        <tr><td><code>/tts-script</code> スキル</td><td>録音用台本生成</td><td><span class="badge badge-ok">AI</span></td></tr>
+        <tr><td><code>/publish-page</code> スキル</td><td>GitHub Pages公開</td><td><span class="badge badge-ok">AI</span></td></tr>
+        <tr><td>Google Cloud TTS（GCPTS）</td><td>音声生成</td><td><span class="badge badge-warn">有料（BP@7.jp）</span></td></tr>
+        <tr><td>Microsoft Clipchamp</td><td>動画編集・エクスポート</td><td><span class="badge badge-info">無料（Windows標準）</span></td></tr>
+        <tr><td>ilovePDF</td><td>PDF→JPG変換（手動代替）</td><td><span class="badge badge-info">無料（Web）</span></td></tr>
+        <tr><td>CubePDF</td><td>PDF統合（手動代替）</td><td><span class="badge badge-info">無料</span></td></tr>
+        <tr><td>LMS管理画面</td><td>動画コンテンツ登録</td><td><span class="badge badge-warn">有料（GCP上）</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============================================================ -->
+  <section id="files">
+    <h2 class="section-title">ファイル配置ルール</h2>
+
+    <div class="code-block">data/projects/active/
+  {project-id}/
+    docs/training/
+      00-curriculum-overview.md     ← カリキュラム全体像
+      0N-{slug}.md                  ← モジュール原稿（01, 02, 03...）
+      glossary.md                   ← 用語集
+      index.html                    ← [A] Phase 1 HTML教材
+      phase2.html                   ← [A] Phase 2 HTML教材
+      phase3.html                   ← [A] Phase 3 HTML教材（以降同様）
+
+data/projects/active/p023-slide-html-generator/
+  output/
+    {course}/
+      html/                         ← [B] HTMLスライド
+      pdf/                          ← [B] PDFスライド
+      images/                       ← [B] PNG画像（動画素材）
+
+data/projects/active/p001-kenshu-jigyo/
+  training-video/output/scripts/
+    {course}/                       ← [B] 録音用台本</div>
+
+    <div class="info-box">
+      <strong>{course} の命名規則:</strong> スラッグ形式（小文字・ハイフン区切り）。例: <code>seikyu-furikomi</code>、<code>kyuyo-keisan</code>、<code>receipt-bpo</code>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <section id="trouble">
+    <h2 class="section-title">よくあるトラブルと対処法</h2>
+
+    <table>
+      <thead>
+        <tr><th>症状</th><th>対処法</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>音声の文末が途切れる</td>
+          <td>文末に「。」の後に余白テキストを追加するか、文章を短くする</td>
+        </tr>
+        <tr>
+          <td>イントネーションが2回直らない</td>
+          <td>台本の文章自体を書き換える（同じ文章では変わらない）</td>
+        </tr>
+        <tr>
+          <td>Clipchampが落ちる</td>
+          <td>メディアのインポートを50個以下に分割する</td>
+        </tr>
+        <tr>
+          <td>スライド枚数が20枚を超える</td>
+          <td><code>/slide</code> を Part1/Part2 に分けて実行する</td>
+        </tr>
+        <tr>
+          <td>スライドに画像を挿入したい</td>
+          <td>HTMLスライド生成後にウェブ編集ツールで追加し、再PDF化する</td>
+        </tr>
+        <tr>
+          <td>スピードが極端に速くなる/遅くなる箇所がある</td>
+          <td>該当フレーズを短く分割するか、スピード設定を微調整して再生成する</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="report-footer">
+    研修コンテンツ作成ワークフロー — p001 研修事業 — Generated 2026-04-13 — BPIO co., Ltd.
+  </div>
+</div>
+
+<script>
+  const pills = document.querySelectorAll('.pill');
+  const sections = document.querySelectorAll('[id]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        pills.forEach(p => p.classList.remove('active'));
+        const active = document.querySelector(`.pill[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-80px 0px -80% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
