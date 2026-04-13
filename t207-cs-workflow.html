@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ToBカスタマーサクセス研修 ワークフロー全体像 — BPIO</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: #1a1a1a;
+      background: #fff;
+      line-height: 1.7;
+    }
+    html { font-size: 15px; }
+
+    /* Sticky Nav */
+    #sticky-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.97);
+      border-bottom: 1px solid #ccc;
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    #sticky-nav .nav-label {
+      font-size: 0.72rem; font-weight: 700; color: #777;
+      letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+    }
+    .pill {
+      display: inline-block; padding: 5px 16px;
+      font-size: 0.78rem; font-weight: 600; color: #555;
+      text-decoration: none; border: 1px solid #ccc;
+      border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+    }
+    .pill:hover, .pill.active {
+      background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+    }
+
+    /* Main */
+    #main { max-width: 960px; margin: 0 auto; padding: 40px 48px 80px; }
+
+    /* Report Header */
+    .report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+    .report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+    .report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+    .report-header .summary-box {
+      background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+    }
+    .report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+    .report-header .summary-box ul { padding-left: 20px; font-size: 0.82rem; }
+    .report-header .summary-box li { margin-bottom: 4px; }
+
+    /* Section Headings */
+    h2.section-title {
+      font-size: 1.2rem; font-weight: 700;
+      border-bottom: 1px solid #999; padding-bottom: 6px;
+      margin-top: 48px; margin-bottom: 20px;
+    }
+    h3.subsection-title {
+      font-size: 1.0rem; font-weight: 700;
+      margin-top: 32px; margin-bottom: 12px;
+      padding-left: 10px; border-left: 3px solid #555;
+    }
+    h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+    table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+    table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+    table td { background: #fff; }
+    table tr:nth-child(even) td { background: #fafafa; }
+
+    /* Text */
+    p { margin-bottom: 10px; font-size: 0.88rem; }
+    ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+    ul li, ol li { margin-bottom: 3px; }
+
+    /* Boxes */
+    .highlight-box {
+      background: #f7f7f7; border: 1px solid #ddd;
+      padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+    }
+    .note-box {
+      background: #fffbeb; border-left: 4px solid #f59e0b;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+    }
+    .info-box {
+      background: #eff6ff; border-left: 4px solid #3b82f6;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block; padding: 2px 10px;
+      font-size: 0.72rem; font-weight: 700;
+      border-radius: 999px; letter-spacing: 0.03em;
+    }
+    .badge-cs { background: #dbeafe; color: #1e40af; }
+    .badge-client { background: #dcfce7; color: #166534; }
+    .badge-both { background: #fef9c3; color: #854d0e; }
+    .badge-bpo { background: #fde8ff; color: #701a75; }
+
+    /* Flow */
+    .flow {
+      display: flex; align-items: center; gap: 0;
+      margin: 20px 0; flex-wrap: wrap;
+    }
+    .flow-step {
+      background: #f0f0f0; border: 1px solid #ccc;
+      padding: 8px 14px; font-size: 0.78rem; font-weight: 600;
+      text-align: center; min-width: 100px;
+    }
+    .flow-step.phase1 { background: #dbeafe; border-color: #93c5fd; color: #1e3a8a; }
+    .flow-step.phase2 { background: #dcfce7; border-color: #86efac; color: #14532d; }
+    .flow-step.phase3 { background: #fef9c3; border-color: #fde047; color: #713f12; }
+    .flow-step.phase4 { background: #f3e8ff; border-color: #d8b4fe; color: #4c1d95; }
+    .flow-step.phase5 { background: #ffedd5; border-color: #fdba74; color: #7c2d12; }
+    .flow-step.phase6 { background: #f0f0f0; border-color: #aaa; color: #333; }
+    .flow-step.bpo-loop { background: #fce7f3; border-color: #f9a8d4; color: #831843; }
+    .flow-arrow { font-size: 1.1rem; color: #888; padding: 0 2px; }
+
+    /* Phase card */
+    .phase-card {
+      border: 1px solid #ccc;
+      margin-bottom: 32px;
+    }
+    .phase-card-header {
+      padding: 12px 18px;
+      font-weight: 700; font-size: 0.95rem;
+      border-bottom: 1px solid #ccc;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .phase-card-header.p1 { background: #dbeafe; }
+    .phase-card-header.p2 { background: #dcfce7; }
+    .phase-card-header.p3 { background: #fef9c3; }
+    .phase-card-header.p4 { background: #f3e8ff; }
+    .phase-card-header.p5 { background: #ffedd5; }
+    .phase-card-header.p6 { background: #f0f0f0; }
+    .phase-card-header.bpo { background: #fce7f3; }
+    .phase-card-body { padding: 16px 18px; }
+    .phase-meta { font-size: 0.78rem; font-weight: 400; color: #555; margin-left: auto; }
+    .phase-goal { font-size: 0.82rem; color: #444; margin-bottom: 12px; }
+
+    /* Risk list */
+    .risk-list { margin-top: 10px; }
+    .risk-list li { font-size: 0.8rem; color: #555; }
+
+    /* Footer */
+    .report-footer {
+      border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+      font-size: 0.78rem; color: #777;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      #main { padding: 24px 20px 60px; }
+      .report-header h1 { font-size: 1.3rem; }
+      h2.section-title { font-size: 1.05rem; }
+      table { font-size: 0.78rem; }
+      table th, table td { padding: 5px 7px; }
+      #sticky-nav { padding: 10px 12px; gap: 6px; }
+      .pill { padding: 4px 12px; font-size: 0.72rem; }
+      .flow-step { min-width: 80px; font-size: 0.72rem; padding: 6px 8px; }
+    }
+
+    /* Print */
+    @media print {
+      #sticky-nav { display: none; }
+      #main { padding: 0; max-width: 100%; }
+      body { font-size: 10pt; }
+      .report-header h1 { font-size: 16pt; }
+      h2.section-title { font-size: 13pt; page-break-after: avoid; }
+      h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+      table { font-size: 8pt; page-break-inside: avoid; }
+      table th, table td { padding: 3px 5px; }
+      .highlight-box, .note-box, .info-box {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      table th {
+        background: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      .phase-card-header {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">SECTIONS</span>
+  <a class="pill" href="#overview">概要</a>
+  <a class="pill" href="#flow">全体フロー</a>
+  <a class="pill" href="#phase1">Phase1</a>
+  <a class="pill" href="#phase2">Phase2</a>
+  <a class="pill" href="#phase3">Phase3</a>
+  <a class="pill" href="#phase4">Phase4</a>
+  <a class="pill" href="#phase5">Phase5</a>
+  <a class="pill" href="#phase6">Phase6</a>
+  <a class="pill" href="#monthly">月次ループ</a>
+  <a class="pill" href="#nextsteps">Next Steps</a>
+</nav>
+
+<div id="main">
+
+  <header class="report-header" id="overview">
+    <p class="subtitle">T207 — p001（研修事業） — 2026-04-13</p>
+    <h1>ToBカスタマーサクセス研修<br>ワークフロー全体像</h1>
+    <div class="summary-box">
+      <h3>研修概要</h3>
+      <ul>
+        <li><strong>対象者</strong>: 第二新卒・ToB未経験の社員</li>
+        <li><strong>フォーカス</strong>: マインドではなく実務知識・Tips。CSとしてクライアントと仕事を進める場面ごとの「引き出し」を網羅的にインプット</li>
+        <li><strong>構成</strong>: 6フェーズ × 合計72ステップ ＋ BPO特有月次ループ12ステップ</li>
+        <li><strong>BPO文脈</strong>: 汎用ToBの中にBPO（経理・労務等の業務委託）特有の観点を含む</li>
+        <li><strong>次のステップ</strong>: 各フェーズ・各ステップに「Tips・よくある落とし穴・テンプレート文面」を紐づけてコンテンツ化</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- 全体フロー -->
+  <section id="flow">
+    <h2 class="section-title">全体フロー</h2>
+    <div class="flow">
+      <div class="flow-step phase1">Phase 1<br><small>引継ぎ・準備</small></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step phase2">Phase 2<br><small>キックオフ・<br>オンボーディング</small></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step phase3">Phase 3<br><small>立ち上げ<br>安定化</small></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step phase4">Phase 4<br><small>定常運用</small></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step phase5">Phase 5<br><small>関係深化・<br>拡大</small></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step phase6">Phase 6<br><small>更新／<br>解約対応</small></div>
+    </div>
+    <div class="flow" style="margin-top:4px;">
+      <span style="font-size:0.78rem;color:#888;margin-right:8px;">BPO特有（Phase4と並行）</span>
+      <div class="flow-step bpo-loop" style="min-width:160px;">月次業務ループ（毎月繰り返し）</div>
+    </div>
+
+    <table style="margin-top:20px;">
+      <thead>
+        <tr>
+          <th>フェーズ</th>
+          <th>目安期間</th>
+          <th>ステップ数</th>
+          <th>主なゴール</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Phase 1</strong> 引継ぎ・準備</td>
+          <td>契約後 1〜5営業日</td>
+          <td>10</td>
+          <td>営業→CS情報移管・キックオフ準備</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 2</strong> キックオフ・オンボーディング</td>
+          <td>キックオフ後 2〜4週間</td>
+          <td>12</td>
+          <td>先方業務理解・初期設定完了・クイックウィン創出</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 3</strong> 立ち上げ安定化</td>
+          <td>稼働後 1〜3ヶ月</td>
+          <td>10</td>
+          <td>定常運用の確立・問い合わせルーティン整備</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 4</strong> 定常運用</td>
+          <td>通常 6ヶ月〜数年</td>
+          <td>12</td>
+          <td>安定品質維持・先方ビジネス変化への対応</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 5</strong> 関係深化・拡大</td>
+          <td>安定後〜継続的</td>
+          <td>8</td>
+          <td>パートナー化・アップセル・クロスセル</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 6</strong> 契約更新／解約対応</td>
+          <td>満了 3ヶ月前〜</td>
+          <td>8 + 7</td>
+          <td>継続合意 or 円満終了・引き継ぎ完了</td>
+        </tr>
+        <tr>
+          <td><strong>月次ループ</strong>（BPO特有）</td>
+          <td>毎月繰り返し</td>
+          <td>12</td>
+          <td>資料回収→処理→納品の月次サイクル</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-box">
+      <strong>ボール凡例:</strong>&nbsp;
+      <span class="badge badge-cs">CS</span> 自社CS担当者のアクション &nbsp;
+      <span class="badge badge-client">Client</span> 先方クライアントのアクション &nbsp;
+      <span class="badge badge-both">双方</span> 両者が関与するアクション
+    </div>
+  </section>
+
+  <!-- Phase 1 -->
+  <section id="phase1">
+    <h2 class="section-title">Phase 1 — 引継ぎ・準備</h2>
+    <div class="phase-card">
+      <div class="phase-card-header p1">
+        <span>Phase 1: 引継ぎ・準備</span>
+        <span class="phase-meta">目安: 契約後 1〜5営業日 ／ 10ステップ</span>
+      </div>
+      <div class="phase-card-body">
+        <p class="phase-goal"><strong>目的:</strong> 営業チームが獲得した案件の全情報をCS側に移管し、キックオフに向けた準備を完了させる。先方に「担当が変わっても何も失われていない」という安心感を与える土台を作る。</p>
+        <table>
+          <thead>
+            <tr><th>#</th><th>アクション</th><th>ボール</th><th>タイミング</th><th>注意点・補足</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1-1</td><td>引継ぎシート受領</td><td><span class="badge badge-cs">CS</span></td><td>契約当日〜翌営業日</td><td>組織構成、決裁者・実務担当の連絡先、商談経緯、契約条件、期待値、約束事項、競合状況を含む</td></tr>
+            <tr><td>1-2</td><td>不足情報を営業に確認</td><td><span class="badge badge-cs">CS</span></td><td>受領後即日</td><td>「聞いていない」が後で発覚するのが最大のリスク。口頭での約束事項を漏らさない</td></tr>
+            <tr><td>1-3</td><td>ハンドオフMTG実施（営業→CS）</td><td><span class="badge badge-both">双方</span></td><td>契約後 2営業日以内</td><td>30分程度。シートでは伝わらないニュアンス（コミュニケーションスタイル、温度感、地雷）を共有</td></tr>
+            <tr><td>1-4</td><td>先方の業界・企業情報をリサーチ</td><td><span class="badge badge-cs">CS</span></td><td>ハンドオフMTG後</td><td>会社HP、IR資料、ニュース記事。「調べてきている」と伝わるレベルまで</td></tr>
+            <tr><td>1-5</td><td>社内システムへの顧客情報登録</td><td><span class="badge badge-cs">CS</span></td><td>契約後 2営業日以内</td><td>CRM/SFA、プロジェクト管理ツール、共有ドライブのフォルダ作成</td></tr>
+            <tr><td>1-6</td><td>契約書・NDA・覚書の締結状況確認</td><td><span class="badge badge-cs">CS</span></td><td>契約後 2営業日以内</td><td>未締結のものがあれば先方法務と締結スケジュールを確認。押印済み原本の保管先を明確に</td></tr>
+            <tr><td>1-7</td><td>ウェルカムメール（自己紹介メール）送付</td><td><span class="badge badge-cs">CS</span></td><td>契約後 2営業日以内</td><td>担当者名・連絡先・対応時間帯を明記。キックオフ日程の候補を3つ以上提示</td></tr>
+            <tr><td>1-8</td><td>キックオフ日程確定</td><td><span class="badge badge-both">双方</span></td><td>契約後 3営業日以内</td><td>先方の参加者（決裁者・実務担当・IT担当等）を事前ヒアリングし適切なメンバーの出席を依頼</td></tr>
+            <tr><td>1-9</td><td>キックオフ資料作成</td><td><span class="badge badge-cs">CS</span></td><td>キックオフ前日まで</td><td>アジェンダ、自社チーム紹介、プロジェクト概要、スケジュール案、初期ヒアリング項目</td></tr>
+            <tr><td>1-10</td><td>キックオフ前日リマインド送付</td><td><span class="badge badge-cs">CS</span></td><td>キックオフ前日</td><td>アジェンダを添付し、先方にも「確認しておいてほしいこと」を伝える</td></tr>
+          </tbody>
+        </table>
+        <h4>典型的なリスク</h4>
+        <ul class="risk-list">
+          <li>口頭での約束事項が引き継がれず「聞いていた話と違う」と言われる</li>
+          <li>先方が「また一から説明するのか」と感じる。ウェルカムメールで先手を打つ</li>
+          <li>キックオフ日程の遅延。契約直後の熱量が最も高いことを意識する</li>
+          <li>NDAが未締結のまま機密情報をやり取りしてしまう</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Phase 2 -->
+  <section id="phase2">
+    <h2 class="section-title">Phase 2 — キックオフ・オンボーディング</h2>
+    <div class="phase-card">
+      <div class="phase-card-header p2">
+        <span>Phase 2: キックオフ・オンボーディング</span>
+        <span class="phase-meta">目安: キックオフ後 2〜4週間 ／ 12ステップ</span>
+      </div>
+      <div class="phase-card-body">
+        <p class="phase-goal"><strong>目的:</strong> 先方の業務環境・フローを理解し、サービス提供に必要な初期設定を完了させる。先方が「このチームに任せて大丈夫だ」と実感できる最初の成果（クイックウィン）を1つ以上出す。</p>
+        <table>
+          <thead>
+            <tr><th>#</th><th>アクション</th><th>ボール</th><th>タイミング</th><th>注意点・補足</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>2-1</td><td>キックオフMTG実施</td><td><span class="badge badge-both">双方</span></td><td>契約後 1週間以内</td><td>顔合わせ、ゴール合意、スケジュール確認、コミュニケーションルール決定。議事録は当日中に送付</td></tr>
+            <tr><td>2-2</td><td>コミュニケーションチャネル・ルール合意</td><td><span class="badge badge-both">双方</span></td><td>キックオフ時</td><td>メール/Slack/Teams/電話の使い分け、レスポンス速度の基準（例: 24時間以内に一次回答）、定例の曜日・時間帯</td></tr>
+            <tr><td>2-3</td><td>先方から初期データ・資料受領</td><td><span class="badge badge-client">Client</span></td><td>キックオフ後 3営業日以内</td><td>BPO: 勘定科目体系、仕訳ルール、承認フロー、システムアクセス権限等。受領チェックリストを事前に渡す</td></tr>
+            <tr><td>2-4</td><td>受領データ確認・不足追加依頼</td><td><span class="badge badge-cs">CS</span></td><td>受領後 2営業日以内</td><td>受け取ったら即確認。不足があれば具体的にリスト化して依頼。「確認中です」の中間報告を忘れない</td></tr>
+            <tr><td>2-5</td><td>先方の業務フロー・社内ルールヒアリング</td><td><span class="badge badge-cs">CS</span></td><td>キックオフ後 1週間以内</td><td>現行フロー図（As-Is）の作成。BPO: 月次の締め日、承認者、例外処理ルールを詳細に把握</td></tr>
+            <tr><td>2-6</td><td>初期設定・環境構築</td><td><span class="badge badge-cs">CS</span></td><td>キックオフ後 1〜2週間</td><td>システムアカウント発行、テンプレート設定、ワークフロー設定</td></tr>
+            <tr><td>2-7</td><td>トレーニング・操作説明</td><td><span class="badge badge-cs">CS</span></td><td>環境構築完了後</td><td>先方の実務担当者向け。マニュアルや操作動画を事前共有し、当日は実践形式で</td></tr>
+            <tr><td>2-8</td><td>テスト運用（パイロット）</td><td><span class="badge badge-both">双方</span></td><td>トレーニング後 1週間</td><td>本番データの一部で試行。エラー・不明点を洗い出す。BPO: 1ヶ月分の過去データで試し処理</td></tr>
+            <tr><td>2-9</td><td>クイックウィン達成・報告</td><td><span class="badge badge-cs">CS</span></td><td>キックオフ後 2週間以内</td><td>「この仕組みのおかげで◯◯の工数が減った」等、先方が体感できる小さな成果。初期信頼構築で最重要</td></tr>
+            <tr><td>2-10</td><td>オンボーディング完了チェック</td><td><span class="badge badge-both">双方</span></td><td>キックオフ後 3〜4週間</td><td>チェックリスト形式で漏れを確認。先方にも「オンボーディング完了」の認識を持ってもらう</td></tr>
+            <tr><td>2-11</td><td>定例MTG初回実施</td><td><span class="badge badge-both">双方</span></td><td>オンボーディング完了後</td><td>定常運用フェーズへの移行を宣言。今後の報告サイクル・議題構成を確認</td></tr>
+            <tr><td>2-12</td><td>オンボーディング完了報告（社内）</td><td><span class="badge badge-cs">CS</span></td><td>同上</td><td>上長・チームへ共有。課題があればエスカレーション。ヘルススコアの初期値を設定</td></tr>
+          </tbody>
+        </table>
+        <h4>典型的なリスク</h4>
+        <ul class="risk-list">
+          <li>先方からの資料提出遅延。チェックリストで視覚化し進捗を共有する</li>
+          <li>営業段階の期待値とCSが提供できる範囲のギャップ。キックオフで明確にスコープ合意する</li>
+          <li>先方の実務担当者が途中で変わる。引継ぎ資料を先方社内で作ってもらうよう依頼</li>
+          <li>クイックウィンが出せない。スコープを小さく区切って「まずここが改善した」を示す</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Phase 3 -->
+  <section id="phase3">
+    <h2 class="section-title">Phase 3 — 立ち上げ安定化</h2>
+    <div class="phase-card">
+      <div class="phase-card-header p3">
+        <span>Phase 3: 立ち上げ安定化</span>
+        <span class="phase-meta">目安: 稼働後 1〜3ヶ月 ／ 10ステップ</span>
+      </div>
+      <div class="phase-card-body">
+        <p class="phase-goal"><strong>目的:</strong> オンボーディング直後の不安定な期間を乗り越え、定常運用がスムーズに回る状態を確立する。先方からの問い合わせが減少し、自律的に業務が進む基盤を作る。</p>
+        <table>
+          <thead>
+            <tr><th>#</th><th>アクション</th><th>ボール</th><th>タイミング</th><th>注意点・補足</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>3-1</td><td>初月の運用実績振り返り</td><td><span class="badge badge-both">双方</span></td><td>稼働後 1ヶ月時点</td><td>処理件数、エラー率、所要時間の定量データ＋先方の定性フィードバック</td></tr>
+            <tr><td>3-2</td><td>運用課題・改善点の洗い出し</td><td><span class="badge badge-cs">CS</span></td><td>振り返り後</td><td>初期設定の微調整、フロー変更の要否を検討。先方に提案書として提示</td></tr>
+            <tr><td>3-3</td><td>FAQ・マニュアル整備</td><td><span class="badge badge-cs">CS</span></td><td>稼働後 1〜2ヶ月</td><td>先方からの繰り返し問い合わせをFAQ化。「聞かれる前に渡す」を目指す</td></tr>
+            <tr><td>3-4</td><td>問い合わせ対応ルーティン確立</td><td><span class="badge badge-cs">CS</span></td><td>稼働後 1ヶ月以内</td><td>受付→一次回答→調査→回答→クローズのフロー。対応履歴を蓄積する仕組みを作る</td></tr>
+            <tr><td>3-5</td><td>定例MTG議題・報告フォーマット定型化</td><td><span class="badge badge-cs">CS</span></td><td>稼働後 1ヶ月以内</td><td>アジェンダテンプレート、報告書テンプレートを固める。毎回ゼロから作らない</td></tr>
+            <tr><td>3-6</td><td>ボール管理の仕組みを運用に乗せる</td><td><span class="badge badge-cs">CS</span></td><td>稼働後即時〜</td><td>共有タスクリストやチケットシステムで「誰が・何を・いつまでに」を可視化。リマインドルールも決める</td></tr>
+            <tr><td>3-7</td><td>先方の社内承認フロー・稟議プロセス把握</td><td><span class="badge badge-cs">CS</span></td><td>稼働後 1ヶ月以内</td><td>追加発注・スコープ変更時に必要な社内手続きを理解。必要な資料を先回りで用意できるようになる</td></tr>
+            <tr><td>3-8</td><td>ヘルススコアモニタリング開始</td><td><span class="badge badge-cs">CS</span></td><td>稼働後 1ヶ月〜</td><td>定量指標（利用率、処理量、応答時間）と定性指標（満足度、エンゲージメント）を定期計測</td></tr>
+            <tr><td>3-9</td><td>ステークホルダーマップ作成・更新</td><td><span class="badge badge-cs">CS</span></td><td>稼働後 1〜2ヶ月</td><td>決裁者、推進者、実務担当者、IT担当者等の関係図。キーパーソンが誰かを把握する</td></tr>
+            <tr><td>3-10</td><td>安定運用基準達成確認</td><td><span class="badge badge-both">双方</span></td><td>稼働後 2〜3ヶ月</td><td>「3ヶ月連続SLA達成」「重大インシデントゼロ」等の基準を事前定義し達成を宣言する</td></tr>
+          </tbody>
+        </table>
+        <h4>典型的なリスク</h4>
+        <ul class="risk-list">
+          <li>「慣れ」による品質低下。定例MTGでの振り返りで自己チェックする</li>
+          <li>属人化。CS担当者1人に知識が集中し休暇時に対応できない</li>
+          <li>先方温度感低下。定例MTGが形骸化する。議題を工夫し価値ある時間にする</li>
+          <li>スコープクリープ。契約外作業を「ついでに」依頼される</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Phase 4 -->
+  <section id="phase4">
+    <h2 class="section-title">Phase 4 — 定常運用</h2>
+    <div class="phase-card">
+      <div class="phase-card-header p4">
+        <span>Phase 4: 定常運用</span>
+        <span class="phase-meta">目安: 通常 6ヶ月〜数年 ／ 12ステップ</span>
+      </div>
+      <div class="phase-card-body">
+        <p class="phase-goal"><strong>目的:</strong> 安定した品質でサービスを提供し続けながら、先方のビジネス変化に合わせて継続的に改善する。先方にとって「なくてはならない存在」になる。</p>
+        <table>
+          <thead>
+            <tr><th>#</th><th>アクション</th><th>ボール</th><th>タイミング</th><th>注意点・補足</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>4-1</td><td>定例MTG継続実施</td><td><span class="badge badge-both">双方</span></td><td>週次〜月次</td><td>前回アクション確認→進捗報告→課題共有→次回アクション決定。議事録は当日中に送付</td></tr>
+            <tr><td>4-2</td><td>月次報告書作成・提出</td><td><span class="badge badge-cs">CS</span></td><td>毎月（締め後 5営業日以内）</td><td>KPI実績、対応件数、改善提案、翌月計画。数字だけでなく「So What（だから何が言えるか）」を添える</td></tr>
+            <tr><td>4-3</td><td>日常の問い合わせ・依頼対応</td><td><span class="badge badge-cs">CS</span></td><td>随時（SLAに従う）</td><td>一次回答は受領後X時間以内。「確認中です」でも良いので即応する。対応履歴を記録する</td></tr>
+            <tr><td>4-4</td><td>ボール管理・タスク追跡継続</td><td><span class="badge badge-cs">CS</span></td><td>毎日</td><td>未完了タスクの期日チェック。期日超過前にリマインド。先方側のボールも追跡し必要に応じて催促</td></tr>
+            <tr><td>4-5</td><td>「対応中」状態の先方可視化</td><td><span class="badge badge-cs">CS</span></td><td>随時</td><td>ステータスを定期共有。「今どうなっている？」と聞かれる前に伝える。沈黙が最大の不安材料</td></tr>
+            <tr><td>4-6</td><td>変更依頼（SOW変更・スコープ追加）対応</td><td><span class="badge badge-both">双方</span></td><td>発生時</td><td>受領→影響範囲分析→見積作成→先方承認→契約変更→実施のフロー。口頭合意だけで進めない</td></tr>
+            <tr><td>4-7</td><td>見積・発注・請求・検収の月次サイクル</td><td><span class="badge badge-cs">CS</span></td><td>毎月</td><td>発注書受領→作業実施→検収依頼→請求書発行→入金確認。書類の抜け漏れチェックを月次ルーティンに組み込む</td></tr>
+            <tr><td>4-8</td><td>インシデント・トラブル発生時の初動対応</td><td><span class="badge badge-cs">CS</span></td><td>発生時即時</td><td>検知→影響確認→先方への第一報（30分以内目安）→原因調査→暫定対応→恒久対応→再発防止策報告</td></tr>
+            <tr><td>4-9</td><td>社内エスカレーション判断</td><td><span class="badge badge-cs">CS</span></td><td>必要時</td><td>基準: SLA違反の恐れ、契約金額10%超の損害可能性、決裁者からの直接クレーム、法務・コンプライアンス関連</td></tr>
+            <tr><td>4-10</td><td>ヘルススコア定期確認・早期シグナル検知</td><td><span class="badge badge-cs">CS</span></td><td>月次</td><td>低下シグナル: 定例MTG欠席増加、レスポンス遅延、問い合わせのネガティブ化、利用量の減少</td></tr>
+            <tr><td>4-11</td><td>チャーンリスク検知時の防止施策実行</td><td><span class="badge badge-cs">CS</span></td><td>リスク検知時</td><td>原因仮説→ヒアリング→改善提案→実行→効果確認のサイクル。早期であるほど回復しやすい</td></tr>
+            <tr><td>4-12</td><td>社内ナレッジ蓄積・共有</td><td><span class="badge badge-cs">CS</span></td><td>継続的</td><td>先方固有ルール、過去トラブル対応履歴、判断基準等。担当者が変わっても引き継げるようにする</td></tr>
+          </tbody>
+        </table>
+        <h4>典型的なリスク</h4>
+        <ul class="risk-list">
+          <li>定例MTGの形骸化。議題を事前ヒアリングし、CS側から改善提案やデータ分析結果を持ち込む</li>
+          <li>スコープクリープの放置。四半期ごとに対応範囲を見直す</li>
+          <li>先方担当者の異動。複数の接点を持っておくことで影響を最小化</li>
+          <li>トラブル対応の後手。第一報の速さと中間報告の頻度が重要</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Phase 5 -->
+  <section id="phase5">
+    <h2 class="section-title">Phase 5 — 関係深化・拡大</h2>
+    <div class="phase-card">
+      <div class="phase-card-header p5">
+        <span>Phase 5: 関係深化・拡大</span>
+        <span class="phase-meta">目安: 安定後〜継続的 ／ 8ステップ</span>
+      </div>
+      <div class="phase-card-body">
+        <p class="phase-goal"><strong>目的:</strong> 先方のビジネス成長に貢献する提案を行い、関係を「業者」から「パートナー」に昇格させる。契約規模の拡大（アップセル・クロスセル）につなげる。</p>
+        <table>
+          <thead>
+            <tr><th>#</th><th>アクション</th><th>ボール</th><th>タイミング</th><th>注意点・補足</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>5-1</td><td>QBR（四半期ビジネスレビュー）準備</td><td><span class="badge badge-cs">CS</span></td><td>四半期ごと（実施 2週間前から）</td><td>実績サマリー、ROI・成果、課題と改善計画、先方ビジネス動向に対する提案、次四半期の目標</td></tr>
+            <tr><td>5-2</td><td>QBR実施（決裁者参加）</td><td><span class="badge badge-both">双方</span></td><td>四半期ごと</td><td>先方の決裁者レベルを含む。日常の実務報告ではなく「経営レベルの価値」を語る場にする。60〜90分</td></tr>
+            <tr><td>5-3</td><td>先方ビジネス計画・課題ヒアリング</td><td><span class="badge badge-cs">CS</span></td><td>QBR時＋随時</td><td>「来期の事業計画は？」「今一番困っていることは？」を聞く。自社サービス範囲に限定しない広い視野で</td></tr>
+            <tr><td>5-4</td><td>アップセル・クロスセル提案タイミング見極め</td><td><span class="badge badge-cs">CS</span></td><td>継続的</td><td>シグナル: 業務量の増加、新規事業立ち上げ、「他にできることは？」という問いかけ、組織拡大</td></tr>
+            <tr><td>5-5</td><td>提案書作成・提示</td><td><span class="badge badge-cs">CS</span></td><td>タイミング検知後</td><td>先方の課題を起点にした提案。「自社がやりたいこと」ではなく「先方が達成したいこと」を軸にする</td></tr>
+            <tr><td>5-6</td><td>ステークホルダーマップ更新・多層アプローチ</td><td><span class="badge badge-cs">CS</span></td><td>半期ごと＋組織変更時</td><td>実務担当者だけでなく、決裁者・推進者・影響者それぞれとの接点を持つ。1人への依存を避ける</td></tr>
+            <tr><td>5-7</td><td>先方の社内評価・稟議用資料提供</td><td><span class="badge badge-cs">CS</span></td><td>依頼時〜先回り</td><td>ROI試算、他社事例（匿名化）、比較表等。先方が社内で説明しやすい材料を用意する</td></tr>
+            <tr><td>5-8</td><td>成功事例・実績まとめ共有</td><td><span class="badge badge-cs">CS</span></td><td>半期〜年次</td><td>「御社での取り組みでこれだけの成果が出ています」を定量・定性で示す。先方の社内報告にも使えるように</td></tr>
+          </tbody>
+        </table>
+        <h4>典型的なリスク</h4>
+        <ul class="risk-list">
+          <li>提案が自社都合に見えると信頼を損なう。先方の課題解決が主語であることを徹底する</li>
+          <li>QBRの準備不足。準備に最低2週間かけ、社内レビューを経て臨む</li>
+          <li>決裁者へのアクセス不足。QBRを決裁者参加の場として活用する</li>
+          <li>先方の予算サイクルを把握しておかないと提案タイミングを見誤る</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Phase 6 -->
+  <section id="phase6">
+    <h2 class="section-title">Phase 6 — 契約更新 / 解約対応</h2>
+    <div class="phase-card">
+      <div class="phase-card-header p6">
+        <span>Phase 6: 契約更新 / 解約対応</span>
+        <span class="phase-meta">目安: 契約満了 3ヶ月前〜 ／ 8+7ステップ</span>
+      </div>
+      <div class="phase-card-body">
+        <p class="phase-goal"><strong>目的（更新）:</strong> 継続の合意を得て、次期の条件・スコープを確定させる。可能であれば拡大更新を実現する。<br>
+        <strong>目的（解約）:</strong> 円満に終了し、将来の再契約の余地を残す。引き継ぎを完璧に行う。</p>
+
+        <h3 class="subsection-title">更新フロー</h3>
+        <table>
+          <thead>
+            <tr><th>#</th><th>アクション</th><th>ボール</th><th>タイミング</th><th>注意点・補足</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>6-1</td><td>更新時期確認・社内アラート設定</td><td><span class="badge badge-cs">CS</span></td><td>満了 6ヶ月前</td><td>CRMのリマインド機能等を活用。直前になって慌てない</td></tr>
+            <tr><td>6-2</td><td>更新に向けたヘルスチェック実施</td><td><span class="badge badge-cs">CS</span></td><td>満了 3ヶ月前</td><td>ヘルススコア、直近の満足度、未解決課題の有無を棚卸しする</td></tr>
+            <tr><td>6-3</td><td>更新提案（次期の条件・スコープ案）作成</td><td><span class="badge badge-cs">CS</span></td><td>満了 2〜3ヶ月前</td><td>現行条件の継続 or 変更提案。値上げがある場合は十分な根拠と事前説明が必要</td></tr>
+            <tr><td>6-4</td><td>先方の決裁者に更新提案提示</td><td><span class="badge badge-cs">CS</span></td><td>満了 2ヶ月前</td><td>実務担当者だけでなく決裁者の合意が必要。先方の社内稟議期間を考慮した逆算スケジュールで動く</td></tr>
+            <tr><td>6-5</td><td>先方の社内稟議・承認支援</td><td><span class="badge badge-cs">CS</span></td><td>提案後〜</td><td>稟議に必要な資料（実績レポート、ROI試算、他社比較等）を提供。先方担当者と連携して社内説明をサポート</td></tr>
+            <tr><td>6-6</td><td>契約条件の交渉・合意</td><td><span class="badge badge-both">双方</span></td><td>満了 1ヶ月前まで</td><td>金額、スコープ、期間、SLA等。合意内容を書面で確認する</td></tr>
+            <tr><td>6-7</td><td>更新契約書締結</td><td><span class="badge badge-both">双方</span></td><td>満了前</td><td>法務チェック→押印→原本保管。自動更新条項がある場合も明示的に合意を取る方が望ましい</td></tr>
+            <tr><td>6-8</td><td>次期運用計画策定</td><td><span class="badge badge-cs">CS</span></td><td>更新合意後</td><td>変更点があれば移行計画を作成。新メンバーの参画がある場合は引き継ぎを計画する</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="subsection-title">解約フロー</h3>
+        <table>
+          <thead>
+            <tr><th>#</th><th>アクション</th><th>ボール</th><th>タイミング</th><th>注意点・補足</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>6-A1</td><td>解約意向受領・理由ヒアリング</td><td><span class="badge badge-cs">CS</span></td><td>通知受領時</td><td>感情的にならず事実を確認。改善可能な理由であれば挽回提案の余地を探る</td></tr>
+            <tr><td>6-A2</td><td>挽回提案が可能か社内で検討</td><td><span class="badge badge-cs">CS</span></td><td>通知後 3営業日以内</td><td>価格調整、スコープ変更、体制強化等の選択肢。挽回が現実的でない場合は無理に引き止めない</td></tr>
+            <tr><td>6-A3</td><td>解約スケジュール・引き継ぎ計画合意</td><td><span class="badge badge-both">双方</span></td><td>解約確定後</td><td>最終処理日、データ返却・移行の方法と期限、残務の範囲を明確にする</td></tr>
+            <tr><td>6-A4</td><td>データ・資料の返却・移行</td><td><span class="badge badge-cs">CS</span></td><td>解約期日まで</td><td>先方データ、成果物、アカウント情報等を漏れなく返却。自社側で保持するものの取り扱いも合意</td></tr>
+            <tr><td>6-A5</td><td>最終報告書作成・提出</td><td><span class="badge badge-cs">CS</span></td><td>解約期日</td><td>実施期間中の実績サマリー、引き継ぎ事項一覧、残課題の申し送り</td></tr>
+            <tr><td>6-A6</td><td>解約後の振り返り（ポストモーテム）社内実施</td><td><span class="badge badge-cs">CS</span></td><td>解約後 1週間以内</td><td>解約理由の分析、自社側で改善できた点の特定、ナレッジ化。同じ理由での解約を防ぐ</td></tr>
+            <tr><td>6-A7</td><td>フォローアップ連絡（将来の再契約余地）</td><td><span class="badge badge-cs">CS</span></td><td>解約後 3〜6ヶ月</td><td>「その後いかがですか」程度の軽い連絡。再契約の可能性を残す。押し売りにならないように</td></tr>
+          </tbody>
+        </table>
+
+        <h4>典型的なリスク</h4>
+        <ul class="risk-list">
+          <li>更新交渉開始が遅い。先方の社内稟議に1〜2ヶ月かかることを計算に入れる</li>
+          <li>十分な根拠なしの値上げ提示。信頼を損なう</li>
+          <li>解約時の雑な対応。「どうせ終わるから」と手を抜くと業界内での評判に影響する</li>
+          <li>解約理由を「先方の事情」で済ませてしまい、自社の改善につなげられない</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 月次ループ -->
+  <section id="monthly">
+    <h2 class="section-title">BPO特有 — 月次業務ループ</h2>
+
+    <div class="note-box">
+      <strong>BPO特有の構造:</strong> BPO業務委託（経理・労務等）では、Phase 1〜6のライフサイクルと並行して、以下の月次処理サイクルが毎月繰り返される。SaaS CSにはない、BPO CSの特徴的な業務構造。
+    </div>
+
+    <div class="flow" style="flex-wrap:wrap; gap:4px;">
+      <div class="flow-step bpo-loop" style="min-width:80px; font-size:0.75rem; background:#fce7f3; border-color:#f9a8d4; color:#831843;">月初<br>資料回収依頼</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step bpo-loop" style="min-width:80px; font-size:0.75rem; background:#fce7f3; border-color:#f9a8d4; color:#831843;">資料受領</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step bpo-loop" style="min-width:80px; font-size:0.75rem; background:#fce7f3; border-color:#f9a8d4; color:#831843;">内容チェック</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step bpo-loop" style="min-width:80px; font-size:0.75rem; background:#fce7f3; border-color:#f9a8d4; color:#831843;">処理実行</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step bpo-loop" style="min-width:80px; font-size:0.75rem; background:#fce7f3; border-color:#f9a8d4; color:#831843;">内部レビュー</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step bpo-loop" style="min-width:80px; font-size:0.75rem; background:#fce7f3; border-color:#f9a8d4; color:#831843;">先方確認依頼</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step bpo-loop" style="min-width:80px; font-size:0.75rem; background:#fce7f3; border-color:#f9a8d4; color:#831843;">先方承認</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step bpo-loop" style="min-width:80px; font-size:0.75rem; background:#fce7f3; border-color:#f9a8d4; color:#831843;">確定・納品</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step bpo-loop" style="min-width:80px; font-size:0.75rem; background:#fce7f3; border-color:#f9a8d4; color:#831843;">月次報告</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step bpo-loop" style="min-width:80px; font-size:0.75rem; background:#fce7f3; border-color:#f9a8d4; color:#831843;">翌月準備</div>
+    </div>
+
+    <div class="phase-card" style="margin-top:20px;">
+      <div class="phase-card-header bpo">
+        <span>月次業務ループ（毎月繰り返し）</span>
+        <span class="phase-meta"><span class="badge badge-bpo">BPO特有</span></span>
+      </div>
+      <div class="phase-card-body">
+        <table>
+          <thead>
+            <tr><th>#</th><th>アクション</th><th>ボール</th><th>タイミング</th><th>注意点・補足</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>M-1</td><td>月次処理に必要な資料の回収依頼送付</td><td><span class="badge badge-cs">CS</span></td><td>月初（または前月末）</td><td>チェックリスト付きで依頼。「何を・いつまでに」を明確に。回収テンプレートを用意しておく</td></tr>
+            <tr><td>M-2</td><td>先方から資料を受領し、受領確認を返送</td><td><span class="badge badge-client">Client</span>→<span class="badge badge-cs">CS</span></td><td>締め後 3〜5営業日以内</td><td>受領したら即確認。不足・不備があればその日のうちに追加依頼する</td></tr>
+            <tr><td>M-3</td><td>受領資料の内容チェック・不足確認</td><td><span class="badge badge-cs">CS</span></td><td>受領当日〜翌日</td><td>形式チェック（項目漏れ、フォーマット違い）と内容チェック（金額の妥当性、前月比異常値）の両方</td></tr>
+            <tr><td>M-4</td><td>不足資料・確認事項をまとめて問い合わせ</td><td><span class="badge badge-cs">CS</span></td><td>チェック完了後即日</td><td>質問事項をまとめて1回で送る。「何度もバラバラに聞く」のは先方の負担になる</td></tr>
+            <tr><td>M-5</td><td>月次処理を実行</td><td><span class="badge badge-cs">CS</span></td><td>資料確定後</td><td>経理BPO: 仕訳入力、勘定残高確認、試算表作成。労務BPO: 勤怠集計、給与計算、届出書類作成</td></tr>
+            <tr><td>M-6</td><td>処理結果の内部レビュー（ダブルチェック）</td><td><span class="badge badge-cs">CS</span></td><td>処理完了後</td><td>担当者以外がチェック。チェックリストに基づいて実施。ミスの早期発見が信頼維持の要</td></tr>
+            <tr><td>M-7</td><td>成果物提出・先方確認依頼</td><td><span class="badge badge-cs">CS</span></td><td>内部レビュー完了後</td><td>確認ポイントを明記して送る。「全部見てください」ではなく「ここを重点的にご確認ください」</td></tr>
+            <tr><td>M-8</td><td>先方が確認・承認（または修正依頼）</td><td><span class="badge badge-client">Client</span></td><td>提出後 3〜5営業日以内</td><td>先方の確認期限を事前に合意しておく。期限を過ぎたらリマインドする</td></tr>
+            <tr><td>M-9</td><td>修正依頼があれば修正し再提出</td><td><span class="badge badge-cs">CS</span></td><td>修正依頼後 1〜2営業日</td><td>修正箇所と理由を明記して再提出。同じミスの再発防止策も伝える</td></tr>
+            <tr><td>M-10</td><td>先方の最終承認を得て確定処理</td><td><span class="badge badge-both">双方</span></td><td>月次締め日まで</td><td>承認のエビデンス（メール等）を保管する。口頭承認は避ける</td></tr>
+            <tr><td>M-11</td><td>月次実績をまとめて報告</td><td><span class="badge badge-cs">CS</span></td><td>確定処理後</td><td>処理件数、エラー件数、特記事項、翌月の注意点。定例MTGの議題として使う</td></tr>
+            <tr><td>M-12</td><td>翌月の準備・スケジュール確認</td><td><span class="badge badge-cs">CS</span></td><td>月末</td><td>翌月の特殊要因（決算月、長期休暇、法改正等）を先取りして先方と共有する</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Next Steps -->
+  <section id="nextsteps">
+    <h2 class="section-title">Next Steps — 研修コンテンツ執筆計画</h2>
+
+    <div class="highlight-box">
+      <strong>このワークフローを骨格として、各フェーズ・各ステップに以下を紐づけて研修コンテンツ化していく：</strong>
+      <ul style="margin-top:8px;">
+        <li>Tips（3〜5個、具体的なすべきこと・言い方・考え方）</li>
+        <li>よくある落とし穴（未経験者が陥りがちなミス）</li>
+        <li>コピペ可能なテンプレート文面（メール・チャット・議事録等）</li>
+        <li>BPO特記事項（BPO特有の注意点）</li>
+      </ul>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>章</th><th>タイトル</th><th>対応フェーズ</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>第1章</td><td>立ち上げ（引継ぎ・キックオフ・信頼構築・オンボーディング）</td><td>Phase 1 + Phase 2</td></tr>
+        <tr><td>第2章</td><td>日常の進め方（ワークフロー並走管理・コミュニケーション・リマインド・エスカレーション）</td><td>Phase 3 + Phase 4（一部）</td></tr>
+        <tr><td>第3章</td><td>定期接点と関係深化（定例・QBR・ステークホルダー・更新提案）</td><td>Phase 4〜5</td></tr>
+        <tr><td>第4章</td><td>リスク対応（トラブル・チャーン防止・ヘルス管理）</td><td>Phase 4 + Phase 6</td></tr>
+        <tr><td>第5章</td><td>BPO文脈（SLA・業務範囲・月次ループ・見積・請求・検収）</td><td>月次ループ全体</td></tr>
+        <tr><td>第6章</td><td>チーム運営（議事録・ドキュメント管理・標準化・属人化防止）</td><td>横断</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box">
+      <strong>研修形式:</strong> テキスト（動画台本的）＋ HTML社内ページ。複数章構成。各シチュエーションに「コピペ可能なテンプレート文面」を含める。巻頭に用語集（QBR / チャーンレート / ARR / SLA / NPS等）を設置予定。
+    </div>
+  </section>
+
+  <div class="report-footer">
+    ToBカスタマーサクセス研修 ワークフロー全体像 — T207 / p001（研修事業） — Generated 2026-04-13 — BPIO co., Ltd.
+  </div>
+
+</div>
+
+<script>
+  const pills = document.querySelectorAll('.pill');
+  const sections = document.querySelectorAll('section[id], header[id]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        pills.forEach(p => p.classList.remove('active'));
+        const active = document.querySelector(`.pill[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-80px 0px -80% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
