@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>組織人事チャレンジ構想 — BPIO</title>
+<style>
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color: #1a1a1a;
+  background: #fff;
+  line-height: 1.7;
+  margin: 0;
+}
+html { font-size: 15px; }
+
+/* Sticky nav */
+#sticky-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.97);
+  border-bottom: 1px solid #ccc;
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+#sticky-nav .nav-label {
+  font-size: 0.72rem; font-weight: 700; color: #777;
+  letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+}
+.pill {
+  display: inline-block; padding: 5px 16px;
+  font-size: 0.78rem; font-weight: 600; color: #555;
+  text-decoration: none; border: 1px solid #ccc;
+  border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+}
+.pill:hover, .pill.active {
+  background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+}
+
+/* Main */
+#main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+
+/* Header */
+.report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+.report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin: 0 0 4px; }
+.report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+.report-header .meta { font-size: 0.78rem; color: #777; margin-bottom: 12px; }
+.report-header .summary-box {
+  background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+}
+.report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin: 0 0 10px; }
+.report-header .summary-box ul, .report-header .summary-box ol {
+  padding-left: 20px; font-size: 0.82rem; margin: 0;
+}
+.report-header .summary-box li { margin-bottom: 4px; }
+
+/* Headings */
+h2.section-title {
+  font-size: 1.2rem; font-weight: 700;
+  border-bottom: 1px solid #999; padding-bottom: 6px;
+  margin-top: 48px; margin-bottom: 20px;
+}
+h3.subsection-title {
+  font-size: 1.0rem; font-weight: 700;
+  margin-top: 32px; margin-bottom: 12px;
+  padding-left: 10px; border-left: 3px solid #555;
+}
+h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+table td { background: #fff; }
+table tr:nth-child(even) td { background: #fafafa; }
+
+/* Text */
+p { margin: 0 0 10px; font-size: 0.88rem; }
+ul, ol { margin: 0 0 10px; padding-left: 22px; font-size: 0.88rem; }
+ul li, ol li { margin-bottom: 3px; }
+
+/* Boxes */
+.highlight-box {
+  background: #f7f7f7; border: 1px solid #ddd;
+  padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+}
+.note-box {
+  background: #fffbeb; border-left: 4px solid #f59e0b;
+  padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+}
+.info-box {
+  background: #eff6ff; border-left: 4px solid #3b82f6;
+  padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f;
+}
+.confirm-box {
+  background: #f0fdf4; border-left: 4px solid #22c55e;
+  padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #14532d;
+}
+.question-box {
+  background: #faf5ff; border: 2px solid #a855f7; border-radius: 6px;
+  padding: 16px 20px; margin: 16px 0 24px; font-size: 0.85rem; color: #3b0764;
+}
+
+/* Quote */
+.quote {
+  border-left: 3px solid #999; background: #fafafa;
+  padding: 10px 16px; margin: 10px 0 16px;
+  font-size: 0.85rem; color: #333;
+}
+.quote .speaker { font-weight: 700; color: #555; font-size: 0.78rem; margin-bottom: 4px; letter-spacing: 0.03em; }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 2px 10px;
+  font-size: 0.72rem; font-weight: 700;
+  border-radius: 999px; letter-spacing: 0.03em;
+}
+.badge-ok { background: #d4edda; color: #155724; }
+.badge-warn { background: #fff3cd; color: #856404; }
+.badge-info { background: #d1ecf1; color: #0c5460; }
+.badge-pending { background: #e2e3e5; color: #383d41; }
+
+/* Flow */
+.flow {
+  display: flex; align-items: center; gap: 0;
+  margin: 20px 0; flex-wrap: wrap; justify-content: center;
+}
+.flow-step {
+  background: #f0f0f0; border: 1px solid #ccc;
+  padding: 10px 18px; font-size: 0.82rem; font-weight: 600;
+  text-align: center; min-width: 120px;
+}
+.flow-step.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+.flow-arrow { font-size: 1.2rem; color: #999; padding: 0 4px; }
+
+/* Three pillars visual */
+.pillars {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0 24px;
+}
+.pillar {
+  border: 1px solid #999; padding: 14px 16px; background: #fff;
+}
+.pillar h4 { margin: 0 0 8px; font-size: 0.95rem; border-bottom: 1px solid #ddd; padding-bottom: 6px; }
+.pillar p { font-size: 0.8rem; color: #444; margin: 0; }
+
+/* Footer */
+.report-footer {
+  border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+  font-size: 0.78rem; color: #777;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  #main { padding: 24px 20px 60px; }
+  .report-header h1 { font-size: 1.3rem; }
+  h2.section-title { font-size: 1.05rem; }
+  table { font-size: 0.78rem; }
+  table th, table td { padding: 5px 7px; }
+  #sticky-nav { padding: 10px 12px; gap: 6px; }
+  .pill { padding: 4px 12px; font-size: 0.72rem; }
+  .pillars { grid-template-columns: 1fr; }
+}
+
+/* Print */
+@media print {
+  #sticky-nav { display: none; }
+  #main { padding: 0; max-width: 100%; }
+  body { font-size: 10pt; }
+  .report-header h1 { font-size: 16pt; }
+  h2.section-title { font-size: 13pt; page-break-after: avoid; }
+  h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+  table { font-size: 8pt; page-break-inside: avoid; }
+  table th, table td { padding: 3px 5px; }
+  .highlight-box, .note-box, .info-box, .quote {
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  table th {
+    background: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+}
+</style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">SECTIONS</span>
+  <a class="pill" href="#summary">サマリー</a>
+  <a class="pill" href="#current">現状認識</a>
+  <a class="pill" href="#vision">目指す状態</a>
+  <a class="pill" href="#philosophy">基本思想</a>
+  <a class="pill" href="#ai">AI活用</a>
+  <a class="pill" href="#roadmap">進め方</a>
+  <a class="pill" href="#issues">論点</a>
+  <a class="pill" href="#future">将来ビジョン</a>
+</nav>
+
+<div id="main">
+
+<header class="report-header">
+  <h1>組織人事チャレンジ構想</h1>
+  <div class="subtitle">堀江が SR1 / BPIO グループで挑みたい「組織人事」機能の立ち上げ</div>
+  <div class="meta">ベース: 堀江 × 藤田さん 壁打ち（2026-04-17） / 同席: 一杉さん &nbsp;|&nbsp; 関係者: 松澤さん、北水さん（経営）</div>
+
+  <div class="summary-box">
+    <h3>このページの狙い</h3>
+    <ul>
+      <li>堀江が「組織人事」にチャレンジしたい背景・目的・アクションを関係者に共有する</li>
+      <li>藤田さんとの壁打ちで一致した論点を、提案書ドラフト前の共通認識として整理する</li>
+      <li>松澤さん・一杉さん・北水さんとの次の会話の出発点とする</li>
+    </ul>
+  </div>
+</header>
+
+<!-- ========== 1. サマリー ========== -->
+<section id="summary">
+<h2 class="section-title">1. サマリー — なぜ今、組織人事か</h2>
+
+<p>堀江は「自分の達成」と「会社貢献」が重なるテーマとして組織人事に手を挙げたい。藤田さんとの壁打ちでは、<strong>SR1（グループ全体）レイヤーで組織人事機能を立ち上げる必要性</strong>について見解が一致した。</p>
+
+<div class="highlight-box">
+<strong>コア・メッセージ</strong><br>
+BPIO / SR1 は採用をギャンギャン伸ばしているが、受け皿となる組織戦略がまだ無い。新卒主体で優秀層を再現性を持って採用・定着・成長させるためには、<strong>組織人事が必須</strong>。堀江はその立ち上げ役として名乗りを上げたい。
+</div>
+
+<div class="quote">
+<div class="speaker">藤田さん</div>
+「組織人事は中途だけを採用し続けるならあんまりいらない。新卒主体の組織を作って頑張ろうと思ったら、組織人事がいないと "いい人を採用する再現性" が作れない。一杉さんみたいな突然変異的な人は再現できない。」
+</div>
+
+<h3 class="subsection-title">キーメッセージ3点</h3>
+<ol>
+  <li><strong>組織人事機能は未だグループ全体に存在しない</strong>。組織風土はあるが制度としての人事機能は欠けている。</li>
+  <li><strong>採用の拡大 ↔ 受け皿（評価・育成・メンタリング）の遅れ</strong>が、新卒の期待ギャップ離脱という形で顕在化しうる。</li>
+  <li><strong>"個人別PL / 個人別KPI / 個人別スキル可視化" の3本柱</strong>を作れれば、社内運用ノウハウそのものが外販プロダクトにもなる。</li>
+</ol>
+</section>
+
+<!-- ========== 2. 現状認識 ========== -->
+<section id="current">
+<h2 class="section-title">2. 現状認識 — 6つの課題</h2>
+
+<p>藤田さんとの対話で浮かび上がった、組織人事機能が無いことに起因する課題群を整理する。</p>
+
+<table>
+<thead>
+<tr><th style="width: 22%;">領域</th><th>課題</th><th style="width: 12%;">影響度</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>グループ全体機能</td>
+<td>組織人事の責任者（CHRO級）が不在。採用人事グループとしても、グループ全体としても置いていない。</td>
+<td><span class="badge badge-warn">高</span></td>
+</tr>
+<tr>
+<td>採用の再現性</td>
+<td>ダイレクト採用は拡大中だが、一杉さんのような優秀層の獲得は「突然変異的」に依存。再現性を作る仕組みが無い。</td>
+<td><span class="badge badge-warn">高</span></td>
+</tr>
+<tr>
+<td>新卒の定着</td>
+<td>第二新卒スカウトで入社した層が、入社前に描いた成長スピードとの <strong>期待ギャップ</strong>で離脱しうる。放置構造になるリスク。</td>
+<td><span class="badge badge-warn">高</span></td>
+</tr>
+<tr>
+<td>評価制度</td>
+<td>売上と簡易KPIのみで評価されるため、<strong>「できていないのに、できていると思っている人」</strong>が多発。指標が少なすぎる。</td>
+<td><span class="badge badge-warn">高</span></td>
+</tr>
+<tr>
+<td>メンタリング</td>
+<td>メンター個人のスキル・属人性に依存。どの項目を、どう FB するかが個人差で決まり「当たり外れ」が出る。</td>
+<td><span class="badge badge-info">中</span></td>
+</tr>
+<tr>
+<td>先輩の魅力（手札）</td>
+<td>新卒インターンに「この先輩と働いたら自分も成長できそう」と思わせる<strong>成長ストーリーの手札が不足</strong>。優秀層採用にブレーキ。</td>
+<td><span class="badge badge-info">中</span></td>
+</tr>
+</tbody>
+</table>
+
+<div class="quote">
+<div class="speaker">堀江</div>
+「手札がなくないか、みたいな。…そういう手札を作りたい。で、逆に言うとそこまでちゃんと見える化した上で、"うちらこう見ていくよ、これに対して客観的な意見を伝えて成長をガイドしていくよ" って話ができたら、めちゃめちゃやりたい。」
+</div>
+
+<div class="quote">
+<div class="speaker">藤田さん</div>
+「今までってメンター個人のスキルに依存してるじゃん。どの項目を FB するかしないかも。ロジックベースの道筋をちゃんと見せてあげないと、新卒が "ここで伸びる" と信じられない。」
+</div>
+</section>
+
+<!-- ========== 3. 目指す状態 ========== -->
+<section id="vision">
+<h2 class="section-title">3. 目指す状態 — 3本柱と5つの仕組み</h2>
+
+<h3 class="subsection-title">3-1. 3本柱（藤田さんの絵メモより）</h3>
+
+<div class="pillars">
+  <div class="pillar">
+    <h4>① 個人別 PL</h4>
+    <p>一人ひとりの売上・コスト・貢献を定量化し、評価と直結させる。"PL の延長線上に評価" を置く。</p>
+  </div>
+  <div class="pillar">
+    <h4>② 個人別 KPI</h4>
+    <p>各ロール・各フェーズで達成すべき定量指標を細分化。売上 + αの KPI で偏りを補正する。</p>
+  </div>
+  <div class="pillar">
+    <h4>③ 個人別スキル可視化</h4>
+    <p>SR1 全業務をスキル分解し、グレードと紐付け。本人と上司の相互評価で現在地を明示する。</p>
+  </div>
+</div>
+
+<div class="info-box">
+<strong>3本柱の意味</strong>：PL だけだと偏る → KPI で補正 → さらに定性スキル評価で補正。この三層構造で「なぜ上がるのか／上がらないのか」を <strong>エビデンスベースで説明できる</strong> 状態を作る。
+</div>
+
+<h3 class="subsection-title">3-2. 5つの仕組み（実装レベル）</h3>
+
+<table>
+<thead>
+<tr><th style="width: 20%;">仕組み</th><th>内容</th><th style="width: 16%;">依存先</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>① スキルの明文化</strong></td>
+<td>SR1 の全業務をスキル単位に分解し、定義文を整備。グレード（SH / SL 等）ごとに「このスキルはここまで」を明示する。</td>
+<td>山科さんが過去に着手済み（要接続）</td>
+</tr>
+<tr>
+<td><strong>② 評価制度の細粒度化</strong></td>
+<td>定量（売上・KPI）+ 定性 + スキル評価の3レイヤーで構成。グレードごとに給与レンジと紐付け、「なぜ上がるか」が本人に説明可能な状態にする。</td>
+<td>経営承認 / 既存制度との接続</td>
+</tr>
+<tr>
+<td><strong>③ 成長の道筋提示</strong></td>
+<td>スキル項目ごとに推薦図書・研修・勉強方針を用意。キャリアゴール（例: CFOを目指す）から逆算した「今足りないスキル」を見せる。</td>
+<td>教育コンテンツの整備</td>
+</tr>
+<tr>
+<td><strong>④ フィードバックの再現性</strong></td>
+<td>フェーズによってティーチング／コーチングを使い分け。SH 級は「ティーチング必須」、SL以上は「コーチングで機能する」と仮置き。メンター自身もスキル評価される。</td>
+<td>1on1フォーマット整備 / メンター育成</td>
+</tr>
+<tr>
+<td><strong>⑤ ギャップの可視化</strong></td>
+<td>入社時に目標を持つ人に対して、目指す像とのギャップを継続的に見せる。「ここが経験不足／ここが勉強不足」をロジックで提示。</td>
+<td>①〜④の成果物</td>
+</tr>
+</tbody>
+</table>
+
+<div class="quote">
+<div class="speaker">藤田さん</div>
+「評価制度を細かくしたい理由は、個人個人のKPI・数字を定量化して業績に組み込みたいから。一言で言うと <strong>個人別PLを作りたい</strong>。もちろん PL だけだと偏りが出るので、スキル評価と定性で補正する。これが実現すると組織力が上がる。<strong>エビデンスを背景に適切な FB が行われる</strong>。受け手も納得できて、どうすればいいかがわかる。」
+</div>
+</section>
+
+<!-- ========== 4. 基本思想 ========== -->
+<section id="philosophy">
+<h2 class="section-title">4. 基本思想 — 環境と結果の線引き</h2>
+
+<p>制度設計の前提となる、堀江と藤田さんで一致した思想。</p>
+
+<div class="highlight-box">
+<strong>"環境は会社が用意する。乗るかどうかは本人次第"</strong><br>
+頑張りたい人がちゃんと頑張れ、評価も方向性提示も受けられる環境を会社が整える。そこまで整えた上で結果が出ないなら、それは個人の問題として切り分ける。
+</div>
+
+<h3 class="subsection-title">切り分けの狙い</h3>
+<ul>
+  <li>結果が出ない理由を <strong>「会社の問題」か「個人の問題」か</strong> で切り分け可能にする。</li>
+  <li>会社側の説明責任（環境整備）と、個人側の説明責任（活用）を両方明確にする。</li>
+  <li>FB する側も、FB される側も、"共通の目的" の下でやり取りできる状態を作る。</li>
+</ul>
+
+<div class="quote">
+<div class="speaker">藤田さん</div>
+「環境を用意して、環境用意できてたら、あとは結果を出すのは知らんよ、と僕は思ってる。逆に言うと会社としてはその環境をしっかり作りたい。」
+</div>
+
+<div class="quote">
+<div class="speaker">堀江</div>
+「全員にやる必要はないけど、<strong>明確にキャリアを作っていきたいんですっていう人に対しては見えるようにしてあげる</strong>。頑張りたい人がちゃんと頑張れるような環境を作って、ちゃんと評価してあげられるものを作って、方向性も提示してあげられるようにしたい。」
+</div>
+</section>
+
+<!-- ========== 5. AI活用 ========== -->
+<section id="ai">
+<h2 class="section-title">5. AI活用の位置づけ</h2>
+
+<p>従来「組織人事の難しさ」として語られてきた要素の多くが、AI活用前提で解けるようになる。これは BPIO の強みとも直結する。</p>
+
+<h3 class="subsection-title">AI で変わること</h3>
+<table>
+<thead>
+<tr><th style="width: 30%;">従来の制約</th><th>AI 活用後の可能性</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>評価・FB の高精度化には専属の評価者が必要</td>
+<td>1人1人に対して、高精度の分析とFBを個別最適で提供可能</td>
+</tr>
+<tr>
+<td>メンターの当たり外れ／属人化</td>
+<td>FBの観点・粒度を AI が揃え、メンターは「納得感」の担保に集中</td>
+</tr>
+<tr>
+<td>スキル評価は主観に偏る</td>
+<td>客観データ（アウトプット履歴、対応記録）から客観評価を補助</td>
+</tr>
+<tr>
+<td>個人別PL作成は工数的に困難</td>
+<td>日次の業務ログから自動集計・可視化</td>
+</tr>
+</tbody>
+</table>
+
+<div class="info-box">
+<strong>成立の鍵は2つ</strong>：<br>
+(1) <strong>要件定義</strong>をこちら側でちゃんとする（何を評価するか、どう切り分けるか） <br>
+(2) <strong>データを取る仕組み</strong>を作る（日々の業務記録を評価可能な形で蓄積）
+</div>
+
+<div class="quote">
+<div class="speaker">藤田さん</div>
+「AI じゃないですか。この分析とフィードバックも、もっと高精度でできるから。しかも個人別に1人1人に対して、うん、そうです。だから、<strong>要件定義をいかにちゃんとこっち側でちゃんとしてあげるか</strong>。そして、<strong>いかにデータをちゃんと取れるのかを、取る仕組みにするか</strong>。」
+</div>
+</section>
+
+<!-- ========== 6. 進め方 ========== -->
+<section id="roadmap">
+<h2 class="section-title">6. 進め方ロードマップ</h2>
+
+<h3 class="subsection-title">6-1. フェーズ</h3>
+
+<div class="flow">
+  <div class="flow-step active">① 提案書作成</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">② 経営への提案</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">③ 仲間集め</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">④ MVP 構築</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">⑤ 半期ごと改善</div>
+</div>
+
+<h3 class="subsection-title">6-2. 直近アクション（藤田さん提案）</h3>
+<table>
+<thead>
+<tr><th style="width: 8%;">#</th><th style="width: 22%;">アクション</th><th>内容</th><th style="width: 16%;">主担当</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>提案書 / 絵を描く</td>
+<td>To-Be と「いつまでに何をやるか」を1枚で提示。本ページがその下地。</td>
+<td>堀江</td>
+</tr>
+<tr>
+<td>2</td>
+<td>経営ミーティング</td>
+<td>北水さん（経営）に背景・目的・要望を共有。組織戦略レベルでの位置付けを確認。</td>
+<td>堀江 → 北水さん</td>
+</tr>
+<tr>
+<td>3</td>
+<td>仲間集め</td>
+<td>初期コアメンバーは <strong>松澤さん + 一杉さん + 堀江</strong>。PR／開発サイドは必要に応じて巻き込み。</td>
+<td>堀江</td>
+</tr>
+<tr>
+<td>4</td>
+<td>既存アセットとの接続</td>
+<td>山科さんが過去に着手した SR1 全スキル切り出しとの接続確認。スキル定義のたたき台として再利用可能か検証。</td>
+<td>堀江</td>
+</tr>
+<tr>
+<td>5</td>
+<td>MVP スコープ決定</td>
+<td>初回は <strong>新卒受け皿（評価 + メンター + スキル定義）</strong> に絞る案が順当。全社展開は後フェーズ。</td>
+<td>堀江 + 松澤さん</td>
+</tr>
+</tbody>
+</table>
+
+<h3 class="subsection-title">6-3. 運用サイクル</h3>
+<p>「1回作って完成」ではなく、<strong>半年〜1年のサイクルで回し続ける</strong>ことを前提とする。蓄積されたノウハウ・テンプレートは、将来的に外販プロダクトとしても成立しうる。</p>
+
+<div class="quote">
+<div class="speaker">堀江</div>
+「これ、結局うちの会社でちゃんと回すのが前提で。1回作って半年、1年で変え続けると思うんですよ。それが蓄積していったら、これだって売れるじゃん、っていう話だと思うんで。」
+</div>
+</section>
+
+<!-- ========== 7. 論点 ========== -->
+<section id="issues">
+<h2 class="section-title">7. 論点・検討事項</h2>
+
+<p>提案書作成および経営相談の前に、整理・決定が必要な論点を列挙する。</p>
+
+<table>
+<thead>
+<tr><th style="width: 5%;">#</th><th style="width: 22%;">論点</th><th>内容</th><th style="width: 16%;">必要な判断者</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>堀江のミッション配分</td>
+<td>現在の外向きアライアンス業務と、組織人事立ち上げの工数配分をどうするか。100%コミットか兼務か。</td>
+<td>北水さん / 堀江</td>
+</tr>
+<tr>
+<td>2</td>
+<td>責任者ポジションの置き方</td>
+<td>外部から CHRO 級を採用するか、堀江がオーナーになるか、共同オーナー形式にするか。組織人事責任者は市場でも希少かつ評価されづらい（売上との距離があるため）。</td>
+<td>北水さん</td>
+</tr>
+<tr>
+<td>3</td>
+<td>適用レイヤー</td>
+<td>BPIO単体なのか、SR1 グループ全体なのか。藤田さんの見立ては <strong>SR1 レイヤー</strong>。BPIO 単体で走らせた場合のスケールメリットの有無も要検討。</td>
+<td>北水さん / 一杉さん</td>
+</tr>
+<tr>
+<td>4</td>
+<td>MVP スコープ</td>
+<td>最初に切り出すスコープ：新卒受け皿のみ / 全社評価制度リニューアル / スキル可視化基盤。<strong>新卒受け皿から始める案</strong>が藤田さんの見立てとも整合的。</td>
+<td>堀江 + 松澤さん</td>
+</tr>
+</tbody>
+</table>
+
+<div class="note-box">
+<strong>留意点</strong>：組織人事責任者の市場性について藤田さんは「オールラウンドなハイプレイヤーじゃないとできない。しかも売上を直接作るポジションではないから評価されづらい」と指摘。外部採用で適任者を見つけるのは難易度が高く、内部から育てる or 兼務する判断がリアル。
+</div>
+</section>
+
+<!-- ========== 8. 将来ビジョン ========== -->
+<section id="future">
+<h2 class="section-title">8. 参考：将来ビジョン — 教育×AI×人事</h2>
+
+<p>今回のチャレンジは、堀江の中長期キャリアビジョンとも接続する。</p>
+
+<h3 class="subsection-title">8-1. 堀江の志向</h3>
+<ul>
+  <li>元々教育畑。GPT-3 時代から「教育 × AI」をビジネス構想として温めてきた。</li>
+  <li>組織人事は「社内向けの教育」そのもの。ここでの試行錯誤が、将来の外販プロダクトの原型になりうる。</li>
+  <li>BPIO が AI を前提に事業を設計しているからこそ、<strong>人をどう活かすかが中長期の最大課題</strong>になる。これは大企業にも共通する問題。</li>
+</ul>
+
+<h3 class="subsection-title">8-2. 藤田さんとの共通認識</h3>
+<div class="quote">
+<div class="speaker">藤田さん</div>
+「人事領域、特に組織人事領域って、大企業が今後抱えうる問題。だから、恋愛時代のビジネスとしても考えていた1つ。僕もずっと教育畑だったんで、<strong>教育は優先されるべき</strong>っていう話をずっと続けてる。」
+</div>
+
+<div class="quote">
+<div class="speaker">藤田さん</div>
+「AI が進んで5年後10年後、人間がいないといけない業務はほとんど無くなる。そんな時に一番大事になるのは <strong>教育</strong>。人間が生かされるために、教育がないと人間がAIに制限される側になる。」
+</div>
+
+<h3 class="subsection-title">8-3. プロダクト化の仮説</h3>
+<ul>
+  <li>社内運用で磨いたフレームワーク（スキル定義 / 評価制度 / 個人別PL / AI FB）を、SaaS / コンサル / コンテンツの形で外販しうる。</li>
+  <li>BPIO の主事業（BPO）との接続余地：顧客企業の人事運用を代行／伴走するサービスへの発展可能性。</li>
+  <li><strong>先行者利益</strong>：AI前提で組織人事を設計している会社はまだ少ない。今から走れば差別化できる。</li>
+</ul>
+
+<div class="confirm-box">
+<strong>関係者への依頼</strong>：本ページは「構想の共有」段階。松澤さん・一杉さん・北水さんからのフィードバックをいただいた上で、提案書ドラフト（1枚絵 + スコープ + スケジュール）に落とし込みたい。違和感・不足・論点追加があれば堀江までお知らせください。
+</div>
+</section>
+
+<div class="report-footer">
+組織人事チャレンジ構想 — HR-001 — Generated 2026-04-17 — BPIO co., Ltd.<br>
+ソース: 堀江 × 藤田さん 打ち合わせ（2026-04-17） / 藤田さんの絵メモ
+</div>
+
+</div>
+
+<script>
+const pills = document.querySelectorAll('.pill');
+const sections = document.querySelectorAll('section[id]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      pills.forEach(p => p.classList.remove('active'));
+      const active = document.querySelector(`.pill[href="#${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -80% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
