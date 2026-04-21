@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>パターンA 検索型QA — BPIO</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body { font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; color: #1a1a1a; background: #fff; line-height: 1.7; min-height: 100vh; }
+#sticky-nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.97); border-bottom: 1px solid #ccc; padding: 12px 20px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+#sticky-nav .nav-label { font-size: 0.72rem; font-weight: 700; color: #777; letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap; }
+.pill { display: inline-block; padding: 5px 16px; font-size: 0.78rem; font-weight: 600; color: #555; text-decoration: none; border: 1px solid #ccc; border-radius: 999px; transition: all 0.2s ease; white-space: nowrap; }
+.pill:hover, .pill.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+#main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+.report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+.report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+.report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+.report-header .summary-box { background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px; }
+.report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+.report-header .summary-box ul, .report-header .summary-box ol { padding-left: 20px; font-size: 0.82rem; }
+.report-header .summary-box li { margin-bottom: 4px; }
+h2.section-title { font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid #999; padding-bottom: 6px; margin-top: 48px; margin-bottom: 20px; }
+h3.subsection-title { font-size: 1.0rem; font-weight: 700; margin-top: 32px; margin-bottom: 12px; padding-left: 10px; border-left: 3px solid #555; }
+h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+table th { background: #f0f0f0; font-weight: 700; }
+table td { background: #fff; }
+table tr:nth-child(even) td { background: #fafafa; }
+p { margin-bottom: 10px; font-size: 0.88rem; }
+ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+ul li, ol li { margin-bottom: 3px; }
+.highlight-box { background: #f7f7f7; border: 1px solid #ddd; padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem; }
+.note-box { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f; }
+.info-box { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f; }
+.confirm-box { background: #f0fdf4; border-left: 4px solid #22c55e; padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #14532d; }
+.quote-box { background: #fafafa; border-left: 4px solid #999; padding: 8px 14px; margin: 10px 0; font-size: 0.8rem; color: #555; font-style: italic; }
+.badge { display: inline-block; padding: 2px 10px; font-size: 0.72rem; font-weight: 700; border-radius: 999px; letter-spacing: 0.03em; }
+.badge-ok { background: #d4edda; color: #155724; }
+.badge-warn { background: #fff3cd; color: #856404; }
+.badge-info { background: #d1ecf1; color: #0c5460; }
+.badge-pending { background: #e2e3e5; color: #383d41; }
+.code-block { background: #2d2d2d; color: #f8f8f2; padding: 16px 20px; border-radius: 4px; font-family: "Consolas", "Monaco", monospace; font-size: 0.78rem; line-height: 1.6; overflow-x: auto; margin: 12px 0 20px; white-space: pre; }
+.report-footer { border-top: 1px solid #999; margin-top: 48px; padding-top: 16px; font-size: 0.78rem; color: #777; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 20px 0 32px; }
+.card { border: 1px solid #bbb; padding: 20px; background: #fff; text-decoration: none; color: #1a1a1a; display: block; transition: all 0.2s ease; }
+.card:hover { background: #f7f7f7; border-color: #1a1a1a; }
+.card .card-label { font-size: 0.72rem; font-weight: 700; color: #777; letter-spacing: 0.05em; margin-bottom: 6px; }
+.card .card-title { font-size: 1.0rem; font-weight: 700; margin-bottom: 8px; }
+.card .card-desc { font-size: 0.82rem; color: #555; line-height: 1.5; }
+.qa-block { border: 1px solid #ddd; padding: 18px 22px; margin: 16px 0; background: #fff; }
+.qa-block .qa-q { font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; color: #1a1a1a; padding-bottom: 8px; border-bottom: 1px solid #eee; }
+.qa-block .qa-q::before { content: "Q. "; color: #555; }
+.qa-block .qa-a { font-size: 0.86rem; line-height: 1.7; }
+.matrix-table td.empty { background: #fff5f5; color: #b91c1c; text-align: center; font-weight: 700; font-size: 0.78rem; }
+.matrix-table td.thin { background: #fffbeb; }
+.matrix-table td.medium { background: #eff6ff; }
+.matrix-table td.thick { background: #f0fdf4; }
+.matrix-table td.content { font-size: 0.75rem; }
+.checklist { list-style: none; padding-left: 0; }
+.checklist li { padding-left: 24px; position: relative; margin-bottom: 6px; font-size: 0.85rem; }
+.checklist li::before { content: "☐"; position: absolute; left: 0; font-size: 1.1rem; color: #555; }
+@media (max-width: 640px) {
+  #main { padding: 24px 20px 60px; }
+  .report-header h1 { font-size: 1.3rem; }
+  h2.section-title { font-size: 1.05rem; }
+  table { font-size: 0.78rem; }
+  table th, table td { padding: 5px 7px; }
+  #sticky-nav { padding: 10px 12px; gap: 6px; }
+  .pill { padding: 4px 12px; font-size: 0.72rem; }
+}
+@media print {
+  #sticky-nav { display: none; }
+  #main { padding: 0; max-width: 100%; }
+  body { font-size: 10pt; }
+  .report-header h1 { font-size: 16pt; }
+  h2.section-title { font-size: 13pt; page-break-after: avoid; }
+  h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+  table { font-size: 8pt; page-break-inside: avoid; }
+  table th, table td { padding: 3px 5px; }
+  .highlight-box, .note-box, .info-box, .quote-box, .confirm-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  table th { background: #f0f0f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+<nav id="sticky-nav">
+      <span class="nav-label">SECTIONS</span>
+      <a class="pill" href="#top">概要</a>
+      <a class="pill" href="#qa-list">サンプルQA</a>
+      <a class="pill" href="#eval">評価</a>
+      <a class="pill" href="#other">他パターン</a>
+</nav>
+<div id="main">
+<header class="report-header" id="top">
+<h1>パターンA: 検索型QA</h1>
+<div class="subtitle">p036 ナレッジAI — FMT試作3パターンのうちの1つ</div>
+<div class="summary-box">
+<h3>このFMTの特徴</h3>
+<ul>
+<li><strong>想定ユースケース</strong>: 現場メンバーがAIに自然文で質問 → 該当ルールを回答＋引用元つきで返す</li>
+<li><strong>強み</strong>: リアクティブに使える。Slack集合知の正道</li>
+<li><strong>弱み</strong>: 質問者が「何を聞けばいいか」を知っている前提で機能する。新任メンバー向きではない</li>
+<li><strong>実装</strong>: RAG（Retrieval Augmented Generation）でSlackログ＋ルールベースを検索し回答生成</li>
+</ul>
+</div>
+<div class="confirm-box">
+<strong>5つのサンプルQA</strong>を以下に掲載。想定される現場の質問に対し、ルールベースから抽出した回答を引用元つきで示す。
+</div>
+</header>
+
+<h2 class="section-title" id="qa-list">サンプルQA（5件）</h2>
+<div class="qa-block" id="q1">
+<div class="qa-q">新規クリニックの立地ってどうやって決めてますか？</div>
+<div class="qa-a"><p><strong>まずターゲット層（訪日 / 在留）の主軸を決めるのが先です。</strong>立地を先に決めるとチャネル設計が破綻します。</p>
+<ul>
+<li><strong>訪日中心</strong> → 秋葉原・浅草が第一候補</li>
+<li><strong>在留中心</strong> → 池袋が第一候補</li>
+<li><strong>新宿・渋谷</strong>は競合過多のため後回し</li>
+</ul>
+<p>複数診療科をミックスする場合は両立ポートフォリオもありえます（東さん 2025/8/2「訪日一本足打法は危険」）。</p>
+<p>定量比較したい場合は<strong>候補エリアの既存クリニック前で時間帯別の訪日外国人数をカウント</strong>して比較するのが実効的です。参考数値: 東口病院 180人/h vs 浅草14時台 780人/h。</p>
+<div class="quote-box">東（2025/5/26, C08U1GP0U6Q）「外国人の場合、訪日・在留でどちらを主軸に置くかが非常に重要です」</div>
+<p style="font-size: 0.78rem; color: #777;">根拠ルール: R-A-001（訪日vs在留）★★★ / R-A-004（フットトラフィック）★★</p></div>
+</div>
+
+<div class="qa-block" id="q2">
+<div class="qa-q">融資が決まる前に、どこまで発注していいですか？</div>
+<div class="qa-a"><p><strong>「後戻りコストが高い」発注は融資決定まで止めてください。</strong></p>
+<h4>止めるもの</h4>
+<ul>
+<li>内装工事の本発注（B・C工事）</li>
+<li>医療機器のリース契約</li>
+<li>長期賃貸借契約（解約違約金あり）</li>
+<li>医師・管理者の正式オファーレター発行</li>
+<li>医療卸との直接契約締結</li>
+<li>LP・広告素材の本格発注</li>
+</ul>
+<h4>並行可</h4>
+<ul>
+<li>物件の「申込み」（解約可能な範囲）</li>
+<li>候補選定・見積取得・概算設計などリサーチ</li>
+</ul>
+<p>融資が決まらない限り全経路が止まるので、先走ると違約金が発生します。自己資金完結案件なら融資ゲートは不要です。</p>
+<div class="quote-box">関（2025/8/6, C09580QNKPB）「9末までに融資決定すること。とりあえずそれがフェーズ１完了」</div>
+<p style="font-size: 0.78rem; color: #777;">根拠ルール: R-A-002（融資ゲート / Chain Rule）★★</p></div>
+</div>
+
+<div class="qa-block" id="q3">
+<div class="qa-q">診療科とメニューはどの順番で決めますか？</div>
+<div class="qa-a"><p><strong>Demand First（需要先行型）で組みます。</strong></p>
+<ol>
+<li>広告市場で<strong>獲得コストが低い領域</strong>を先に見つける</li>
+<li>その領域で勝てる診療科・メニューを組成</li>
+<li>医師・施設はその後にアサイン</li>
+</ol>
+<p>「ブランドがあるから」「名医がいるから」の供給起点設計は集患コストが読めず失敗します。ただし既存院の収益改善（CTEN等）や保険診療メインは既存制約があるため別論。</p>
+<div class="quote-box">関（2026/2/24, C09580QNKPB）「先に広告市場で勝てそうな領域見つけ、そこで診療科やメニュー開発」</div>
+<p style="font-size: 0.78rem; color: #777;">根拠ルール: R-A-003（Demand First）★★</p></div>
+</div>
+
+<div class="qa-block" id="q4">
+<div class="qa-q">医師の給与って売上目標から逆算していいんですか？</div>
+<div class="qa-a"><p><strong>逆算だと給与が低くなりすぎて持続しません。</strong>以下の順序で設計してください。</p>
+<ol>
+<li><strong>As is 把握</strong>: 現状の件数・診療時間分布を実測</li>
+<li>仮説を置く: 「件数が増えても診療時間の傾向は変わらない」</li>
+<li>連続的な未来の稼働量を予測</li>
+<li><strong>持続可能な給与水準から逆算</strong>してアサイン設計</li>
+</ol>
+<p>事業計画の売上目標から給与を割り出すと、バイチャンス（都度依頼）の延長でしか回らず持続しない、というのが東先生の構造的な指摘です。PoC段階（〜3ヶ月）はバイチャンスでも可ですが、事業化時は必ず再設計してください。</p>
+<div class="quote-box">東（2025/10/29, C08U1GP0U6Q）「バイチャンスで先生にお願いする体制だけではリーズナブルに持続可能に働けない」</div>
+<p style="font-size: 0.78rem; color: #777;">根拠ルール: R-C-001（医師持続可能性）★★★</p></div>
+</div>
+
+<div class="qa-block" id="q5">
+<div class="qa-q">外国人患者に対面で自費の価格説明するとき、総額いつ提示する？</div>
+<div class="qa-a"><p><strong>診察前には最終合計額を提示しない（ブレイクダウン方式）でOKです。</strong></p>
+<ul>
+<li>価格は項目別（コンサル/処方/検査/…）でブレイクダウン提示</li>
+<li>最終合計額は診察が進む中で積み上がる形</li>
+<li>「価格理由の離脱」がほぼ発生しないことが実測で確認されている（とらほす11月週次、売上目標達成率99.3%の文脈）</li>
+<li>現行の consultation fee 20,000円+tax は<strong>安すぎ</strong>、という示唆あり</li>
+</ul>
+<h4>例外</h4>
+<ul>
+<li>オンライン診療は事前キャンセル容易なので通常は合計額提示が必要</li>
+<li>保険診療は点数計算の透明性要件があり不可</li>
+<li>家族同伴で step up 決裁が必要な高額ケースは事前概算を用意</li>
+</ul>
+<div class="quote-box">日野（2026/1/19, C08U1GP0U6Q）「CS時の対面価格提示はブレイクダウンで、最終金額が診察前にはわからない状態」</div>
+<p style="font-size: 0.78rem; color: #777;">根拠ルール: R-C-003（価格ブレイクダウン）★★</p></div>
+</div>
+
+
+<h2 class="section-title" id="eval">このFMTの評価</h2>
+<div class="info-box">
+<strong>💡 Slack集合知の正道</strong>。TEN EXPERIENCEの「社内集合知AI」という元々の要望に最も素直に応える形式。
+</div>
+<div class="note-box">
+<strong>注意</strong>: 質問者が<strong>「何を聞けばいいか」を知っている前提</strong>で機能する。新任メンバーが立ち上げプロセス全体を理解するにはパターンC（マニュアル型）を先に通読する方が適切。
+</div>
+
+<h2 class="section-title" id="other">他のパターン</h2>
+<div class="card-grid">
+<a class="card" href="p036-fmt-comparison.html"><div class="card-label">INDEX</div><div class="card-title">3パターン比較</div><div class="card-desc">全パターンの俯瞰・使い分け提案</div></a>
+<a class="card" href="p036-fmt-b-matrix.html"><div class="card-label">PATTERN B</div><div class="card-title">9工程×カテゴリー表</div><div class="card-desc">全体像・カバレッジ可視化</div></a>
+<a class="card" href="p036-fmt-c-manual.html"><div class="card-label">PATTERN C</div><div class="card-title">マニュアル型</div><div class="card-desc">第8章 行政・申請サンプル</div></a>
+</div>
+
+<div class="report-footer">パターンA 検索型QA — p036 TEN EXPERIENCE ナレッジAI — Generated 2026-04-21 — BPIO co., Ltd.</div>
+</div>
+<script>
+const pills = document.querySelectorAll('.pill');
+const sections = document.querySelectorAll('[id]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      pills.forEach(p => p.classList.remove('active'));
+      const active = document.querySelector('.pill[href="#' + entry.target.id + '"]');
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -80% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>パターンC マニュアル型 第8章 行政・申請 — BPIO</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body { font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; color: #1a1a1a; background: #fff; line-height: 1.7; min-height: 100vh; }
+#sticky-nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.97); border-bottom: 1px solid #ccc; padding: 12px 20px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+#sticky-nav .nav-label { font-size: 0.72rem; font-weight: 700; color: #777; letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap; }
+.pill { display: inline-block; padding: 5px 16px; font-size: 0.78rem; font-weight: 600; color: #555; text-decoration: none; border: 1px solid #ccc; border-radius: 999px; transition: all 0.2s ease; white-space: nowrap; }
+.pill:hover, .pill.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+#main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+.report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+.report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+.report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+.report-header .summary-box { background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px; }
+.report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+.report-header .summary-box ul, .report-header .summary-box ol { padding-left: 20px; font-size: 0.82rem; }
+.report-header .summary-box li { margin-bottom: 4px; }
+h2.section-title { font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid #999; padding-bottom: 6px; margin-top: 48px; margin-bottom: 20px; }
+h3.subsection-title { font-size: 1.0rem; font-weight: 700; margin-top: 32px; margin-bottom: 12px; padding-left: 10px; border-left: 3px solid #555; }
+h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+table th { background: #f0f0f0; font-weight: 700; }
+table td { background: #fff; }
+table tr:nth-child(even) td { background: #fafafa; }
+p { margin-bottom: 10px; font-size: 0.88rem; }
+ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+ul li, ol li { margin-bottom: 3px; }
+.highlight-box { background: #f7f7f7; border: 1px solid #ddd; padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem; }
+.note-box { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f; }
+.info-box { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f; }
+.confirm-box { background: #f0fdf4; border-left: 4px solid #22c55e; padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #14532d; }
+.quote-box { background: #fafafa; border-left: 4px solid #999; padding: 8px 14px; margin: 10px 0; font-size: 0.8rem; color: #555; font-style: italic; }
+.badge { display: inline-block; padding: 2px 10px; font-size: 0.72rem; font-weight: 700; border-radius: 999px; letter-spacing: 0.03em; }
+.badge-ok { background: #d4edda; color: #155724; }
+.badge-warn { background: #fff3cd; color: #856404; }
+.badge-info { background: #d1ecf1; color: #0c5460; }
+.badge-pending { background: #e2e3e5; color: #383d41; }
+.code-block { background: #2d2d2d; color: #f8f8f2; padding: 16px 20px; border-radius: 4px; font-family: "Consolas", "Monaco", monospace; font-size: 0.78rem; line-height: 1.6; overflow-x: auto; margin: 12px 0 20px; white-space: pre; }
+.report-footer { border-top: 1px solid #999; margin-top: 48px; padding-top: 16px; font-size: 0.78rem; color: #777; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 20px 0 32px; }
+.card { border: 1px solid #bbb; padding: 20px; background: #fff; text-decoration: none; color: #1a1a1a; display: block; transition: all 0.2s ease; }
+.card:hover { background: #f7f7f7; border-color: #1a1a1a; }
+.card .card-label { font-size: 0.72rem; font-weight: 700; color: #777; letter-spacing: 0.05em; margin-bottom: 6px; }
+.card .card-title { font-size: 1.0rem; font-weight: 700; margin-bottom: 8px; }
+.card .card-desc { font-size: 0.82rem; color: #555; line-height: 1.5; }
+.qa-block { border: 1px solid #ddd; padding: 18px 22px; margin: 16px 0; background: #fff; }
+.qa-block .qa-q { font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; color: #1a1a1a; padding-bottom: 8px; border-bottom: 1px solid #eee; }
+.qa-block .qa-q::before { content: "Q. "; color: #555; }
+.qa-block .qa-a { font-size: 0.86rem; line-height: 1.7; }
+.matrix-table td.empty { background: #fff5f5; color: #b91c1c; text-align: center; font-weight: 700; font-size: 0.78rem; }
+.matrix-table td.thin { background: #fffbeb; }
+.matrix-table td.medium { background: #eff6ff; }
+.matrix-table td.thick { background: #f0fdf4; }
+.matrix-table td.content { font-size: 0.75rem; }
+.checklist { list-style: none; padding-left: 0; }
+.checklist li { padding-left: 24px; position: relative; margin-bottom: 6px; font-size: 0.85rem; }
+.checklist li::before { content: "☐"; position: absolute; left: 0; font-size: 1.1rem; color: #555; }
+@media (max-width: 640px) {
+  #main { padding: 24px 20px 60px; }
+  .report-header h1 { font-size: 1.3rem; }
+  h2.section-title { font-size: 1.05rem; }
+  table { font-size: 0.78rem; }
+  table th, table td { padding: 5px 7px; }
+  #sticky-nav { padding: 10px 12px; gap: 6px; }
+  .pill { padding: 4px 12px; font-size: 0.72rem; }
+}
+@media print {
+  #sticky-nav { display: none; }
+  #main { padding: 0; max-width: 100%; }
+  body { font-size: 10pt; }
+  .report-header h1 { font-size: 16pt; }
+  h2.section-title { font-size: 13pt; page-break-after: avoid; }
+  h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+  table { font-size: 8pt; page-break-inside: avoid; }
+  table th, table td { padding: 3px 5px; }
+  .highlight-box, .note-box, .info-box, .quote-box, .confirm-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  table th { background: #f0f0f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+<nav id="sticky-nav">
+      <span class="nav-label">SECTIONS</span>
+      <a class="pill" href="#top">概要</a>
+      <a class="pill" href="#s81">8.1 全体像</a>
+      <a class="pill" href="#s82">8.2 保健所</a>
+      <a class="pill" href="#s83">8.3 法人形態</a>
+      <a class="pill" href="#s84">8.4 医療廃棄物</a>
+      <a class="pill" href="#s85">8.5 厚生局</a>
+      <a class="pill" href="#s86">8.6 チェックリスト</a>
+      <a class="pill" href="#refs">根拠ルール</a>
+      <a class="pill" href="#meta">サンプルの意図</a>
+      <a class="pill" href="#other">他パターン</a>
+</nav>
+<div id="main">
+<header class="report-header" id="top">
+<h1>パターンC サンプル: 第8章 行政・申請</h1>
+<div class="subtitle">p036 ナレッジAI — マニュアル型アウトプットの実物サンプル</div>
+<div class="summary-box">
+<h3>このサンプルについて</h3>
+<ul>
+<li>FMT試作3パターンのうち<strong>パターンC（マニュアル型）の実物</strong></li>
+<li>26ルールの中で最も★3が集中している「行政・申請」領域で、既存ルール5本（R-G-001〜005）を<strong>工程順に織り込んだ章</strong>として再構成</li>
+<li><strong>目的</strong>: 「現データでここまで実践的なアウトプットが出せる」という実力証明</li>
+<li>薄い領域（事業計画数値・物件探し等）のマニュアル化は追加データ収集が前提だが、<strong>厚い領域は今すぐ納品レベル</strong>にできる</li>
+</ul>
+</div>
+</header>
+
+<h2 class="section-title" id="s81">8.1 全体像：3種の行政手続きと発生タイミング</h2>
+<p>クリニック立ち上げの9工程のうち、<strong>行政系手続きは最も機械的だが、順番を間違えると物件契約のやり直し・開業遅延・ベンダー審査落ちに直結する</strong>。本章は日本国内の新規クリニック開設を前提に、手続きのクリティカルパスと、TEN EXPERIENCE社内で実際に発生した落とし穴をまとめる。</p>
+
+<p>新規クリニック開設で絡む行政手続きは大きく3系統:</p>
+
+<div class="code-block">物件候補決定  →  賃貸契約  →  内装工事  →  開業届  →  開業
+     │             │            │          │
+  ① 保健所        ② 法人       ③ 構造設備    ④ 保険医療機関
+   事前相談       設立確定      検査立会      指定（保険診療時）
+                             + 医療廃棄物
+                               処理契約</div>
+
+<table>
+<thead><tr><th>#</th><th>手続き</th><th>所轄</th><th>タイミング</th><th>ポイント</th></tr></thead>
+<tbody>
+<tr><td>①</td><td>保健所 事前相談</td><td>管轄保健所（例: 台東区）</td><td><strong>賃貸契約前</strong></td><td>契約後に構造設備NGが出ると物件やり直し</td></tr>
+<tr><td>②</td><td>法人設立（一般社団法人 or 医療法人）</td><td>法務局</td><td>物件決定と並走</td><td><strong>一社</strong>を選ぶ場合は「なぜ医療法人でないか」の理由書必須</td></tr>
+<tr><td>③</td><td>医療廃棄物処理契約</td><td>産業廃棄物処理業者</td><td><strong>開業日前</strong></td><td>契約名義（屋号 or 法人名）を事前確定</td></tr>
+<tr><td>④</td><td>厚生局 保険医療機関指定</td><td>地方厚生局</td><td>開業後（保険診療時のみ）</td><td>自由診療のみなら届出先なし。外部ベンダーに説明テンプレが必要</td></tr>
+</tbody>
+</table>
+<div class="note-box"><strong>重要</strong>: ①→②→③→④ は順次ではなく<strong>並走</strong>。特に①は物件決定直後に即動く。</div>
+
+<h2 class="section-title" id="s82">8.2 物件候補が見つかったら：保健所に即アポを取る（R-G-003）</h2>
+<h3 class="subsection-title">手順</h3>
+<ol>
+<li>物件候補が定まったら、<strong>賃貸契約を結ぶ前に</strong>管轄保健所に電話</li>
+<li>以下3段階の手続きを確認:
+<ul><li>開設許可（一般社団法人の場合は必須。結構時間がかかる）</li>
+<li>開設届</li>
+<li>保険医療機関指定（保険診療を行う場合）</li></ul></li>
+<li>保健所から「賃貸契約前に相談に来てほしい」と言われたら即アポ取り</li>
+<li><strong>東先生（医師）と嶋田さん（事業開発）同席</strong>で訪問</li>
+<li>物件の構造設備を事前チェック:
+<ul><li>部屋サイズ</li><li>導線（患者動線・医療従事者動線）</li><li>水場</li><li>医薬品保管スペース</li></ul></li>
+</ol>
+
+<h3 class="subsection-title">落とし穴</h3>
+<div class="note-box">契約後に保健所から構造設備でNGが出ると、物件選びからやり直しになる。<strong>特に23区内（台東区等）では賃貸契約前相談を明示的に要請される</strong>。</div>
+
+<h3 class="subsection-title">簡略化できるケース</h3>
+<p>居抜き物件で、前クリニックと同一要件（同診療科・同規模）の場合は簡略化可。ただし保健所に電話での確認は必ず行う。</p>
+
+<h2 class="section-title" id="s83">8.3 法人形態の判断：一般社団法人を選ぶ場合の準備（R-G-001）</h2>
+<h3 class="subsection-title">判断フロー</h3>
+<div class="code-block">Q. 運営法人の形態はどうするか？
+
+├─ 医療法人
+│  └─ 標準的。保険医療は問題なく動く
+│
+└─ 一般社団法人
+   └─ 選ぶ場合: 保健所への「理由書」必須
+      ├─ 「なぜ医療法人ではなく一般社団法人か」を明文化
+      ├─ 事業計画書・定款と整合を取る
+      └─ 保健所の開設許可審査で参照される</div>
+
+<h3 class="subsection-title">一般社団法人を選ぶ場合のチェックリスト</h3>
+<ul class="checklist">
+<li>「なぜ医療法人ではないか」の理由書ドラフト作成</li>
+<li>事業計画書の運営主体記載を一般社団法人名義で統一</li>
+<li>定款の事業目的が医療提供と整合しているか確認</li>
+<li>保健所開設許可の審査期間を織り込んだスケジュール（通常より長い）</li>
+</ul>
+
+<h3 class="subsection-title">落とし穴</h3>
+<div class="note-box">「理由書」を後回しにすると保健所審査で差し戻しが発生し、開業日が後ろ倒しになる。物件決定と並走で準備開始すべき。</div>
+
+<h2 class="section-title" id="s84">8.4 開業日前までに：医療廃棄物処理業者と契約（R-G-005）</h2>
+<h3 class="subsection-title">手順</h3>
+<ol>
+<li>複数業者から見積取得（容器代・回収運搬費・処理費）</li>
+<li><strong>契約名義を明示的に確認</strong>:
+<ul><li>クリニック屋号単体（例: 「さくらインターナショナルクリニック東京」）</li>
+<li>一般社団法人名義（例: 「一般社団法人 SIG」）</li></ul></li>
+<li>開業日前に契約締結、初回回収日を確定</li>
+</ol>
+
+<h3 class="subsection-title">名義判断の観点</h3>
+<table>
+<thead><tr><th>名義</th><th>メリット</th><th>デメリット</th></tr></thead>
+<tbody>
+<tr><td>クリニック屋号単体</td><td>請求書の計上が店舗単位で明瞭</td><td>複数院展開時に契約を店舗ごとに巻き直す必要</td></tr>
+<tr><td>一般社団法人</td><td>複数院を一括契約にまとめられる</td><td>店舗別の経理計上でひと手間</td></tr>
+</tbody>
+</table>
+
+<h3 class="subsection-title">落とし穴</h3>
+<div class="note-box">契約名義を曖昧にしたまま開業すると、請求書発行・経理計上・医療法上の管理責任の紐付けで齟齬が出る。<strong>開業後に廃棄物が実際に発生する前に確定必須</strong>。</div>
+
+<h3 class="subsection-title">例外</h3>
+<p>訪問診療のみで医療廃棄物が発生しない運用なら、開業初月は後回しも可。</p>
+
+<h2 class="section-title" id="s85">8.5 運用開始後：外部ベンダー審査で「厚生局許可証」を求められたとき（R-G-004）</h2>
+<p>決済会社・配送会社・ベンダーの審査書類で、しばしば「厚生局許可証」等の提出を求められる。<strong>保険診療を前提にした要求</strong>なので、自由診療クリニックは正面から説明する必要がある。</p>
+
+<h3 class="subsection-title">回答テンプレ</h3>
+<div class="highlight-box">
+<p><strong>【自由診療のみの場合】</strong></p>
+<p>当院は自由診療のみを提供しており、保険診療は行っておりません。そのため厚生局への届出先は特になく、許可証等も発行されません。</p>
+<p><strong>根拠</strong>: 健康保険法上、保険医療機関指定申請は保険診療を行う場合に必要な手続きであり、自由診療のみの医療機関には適用されません。</p>
+<p>（必要に応じて管轄保健所への電話確認内容を議事メモ形式で添付）</p>
+</div>
+
+<h3 class="subsection-title">実運用（過去事例）</h3>
+<ul>
+<li><strong>2025年8月 SBペイメント審査</strong>: 上記テンプレで通過</li>
+<li><strong>相手の審査担当は保険診療を前提にしている</strong>ことが多いため、<strong>簡潔な議事メモを添える</strong>と説明コストが下がる</li>
+</ul>
+
+<h3 class="subsection-title">落とし穴</h3>
+<div class="note-box">説明なしで「許可証がない」状態で放置すると、審査落ちまたは大幅な遅延になる。新規ベンダー審査は必ずこのテンプレから入る。</div>
+
+<h3 class="subsection-title">保険診療併設時</h3>
+<p>保険診療を併設する場合は厚生局届出が実際に必要なので、<strong>届出済み証跡を素直に提出</strong>する。</p>
+
+<h2 class="section-title" id="s86">8.6 落とし穴サマリー（章末チェックリスト）</h2>
+
+<h3 class="subsection-title">物件決定 → 賃貸契約の前に</h3>
+<ul class="checklist">
+<li>管轄保健所に電話して3段階手続きを確認したか</li>
+<li>事前相談アポを取ったか（東先生・嶋田さん同席予定か）</li>
+<li>構造設備の要件を物件で満たせるか事前確認したか</li>
+<li>一般社団法人を選ぶ場合、理由書ドラフトを準備開始したか</li>
+</ul>
+
+<h3 class="subsection-title">開業日の2週間前までに</h3>
+<ul class="checklist">
+<li>医療廃棄物処理業者と契約名義を確定したか</li>
+<li>初回回収日を確定したか</li>
+<li>保健所開設許可・開設届の提出が完了したか</li>
+<li>保険診療を行う場合、厚生局への保険医療機関指定申請を進めているか</li>
+</ul>
+
+<h3 class="subsection-title">運用開始後</h3>
+<ul class="checklist">
+<li>外部ベンダー審査用の「厚生局届出要否」説明テンプレを手元に用意しているか</li>
+<li>新規ベンダー審査で毎回説明が発生するため、テンプレを最新化しているか</li>
+</ul>
+
+<h2 class="section-title" id="refs">章末付録: 本章の根拠ルール</h2>
+<table>
+<thead><tr><th>節</th><th>根拠ルール</th><th>信頼度</th><th>依拠案件</th></tr></thead>
+<tbody>
+<tr><td>8.2</td><td>R-G-003 保健所事前相談</td><td>★★</td><td>台東区・さくら浅草</td></tr>
+<tr><td>8.3</td><td>R-G-001 申請クリティカルパス / R-G-002 一社理由書</td><td>★★★ / ★★</td><td>さくら浅草</td></tr>
+<tr><td>8.4</td><td>R-G-005 医療廃棄物契約名義</td><td>★</td><td>さくら大門</td></tr>
+<tr><td>8.5</td><td>R-G-004 厚生局届出要否</td><td>★★★</td><td>とらほす/SBペイメント</td></tr>
+</tbody>
+</table>
+
+<h3 class="subsection-title">一般化の注意</h3>
+<div class="info-box">
+<ul>
+<li><strong>自治体差あり</strong>: 8.2（保健所事前相談）は台東区での実運用確認。渋谷区・港区等では手続きの詳細が異なる可能性</li>
+<li><strong>保険 vs 自費</strong>: 8.5（厚生局届出要否）は自由診療のみを想定。保険診療併設時は届出が必要</li>
+<li><strong>立地固有</strong>: 8.2の「賃貸契約前相談要請」は23区内で頻出。地方部の運用は未検証</li>
+</ul>
+</div>
+
+<h2 class="section-title" id="meta">本サンプルが示すこと</h2>
+<div class="highlight-box">
+<p>この章を読むと、<strong>クリニック立ち上げ担当者が実際に手を動かす順序</strong>がわかる:</p>
+<ol>
+<li>物件候補を見つけたら保健所に電話（8.2）</li>
+<li>法人形態を決定し、一般社団なら理由書着手（8.3）</li>
+<li>開業日前に医療廃棄物業者と契約（8.4）</li>
+<li>運用開始後のベンダー審査対応テンプレを手元に（8.5）</li>
+</ol>
+<p>26ルールの中でも<strong>R-G系列（行政・申請）は★3が集中し、個別案件固有度が低い</strong>ため、このレベルの章が<strong>いますぐ</strong>書ける。</p>
+</div>
+
+<h3 class="subsection-title">同じ密度で書ける他の章（予想）</h3>
+<table>
+<thead><tr><th>章</th><th>厚さ</th><th>現時点で書ける密度</th></tr></thead>
+<tbody>
+<tr><td>第5章 オペレーション設計</td><td>厚</td><td><span class="badge badge-ok">◎</span> 5ルール、★3あり</td></tr>
+<tr><td>第6章 マーケティング戦略</td><td>厚</td><td><span class="badge badge-ok">◎</span> 5ルール、体系化済み</td></tr>
+<tr><td><strong>第8章 行政・申請（本サンプル）</strong></td><td>厚</td><td><span class="badge badge-ok">◎</span> 5ルール、★3が3件</td></tr>
+<tr><td>第9章 運用・失敗学</td><td>中〜厚</td><td><span class="badge badge-info">○</span> 5ルール、Anti-Pattern集約</td></tr>
+<tr><td>第4章 システム調達</td><td>中</td><td><span class="badge badge-warn">△</span> 2ルールのみ、選定基準は未型化</td></tr>
+<tr><td>第1章 事業計画策定</td><td>薄〜中</td><td><span class="badge badge-warn">△</span> 4ルール、数値モデル雛形なし</td></tr>
+<tr><td>第2章 物件探し</td><td>極薄</td><td><span class="badge badge-pending">✗</span> 0ルール、要追加データ</td></tr>
+<tr><td>第3章 内装</td><td>極薄</td><td><span class="badge badge-pending">✗</span> 0ルール、要追加データ</td></tr>
+<tr><td>第7章 採用・人員</td><td>薄</td><td><span class="badge badge-pending">✗</span> R-C-001医師部分のみ、SOPなし</td></tr>
+</tbody>
+</table>
+
+<div class="confirm-box">
+<strong>提案</strong>: 今すぐ着手できるのは第5・6・8・9章（厚い領域）。これらを先に納品レベルに仕上げ、追加データ収集と並行して第1・2・3・7章を育てる2段階アプローチが現実的。
+</div>
+
+<h2 class="section-title" id="other">他のパターン</h2>
+<div class="card-grid">
+<a class="card" href="p036-fmt-comparison.html"><div class="card-label">INDEX</div><div class="card-title">3パターン比較</div><div class="card-desc">全パターンの俯瞰・使い分け提案</div></a>
+<a class="card" href="p036-fmt-a-qa.html"><div class="card-label">PATTERN A</div><div class="card-title">検索型QA</div><div class="card-desc">現場リアクティブ型</div></a>
+<a class="card" href="p036-fmt-b-matrix.html"><div class="card-label">PATTERN B</div><div class="card-title">9工程×カテゴリー表</div><div class="card-desc">全体像・カバレッジ可視化</div></a>
+</div>
+
+<div class="report-footer">パターンC 第8章 行政・申請 — p036 TEN EXPERIENCE ナレッジAI — Generated 2026-04-21 — BPIO co., Ltd.</div>
+</div>
+<script>
+const pills = document.querySelectorAll('.pill');
+const sections = document.querySelectorAll('[id]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      pills.forEach(p => p.classList.remove('active'));
+      const active = document.querySelector('.pill[href="#' + entry.target.id + '"]');
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -80% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

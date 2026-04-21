@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>パターンB 9工程×カテゴリー表 — BPIO</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body { font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; color: #1a1a1a; background: #fff; line-height: 1.7; min-height: 100vh; }
+#sticky-nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.97); border-bottom: 1px solid #ccc; padding: 12px 20px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+#sticky-nav .nav-label { font-size: 0.72rem; font-weight: 700; color: #777; letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap; }
+.pill { display: inline-block; padding: 5px 16px; font-size: 0.78rem; font-weight: 600; color: #555; text-decoration: none; border: 1px solid #ccc; border-radius: 999px; transition: all 0.2s ease; white-space: nowrap; }
+.pill:hover, .pill.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+#main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+.report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+.report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+.report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+.report-header .summary-box { background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px; }
+.report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+.report-header .summary-box ul, .report-header .summary-box ol { padding-left: 20px; font-size: 0.82rem; }
+.report-header .summary-box li { margin-bottom: 4px; }
+h2.section-title { font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid #999; padding-bottom: 6px; margin-top: 48px; margin-bottom: 20px; }
+h3.subsection-title { font-size: 1.0rem; font-weight: 700; margin-top: 32px; margin-bottom: 12px; padding-left: 10px; border-left: 3px solid #555; }
+h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+table th { background: #f0f0f0; font-weight: 700; }
+table td { background: #fff; }
+table tr:nth-child(even) td { background: #fafafa; }
+p { margin-bottom: 10px; font-size: 0.88rem; }
+ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+ul li, ol li { margin-bottom: 3px; }
+.highlight-box { background: #f7f7f7; border: 1px solid #ddd; padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem; }
+.note-box { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f; }
+.info-box { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f; }
+.confirm-box { background: #f0fdf4; border-left: 4px solid #22c55e; padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #14532d; }
+.quote-box { background: #fafafa; border-left: 4px solid #999; padding: 8px 14px; margin: 10px 0; font-size: 0.8rem; color: #555; font-style: italic; }
+.badge { display: inline-block; padding: 2px 10px; font-size: 0.72rem; font-weight: 700; border-radius: 999px; letter-spacing: 0.03em; }
+.badge-ok { background: #d4edda; color: #155724; }
+.badge-warn { background: #fff3cd; color: #856404; }
+.badge-info { background: #d1ecf1; color: #0c5460; }
+.badge-pending { background: #e2e3e5; color: #383d41; }
+.code-block { background: #2d2d2d; color: #f8f8f2; padding: 16px 20px; border-radius: 4px; font-family: "Consolas", "Monaco", monospace; font-size: 0.78rem; line-height: 1.6; overflow-x: auto; margin: 12px 0 20px; white-space: pre; }
+.report-footer { border-top: 1px solid #999; margin-top: 48px; padding-top: 16px; font-size: 0.78rem; color: #777; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 20px 0 32px; }
+.card { border: 1px solid #bbb; padding: 20px; background: #fff; text-decoration: none; color: #1a1a1a; display: block; transition: all 0.2s ease; }
+.card:hover { background: #f7f7f7; border-color: #1a1a1a; }
+.card .card-label { font-size: 0.72rem; font-weight: 700; color: #777; letter-spacing: 0.05em; margin-bottom: 6px; }
+.card .card-title { font-size: 1.0rem; font-weight: 700; margin-bottom: 8px; }
+.card .card-desc { font-size: 0.82rem; color: #555; line-height: 1.5; }
+.qa-block { border: 1px solid #ddd; padding: 18px 22px; margin: 16px 0; background: #fff; }
+.qa-block .qa-q { font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; color: #1a1a1a; padding-bottom: 8px; border-bottom: 1px solid #eee; }
+.qa-block .qa-q::before { content: "Q. "; color: #555; }
+.qa-block .qa-a { font-size: 0.86rem; line-height: 1.7; }
+.matrix-table td.empty { background: #fff5f5; color: #b91c1c; text-align: center; font-weight: 700; font-size: 0.78rem; }
+.matrix-table td.thin { background: #fffbeb; }
+.matrix-table td.medium { background: #eff6ff; }
+.matrix-table td.thick { background: #f0fdf4; }
+.matrix-table td.content { font-size: 0.75rem; }
+.checklist { list-style: none; padding-left: 0; }
+.checklist li { padding-left: 24px; position: relative; margin-bottom: 6px; font-size: 0.85rem; }
+.checklist li::before { content: "☐"; position: absolute; left: 0; font-size: 1.1rem; color: #555; }
+@media (max-width: 640px) {
+  #main { padding: 24px 20px 60px; }
+  .report-header h1 { font-size: 1.3rem; }
+  h2.section-title { font-size: 1.05rem; }
+  table { font-size: 0.78rem; }
+  table th, table td { padding: 5px 7px; }
+  #sticky-nav { padding: 10px 12px; gap: 6px; }
+  .pill { padding: 4px 12px; font-size: 0.72rem; }
+}
+@media print {
+  #sticky-nav { display: none; }
+  #main { padding: 0; max-width: 100%; }
+  body { font-size: 10pt; }
+  .report-header h1 { font-size: 16pt; }
+  h2.section-title { font-size: 13pt; page-break-after: avoid; }
+  h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+  table { font-size: 8pt; page-break-inside: avoid; }
+  table th, table td { padding: 3px 5px; }
+  .highlight-box, .note-box, .info-box, .quote-box, .confirm-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  table th { background: #f0f0f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+<nav id="sticky-nav">
+      <span class="nav-label">SECTIONS</span>
+      <a class="pill" href="#top">概要</a>
+      <a class="pill" href="#matrix">マトリクス</a>
+      <a class="pill" href="#gap">ギャップ分析</a>
+      <a class="pill" href="#coverage">カバレッジ</a>
+      <a class="pill" href="#eval">評価</a>
+      <a class="pill" href="#other">他パターン</a>
+</nav>
+<div id="main">
+<header class="report-header" id="top">
+<h1>パターンB: 9工程 × カテゴリー インデックス表</h1>
+<div class="subtitle">p036 ナレッジAI — FMT試作3パターンのうちの1つ</div>
+<div class="summary-box">
+<h3>このFMTの特徴</h3>
+<ul>
+<li><strong>想定ユースケース</strong>: 関係者間での全体像共有・抜け漏れチェック</li>
+<li><strong>強み</strong>: 一覧性が高く、網羅度が一目で分かる。<strong>ギャップが自動で可視化される副次効果</strong>あり</li>
+<li><strong>弱み</strong>: 各ルールの深さは犠牲になる。単体では使えない（A/Cとの組み合わせ前提）</li>
+<li><strong>位置付け</strong>: 3パターンの<strong>ハブ</strong>。セルからA（詳細QA）・C（マニュアル該当章）へリンクする想定</li>
+</ul>
+</div>
+</header>
+
+<h2 class="section-title" id="matrix">9工程 × ナレッジカテゴリー マトリクス</h2>
+<div class="info-box">
+<strong>凡例</strong>: ★★★=複数発言者×複数時期で裏付け / ★★=単発だが強い主張 / ★=仮説レベル　｜
+<span class="badge badge-ok">厚</span>=5件以上 / <span class="badge badge-info">中</span>=2〜4件 / <span class="badge badge-warn">薄</span>=1件 / <span class="badge badge-pending">空</span>=データなし（要追加収集）
+</div>
+
+<table class="matrix-table">
+<thead><tr>
+<th style="min-width:120px;">工程 ＼ カテゴリー</th>
+<th>A.事業計画</th><th>B.顧客提案</th><th>C.医療体制</th><th>D.営業</th><th>E.オペ・UI</th><th>F.運営品質</th><th>G.行政</th><th>H.失敗学</th>
+</tr></thead>
+<tbody>
+<tr><td><strong>1. 事業計画策定</strong></td>
+<td class="content medium">R-A-001 訪日/在留 ★★★<br>R-A-003 Demand First ★★</td>
+<td class="empty">空</td>
+<td class="content thick">R-C-001 医師配置 ★★★</td>
+<td class="empty">空</td><td class="empty">空</td><td class="empty">空</td><td class="empty">空</td><td class="empty">空</td>
+</tr>
+<tr><td><strong>2. 物件探し</strong></td>
+<td class="content medium">R-A-001 ★★★<br>R-A-004 フットトラフィック ★★</td>
+<td class="empty">空</td><td class="empty">空</td><td class="empty">空</td><td class="empty">空</td><td class="empty">空</td>
+<td class="empty">空（要追加）</td>
+<td class="empty">空</td>
+</tr>
+<tr><td><strong>3. 内装</strong></td>
+<td class="empty">空</td><td class="empty">空</td><td class="empty">空</td><td class="empty">空</td><td class="empty">空</td><td class="empty">空</td>
+<td class="content thin">R-G-002 保健所事前相談</td>
+<td class="empty">空（要追加）</td>
+</tr>
+<tr><td><strong>4. システム調達</strong></td>
+<td class="empty">空</td><td class="empty">空</td><td class="empty">空</td><td class="empty">空</td>
+<td class="content medium">R-E-001 カルテ設定<br>R-E-002 数字SoT</td>
+<td class="empty">空</td>
+<td class="content thin">R-G-004 医療廃棄物契約</td>
+<td class="content thin">R-H-001 カルテ運用擦り合わせ</td>
+</tr>
+<tr><td><strong>5. オペ設計</strong></td>
+<td class="empty">空</td><td class="empty">空</td>
+<td class="content thick">R-C-001 医師配置 ★★★<br>R-C-003 CS価格提示 ★★</td>
+<td class="empty">空</td>
+<td class="content thin">R-E-004 複数関係者図示</td>
+<td class="content thin">R-F-001 週次レポート</td>
+<td class="empty">空</td>
+<td class="content thin">R-H-005 医療卸単一依存回避</td>
+</tr>
+<tr><td><strong>6. マーケ戦略</strong></td>
+<td class="content medium">R-A-003 ★★<br>R-C-002 LTV出口 ★★</td>
+<td class="content thin">R-B-001 信頼/感情/論理 ★★</td>
+<td class="empty">空</td>
+<td class="content thick">R-D-001 ホテル二層 ★★<br>R-D-002 提案資料重厚感</td>
+<td class="empty">空</td><td class="empty">空</td><td class="empty">空</td>
+<td class="content thin">R-H-003 決済UI事前確認</td>
+</tr>
+<tr><td><strong>7. 融資・法務</strong></td>
+<td class="content thin">R-A-002 融資ゲート ★★</td>
+<td class="content thin">R-B-002 MS統制 ★★</td>
+<td class="empty">空</td><td class="empty">空</td><td class="empty">空</td><td class="empty">空</td>
+<td class="content thin">R-G-001 一般社団法人</td>
+<td class="empty">空</td>
+</tr>
+<tr><td><strong>8. 開院準備</strong></td>
+<td class="empty">空</td><td class="empty">空</td><td class="empty">空</td><td class="empty">空</td><td class="empty">空</td><td class="empty">空</td>
+<td class="content thin">R-G-003 厚生局届出</td>
+<td class="empty">空（要追加）</td>
+</tr>
+<tr><td><strong>9. 運用・改善</strong></td>
+<td class="empty">空</td><td class="empty">空</td><td class="empty">空</td><td class="empty">空</td>
+<td class="content thin">R-E-002 数字SoT</td>
+<td class="content thin">R-F-001 週次レポート</td>
+<td class="empty">空</td>
+<td class="content thin">R-H-004 図示必須</td>
+</tr>
+</tbody>
+</table>
+
+<h2 class="section-title" id="gap">ギャップ分析（このFMTの副産物）</h2>
+<div class="highlight-box">
+<p>このマトリクスを作ると、<strong>カバレッジの薄さが即座に見える</strong>。これは米田さんFB「履歴が目的にマッチしているか」への直接回答材料になる。</p>
+</div>
+
+<h3 class="subsection-title">決定的ギャップ Top5</h3>
+<table>
+<thead><tr><th>#</th><th>ギャップ</th><th>該当工程</th><th>なぜ埋まらないか</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><strong>事業計画の数値モデル雛形</strong></td><td>1</td><td>数字合意は経営陣のOff-Slack議論、チャンネルには結論サマリのみ流れる</td></tr>
+<tr><td>2</td><td><strong>物件探しSOP</strong></td><td>2</td><td>物件検討は非公開、Slack には「この物件で行く」のみ。比較検討過程は表に出ない</td></tr>
+<tr><td>3</td><td><strong>内装・業者選定の型</strong></td><td>3</td><td>外部の設計/施工パートナー間で完結、TEN EX側 Slack はほぼ通過点</td></tr>
+<tr><td>4</td><td><strong>システム選定基準マトリクス</strong></td><td>4</td><td>システムは属人的に決まり、「なぜそれを選んだか」の比較資料が残っていない</td></tr>
+<tr><td>5</td><td><strong>人員計画・初期オンボーディング</strong></td><td>5,7</td><td>採用は「誰が来てくれた」のログ中心、「何人選考・どう決めた」過程はSlack外</td></tr>
+</tbody>
+</table>
+
+<h2 class="section-title" id="coverage">カバレッジサマリー</h2>
+<table>
+<thead><tr><th>領域</th><th>状態</th><th>コメント</th></tr></thead>
+<tbody>
+<tr><td>オペレーション設計（5工程）</td><td><span class="badge badge-ok">厚</span></td><td>医師配置・価格提示・看護師役割など最も厚い</td></tr>
+<tr><td>マーケティング戦略（6工程）</td><td><span class="badge badge-ok">厚</span></td><td>ホテル営業・訴求設計は体系化が進んでいる</td></tr>
+<tr><td>行政・申請（7,8工程）</td><td><span class="badge badge-ok">厚</span></td><td>保健所・厚生局・一社・医療廃棄物と失敗含めて具体的</td></tr>
+<tr><td>運用・失敗学（9工程）</td><td><span class="badge badge-info">中〜厚</span></td><td>Anti-Pattern蓄積あり。定常KPIダッシュボード設計は未</td></tr>
+<tr><td>システム調達（4工程）</td><td><span class="badge badge-info">中</span></td><td>失敗パターンは蓄積されつつあるが選定基準は未型化</td></tr>
+<tr><td>事業計画策定（1工程）</td><td><span class="badge badge-warn">薄〜中</span></td><td>エリア選定は★3、数値モデルは個別案件の結果のみ</td></tr>
+<tr><td>採用・人員（7工程）</td><td><span class="badge badge-warn">薄</span></td><td>医師議論は多いが採用SOP・面接基準・トレーニングは未整備</td></tr>
+<tr><td>物件探し（2工程）</td><td><span class="badge badge-pending">極薄</span></td><td>結果ログのみ、サーチ/判断過程が言語化されていない</td></tr>
+<tr><td>内装（3工程）</td><td><span class="badge badge-pending">極薄</span></td><td>業者選定ロジック・仕様書・原状回復条項の知見なし</td></tr>
+</tbody>
+</table>
+
+<h2 class="section-title" id="eval">このFMTの評価</h2>
+<div class="info-box">
+<strong>📊 関係者間の共通認識形成に最強</strong>。カバレッジ可視化という副次効果も強い。米田さんFB「履歴がマッチしているか」への応答資料として最も機能する。
+</div>
+
+<h2 class="section-title" id="other">他のパターン</h2>
+<div class="card-grid">
+<a class="card" href="p036-fmt-comparison.html"><div class="card-label">INDEX</div><div class="card-title">3パターン比較</div><div class="card-desc">全パターンの俯瞰・使い分け提案</div></a>
+<a class="card" href="p036-fmt-a-qa.html"><div class="card-label">PATTERN A</div><div class="card-title">検索型QA</div><div class="card-desc">現場リアクティブ型</div></a>
+<a class="card" href="p036-fmt-c-manual.html"><div class="card-label">PATTERN C</div><div class="card-title">マニュアル型</div><div class="card-desc">第8章 行政・申請サンプル</div></a>
+</div>
+
+<div class="report-footer">パターンB 9工程×カテゴリー表 — p036 TEN EXPERIENCE ナレッジAI — Generated 2026-04-21 — BPIO co., Ltd.</div>
+</div>
+<script>
+const pills = document.querySelectorAll('.pill');
+const sections = document.querySelectorAll('[id]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      pills.forEach(p => p.classList.remove('active'));
+      const active = document.querySelector('.pill[href="#' + entry.target.id + '"]');
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -80% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
