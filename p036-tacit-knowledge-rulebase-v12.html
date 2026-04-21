@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEN EXPERIENCE 暗黙知ルールベース v1.2 — BPIO</title>
+<style>
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color: #1a1a1a;
+  background: #fff;
+  line-height: 1.7;
+  margin: 0;
+}
+html { font-size: 15px; }
+
+#sticky-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.97);
+  border-bottom: 1px solid #ccc;
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+#sticky-nav .nav-label {
+  font-size: 0.72rem; font-weight: 700; color: #777;
+  letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+}
+.pill {
+  display: inline-block; padding: 5px 16px;
+  font-size: 0.78rem; font-weight: 600; color: #555;
+  text-decoration: none; border: 1px solid #ccc;
+  border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+}
+.pill:hover, .pill.active {
+  background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+}
+
+#main { max-width: 960px; margin: 0 auto; padding: 40px 48px 80px; }
+
+.report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+.report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin: 0 0 4px; }
+.report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+.report-header .meta-row {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  font-size: 0.78rem; color: #777; margin-bottom: 14px;
+}
+.report-header .meta-row span { white-space: nowrap; }
+.report-header .summary-box {
+  background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+}
+.report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin: 0 0 10px; }
+.report-header .summary-box ul { padding-left: 20px; font-size: 0.82rem; margin: 0; }
+.report-header .summary-box li { margin-bottom: 4px; }
+
+h2.section-title {
+  font-size: 1.2rem; font-weight: 700;
+  border-bottom: 1px solid #999; padding-bottom: 6px;
+  margin-top: 48px; margin-bottom: 20px;
+}
+h2.section-title .count { font-size: 0.78rem; color: #777; font-weight: 600; margin-left: 10px; }
+
+.category-intro {
+  font-size: 0.85rem; color: #555; margin-bottom: 20px;
+  background: #fafafa; border-left: 3px solid #999; padding: 10px 14px;
+}
+
+.rule-card {
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+  background: #fff;
+}
+.rule-header {
+  background: #f7f7f7; border-bottom: 1px solid #ddd;
+  padding: 12px 16px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.rule-id {
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 0.82rem; font-weight: 700; color: #1a1a1a;
+  background: #1a1a1a; color: #fff;
+  padding: 2px 8px; border-radius: 3px;
+}
+.rule-title { font-size: 0.95rem; font-weight: 700; flex: 1; min-width: 200px; }
+.rule-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.rule-body { padding: 14px 18px; }
+.rule-section { margin-bottom: 10px; }
+.rule-label {
+  font-size: 0.7rem; font-weight: 700; color: #777;
+  letter-spacing: 0.08em; margin-bottom: 4px;
+}
+.rule-content { font-size: 0.85rem; }
+.rule-content ul, .rule-content ol { margin: 4px 0 4px 4px; padding-left: 20px; }
+.rule-content li { margin-bottom: 2px; font-size: 0.85rem; }
+.rule-content p { margin: 0 0 4px; font-size: 0.85rem; }
+
+.rule-quote {
+  background: #fafafa; border-left: 3px solid #999;
+  margin: 8px 0 4px; padding: 10px 14px;
+  font-size: 0.82rem; color: #333; font-style: normal;
+  white-space: pre-wrap;
+}
+.rule-quote + .rule-quote { margin-top: 4px; }
+
+.rule-meta-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 8px 16px; margin-top: 10px; padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+.rule-meta-item { font-size: 0.78rem; }
+.rule-meta-item .meta-label {
+  font-size: 0.68rem; font-weight: 700; color: #777;
+  letter-spacing: 0.05em; margin-right: 6px;
+}
+
+.badge {
+  display: inline-block; padding: 2px 10px;
+  font-size: 0.7rem; font-weight: 700;
+  border-radius: 999px; letter-spacing: 0.03em;
+}
+.badge-ok { background: #d4edda; color: #155724; }
+.badge-warn { background: #fff3cd; color: #856404; }
+.badge-info { background: #d1ecf1; color: #0c5460; }
+.badge-pending { background: #e2e3e5; color: #383d41; }
+.badge-conf { background: #f8d7da; color: #721c24; }
+
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+table td { background: #fff; }
+table tr:nth-child(even) td { background: #fafafa; }
+
+p { margin-bottom: 10px; font-size: 0.88rem; }
+.highlight-box {
+  background: #f7f7f7; border: 1px solid #ddd;
+  padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+}
+.note-box {
+  background: #fffbeb; border-left: 4px solid #f59e0b;
+  padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+}
+
+.deleted-note {
+  background: #f0f0f0; border-left: 3px solid #999;
+  padding: 8px 14px; margin: 14px 0; font-size: 0.8rem; color: #555;
+}
+
+.report-footer {
+  border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+  font-size: 0.78rem; color: #777;
+}
+
+@media (max-width: 640px) {
+  #main { padding: 24px 20px 60px; }
+  .report-header h1 { font-size: 1.3rem; }
+  h2.section-title { font-size: 1.05rem; }
+  table { font-size: 0.78rem; }
+  table th, table td { padding: 5px 7px; }
+  #sticky-nav { padding: 10px 12px; gap: 6px; }
+  .pill { padding: 4px 12px; font-size: 0.72rem; }
+  .rule-title { font-size: 0.88rem; }
+  .rule-meta-grid { grid-template-columns: 1fr; }
+}
+
+@media print {
+  #sticky-nav { display: none; }
+  #main { padding: 0; max-width: 100%; }
+  body { font-size: 10pt; }
+  .report-header h1 { font-size: 16pt; }
+  h2.section-title { font-size: 13pt; page-break-after: avoid; }
+  .rule-card { page-break-inside: avoid; border-color: #999; }
+  .rule-header { background: #f0f0f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .rule-quote { background: #f5f5f5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  table th { background: #f0f0f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">CATEGORIES</span>
+  <a class="pill" href="#overview">概要</a>
+  <a class="pill" href="#cat-a">A. 事業計画</a>
+  <a class="pill" href="#cat-b">B. 提案</a>
+  <a class="pill" href="#cat-c">C. 医療</a>
+  <a class="pill" href="#cat-d">D. ホテル営業</a>
+  <a class="pill" href="#cat-e">E. オペ</a>
+  <a class="pill" href="#cat-f">F. システム</a>
+  <a class="pill" href="#cat-g">G. 行政</a>
+  <a class="pill" href="#cat-h">H. 失敗パターン</a>
+  <a class="pill" href="#appendix">付録</a>
+</nav>
+
+<div id="main">
+
+<header class="report-header" id="overview">
+  <h1>TEN EXPERIENCE 暗黙知ルールベース v1.2</h1>
+  <div class="subtitle">クリニック立ち上げ・運用の判断軸をIF-THEN形式で構造化</div>
+  <div class="meta-row">
+    <span><strong>Project:</strong> p036</span>
+    <span><strong>Version:</strong> 1.2</span>
+    <span><strong>Status:</strong> draft</span>
+    <span><strong>Updated:</strong> 2026-04-21</span>
+    <span><strong>Source:</strong> Slack 3ch (2025/5〜2026/4 全履歴)</span>
+    <span><strong>Rules:</strong> 26</span>
+  </div>
+  <div class="summary-box">
+    <h3>ねらい</h3>
+    <p style="margin:0 0 10px; font-size:0.82rem;">クリニック立ち上げ・運用にまつわる TEN EXPERIENCE 内部の判断軸を IF-THEN 形式に構造化し、p036 ナレッジAI のルールベース層として機能させる。暗黙知を機械可読かつ人間可読な形に落とす最初の試み。</p>
+    <h3>構成 (7カテゴリ × 26ルール)</h3>
+    <ul>
+      <li>A. 事業計画・エリア選定 — 4件</li>
+      <li>B. 顧客提案・意思決定構造 — 2件</li>
+      <li>C. 医療・診療体制 — 3件</li>
+      <li>D. ホテル営業・アライアンス — 3件</li>
+      <li>E. オペレーション・組織設計 — 2件</li>
+      <li>F. システム・ツール — 2件</li>
+      <li>G. 行政・申請 — 5件</li>
+      <li>H. 失敗パターン（Anti-Pattern） — 5件（新設）</li>
+    </ul>
+  </div>
+  <div class="note-box" style="margin-top:14px;">
+    <strong>対外公開禁止</strong>：本ドキュメントは MS法人スキーム・価格戦略・取引先情報を含む内部共有用です。
+  </div>
+</header>
+
+<h2 class="section-title">構造の読み方</h2>
+
+<table>
+  <tr><th style="width:14%;">項目</th><th>内容</th></tr>
+  <tr><td>IF</td><td>適用条件（状況・入力）</td></tr>
+  <tr><td>THEN</td><td>推奨される判断・アクション</td></tr>
+  <tr><td>WHY</td><td>理由・根拠</td></tr>
+  <tr><td>適用範囲</td><td>どこまで一般化できるか</td></tr>
+  <tr><td>例外・境界</td><td>適用しない場合</td></tr>
+  <tr><td>信頼度</td><td>★1-3（★3=複数発言者×複数時期で裏付け、★2=単発だが強い主張、★1=仮説レベル）</td></tr>
+  <tr><td>機微度</td><td>confidential（対外厳禁）／internal（社内用）／public（公開可）</td></tr>
+  <tr><td>関連</td><td>連携する他ルールのID</td></tr>
+  <tr><td>引用元</td><td>チャンネル/日時/発言者</td></tr>
+  <tr><td>原文</td><td>Slackログからの直接引用</td></tr>
+  <tr><td>次の検証</td><td>実運用で確認すべき点</td></tr>
+</table>
+
+<h2 class="section-title">発言者凡例</h2>
+<table>
+  <tr><th>User ID</th><th>略称</th><th>所属・役割</th></tr>
+  <tr><td><code>U05RQ9YBJHH</code></td><td>関</td><td>TEN EX / 10X・プロジェクトリード</td></tr>
+  <tr><td><code>U07KENP7QAF</code></td><td>東</td><td>メディエンジン・院長</td></tr>
+  <tr><td><code>U09F3JW2TRP</code></td><td>日野</td><td>とらほすCOO</td></tr>
+  <tr><td><code>U05QCPZTW87</code></td><td>米田</td><td>SR-ONE MS事業部マネージャ</td></tr>
+  <tr><td><code>U01RW0TMMCZ</code></td><td>大江</td><td>SR-ONE 事業開発</td></tr>
+  <tr><td><code>U093N38KKTQ</code></td><td>奥山</td><td>Codrise・マーケ担当</td></tr>
+  <tr><td><code>U02KBLCE0G3</code></td><td>八尾</td><td>CTEN系スタッフ・現場ナレッジ</td></tr>
+</table>
+
+<!-- ========== CATEGORY A ========== -->
+<h2 class="section-title" id="cat-a">カテゴリA. 事業計画・エリア選定 <span class="count">4ルール</span></h2>
+
+<div class="rule-card" id="R-A-001">
+  <div class="rule-header">
+    <span class="rule-id">R-A-001</span>
+    <span class="rule-title">訪日 vs 在留の主軸設定を立地決定前に確定する</span>
+    <div class="rule-badges">
+      <span class="badge badge-ok">信頼度 ★★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF (適用条件)</div><div class="rule-content">新規クリニックのターゲット外国人患者層を検討 AND エリア未決定</div></div>
+    <div class="rule-section"><div class="rule-label">THEN (判断)</div><div class="rule-content"><ul><li>訪日外国人中心 → 秋葉原・浅草を第一候補</li><li>在留外国人中心 → 池袋を第一候補</li><li>新宿・渋谷は競合過多のため後回し</li></ul></div></div>
+    <div class="rule-section"><div class="rule-label">WHY (理由)</div><div class="rule-content">主軸によって集客チャネル・単価・リピート構造が根本的に異なる。立地を先に決めるとチャネル設計が破綻する</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 東（2025/5/26, C08U1GP0U6Q）</div><blockquote class="rule-quote">外国人の場合、訪日・在留でどちらを主軸に置くかが非常に重要です。今回は訪日外国人にフォーカスを置くべきだが在留外国人についてもスコープに入れて調査しました</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>東京都内の新規クリニック</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>複数診療科ミックスなら訪日+在留の両立も可</div>
+      <div class="rule-meta-item"><span class="meta-label">関連</span>R-A-003, R-A-004, R-C-002</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>浅草院稼働後の実データで訪日/在留比率を測定</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-card" id="R-A-002">
+  <div class="rule-header">
+    <span class="rule-id">R-A-002</span>
+    <span class="rule-title">融資決定前には後戻りコストの高い発注を行わない（Chain Rule）</span>
+    <div class="rule-badges">
+      <span class="badge badge-info">信頼度 ★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">新規クリニックで融資審査が完了していない段階</div></div>
+    <div class="rule-section"><div class="rule-label">THEN — 以下のアクションを実行しない</div><div class="rule-content"><ul><li>内装工事の本発注（B・C工事）</li><li>医療機器のリース契約</li><li>長期賃貸借契約（解約違約金あり）</li><li>医師・管理者の正式オファーレター発行</li><li>医療卸との直接契約締結</li><li>LP・広告素材の本格発注</li></ul></div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">融資が決まらない限り物件契約・内装・システム発注の全経路が止まる。先走ると融資不調時に大規模なキャンセル費・違約金が発生する</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 関（2025/8/6, C09580QNKPB）</div><blockquote class="rule-quote">9末までに融資決定すること。とりあえずそれがフェーズ１完了になるし、後続が進むためのポイント</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>自己資金のみで完結しない案件</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>物件申込（解約可能範囲）・見積取得・概算設計は並行可</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>miya・別府クリニックで融資不調ケースの逆引き</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-card" id="R-A-003">
+  <div class="rule-header">
+    <span class="rule-id">R-A-003</span>
+    <span class="rule-title">Demand First Clinic Design（需要先行型設計）</span>
+    <div class="rule-badges">
+      <span class="badge badge-info">信頼度 ★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">新規クリニックの診療科・メニュー設計段階 AND 既存ブランド・医師縛りなし</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content"><ol><li>広告市場で獲得コストが低い領域を先に見つける</li><li>その領域で勝てる診療科・メニューを組成</li><li>医師・施設はその後にアサイン</li></ol></div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">「ブランドがあるから」「名医がいるから」の供給起点設計は集患コストが読めず失敗する。需要ドリブンなら初期の広告効率が保証される</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 関（2026/2/24, C09580QNKPB）</div><blockquote class="rule-quote">CTENが伸びしろあるという話にもつなげるかなと思って [...] TENEXとしては、「Demand First」（先に広告市場で勝てそうな領域見つけ、そこで診療科やメニュー開発して立ち上げる）</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>自費中心クリニック、特に新規開業</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>既存院の収益改善では既存リソース制約あり。保険診療メインは点数構造に制約</div>
+      <div class="rule-meta-item"><span class="meta-label">関連ストリーム</span>「インターでやったことの型化」会議（2026/2-4月進行中）</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>miya・別府・MS&AD Ventures分院で適用時の成果比較</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-card" id="R-A-004">
+  <div class="rule-header">
+    <span class="rule-id">R-A-004</span>
+    <span class="rule-title">競合クリニックの直接視察でフットトラフィックを定量比較</span>
+    <div class="rule-badges">
+      <span class="badge badge-info">信頼度 ★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">立地候補を定量評価したい AND 複数候補で迷っている</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content">候補エリアの既存クリニック前で時間帯別の訪日外国人数をカウントして比較</div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">診療圏調査の公的統計は細かすぎず、実際の「歩く外国人」が見えない。現場観測で優位性を数字化できる</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 日野（2026/2/12, C0A3HLJ9CQY）</div><blockquote class="rule-quote">東口病院様の視察結果：明らかな訪日外国人 180人/h。浅草は14時台で780人/h。Walk-In狙いも浅草に立地的に分があります</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>訪日外国人ターゲットの立地選定</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>在留外国人は昼間の人流と合致しないので別手法</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>浅草院開業後の「通過人流→来院率」変換係数の測定</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CATEGORY B ========== -->
+<h2 class="section-title" id="cat-b">カテゴリB. 顧客提案・意思決定構造 <span class="count">2ルール</span></h2>
+
+<div class="rule-card" id="R-B-001">
+  <div class="rule-header">
+    <span class="rule-id">R-B-001</span>
+    <span class="rule-title">信頼・感情・論理の三角形（エトス/パトス/ロゴス）で提案軸を選ぶ</span>
+    <div class="rule-badges">
+      <span class="badge badge-info">信頼度 ★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">顧客（発注者、患者家族、B2B提案先）への提案設計時</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content"><ol><li><strong>誰が決裁するか</strong>を特定</li><li>決裁者のタイプに応じて軸を選ぶ:<ul><li>論理型（経営者・技術者） → 数字・エビデンス・比較表</li><li>感情型（本人訴求・ライフイベント） → ストーリー・体験談・価値観</li><li>信頼型（既存関係・業界標準） → 実績・紹介・長期の付き合い</li></ul></li></ol></div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">単一軸で攻めると決裁者の判断基準とズレて離脱する。複数軸を用意し、決裁者に合わせて強調点を変える</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 関（2025/7/9, C09580QNKPB）</div><blockquote class="rule-quote">「信頼（エトス）、感情（パトス）、論理（ロゴス）」で考えると・・・ 論理 ・そもそも業務項目が違えば、そこを明示する [...] 旦那さんだから、論理の土俵で戦わないといけない</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>B2B法人営業、高単価自費の家族決裁、アライアンス提案</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>全軸同時強調は散漫。重点と副次で濃淡</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>ホテル営業でのA/Bテスト</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-card" id="R-B-002">
+  <div class="rule-header">
+    <span class="rule-id">R-B-002</span>
+    <span class="rule-title">MS法人スキーム情報は対外的に統制（プロデュース先として説明）</span>
+    <div class="rule-badges">
+      <span class="badge badge-info">信頼度 ★★</span>
+      <span class="badge badge-conf">confidential</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">新規アライアンス先・対外説明の場面 AND 相手と関係値が浅い</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content">CTEN渋谷等との関係は「プロデュース先」と説明し、MS法人スキーム・母体関係は伏せる</div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">関係値薄い相手は情報を誤解・加工して伝染させる可能性があり、意図せぬブランド毀損リスクがある</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 米田（2025/8/12, C09580QNKPB）</div><blockquote class="rule-quote">クリニックTEN渋谷との関係性は、プロデュース先でありTEN EXが経営母体でない線引きとMS法人スキームについては一旦伏せるようにしておきましょうか！関係値ないところだと、色んな解釈されて伝染する可能性もあるかなと思い念のため。見せる資料統一しておきましょ！</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>アライアンス営業・外部説明全般</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>相手側の法務要件で開示が必要な場合、個別判断</div>
+      <div class="rule-meta-item"><span class="meta-label">関連</span>R-D-002, R-G-004</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>関係深化後の開示タイミング判断基準を別ルール化</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CATEGORY C ========== -->
+<h2 class="section-title" id="cat-c">カテゴリC. 医療・診療体制 <span class="count">3ルール</span></h2>
+
+<div class="rule-card" id="R-C-001">
+  <div class="rule-header">
+    <span class="rule-id">R-C-001</span>
+    <span class="rule-title">医師リソース配置は「持続可能性ドリブン」で設計</span>
+    <div class="rule-badges">
+      <span class="badge badge-ok">信頼度 ★★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">新規クリニックの医師アサイン・給与体系設計時</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content"><ol><li>As is 把握（現状の件数・診療時間分布）</li><li>仮説「件数が増えても診療時間の傾向は変わらない」を置く</li><li>連続的な未来の稼働量を予測</li><li>持続可能な給与水準から逆算してアサイン設計</li></ol></div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">事業計画の売上目標から医師給与を割り出すと給与が低くなりがちで、バイチャンス（都度依頼）体制の延長でしか回らず持続しない</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 東（2025/10/29, C08U1GP0U6Q）</div><blockquote class="rule-quote">なぜ、このような集計が必要と考えているかというと、現状のようにバイチャンスで先生にお願いする体制だけではあまりに新体制でリーズナブルに持続可能に働けない。従って、件数が増えても診療時間の傾向は変わらないという仮説のもと、As isを把握することである程度連続的な未来を予知したい</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>新規立ち上げクリニックの医師体制設計</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>PoC段階（〜3ヶ月）はバイチャンス可、事業化時は再設計</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>浅草院・さくら浅草院の医師体制移行</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-card" id="R-C-002">
+  <div class="rule-header">
+    <span class="rule-id">R-C-002</span>
+    <span class="rule-title">高LTV商材を出口に置いてクロスセル設計</span>
+    <div class="rule-badges">
+      <span class="badge badge-info">信頼度 ★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">自費クリニックの商材ポートフォリオ設計 AND 集患コストが競合と同水準以上</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content"><ol><li>高LTV商材（メンズヘルス、継続自費）を<strong>出口</strong>（最終収益源）に設定</li><li>低単価・高頻度商材（生活習慣病、いびき外来等）を<strong>入口</strong>ではなくクロスセル先に配置</li><li>初期認知→ナーチャリング→マネタイズの時間軸（半年〜）で累積回収を設計</li></ol></div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">集患コストが同じなら患者LTVの高い商材で回収した方が収益性が高い。低単価商材を入口にすると集患コストが即時回収できず赤字化する</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 八尾（2026/3/27, C09580QNKPB）</div><blockquote class="rule-quote">メインはメンズヘルスの線で進行設計 [...] 生活習慣病やいびきは初診取りに行くよりメンズヘルス等からクロスセル狙う方が良さそう</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>自費中心の新規クリニック、特に広告依存モデル</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>立地優位でWalk-In比率高なら単価低くても入口として成立</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>CTEN Phase 1-2（2026/4-5月）のCAC/LTV実測</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-card" id="R-C-003">
+  <div class="rule-header">
+    <span class="rule-id">R-C-003</span>
+    <span class="rule-title">対面診療のCSでは診察前に総額を確定させない（ブレイクダウン提示）</span>
+    <div class="rule-badges">
+      <span class="badge badge-info">信頼度 ★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">対面自費診療 AND CS（接客担当）による価格説明フェーズ</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content">価格はブレイクダウン（項目別）で提示し、<strong>最終合計額が診察前にはわからない状態</strong>に保つ</div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">実運用の観察では、この提示方式だと価格理由の離脱がほぼ発生しない。つまり現行価格（consultation fee 20,000円+tax）は安すぎ・値上げ余地がある。対面は家賃・看護師・機器・バイト医師等の固定費が大きく、オンラインと同等以上の単価を取る必要がある</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 日野（2026/1/19, C08U1GP0U6Q）</div><blockquote class="rule-quote">CS時の対面の価格提示はブレイクダウンでの提示で、最終的な金額が診察前にはわからない状態にしているため、価格理由の離脱がほぼない状態です。つまりもっと上げる余地があると思っています。現行のconsultation fee の20,000 +tax は安すぎで</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>対面・自費・高単価の自由診療、特に訪日外国人</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>オンライン診療／保険診療は不可。超高額は事前概算必要</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>浅草院稼働後、価格提示タイミング×離脱率のA/Bテスト</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CATEGORY D ========== -->
+<h2 class="section-title" id="cat-d">カテゴリD. ホテル営業・アライアンス <span class="count">3ルール</span></h2>
+
+<div class="rule-card" id="R-D-001">
+  <div class="rule-header">
+    <span class="rule-id">R-D-001</span>
+    <span class="rule-title">ホテル営業は「管理職＋コンシェルジュ」の二層攻め</span>
+    <div class="rule-badges">
+      <span class="badge badge-info">信頼度 ★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">プレミアムホテルとの医療提携営業</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content"><ul><li>管理職レベル: 提携医療機関一覧・SRG規模感・提携スキームを訴求</li><li>フロント・コンシェルジュレベル: 「看護師が来る」「24時間対応」等の現場メリットを訴求</li></ul></div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">フロントのアルバイトが困り事を自力で捌くと管理者には報告が上がらない。どのホテルも困っているが誰が受け止めているかの違い。両層にアプローチしないと導入判断までのルートが切れる</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 東（2025/8/12, C08U1GP0U6Q）</div><blockquote class="rule-quote">フロントのアルバイトが全て捌いていれば、管理者には報告が上がらないわけですし</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>プレミアム〜中位ホテル、特に訪日客比率高</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>ビジネスホテル・カプセル等は判断者1人で二層不要</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>ホテル別アプローチと提携転換率の相関</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-card" id="R-D-002">
+  <div class="rule-header">
+    <span class="rule-id">R-D-002</span>
+    <span class="rule-title">プレミアムホテル提案資料は「提携医療機関一覧＋SRG取引実績」で重厚感</span>
+    <div class="rule-badges">
+      <span class="badge badge-info">信頼度 ★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">エンタープライズ（高級ホテル・大企業）向け医療提携資料作成</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content"><ul><li>提携医療機関一覧スライドを必須挿入</li><li>医師のアドバイザー陣スライド挿入</li><li>SRG（セブンリッチ）の企業規模・取引実績を母体の信頼性として提示</li></ul></div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">個別クリニックの実績だけでは信頼性が足りない。母体・ネットワーク・関係者の厚みを可視化することで意思決定者の稟議を通しやすくする</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 大江（2025/8/13 07:22, C08U1GP0U6Q）</div><blockquote class="rule-quote">（大江）セブンリッチって誰も知らないと思うので、もう少し規模感や大手との取引実績等でしっかりとした母体である感を出したいです！ / 医療体制としての実績や重厚感のある体制をもっと出せるといいなと思いましたが、例えば... 加藤先生をアドバイザー（監修？）として紹介するスライド挟むとかどうでしょうか？ 症状が重いときに紹介できる提携病院一覧など</blockquote>
+    <blockquote class="rule-quote">（東・反映完了, 同日 12:08）P.4の内容差し替え／P.7 アドバイザー資料差し込み／P.12 提携医療機関資料差し込み</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>B2B法人営業全般、特に100室以上のホテルチェーン</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>個人経営ホテル・ゲストハウスはオーバースペック</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>提案資料A/Bテストと成約率比較</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-card" id="R-D-003">
+  <div class="rule-header">
+    <span class="rule-id">R-D-003</span>
+    <span class="rule-title">悪評口コミは削除せずレスポンスの質で信頼を作る</span>
+    <div class="rule-badges">
+      <span class="badge badge-info">信頼度 ★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">Google口コミ・SNS等で悪評投稿が発生</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content"><ol><li>削除依頼はしない</li><li>英文/和文で丁寧な返信を返す</li><li>医師名・肩書き・クリニック名を含めた返信テンプレを使う</li></ol></div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">悪評が全くないクリニックは「サクラ疑惑」を持たれる。多少の悪評と真摯な対応のセットが最も信頼される</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 関（2026/1/23, C0A3HLJ9CQY）</div><blockquote class="rule-quote">多少悪いものもあったほうが、サクラじゃないと思ってもらえる気もするので、削除までしなくてもいいかもなーとは思いました</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>自費・外国人向け・口コミ依存度高のクリニック</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>虚偽・誹謗中傷で法的問題のあるものは別対応</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>口コミ点数変動と来院数の相関分析</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CATEGORY E ========== -->
+<h2 class="section-title" id="cat-e">カテゴリE. オペレーション・組織設計 <span class="count">2ルール</span></h2>
+
+<div class="rule-card" id="R-E-001">
+  <div class="rule-header">
+    <span class="rule-id">R-E-001</span>
+    <span class="rule-title">看護師に「患者対応＋マーケ責任」を持たせる</span>
+    <div class="rule-badges">
+      <span class="badge badge-info">信頼度 ★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">新規クリニックの看護師採用・役割設計</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content">オペレーションだけでなく、エリアマーケ（近隣営業・口コミ誘導・経路記録）の目標を設定</div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">将来の多院展開時、看護師が集患機能を兼ねられれば院ごとにマーケ担当を別置きしなくて済む。テンプレート化しやすい組織モデル</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 関（2026/1/23, C0A3HLJ9CQY）</div><blockquote class="rule-quote">患者対応とマーケの部分で目標設定したいね。ゆくゆくこの役割根本が担えると、他院にも展開できる！</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>5名以下の小規模クリニック、複数院展開視野</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>大規模病院・専門医療では役割分離が必要</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>根本さんの売上寄与率と浅草院展開時の再現性</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-card" id="R-E-002">
+  <div class="rule-header">
+    <span class="rule-id">R-E-002</span>
+    <span class="rule-title">Walk-In患者の来院経路記録を即システム化</span>
+    <div class="rule-badges">
+      <span class="badge badge-ok">信頼度 ★★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">新規クリニック開業直後 AND Walk-In受付を行う</div></div>
+    <div class="rule-section"><div class="rule-label">THEN — 以下3項目を必須質問に</div><div class="rule-content"><ol><li>どこに泊まっているか</li><li>どうやってクリニックを知ったか</li><li>どうやってきたか（交通手段）</li></ol></div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">この3項目は将来の集患戦略（どこに広告を打つか、どの経路を強化するか）の根幹データになる。後から取ろうとしても取れない</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 関（2025/12/24, C0A3HLJ9CQY）</div><blockquote class="rule-quote">飛び込みは記録残しておいてほしい！特にアンケートフォームで聞いてるような内容は聞けたら聞いてほしい ・どこに泊まっているか ・どうやってクリニックを知ったか ・どうやってきたか（交通手段）</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>Walk-In比率が10%以上想定のクリニック</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>完全予約制・紹介制では優先度低</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>記録データが集患戦略にフィードバックされているか</div>
+    </div>
+  </div>
+</div>
+
+<div class="deleted-note">
+  <strong>R-E-003（スプレッドシートでセル結合を使わない）</strong>はv1.1でノイズ判定により削除（一般的な業務ルールで、TEN EX固有の暗黙知ではないため）
+</div>
+
+<!-- ========== CATEGORY F ========== -->
+<h2 class="section-title" id="cat-f">カテゴリF. システム・ツール <span class="count">2ルール</span></h2>
+
+<div class="rule-card" id="R-F-001">
+  <div class="rule-header">
+    <span class="rule-id">R-F-001</span>
+    <span class="rule-title">複数拠点システム設計はフロー図なしで議論しない</span>
+    <div class="rule-badges">
+      <span class="badge badge-info">信頼度 ★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">複数院・複数拠点のシステム要件定義 AND 表形式のみで議論しようとしている</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content">まず Figma/構成図で（各拠点 / システム / 登場人物 / 作業 / 関係性）を図示してから議論する</div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">表だけでは関係性と分岐が見えず、必ず漏れが発生する。後工程で発覚すると手戻りコスト大</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 関（2026/2/26, C0A3HLJ9CQY）</div><blockquote class="rule-quote">これシステム構成図?フロー図?とか(各拠点、システム、登場人物or作業あたり、関係性がまとまっている図)作ってないんですかね？それなしでこの表だけで話すと漏れ出てくると思うから作った方がいいと思う</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>複数院展開、システム統合、業者間連携</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>単一拠点・単一システムの設定変更は不要</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>March×ORCA多院連携の要件整理でフロー図主導に移行したか</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-card" id="R-F-002">
+  <div class="rule-header">
+    <span class="rule-id">R-F-002</span>
+    <span class="rule-title">医療物品調達は「PoCはAmazon+院内持出、本番は卸直契約」</span>
+    <div class="rule-badges">
+      <span class="badge badge-ok">信頼度 ★★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">新規クリニックの医療物品調達設計</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content"><ul><li>PoC・小規模検証段階（〜3ヶ月） → Amazon + 既存院からの持出で最小構成</li><li>本格稼働・法人格取得後 → スズケン・アルフレッサ等の医療卸と直接契約</li></ul></div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">法人格取得前は卸との直接契約不可（医療機関コード・法人格要件）。PoC段階で卸契約を急ぐとボトルネックになる。稼働後はスズケン配送が「待機必須」で現場工数を食うため、事前に切り替えタイミングを設計</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 八尾（2025/7/14, C08U1GP0U6Q）ほか</div><blockquote class="rule-quote">スタッフからも「ミニマムでやるなら機器とかはスズケンとか卸よりもAmazonとかの方が安い」とFBもらってますので、最安で見繕いますね！</blockquote>
+    <blockquote class="rule-quote">（続き 2025/11/26）配送時にクリニックにずっといて待たないといけなくて、その時間が今取れなくて</blockquote>
+    <blockquote class="rule-quote">（続き 2025/11/26）年明け以降で一般社団法人たてたらそちらで卸と契約して発注</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>新規クリニック立ち上げ</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>特殊医療機器・冷蔵医薬品は卸経由必須</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>浅草院開業時の切り替えタイミングの妥当性</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CATEGORY G ========== -->
+<h2 class="section-title" id="cat-g">カテゴリG. 行政・申請 <span class="count">5ルール</span></h2>
+
+<div class="rule-card" id="R-G-001">
+  <div class="rule-header">
+    <span class="rule-id">R-G-001</span>
+    <span class="rule-title">保険診療開始日から逆算して行政申請のクリティカルパスを確保</span>
+    <div class="rule-badges">
+      <span class="badge badge-ok">信頼度 ★★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">新規クリニックで保険診療開始予定</div></div>
+    <div class="rule-section"><div class="rule-label">THEN — 保険診療開始希望日から逆算</div><div class="rule-content"><ul><li><strong>オンライン資格確認</strong>: 開始希望日の<strong>2ヶ月前</strong>までに申請（厚生局対応）</li><li><strong>保険医療機関指定申請</strong>: 開始希望月の<strong>前月10日</strong>までに申請</li><li><strong>管理者要件</strong>: 年度切替時（4月等）は要件変更の可能性 → 3月下旬に再確認</li></ul></div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">〆切を逃すと開業月がそのままずれる。特にオン資は医療機関コード発番まで時間がかかり、前月申請では間に合わない</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 関（2026/2/12, C0A3HLJ9CQY）</div><blockquote class="rule-quote">`厚生局メモ` 下記の2つ対応必要 １，オンライン資格のやつ　〆切：2か月前 ２，保険医療機関指定申請　〆切：前月10日 [...] ５月頭から保険診療するのであれば、１については2末～3頭に対応の必要あり</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>日本国内の保険医療機関指定を目指す新規クリニック</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>自費専門なら不要</div>
+      <div class="rule-meta-item"><span class="meta-label">関連</span>R-G-002, R-G-003</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>さくら浅草院の5/1保険診療開始で実証</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-card" id="R-G-002">
+  <div class="rule-header">
+    <span class="rule-id">R-G-002</span>
+    <span class="rule-title">一般社団法人での開設は「なぜ一社か」の理由書を必須準備</span>
+    <div class="rule-badges">
+      <span class="badge badge-info">信頼度 ★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">クリニックの法人形態が一般社団法人 AND 保健所に開設許可申請</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content"><ol><li>「なぜ医療法人でも個人でもなく一般社団法人なのか」の理由書をドラフト</li><li>行政書士に事前確認（業界的には管理医師が直接保健所説明が推奨）</li><li>事前相談フェーズは管理医師不在でもメールベースで可</li><li>本格的な資料提出時には管理医師のカバーを入れる</li></ol></div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">医療法人と異なり一般社団法人での医療開設は保健所側から理由説明を求められる。説明なしでは開設許可が下りない or 大幅遅延する</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 嶋田（2026/2/24, C08U1GP0U6Q）、関（2026/2/19, C0A3HLJ9CQY）</div><blockquote class="rule-quote">医療法人じゃなくて一般社団法人で開設する理由を聞かれており、下記のような理由書を作成しています。行政書士からは管理医師が直接保健所にいって説明したほうがよい、と言われているのですが [...] 保健所にはメールで送ると握ってあるので下記理由書の提出は私から東先生をccに入れてメールベースで対応しようと思っております（嶋田）</blockquote>
+    <blockquote class="rule-quote">一社の場合、一社でやる理由をしっかりつくって持ち込む必要あり。なぜ個人でも医療法人でもないのかの理由が明確にわかるよう（関）</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>一般社団法人立ての新規クリニック</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>医療法人・個人開業では不要</div>
+      <div class="rule-meta-item"><span class="meta-label">関連</span>R-G-001, R-G-003, R-B-002</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>浅草院開設許可取得後、効いた論点のヒアリング</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-card" id="R-G-003">
+  <div class="rule-header">
+    <span class="rule-id">R-G-003</span>
+    <span class="rule-title">保健所には賃貸借契約前に事前相談アポを取る</span>
+    <div class="rule-badges">
+      <span class="badge badge-info">信頼度 ★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">新規クリニック物件候補が定まった AND 賃貸借契約締結前</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content"><ol><li>管轄の保健所に電話し、開設許可・開設届・保険医療機関指定の3段階手続きを確認</li><li>「賃貸借契約前に相談に来てほしい」と要請があれば即アポ取り</li><li>東先生（医師）と嶋田さん（事業開発）同席で訪問</li><li>物件の構造設備（部屋サイズ・導線・水場・医薬品保管）を事前チェック</li></ol></div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">契約後に保健所から構造設備でNGが出ると物件をやり直す羽目になる。台東区等では賃貸契約前相談を明示的に要請される</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 関（2026/2/12, C0A3HLJ9CQY）</div><blockquote class="rule-quote">台東区保健所に電話しました。①保健所：開設の許可 ※一般社団法人のため。結構時間もかかる。②保健所：開設届 [...] 賃貸借契約前に一度相談に来てほしい、とのことなので、次週木曜日でアポとりました</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>日本国内の新規医療機関開設、特に23区内</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>居抜きで前クリニックと同一要件の場合は簡略化可</div>
+      <div class="rule-meta-item"><span class="meta-label">関連</span>R-G-001, R-G-002, R-A-002</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>他自治体でも機能するか、miya・別府で検証</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-card" id="R-G-004">
+  <div class="rule-header">
+    <span class="rule-id">R-G-004</span>
+    <span class="rule-title">「厚生局への届出要否」は保険/自費で切り分けて明示する</span>
+    <div class="rule-badges">
+      <span class="badge badge-info">信頼度 ★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">決済会社・配送会社・ベンダーの審査書類で「厚生局許可証」等の提出を求められた</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content"><ol><li>自由診療のみの場合 → 「届出先は特になし」と正面から回答</li><li>保険診療の場合 → 厚生局への届出済み証跡を提出</li><li>相手の審査担当に「訪問診療・自由診療は届出不要」の根拠を簡潔な議事メモで提供</li></ol></div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">決済会社等の審査担当はしばしば保険診療を前提に許可証を要求してくる。説明なしで許可証がない状態で放置すると審査落ち or 遅延する</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 東（2025/8/6, C08U1GP0U6Q）、関による質問（2025/8/5）</div><blockquote class="rule-quote">（関）②許可証 追加で訪問診療などで取得される厚生局？などからの許可証がいただきたいとの事です。 [...] 改めて、どういう建付けで問題なしなのかの説明、もしくはお電話で確認いただいた内容の簡単な議事メモなどいただけませ</blockquote>
+    <blockquote class="rule-quote">（東）保険診療の場合は、厚生局への届出が必要だが、自由診療の場合は届出する先は特にありません、という回答でした</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>自由診療中心クリニックの外部ベンダー審査</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>保険診療併設時は厚生局届出が実際に必要</div>
+      <div class="rule-meta-item"><span class="meta-label">関連</span>R-G-001, R-B-002</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>テンプレ化した説明メモを新規ベンダー審査で流用可能か</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-card" id="R-G-005">
+  <div class="rule-header">
+    <span class="rule-id">R-G-005</span>
+    <span class="rule-title">医療廃棄物処理契約は法人名義を開業前に確定</span>
+    <div class="rule-badges">
+      <span class="badge badge-warn">信頼度 ★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">新規クリニック開業準備 AND 医療廃棄物処理業者選定中</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content"><ol><li>業者の見積取得（容器代・回収運搬・処理費込み）</li><li><strong>契約名義</strong>を明示的に確認:<ul><li>クリニック屋号単体（例: 「さくらインターナショナルクリニック東京」）</li><li>一般社団法人（例: 「一般社団法人 SIG」）</li></ul></li><li>開業日前に契約締結、初回回収日を確定</li></ol></div></div>
+    <div class="rule-section"><div class="rule-label">WHY</div><div class="rule-content">契約名義を曖昧にすると、請求書発行・経理計上・医療法上の管理責任の紐付けで齟齬が出る。開業後の廃棄物発生前に確定必須</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 根本（2026/1/29, C0A3HLJ9CQY）</div><blockquote class="rule-quote">医療廃棄物処理の見積もりになります！トキワ薬品化工で契約を進めようと思っています！ [...] ちなみになのですが契約系に関しては「さくらインターナショナルクリニック 東京」の契約で大丈夫ですか？一般社団法人 SIGを頭に付けたほうが良いですか？</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>医療廃棄物を出す全医療機関</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>訪問診療のみで医療廃棄物を出さない運用なら後回し可</div>
+      <div class="rule-meta-item"><span class="meta-label">関連</span>R-G-002, R-F-002</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>契約名義の社内ルール化（SOP作成）</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CATEGORY H ========== -->
+<h2 class="section-title" id="cat-h">カテゴリH. 失敗パターン（Anti-Pattern） <span class="count">5ルール・新設</span></h2>
+
+<div class="category-intro">「こうすると失敗する」「こう進めると必ず認識ズレる」を型化した禁止/注意型ルール。TEN EXPERIENCEで実際に発生した事故ログから抽出。</div>
+
+<div class="rule-card" id="R-H-001">
+  <div class="rule-header">
+    <span class="rule-id">R-H-001</span>
+    <span class="rule-title">医療事務委託時にカルテ運用前提（紙/電子）を擦り合わせずに進めない</span>
+    <div class="rule-badges">
+      <span class="badge badge-info">信頼度 ★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">医療事務（レセプト）を外部委託 AND 委託先の標準フローを確認中</div></div>
+    <div class="rule-section"><div class="rule-label">THEN — 委託開始合意前に以下を擦り合わせ</div><div class="rule-content"><ul><li>カルテ媒体（紙/電子/Google Document）</li><li>格納場所・保存形式・期限</li><li>レセプト後の修正フロー（別Slackチャンネル or メール）</li></ul></div></div>
+    <div class="rule-section"><div class="rule-label">WHY（実例）</div><div class="rule-content">医療事務鈴木さんアサイン時、委託先は「紙カルテをGoogle Drive格納」前提だったが、とらほすは Google Document運用。事前擦り合わせなしで「これから紙カルテ運用を開始」という不本意な切り替えが発生</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 東（2025/10/29, C08U1GP0U6Q）</div><blockquote class="rule-quote">翌月1営業日までに、google driveに紙カルテをgoogle driveへの格納完了をお願いしたい → うちはそもそも紙カルテ運用ではなくGoogle Document運用なので、これから紙カルテ運用を開始</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>医療事務・レセプト業務の外部委託全般</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>委託先の電子カルテ対応が確認済みなら不要</div>
+      <div class="rule-meta-item"><span class="meta-label">関連</span>R-C-001, R-F-001</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>次回医療事務委託時にチェックリスト化</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-card" id="R-H-002">
+  <div class="rule-header">
+    <span class="rule-id">R-H-002</span>
+    <span class="rule-title">数字集計フォーマットを複数並存させない（単一Source of Truth原則）</span>
+    <div class="rule-badges">
+      <span class="badge badge-ok">信頼度 ★★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">事業計画・経営報告・KPIダッシュボード等、複数フォーマットで数字を管理する必要がある場合</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content"><ol><li><strong>Single Source of Truth</strong>（マスターシート）を1つ確定</li><li>他フォーマットはマスターから導出する派生ビューとして位置付け</li><li>数字更新時は必ずマスターを先に更新</li><li>事業計画更新タイミングは特定の意思決定者（大江さん等）のチェック後に行う</li></ol></div></div>
+    <div class="rule-section"><div class="rule-label">WHY（実例）</div><div class="rule-content">とらほすで「インター内部」「DASH」「経営報告」で数字が頻繁にずれた。手戻りが発生するのでマスター確定→派生更新の順序を崩してはいけない</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 関（2026/2/13, C08U1GP0U6Q）、日野（2025/11/4）</div><blockquote class="rule-quote">事業計画、このタイミングで更新する意図って、・インター内部 ・DASHor経営報告 別フォーマット間でちょいちょい数字がずれていたからだと思います。大江さんチェック前だとワークしても結局手戻り発生する気がする（関）</blockquote>
+    <blockquote class="rule-quote">T-HUBとC-TEN受診で金額を追えていないものが数点ありますね、この辺りの集計方法も今日の議題に入れたい（日野）</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>全数字管理プロセス</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>一時的な試算・シミュレーションはマスター外で可</div>
+      <div class="rule-meta-item"><span class="meta-label">関連</span>R-E-002, R-F-001</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>マスターシート位置付けを明示したテンプレを用意</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-card" id="R-H-003">
+  <div class="rule-header">
+    <span class="rule-id">R-H-003</span>
+    <span class="rule-title">決済サービスのUI文言を運用後に変えようとしない</span>
+    <div class="rule-badges">
+      <span class="badge badge-info">信頼度 ★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">Stripe/Square/その他決済サービスの標準UI文言に患者から違和感が出た</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content"><ul><li><strong>まず変更可否をサービスに確認</strong>（Shipping Address → Invoice Address 等）</li><li>変更不可な場合、代替案:<ul><li>決済サービス自体の切り替え検討</li><li>予約フォームでの事前説明を強化</li><li>現場CSでの補足説明を挟む</li></ul></li><li>変更可否確認を<strong>本格運用前のPoC段階</strong>で済ませる</li></ul></div></div>
+    <div class="rule-section"><div class="rule-label">WHY（実例）</div><div class="rule-content">Squareの「Shipping Address」表記に外国人患者複数名が「何をShipするの？」と質問。問い合わせで変更不可と判明。運用開始後は取り返しがつかない</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 日野（2025/10/27, C08U1GP0U6Q）</div><blockquote class="rule-quote">スクエア決済時のShipping Address表記は別の表記に変えることは可能でしょうか？（Invoice Addressなど）何をShipするんだい、と突っ込んでくる人が数名おりまして。。笑</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>外国人患者向けの決済UI全般</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>日本人患者中心なら文言違和感は限定的</div>
+      <div class="rule-meta-item"><span class="meta-label">関連</span>R-F-001, R-A-003</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>決済サービス選定チェックリストにUI文言カスタマイズ可否を追加</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-card" id="R-H-004">
+  <div class="rule-header">
+    <span class="rule-id">R-H-004</span>
+    <span class="rule-title">複数関係者が絡む議論を表だけで進めると必ず認識ズレる</span>
+    <div class="rule-badges">
+      <span class="badge badge-ok">信頼度 ★★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">複数拠点 or 複数ツール or 複数登場人物が関わるフロー議論</div></div>
+    <div class="rule-section"><div class="rule-label">THEN</div><div class="rule-content"><ul><li>必ず<strong>図示</strong>してから議論する（Figma / Lucidchart / mermaid等）</li><li>予約〜診察フロー、決済フロー、カルテ連携フロー等は特に必須</li><li>「前回みたいに認識違いある気がするので、図で確認」が合言葉</li></ul></div></div>
+    <div class="rule-section"><div class="rule-label">WHY（実例）</div><div class="rule-content">予約〜診察フローで2回認識ズレ発生（2025/7月、8月）。その都度「一度図にしてちゃんと確認」が必要になり、手戻り発生</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 関（2025/8/27, C08U1GP0U6Q）</div><blockquote class="rule-quote">いったん図にしてちゃんと確認しないと、前回みたいに認識違いある気がするので、それはやりましょう</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>2拠点以上 or 3人以上の議論</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>単純な定型タスクは図示不要</div>
+      <div class="rule-meta-item"><span class="meta-label">関連</span>R-F-001, R-H-002</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>全チームで「表で議論禁止、図を先に」のルール化</div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-card" id="R-H-005">
+  <div class="rule-header">
+    <span class="rule-id">R-H-005</span>
+    <span class="rule-title">医療卸の出荷調整は単一卸依存で致命傷になる</span>
+    <div class="rule-badges">
+      <span class="badge badge-info">信頼度 ★★</span>
+      <span class="badge badge-info">internal</span>
+    </div>
+  </div>
+  <div class="rule-body">
+    <div class="rule-section"><div class="rule-label">IF</div><div class="rule-content">医薬品・医療資材を単一の医療卸（スズケン等）のみに依存</div></div>
+    <div class="rule-section"><div class="rule-label">THEN — 事前設計</div><div class="rule-content"><ul><li><strong>第2卸候補</strong>を事前に確保（アルフレッサ・他の地場卸）</li><li><strong>出荷調整対象品目</strong>の即時切り替え手順</li><li>既存院からの緊急ピックアップ経路</li></ul></div></div>
+    <div class="rule-section"><div class="rule-label">WHY（実例）</div><div class="rule-content">2025/7月にサワシリン出荷調整、2025/11月にスズケン配送待機問題発生。単一依存だと代替手段がなく診療停止リスク</div></div>
+    <div class="rule-section"><div class="rule-label">原文 — 東（2025/7/23, C08U1GP0U6Q）、八尾（2025/11/26）</div><blockquote class="rule-quote">サワシリンのみ出荷調整がで仕入れられず、サワシリンもしくはオーグメンチンを分けてもらうことって可能でしょうか？（東）</blockquote>
+    <blockquote class="rule-quote">さくら→スズケンと契約、THUB→アルフレッサと契約 のステータスなんですが、スズケンの配送時にクリニックにずっといて待たないといけなくて（東）</blockquote></div>
+    <div class="rule-meta-grid">
+      <div class="rule-meta-item"><span class="meta-label">適用範囲</span>医療卸経由で調達する全医薬品・資材</div>
+      <div class="rule-meta-item"><span class="meta-label">例外・境界</span>自費・非処方薬のみ扱う場合は影響小</div>
+      <div class="rule-meta-item"><span class="meta-label">関連</span>R-F-002</div>
+      <div class="rule-meta-item"><span class="meta-label">次の検証</span>主要品目ごとの第2卸調達手順のSOP化</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== APPENDIX ========== -->
+<h2 class="section-title" id="appendix">付録: 利用ガイドライン・拡張方針</h2>
+
+<h3 style="font-size:1rem; font-weight:700; margin-top:24px; margin-bottom:10px; padding-left:10px; border-left:3px solid #555;">ナレッジAIでの利用</h3>
+<ul>
+  <li>本ドキュメントはIF-THEN構造でRAG・ルール検索の両方に使える形式</li>
+  <li>各ルールのIF条件をベクトル化して類似ケースに適用できる</li>
+  <li>対外公開は禁止（MS法人スキーム・価格戦略・取引先情報を含む）</li>
+</ul>
+
+<h3 style="font-size:1rem; font-weight:700; margin-top:24px; margin-bottom:10px; padding-left:10px; border-left:3px solid #555;">バージョン履歴</h3>
+<table>
+  <tr><th>Version</th><th>内容</th><th>ルール数</th></tr>
+  <tr><td>v1.0</td><td>初版（Slack 3ch から抽出）</td><td>18</td></tr>
+  <tr><td>v1.1</td><td>セルフレビュー反映（R-E-003削除、R-A-002 chain rule化、R-C-003/R-D-002原文補強）</td><td>17</td></tr>
+  <tr><td><strong>v1.2（本版）</strong></td><td>カテゴリG +4件、カテゴリH失敗パターン新設+5件、主要ルールに機微度・関連メタ付与</td><td><strong>26</strong></td></tr>
+  <tr><td>v1.3（予定）</td><td>全ルールに機微度・関連・counterexamples 網羅付与、IFの定量化</td><td>—</td></tr>
+  <tr><td>v2（予定）</td><td>関・東・日野への言語化インタビューで IF 条件を精緻化・定量化</td><td>—</td></tr>
+  <tr><td>v3（予定）</td><td>「インターでやったことの型化」会議成果物との統合</td><td>—</td></tr>
+</table>
+
+<h3 style="font-size:1rem; font-weight:700; margin-top:24px; margin-bottom:10px; padding-left:10px; border-left:3px solid #555;">未整理だが重要な論点（ルール未成熟）</h3>
+<ul>
+  <li>カルテ記載の遅延を構造的に解消する設計（ボトルネック放置中）</li>
+  <li>奥山さんの稼働キャップ設定（合意未形成）</li>
+  <li>浅草院の名称決定ロジック（SEO vs デザイン視認性）</li>
+  <li>双日ヘルスケア等の休眠商談の掘り起こし基準</li>
+  <li>MS&AD Ventures 案件の意思決定フロー</li>
+</ul>
+
+<h3 style="font-size:1rem; font-weight:700; margin-top:24px; margin-bottom:10px; padding-left:10px; border-left:3px solid #555;">関連ファイル</h3>
+<ul>
+  <li><code>notes/2026-04-20-slack-summary.md</code> — 3ch統合要約</li>
+  <li><code>notes/2026-04-20-knowledge-candidates.md</code> — ナレッジ候補リスト</li>
+  <li><code>notes/raw/*.md</code> — チャンネル別生データ</li>
+</ul>
+
+<div class="report-footer">
+  TEN EXPERIENCE 暗黙知ルールベース v1.2 — p036 — Generated 2026-04-21 — BPIO co., Ltd.<br>
+  出典: Slack 3ch (C09580QNKPB, C08U1GP0U6Q, C0A3HLJ9CQY) 全履歴 2025/5〜2026/4
+</div>
+
+</div>
+
+<script>
+const pills = document.querySelectorAll('.pill');
+const sections = document.querySelectorAll('h2.section-title[id], header[id]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      pills.forEach(p => p.classList.remove('active'));
+      const active = document.querySelector(`.pill[href="#${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -80% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
