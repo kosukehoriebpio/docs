@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>security-audit プラグイン 使い方マニュアル — BPIO</title>
+  <style>
+    body {
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: #1a1a1a; background: #fff; line-height: 1.7; margin: 0;
+    }
+    html { font-size: 15px; }
+
+    #sticky-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.97);
+      border-bottom: 1px solid #ccc;
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    #sticky-nav .nav-label {
+      font-size: 0.72rem; font-weight: 700; color: #777;
+      letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+    }
+    .pill {
+      display: inline-block; padding: 5px 16px;
+      font-size: 0.78rem; font-weight: 600; color: #555;
+      text-decoration: none; border: 1px solid #ccc;
+      border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+    }
+    .pill:hover, .pill.active {
+      background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+    }
+
+    #main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+
+    .report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+    .report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+    .report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+    .report-header .summary-box {
+      background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+    }
+    .report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+    .report-header .summary-box ul { padding-left: 20px; font-size: 0.82rem; }
+    .report-header .summary-box li { margin-bottom: 4px; }
+
+    h2.section-title {
+      font-size: 1.2rem; font-weight: 700;
+      border-bottom: 1px solid #999; padding-bottom: 6px;
+      margin-top: 48px; margin-bottom: 20px;
+    }
+    h3.subsection-title {
+      font-size: 1.0rem; font-weight: 700;
+      margin-top: 32px; margin-bottom: 12px;
+      padding-left: 10px; border-left: 3px solid #555;
+    }
+    h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+    table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+    table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+    table td { background: #fff; }
+    table tr:nth-child(even) td { background: #fafafa; }
+
+    p { margin-bottom: 10px; font-size: 0.88rem; }
+    ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+    ul li, ol li { margin-bottom: 3px; }
+
+    .highlight-box {
+      background: #f7f7f7; border: 1px solid #ddd;
+      padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+    }
+    .note-box {
+      background: #fffbeb; border-left: 4px solid #f59e0b;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+    }
+    .info-box {
+      background: #eff6ff; border-left: 4px solid #3b82f6;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f;
+    }
+
+    .badge {
+      display: inline-block; padding: 2px 10px;
+      font-size: 0.72rem; font-weight: 700;
+      border-radius: 999px; letter-spacing: 0.03em;
+    }
+    .badge-s  { background: #1a1a1a; color: #fff; }
+    .badge-a  { background: #d4edda; color: #155724; }
+    .badge-b  { background: #d1ecf1; color: #0c5460; }
+    .badge-c  { background: #fff3cd; color: #856404; }
+    .badge-d  { background: #fde8d8; color: #7c2d12; }
+    .badge-f  { background: #f8d7da; color: #721c24; }
+
+    .code-block {
+      background: #2d2d2d; color: #f8f8f2;
+      padding: 16px 20px; border-radius: 4px;
+      font-family: "Consolas", "Monaco", monospace;
+      font-size: 0.78rem; line-height: 1.6; overflow-x: auto;
+      margin: 12px 0 20px;
+    }
+
+    .flow {
+      display: flex; align-items: center; gap: 0;
+      margin: 20px 0; flex-wrap: wrap;
+    }
+    .flow-step {
+      background: #f0f0f0; border: 1px solid #ccc;
+      padding: 10px 18px; font-size: 0.82rem; font-weight: 600;
+      text-align: center; min-width: 110px;
+    }
+    .flow-step.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .flow-arrow { font-size: 1.2rem; color: #999; padding: 0 4px; }
+
+    .score-bar { display: flex; align-items: stretch; margin: 16px 0 24px; font-size: 0.8rem; }
+    .score-seg {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 10px 4px; border: 1px solid #bbb; flex: 1; text-align: center; line-height: 1.3;
+    }
+    .score-seg .grade { font-size: 1.1rem; font-weight: 700; }
+    .score-seg .range { font-size: 0.68rem; color: #777; }
+    .score-seg.seg-s { background: #1a1a1a; color: #fff; }
+    .score-seg.seg-a { background: #d4edda; color: #155724; }
+    .score-seg.seg-b { background: #d1ecf1; color: #0c5460; }
+    .score-seg.seg-c { background: #fff3cd; color: #856404; }
+    .score-seg.seg-d { background: #fde8d8; color: #7c2d12; }
+    .score-seg.seg-f { background: #f8d7da; color: #721c24; }
+
+    .report-footer {
+      border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+      font-size: 0.78rem; color: #777;
+    }
+
+    @media (max-width: 640px) {
+      #main { padding: 24px 20px 60px; }
+      .report-header h1 { font-size: 1.3rem; }
+      h2.section-title { font-size: 1.05rem; }
+      table { font-size: 0.78rem; }
+      table th, table td { padding: 5px 7px; }
+      #sticky-nav { padding: 10px 12px; gap: 6px; }
+      .pill { padding: 4px 12px; font-size: 0.72rem; }
+      .score-bar { flex-wrap: wrap; }
+      .score-seg { min-width: 48px; }
+    }
+
+    @media print {
+      #sticky-nav { display: none; }
+      #main { padding: 0; max-width: 100%; }
+      body { font-size: 10pt; }
+      .report-header h1 { font-size: 16pt; }
+      h2.section-title { font-size: 13pt; page-break-after: avoid; }
+      h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+      table { font-size: 8pt; page-break-inside: avoid; }
+      table th, table td { padding: 3px 5px; }
+      .highlight-box, .note-box, .info-box {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      table th { background: #f0f0f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .code-block { background: #2d2d2d !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">SECTIONS</span>
+  <a class="pill" href="#overview">概要</a>
+  <a class="pill" href="#quickstart">使い方</a>
+  <a class="pill" href="#scoring">スコアリング</a>
+  <a class="pill" href="#categories">スキャン内容</a>
+  <a class="pill" href="#install">インストール</a>
+  <a class="pill" href="#allowlist">Allowlist</a>
+  <a class="pill" href="#output">出力ファイル</a>
+  <a class="pill" href="#contact">問い合わせ</a>
+</nav>
+
+<div id="main">
+
+  <header class="report-header">
+    <h1>security-audit プラグイン 使い方マニュアル</h1>
+    <div class="subtitle">v0.1.3 — 社内 Claude Code ユーザー向け（非公開）</div>
+    <div class="summary-box">
+      <h3>このプラグインでできること</h3>
+      <ul>
+        <li>Claude Code リポジトリのセキュリティを <strong>4カテゴリ・0〜100点</strong> で自動スコアリング</li>
+        <li>APIキー・シークレットの漏洩、Claude Code 固有リスク（CVE）、GitHub Actions の設定ミスを検出</li>
+        <li>スキャン後に <strong>優先度順の修正アクションプラン</strong> を自動生成</li>
+        <li>Python のみで動作（外部ツール任意）。インストール済みなら <code>/security-audit</code> の一言で完結</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- 概要 -->
+  <section id="overview">
+    <h2 class="section-title">概要</h2>
+    <p>このプラグインは、Claude Code を使う社内メンバーのリポジトリが安全に保たれているかを自動チェックするツールです。開発者が気づきにくいセキュリティリスクを定期的に可視化し、重大な漏洩が起きる前に対処できるようにします。</p>
+
+    <div class="flow">
+      <div class="flow-step active">/security-audit<br>と入力</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">4カテゴリ<br>自動スキャン</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">スコア算出<br>（0〜100）</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">修正<br>アクションプラン</div>
+    </div>
+
+    <table>
+      <tr><th>項目</th><th>内容</th></tr>
+      <tr><td>バージョン</td><td>v0.1.3</td></tr>
+      <tr><td>必要環境</td><td>Python 3.9 以上、Claude Code CLI</td></tr>
+      <tr><td>外部ライブラリ</td><td>不要（オプションツールはより精度が上がる）</td></tr>
+      <tr><td>実行時間の目安</td><td>30〜90 秒（リポジトリ規模による）</td></tr>
+      <tr><td>配布方法</td><td>git submodule（BPIOLMS/claude-security-audit、要アクセス申請）</td></tr>
+    </table>
+  </section>
+
+  <!-- 使い方 -->
+  <section id="quickstart">
+    <h2 class="section-title">使い方</h2>
+
+    <h3 class="subsection-title">基本（インストール済みの場合）</h3>
+    <p>監査対象のリポジトリで Claude Code を開き、入力するだけです。</p>
+    <div class="code-block">/security-audit</div>
+    <div class="info-box">フルスキャン（スキャン + レポート生成）が実行されます。通常はこれだけで OK です。</div>
+
+    <h3 class="subsection-title">サブコマンド一覧</h3>
+    <table>
+      <tr><th>コマンド</th><th>動作</th><th>用途</th></tr>
+      <tr><td><code>/security-audit</code><br>または <code>/security-audit full</code></td><td>スキャン + レポート生成</td><td>通常はこれ（推奨）</td></tr>
+      <tr><td><code>/security-audit scan</code></td><td>スキャンのみ</td><td>findings を保存してあとでレポート</td></tr>
+      <tr><td><code>/security-audit report</code></td><td>既存 findings からレポート再生成</td><td>設定変更後の再集計</td></tr>
+    </table>
+  </section>
+
+  <!-- スコアリング -->
+  <section id="scoring">
+    <h2 class="section-title">スコアリング</h2>
+    <p>スキャン結果は <strong>0〜100 点</strong> で評価されます。同じ種類の問題は重複排除されるため、同じシークレットが複数コミットに残っていても1件扱いです。</p>
+
+    <div class="score-bar">
+      <div class="score-seg seg-s"><div class="grade">S</div><div class="range">95-100</div></div>
+      <div class="score-seg seg-a"><div class="grade">A</div><div class="range">80-94</div></div>
+      <div class="score-seg seg-b"><div class="grade">B</div><div class="range">65-79</div></div>
+      <div class="score-seg seg-c"><div class="grade">C</div><div class="range">50-64</div></div>
+      <div class="score-seg seg-d"><div class="grade">D</div><div class="range">30-49</div></div>
+      <div class="score-seg seg-f"><div class="grade">F</div><div class="range">0-29</div></div>
+    </div>
+
+    <table>
+      <tr><th>グレード</th><th>意味</th><th>推奨アクション</th></tr>
+      <tr><td><span class="badge badge-s">S</span> 95-100</td><td>優秀: 検出なし or Low のみ</td><td>定期監査を継続</td></tr>
+      <tr><td><span class="badge badge-a">A</span> 80-94</td><td>良好: Medium が若干あるが管理されている</td><td>次のスプリントで対応</td></tr>
+      <tr><td><span class="badge badge-b">B</span> 65-79</td><td>注意: High が存在する</td><td>今月中に計画的に修正</td></tr>
+      <tr><td><span class="badge badge-c">C</span> 50-64</td><td>要改善: Critical/High が複数</td><td>今週中に優先対処</td></tr>
+      <tr><td><span class="badge badge-d">D</span> 30-49</td><td>危険: 重大な脆弱性が複数</td><td>即時対応が必要</td></tr>
+      <tr><td><span class="badge badge-f">F</span> 0-29</td><td>深刻: 広範な侵害リスク</td><td>緊急対応・堀江に相談</td></tr>
+    </table>
+
+    <h3 class="subsection-title">減点の仕組み</h3>
+    <table>
+      <tr><th>severity</th><th>重み</th><th>基準</th></tr>
+      <tr><td>Critical</td><td>-10点</td><td>即時の情報漏洩・RCE リスク</td></tr>
+      <tr><td>High</td><td>-5点</td><td>重大なリスクだが追加条件が必要</td></tr>
+      <tr><td>Medium</td><td>-2点</td><td>実際の悪用には複数の前提が必要</td></tr>
+      <tr><td>Low</td><td>-0.5点</td><td>ベストプラクティス違反</td></tr>
+    </table>
+    <div class="note-box">カテゴリごとに減点の上限があります（A:最大40点、B:25点、C:20点、D:15点）。1カテゴリに問題が集中しても他カテゴリの点数は守られます。</div>
+  </section>
+
+  <!-- スキャン内容 -->
+  <section id="categories">
+    <h2 class="section-title">スキャン内容（4カテゴリ）</h2>
+
+    <h3 class="subsection-title">カテゴリ A — シークレット・APIキー漏洩（最大40点減点）</h3>
+    <p>コード・設定ファイル・git 履歴からシークレットを検出します。</p>
+    <table>
+      <tr><th>検出対象</th><th>例</th></tr>
+      <tr><td>Anthropic API キー</td><td><code>sk-ant-...</code></td></tr>
+      <tr><td>OpenAI API キー</td><td><code>sk-...</code></td></tr>
+      <tr><td>AWS 認証情報</td><td>アクセスキー・シークレット</td></tr>
+      <tr><td>GitHub PAT / Fine-grained token</td><td><code>ghp_...</code> / <code>github_pat_...</code></td></tr>
+      <tr><td>Slack / Notion / Stripe など</td><td>合計16パターン</td></tr>
+      <tr><td>.gitignore の必須エントリ確認</td><td><code>.env</code> が除外されているか等</td></tr>
+    </table>
+
+    <h3 class="subsection-title">カテゴリ B — Claude Code 固有リスク（最大25点減点）</h3>
+    <p>Claude Code 特有の攻撃ベクターをチェックします。</p>
+    <table>
+      <tr><th>チェック項目</th><th>リスク</th></tr>
+      <tr><td><code>apiUrl</code> の不審な override</td><td>CVE-2025-59536: 通信を中継・傍受される</td></tr>
+      <tr><td>hooks への shell injection</td><td>悪意のあるコードの自動実行</td></tr>
+      <tr><td>MCP の不審なエンドポイント</td><td>CVE-2025-52882: 外部サーバーへの情報送信</td></tr>
+      <tr><td>権限ワイルドカード（<code>*</code>）</td><td>意図しないコマンド実行を許可</td></tr>
+      <tr><td>会話履歴へのシークレット混入</td><td>~/.claude/projects/ 内のシークレット</td></tr>
+    </table>
+
+    <h3 class="subsection-title">カテゴリ C — GitHub 連携リスク（最大20点減点）</h3>
+    <table>
+      <tr><th>チェック項目</th><th>リスク</th></tr>
+      <tr><td>Actions の SHA 非ピン留め</td><td>サードパーティ Actions の改ざん攻撃</td></tr>
+      <tr><td><code>pull_request_target</code> の誤用</td><td>外部 PR からのシークレット窃取</td></tr>
+      <tr><td>リポジトリの public 化リスク</td><td>意図しない公開設定</td></tr>
+    </table>
+
+    <h3 class="subsection-title">カテゴリ D — 依存パッケージ脆弱性（最大15点減点）</h3>
+    <p><code>npm audit</code> / <code>pip-audit</code> で既知 CVE を検出します。ツール未インストール時はスキップされます。</p>
+  </section>
+
+  <!-- インストール -->
+  <section id="install">
+    <h2 class="section-title">インストール手順</h2>
+
+    <div class="note-box">
+      <strong>事前準備:</strong> GitHubリポジトリ（BPIOLMS/claude-security-audit）へのアクセス権限が必要です。<br>
+      堀江（kosuke.horie@sevenrich.jp）にGitHubユーザー名を伝えて招待を申請してください。
+    </div>
+
+    <h3 class="subsection-title">Step 1: サブモジュールとして追加</h3>
+    <div class="code-block">git submodule add https://github.com/BPIOLMS/claude-security-audit.git plugins/security-audit</div>
+
+    <h3 class="subsection-title">Step 2: SKILL.md を Claude Code に登録</h3>
+    <div class="code-block">mkdir -p .claude/skills/security-audit
+cp plugins/security-audit/skills/security-audit/SKILL.md .claude/skills/security-audit/SKILL.md</div>
+
+    <h3 class="subsection-title">Step 3: コミット</h3>
+    <div class="code-block">git add .gitmodules plugins/security-audit .claude/skills/security-audit
+git commit -m "system: add security-audit plugin"</div>
+
+    <h3 class="subsection-title">別マシンへのクローン時</h3>
+    <div class="code-block"># 新規クローン
+git clone --recurse-submodules &lt;your-repo-url&gt;
+
+# 既存クローンに後から追加
+git submodule update --init --recursive</div>
+
+    <h3 class="subsection-title">プラグインの更新</h3>
+    <div class="code-block">git submodule update --remote plugins/security-audit
+cp plugins/security-audit/skills/security-audit/SKILL.md .claude/skills/security-audit/SKILL.md
+git add plugins/security-audit .claude/skills/security-audit
+git commit -m "system: update security-audit plugin"</div>
+
+    <h3 class="subsection-title">オプションツール（インストールで精度向上）</h3>
+    <table>
+      <tr><th>ツール</th><th>用途</th><th>未インストール時</th></tr>
+      <tr><td>gitleaks</td><td>シークレット検出（高速）</td><td>自前正規表現で代替</td></tr>
+      <tr><td>trufflehog</td><td>credential verification 付き検出</td><td>gitleaks または正規表現で代替</td></tr>
+      <tr><td>gh（GitHub CLI）</td><td>GitHub 連携リスク監査</td><td>静的 workflow 解析のみ実施</td></tr>
+      <tr><td>npm</td><td>JS/TS 依存パッケージ CVE</td><td>カテゴリ D をスキップ</td></tr>
+      <tr><td>pip-audit</td><td>Python 依存パッケージ CVE</td><td>カテゴリ D をスキップ</td></tr>
+    </table>
+  </section>
+
+  <!-- Allowlist -->
+  <section id="allowlist">
+    <h2 class="section-title">Allowlist（誤検知・意図的許容の除外）</h2>
+    <p>テスト用フィクスチャや意図的に許容するリスクは、<code>.security-audit-allowlist.yml</code> をリポジトリルートに置くことで除外できます。</p>
+
+    <div class="code-block">allowlist:
+  - fingerprint: "abc123def456789a"   # スキャン結果に表示される16文字の hex
+    reason: "テスト用フィクスチャ（本番には存在しない）"
+    expires_at: "2026-12-31"          # 推奨: 定期的な見直しを促す</div>
+
+    <div class="note-box">
+      <strong>方針:</strong>
+      <ul style="margin: 6px 0 0; padding-left: 18px;">
+        <li>allowlist は「誤検知」または「意図的に許容するリスク」のみに使う</li>
+        <li>Critical は <code>expires_at</code> を必須とする</li>
+        <li>定期的に棚卸しし、不要なエントリは削除する</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 出力ファイル -->
+  <section id="output">
+    <h2 class="section-title">出力ファイル</h2>
+    <p>スキャン結果は <code>data/.state/security-audit/&lt;タイムスタンプ&gt;/</code> に保存されます。過去の監査結果は時系列で蓄積されます。</p>
+    <table>
+      <tr><th>ファイル</th><th>内容</th></tr>
+      <tr><td><code>SECURITY-AUDIT-REPORT.md</code></td><td>総合スコア・カテゴリ別サブスコア・検出一覧</td></tr>
+      <tr><td><code>SECURITY-AUDIT-ACTION-PLAN.md</code></td><td>優先度順の修正タスクリスト</td></tr>
+      <tr><td><code>findings/a_secrets.json</code></td><td>カテゴリA の生スキャン結果</td></tr>
+      <tr><td><code>findings/b_claude.json</code></td><td>カテゴリB の生スキャン結果</td></tr>
+      <tr><td><code>findings/c_github.json</code></td><td>カテゴリC の生スキャン結果</td></tr>
+      <tr><td><code>findings/d_deps.json</code></td><td>カテゴリD の生スキャン結果</td></tr>
+    </table>
+  </section>
+
+  <!-- 問い合わせ -->
+  <section id="contact">
+    <h2 class="section-title">問い合わせ・アクセス申請</h2>
+    <div class="highlight-box">
+      <strong>担当:</strong> 堀江 Kosuke Horie<br>
+      <strong>メール:</strong> kosuke.horie@sevenrich.jp<br><br>
+      インストールに必要なリポジトリへのアクセス権限（GitHubユーザー名の登録）は堀江まで連絡してください。
+    </div>
+  </section>
+
+  <div class="report-footer">
+    security-audit プラグイン 使い方マニュアル v0.1.3 — Generated 2026-04-30 — BPIO co., Ltd.
+  </div>
+
+</div>
+
+<script>
+  const pills = document.querySelectorAll('.pill');
+  const sections = document.querySelectorAll('section[id], header[id]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        pills.forEach(p => p.classList.remove('active'));
+        const active = document.querySelector(`.pill[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-80px 0px -80% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
