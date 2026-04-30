@@ -446,22 +446,38 @@
   <!-- Step 5: プラグイン導入 -->
   <section id="step5-install">
     <h2 class="section-title">Step 5｜プラグインをリポジトリに導入する</h2>
-    <p>監査したいリポジトリのルートディレクトリで、以下のコマンドを順番に実行してください。</p>
+    <p>2つの方法があります。<strong>方法①が一番かんたん</strong>です。</p>
 
-    <div class="note-box">コマンドは Claude Code のターミナルや通常のターミナル（PowerShell / Terminal）で実行します。</div>
+    <h3 class="subsection-title">方法① Claude Code に頼む（コマンド不要・推奨）</h3>
+    <p>Claude Code を開いて、以下のメッセージをそのままコピーして送信してください。あとは Claude Code が自動でやってくれます。</p>
 
-    <h3 class="subsection-title">1. サブモジュールとして追加</h3>
-    <div class="code-block">git submodule add https://github.com/BPIOLMS/claude-security-audit.git plugins/security-audit</div>
+    <div class="highlight-box" style="font-size:0.9rem;">
+      <strong>Claude Code に貼り付けるメッセージ：</strong><br><br>
+      security-audit プラグインを導入してください。<br>
+      以下のコマンドを実行してインストールしてください：<br><br>
+      <code>git submodule add https://github.com/BPIOLMS/claude-security-audit.git plugins/security-audit</code><br><br>
+      その後、<code>bash plugins/security-audit/install.sh</code> を実行してください。
+    </div>
 
-    <h3 class="subsection-title">2. SKILL.md を Claude Code に登録</h3>
-    <div class="code-block">mkdir -p .claude/skills/security-audit
-cp plugins/security-audit/skills/security-audit/SKILL.md .claude/skills/security-audit/SKILL.md</div>
+    <div class="confirm-box">Claude Code が「インストール完了！」と返答したら完了です。</div>
 
-    <h3 class="subsection-title">3. コミット</h3>
-    <div class="code-block">git add .gitmodules plugins/security-audit .claude/skills/security-audit
-git commit -m "system: add security-audit plugin"</div>
+    <h3 class="subsection-title">方法② 自分でコマンドを実行する（Mac / Linux）</h3>
+    <p>ターミナルを開き、リポジトリのフォルダに移動してから以下の2行を順番に実行してください。</p>
+    <div class="code-block"># 1行目：プラグインを取得する
+git submodule add https://github.com/BPIOLMS/claude-security-audit.git plugins/security-audit
 
-    <div class="confirm-box">コミットが完了したらインストール完了です。Claude Code を再起動して <code>/security-audit</code> が使えることを確認してください。</div>
+# 2行目：インストールスクリプトを実行する
+bash plugins/security-audit/install.sh</div>
+
+    <h3 class="subsection-title">方法② 自分でコマンドを実行する（Windows）</h3>
+    <p>PowerShell を開き、リポジトリのフォルダに移動してから以下の2行を順番に実行してください。</p>
+    <div class="code-block"># 1行目：プラグインを取得する
+git submodule add https://github.com/BPIOLMS/claude-security-audit.git plugins/security-audit
+
+# 2行目：インストールスクリプトを実行する
+powershell -ExecutionPolicy Bypass -File plugins\security-audit\install.ps1</div>
+
+    <div class="confirm-box">「インストール完了！」と表示されたら完了です。Claude Code を再起動して <code>/security-audit</code> が使えることを確認してください。</div>
 
     <h3 class="subsection-title">別のマシンでも使う場合</h3>
     <div class="code-block"># 新規クローン時
@@ -469,12 +485,6 @@ git clone --recurse-submodules &lt;your-repo-url&gt;
 
 # 既存クローンに後から追加する場合
 git submodule update --init --recursive</div>
-
-    <h3 class="subsection-title">プラグインをアップデートする場合</h3>
-    <div class="code-block">git submodule update --remote plugins/security-audit
-cp plugins/security-audit/skills/security-audit/SKILL.md .claude/skills/security-audit/SKILL.md
-git add plugins/security-audit .claude/skills/security-audit
-git commit -m "system: update security-audit plugin"</div>
   </section>
 
   <!-- 使い方 -->
