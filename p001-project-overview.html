@@ -187,7 +187,7 @@
   <span class="nav-label">SECTIONS</span>
   <a class="pill" href="#overview">概要</a>
   <a class="pill" href="#background">作成背景</a>
-  <a class="pill" href="#product">ビピトレ</a>
+  <a class="pill" href="#product">ビピトレ／LMS機能</a>
   <a class="pill" href="#contents">コンテンツ構成</a>
   <a class="pill" href="#pipeline">制作工程</a>
   <a class="pill" href="#roadmap">ロードマップ</a>
@@ -274,10 +274,42 @@
     <h3 class="subsection-title">プラットフォーム仕様</h3>
     <table>
       <tr><th>項目</th><th>内容</th></tr>
-      <tr><td>技術スタック</td><td>Next.js / Supabase / GCS（Google Cloud Storage）</td></tr>
-      <tr><td>主な機能</td><td>動画ライブラリ・進捗可視化・AIカリキュラム・確認テスト・コンピテンシー評価</td></tr>
-      <tr><td>評価設計</td><td>LMSスコア × 実務パフォーマンスの4象限マトリクス</td></tr>
-      <tr><td>現フェーズ</td><td>β版設計完了、初期パートナー（CCIF）での検証準備中</td></tr>
+      <tr><td>技術スタック</td><td>Next.js 16 / Supabase (PostgreSQL) / Cloudflare R2・GCS（動画ストレージ）</td></tr>
+      <tr><td>認証</td><td>Supabase Auth（マルチテナント・RBAC対応）</td></tr>
+      <tr><td>AI連携</td><td>Google Generative AI / OpenAI / Groq（vercel/ai SDK統合）</td></tr>
+      <tr><td>現フェーズ</td><td>開発中、初期パートナー（CCIF）での検証準備中</td></tr>
+    </table>
+
+    <h3 class="subsection-title">ユーザーロール</h3>
+    <table>
+      <tr><th>ロール</th><th>説明</th></tr>
+      <tr><td>learner（受講者）</td><td>コース視聴・診断・クイズ・AI家庭教師</td></tr>
+      <tr><td>admin（企業管理者）</td><td>ユーザー管理・進捗確認・コンテンツ割り当て</td></tr>
+      <tr><td>super_admin（BPIO管理者）</td><td>企業管理・コース作成・LMS全体設定</td></tr>
+    </table>
+
+    <h3 class="subsection-title">受講者向け機能</h3>
+    <table>
+      <tr><th>カテゴリ</th><th>機能</th></tr>
+      <tr><td>学習コンテンツ</td><td>コース一覧・検索、動画視聴、進捗追跡、複数トラック対応（初心者 / PM候補者等）</td></tr>
+      <tr><td>学習診断</td><td>事前・事後スキル診断（選択肢型・評価尺度型・テキスト型）、診断結果に基づく自動学習パス生成</td></tr>
+      <tr><td>クイズ・評価</td><td>コース単位のクイズ、合格判定、成績記録</td></tr>
+      <tr><td>AI家庭教師</td><td>個別チャット、Web検索対応、学習メモリー管理による継続的サポート</td></tr>
+      <tr><td>学習支援</td><td>ブックマーク、メモ作成・管理、ビデオトランスクリプト、参考資料リンク集</td></tr>
+      <tr><td>成果管理</td><td>バッジ獲得、学習履歴タイムライン、日々のストリーク、レベルシステム</td></tr>
+    </table>
+
+    <h3 class="subsection-title">管理者向け機能</h3>
+    <table>
+      <tr><th>カテゴリ</th><th>機能</th></tr>
+      <tr><td>企業管理</td><td>企業登録・設定、ユーザー上限・契約期間管理、コンテンツアクセス制御</td></tr>
+      <tr><td>ユーザー管理</td><td>ユーザー招待・権限設定・チーム管理</td></tr>
+      <tr><td>コース管理</td><td>コース作成・編集・削除、トラック・難易度設定、必須/選択設定</td></tr>
+      <tr><td>動画管理</td><td>動画アップロード（R2/GCS）、メタデータ・トランスクリプト・参考資料管理</td></tr>
+      <tr><td>クイズ管理</td><td>クイズ作成・編集、CSV一括インポート</td></tr>
+      <tr><td>診断管理</td><td>診断項目・アンケート作成、回答結果を学習パッケージへマッピング</td></tr>
+      <tr><td>進捗管理</td><td>ユーザー進捗一覧・個別詳細・視聴時間集計・CSVエクスポート</td></tr>
+      <tr><td>証明書発行</td><td>修了証PDF生成・配布</td></tr>
     </table>
 
     <h3 class="subsection-title">料金体系（検討中）</h3>
