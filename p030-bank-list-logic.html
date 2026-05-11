@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>地方銀行BPO調査リスト 作成ロジック詳解 — BPIO</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 15px; }
+    body {
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: #1a1a1a; background: #fff; line-height: 1.7;
+    }
+
+    /* Sticky Nav */
+    #sticky-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.97);
+      border-bottom: 1px solid #ccc;
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    #sticky-nav .nav-label {
+      font-size: 0.72rem; font-weight: 700; color: #777;
+      letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+    }
+    .pill {
+      display: inline-block; padding: 5px 16px;
+      font-size: 0.78rem; font-weight: 600; color: #555;
+      text-decoration: none; border: 1px solid #ccc;
+      border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+    }
+    .pill:hover, .pill.active {
+      background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+    }
+
+    /* Main */
+    #main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+
+    /* Header */
+    .report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+    .report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+    .report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+    .report-header .summary-box {
+      background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+    }
+    .report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+    .report-header .summary-box ul { padding-left: 20px; font-size: 0.82rem; }
+    .report-header .summary-box li { margin-bottom: 4px; }
+
+    /* Headings */
+    h2.section-title {
+      font-size: 1.2rem; font-weight: 700;
+      border-bottom: 1px solid #999; padding-bottom: 6px;
+      margin-top: 48px; margin-bottom: 20px;
+    }
+    h3.subsection-title {
+      font-size: 1.0rem; font-weight: 700;
+      margin-top: 32px; margin-bottom: 12px;
+      padding-left: 10px; border-left: 3px solid #555;
+    }
+    h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+    table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+    table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+    table td { background: #fff; }
+    table tr:nth-child(even) td { background: #fafafa; }
+
+    /* Text */
+    p { margin-bottom: 10px; font-size: 0.88rem; }
+    ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+    ul li, ol li { margin-bottom: 3px; }
+
+    /* Boxes */
+    .highlight-box {
+      background: #f7f7f7; border: 1px solid #ddd;
+      padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+    }
+    .note-box {
+      background: #fffbeb; border-left: 4px solid #f59e0b;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+    }
+    .info-box {
+      background: #eff6ff; border-left: 4px solid #3b82f6;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block; padding: 2px 10px;
+      font-size: 0.72rem; font-weight: 700;
+      border-radius: 999px; letter-spacing: 0.03em;
+    }
+    .badge-a { background: #d4edda; color: #155724; }
+    .badge-b { background: #d1ecf1; color: #0c5460; }
+    .badge-c { background: #fff3cd; color: #856404; }
+    .badge-d { background: #e2e3e5; color: #383d41; }
+    .badge-ok { background: #d4edda; color: #155724; }
+    .badge-warn { background: #fff3cd; color: #856404; }
+
+    /* Code */
+    .code-block {
+      background: #2d2d2d; color: #f8f8f2;
+      padding: 16px 20px; border-radius: 4px;
+      font-family: "Consolas", "Monaco", monospace;
+      font-size: 0.78rem; line-height: 1.6; overflow-x: auto;
+      margin: 12px 0 20px;
+    }
+
+    /* Flow */
+    .flow {
+      display: flex; align-items: center; gap: 0;
+      margin: 20px 0; flex-wrap: wrap; justify-content: center;
+    }
+    .flow-step {
+      background: #f0f0f0; border: 1px solid #ccc;
+      padding: 10px 18px; font-size: 0.82rem; font-weight: 600;
+      text-align: center; min-width: 120px;
+    }
+    .flow-step.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .flow-arrow { font-size: 1.2rem; color: #999; padding: 0 4px; }
+
+    /* Footer */
+    .report-footer {
+      border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+      font-size: 0.78rem; color: #777;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      #main { padding: 24px 20px 60px; }
+      .report-header h1 { font-size: 1.3rem; }
+      h2.section-title { font-size: 1.05rem; }
+      table { font-size: 0.78rem; }
+      table th, table td { padding: 5px 7px; }
+      #sticky-nav { padding: 10px 12px; gap: 6px; }
+      .pill { padding: 4px 12px; font-size: 0.72rem; }
+      .flow { flex-direction: column; align-items: flex-start; }
+      .flow-arrow { transform: rotate(90deg); }
+    }
+
+    /* Print */
+    @media print {
+      #sticky-nav { display: none; }
+      #main { padding: 0; max-width: 100%; }
+      body { font-size: 10pt; }
+      .report-header h1 { font-size: 16pt; }
+      h2.section-title { font-size: 13pt; page-break-after: avoid; }
+      h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+      table { font-size: 8pt; page-break-inside: avoid; }
+      table th, table td { padding: 3px 5px; }
+      .highlight-box, .note-box, .info-box {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      table th {
+        background: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">SECTIONS</span>
+  <a class="pill" href="#overview">概要</a>
+  <a class="pill" href="#phase1">Phase 1: マスターリスト</a>
+  <a class="pill" href="#phase2">Phase 2: BPO調査</a>
+  <a class="pill" href="#phase3">Phase 3: 財務データ</a>
+  <a class="pill" href="#phase4">Phase 4: URL修正</a>
+  <a class="pill" href="#results">調査結果サマリー</a>
+  <a class="pill" href="#targets">営業ターゲット</a>
+</nav>
+
+<div id="main">
+
+  <header class="report-header">
+    <h1>地方銀行BPO調査リスト — 作成ロジック詳解</h1>
+    <div class="subtitle">p030 地方銀行BPOサービス調査 | 2026-03-26 作成 / 2026-04-13 URL修正完了</div>
+    <div class="summary-box">
+      <h3>このドキュメントについて</h3>
+      <ul>
+        <li>スプレッドシート（<a href="https://docs.google.com/spreadsheets/d/1VXf-HJSbqZ6T0qqs9VkLbbCJAC9FzHM5o9OM9D184io" target="_blank">Google Sheets</a>）の作成ロジックを全フェーズ詳解</li>
+        <li>調査対象: 地方銀行61行 + 第二地方銀行35行 + 信用金庫50庫 + 信用組合20組合 = <strong>計166機関</strong></li>
+        <li>4フェーズで構築: マスターリスト作成 → BPO調査・確度付け → 財務データ収集 → URL品質修正</li>
+        <li>最終成果物: 169行（ヘッダー除く）、確度A〜E分類、出典URL全件生存確認済み</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- 概要 -->
+  <section id="overview">
+    <h2 class="section-title">調査の目的と全体フロー</h2>
+    <p>地方銀行・信用金庫・信用組合がBPO事業を自社プロダクトとして展開（または検討中）しているかを調査し、セブンリッチグループの営業先リストを作成することが目的。</p>
+
+    <div class="flow">
+      <div class="flow-step active">Phase 1<br><small>マスターリスト</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Phase 2<br><small>BPO調査・確度付け</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Phase 3<br><small>財務データ収集</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Phase 4<br><small>URL品質修正</small></div>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>フェーズ</th><th>内容</th><th>成果物</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Phase 1</td><td>調査対象機関の全リストアップ</td><td>マスターリスト166機関</td></tr>
+        <tr><td>Phase 2</td><td>各行のBPO展開状況をWebスキャン・確度分類</td><td>確度A〜E分類 + 出典URL</td></tr>
+        <tr><td>Phase 3</td><td>全銀協データから役務取引等収益（FY2020〜2024）を一括取得</td><td>財務データ列（地銀96行）</td></tr>
+        <tr><td>Phase 4</td><td>I列（出典URL）の死亡確認・精査・差し替え</td><td>全URL生存確認済み</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Phase 1 -->
+  <section id="phase1">
+    <h2 class="section-title">Phase 1: マスターリスト作成</h2>
+
+    <h3 class="subsection-title">調査対象の選定基準</h3>
+    <table>
+      <thead>
+        <tr><th>カテゴリ</th><th>対象</th><th>件数</th><th>選定根拠</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>地方銀行</td><td>全国地方銀行協会 加盟行</td><td>61行</td><td>協会加盟行全件（正会員）</td></tr>
+        <tr><td>第二地方銀行</td><td>第二地方銀行協会 加盟行</td><td>35行</td><td>協会加盟行全件</td></tr>
+        <tr><td>信用金庫</td><td>預金量上位50庫程度</td><td>50庫</td><td>規模がBPO事業展開に足ると判断</td></tr>
+        <tr><td>信用組合</td><td>預金量上位20組合程度</td><td>20組合</td><td>同上</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box">
+      <strong>合計166機関</strong>がスプレッドシートの調査対象。各機関の銀行名・本店所在地・公式サイトURLをリストアップし、BPO調査の土台とした。
+    </div>
+
+    <h3 class="subsection-title">収録項目（列構成）</h3>
+    <table>
+      <thead>
+        <tr><th>列</th><th>項目名</th><th>内容</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>A</td><td>No.</td><td>通し番号</td></tr>
+        <tr><td>B</td><td>金融機関名</td><td>銀行・信金・信組の正式名称</td></tr>
+        <tr><td>C</td><td>本店所在地</td><td>都道府県・市区町村</td></tr>
+        <tr><td>D</td><td>カテゴリ</td><td>地方銀行 / 第二地方銀行 / 信用金庫 / 信用組合</td></tr>
+        <tr><td>E〜G</td><td>財務データ</td><td>役務取引等収益（FY2022〜2024、百万円単位）</td></tr>
+        <tr><td>H</td><td>確度</td><td>A / B / C / D / E（BPO展開の確からしさ）</td></tr>
+        <tr><td>I</td><td>出典URL</td><td>確度の根拠となる公式ページ・IR資料・報道記事</td></tr>
+        <tr><td>J</td><td>BPO事業体</td><td>子会社名・事業体名（存在する場合）</td></tr>
+        <tr><td>K</td><td>対象業務</td><td>経理、給与、DX支援 等</td></tr>
+        <tr><td>L</td><td>メモ</td><td>調査コメント・営業ポイント</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Phase 2 -->
+  <section id="phase2">
+    <h2 class="section-title">Phase 2: BPO調査と確度分類</h2>
+
+    <h3 class="subsection-title">調査手法（ハイブリッド方式）</h3>
+    <p>各機関の公式サイト・中期経営計画・IR資料・報道記事をWeb検索でスキャンし、BPO関連の記述を確認。</p>
+
+    <table>
+      <thead>
+        <tr><th>キーワード種別</th><th>使用キーワード</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>直接キーワード</strong></td>
+          <td>BPO、業務受託、アウトソーシング、業務代行</td>
+        </tr>
+        <tr>
+          <td><strong>間接キーワード</strong></td>
+          <td>事務集中、シェアードサービス、業務プラットフォーム、地域企業の業務支援、バックオフィス支援、経理代行、給与計算代行、事務代行、業務効率化サービス、DX支援サービス</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">確度分類ルール</h3>
+    <table>
+      <thead>
+        <tr><th>確度</th><th>定義</th><th>判定基準</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-a">A</span></td>
+          <td>BPO事業を明確に外部展開</td>
+          <td>BPO子会社設立・サービスページ存在・IR/中計にBPO収益目標が明記</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-b">B</span></td>
+          <td>BPO的サービスの展開あり</td>
+          <td>グループ内事務代行の外販実績あり、または外部BPO企業とのビジネスマッチング実施</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-c">C</span></td>
+          <td>可能性示唆レベル</td>
+          <td>DX推進の文脈でBPO関連の記述あり。自行内効率化が主で外部提供は未確認</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-d">D</span></td>
+          <td>関連なし（確認済み）</td>
+          <td>調査したがBPO関連の情報なし</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-d">E</span></td>
+          <td>未調査</td>
+          <td>スコープ内だが未調査</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note-box">
+      <strong>重要な発見</strong>: 多くの地銀は「BPO」という語を使わず、<strong>DX支援・ビジネスマッチング</strong>という形で外部BPO企業を取引先に紹介する形態が主流。2021年の改正銀行法（業務範囲規制の緩和）がBPO子会社設立を加速させた。
+    </div>
+
+    <h3 class="subsection-title">確度A：BPO事業を明確に展開（7グループ）</h3>
+    <table>
+      <thead>
+        <tr><th>#</th><th>金融機関</th><th>BPO事業体</th><th>対象業務</th><th>特記事項</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><strong>北國銀行</strong><br>（北國FHD）</td>
+          <td>CCIForward<br>（セブンリッチ×MF×CCI）</td>
+          <td>経理・バックオフィス全般</td>
+          <td>セブンリッチグループが既に関与。MFクラウド基盤のBPOを地域中小企業向けに展開</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><strong>広島銀行</strong><br>（ひろぎんHD）</td>
+          <td>ひろぎんITソリューションズ</td>
+          <td>人事給与・財務会計・販売管理・マイナンバー</td>
+          <td>約30社に提供。Sansan Bill One販売パートナー契約済み</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><strong>七十七銀行</strong></td>
+          <td>七十七ビジネスウィズ<br>（2024年9月設立）</td>
+          <td>事務・経理→中小企業拡大予定</td>
+          <td>設立直後。外部展開フェーズ前でパートナー提案の好機</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><strong>中国銀行</strong><br>（ちゅうぎんFG）</td>
+          <td>Cキューブ・コンサルティング連携</td>
+          <td>経理・総務・人事全般</td>
+          <td>BPO事業化進行中。「信頼される銀行」を差別化要素と明言</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td><strong>肥後銀行</strong><br>（九州FG）</td>
+          <td>肥銀オフィスビジネス他3社</td>
+          <td>データ入力・書類管理・CC・IT・文書管理</td>
+          <td>複数BPO子会社を持つ最も成熟した体制</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td><strong>池田泉州HD</strong></td>
+          <td>池田泉州ビジネスサービス</td>
+          <td>現金精算・印刷・事務代行・BPO</td>
+          <td>100%子会社。BPOを事業内容として明示</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td><strong>ふくおかFG</strong><br>（福岡銀行等）</td>
+          <td>福銀事務サービス + DXコンサルタント体制</td>
+          <td>事務代行・DX導入伴走・ビジネスマッチング</td>
+          <td>40名超の専任DXコンサルタント。1年で400件超の支援案件</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Phase 3 -->
+  <section id="phase3">
+    <h2 class="section-title">Phase 3: 財務データ収集（役務取引等収益）</h2>
+
+    <h3 class="subsection-title">収集方針</h3>
+    <p>全96行（地銀61 + 第二地銀35）の FY2020〜FY2024 役務取引等収益を取得し、スプレッドシートの E〜G列（財務データ列）を補完。銀行のBPO事業の規模感を推し量る指標として活用。</p>
+
+    <div class="highlight-box">
+      <strong>データソース</strong>: 全国銀行協会（全銀協）の年次統計データ<br>
+      URL: <code>https://www.zenginkyo.or.jp/stats/year2-02/</code><br>
+      各年度のZIPファイルに全行の損益計算書データがExcel形式で収録されており、FY2020〜FY2024の5年分を一括取得。
+    </div>
+
+    <h3 class="subsection-title">自動取得スクリプト（fill-fees-from-zenginkyo.js）</h3>
+    <p>スクリプトは以下の手順でデータを取得・照合する。</p>
+
+    <div class="flow">
+      <div class="flow-step">①ページ取得<br><small>年度別URLを構築</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">②ZIP取得<br><small>Excel入りZIPをDL</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">③シート解析<br><small>「地方銀行単体」シート</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">④名寄せ<br><small>3段階マッチング</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">⑤JSON更新<br><small>financial-data.json</small></div>
+    </div>
+
+    <h3 class="subsection-title">名寄せロジック（3段階）</h3>
+    <table>
+      <thead>
+        <tr><th>優先度</th><th>マッチング方式</th><th>説明</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><span class="badge badge-ok">完全一致</span></td>
+          <td>全銀協Excel上の銀行名とマスターリストの銀行名が完全一致</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><span class="badge badge-b">正規化一致</span></td>
+          <td>「株式会社」除去、全角→半角変換、「ホールディングス→HD」「フィナンシャルグループ→FG」に統一した上で照合</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><span class="badge badge-warn">手動マッチ（合算）</span></td>
+          <td>合併行は旧行名で個別取得して合算。下表参照</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4>手動マッチ対象（合併行）</h4>
+    <table>
+      <thead>
+        <tr><th>マスターリスト名</th><th>全銀協での旧行名</th><th>対象年度</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>青森みちのく銀行</td><td>青森銀行 + みちのく銀行</td><td>FY2020〜2024（合併は2025年1月のため全年度で旧2行分を合算）</td></tr>
+        <tr><td>八十二長野銀行</td><td>八十二銀行 + 長野銀行</td><td>FY2020〜2024</td></tr>
+        <tr><td>三十三銀行</td><td>三重銀行 + 第三銀行</td><td>FY2020のみ（FY2021以降は合併後の「三十三銀行」で一致）</td></tr>
+        <tr><td>あいち銀行</td><td>愛知銀行 + 中京銀行</td><td>FY2020〜2023（合併は2023年1月）</td></tr>
+      </tbody>
+    </table>
+
+    <div class="highlight-box">
+      <strong>Excelシート解析の詳細</strong><br>
+      全銀協ZIPにはExcelワークブックが1冊。その中の「地方銀行単体」を含むシート名を対象として処理。ヘッダー行で「銀行名」列インデックスを特定し、「役務取引等収益」行の値を抽出。単位（千円 or 百万円）はワークブック内の「単位：」記述を自動検出して割り算で正規化。
+    </div>
+  </section>
+
+  <!-- Phase 4 -->
+  <section id="phase4">
+    <h2 class="section-title">Phase 4: I列（出典URL）品質修正</h2>
+
+    <p>調査完了後（2026-04-13）にI列のURL全169件を精査。死亡URLが多数判明したため、3ラウンドに分けて修正・品質向上を実施。</p>
+
+    <div class="info-box">
+      <strong>修正前の状況</strong>: チェックスクリプト（check-bank-urls.py）で105件のユニークURLを確認 → 61件生存 / 44件死亡（死亡率42%）
+    </div>
+
+    <h3 class="subsection-title">ラウンド1: 死亡ドメイン修正</h3>
+    <p>ドメイン変更が原因の死亡URLを修正。主なパターン:</p>
+    <table>
+      <thead>
+        <tr><th>旧ドメイン</th><th>新ドメイン</th><th>影響行数</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>shinkin-central-bank.co.jp</td><td>shinkin-central-bank.jp</td><td>51行（最多）</td></tr>
+        <tr><td>aomorimichiku.co.jp</td><td>am-bk.co.jp</td><td>1行</td></tr>
+        <tr><td>ashikaga-bank.co.jp</td><td>ashikagabank.co.jp</td><td>1行</td></tr>
+        <tr><td>daishi-hokuetsu-fg.co.jp</td><td>dhbk.co.jp</td><td>1行</td></tr>
+        <tr><td>hokuriku-bank.co.jp</td><td>hokugin.co.jp</td><td>1行</td></tr>
+        <tr><td>minatobank.co.jp</td><td>minatobk.co.jp</td><td>1行</td></tr>
+        <tr><td colspan="2"><em>その他37件</em></td><td>37行</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">ラウンド2: 出典品質向上</h3>
+    <p>A/B評価で銀行トップページのみ記載されていた行を、具体的な根拠資料（BPO子会社紹介ページ・IR資料・報道記事）に差し替え。</p>
+    <table>
+      <thead>
+        <tr><th>確度</th><th>変更前</th><th>変更後</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-a">A</span></td>
+          <td>銀行トップページ</td>
+          <td>BPO子会社紹介ページ、中期経営計画PDF、IR資料</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-b">B</span></td>
+          <td>銀行トップページ</td>
+          <td>記者発表URL、サービスページ、日経/PR記事</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>代表的な差し替え例（50件、verify-new-urls.py で全件 200 OK 確認済み）:</p>
+    <table>
+      <thead>
+        <tr><th>銀行</th><th>確度</th><th>新出典URL（概要）</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>七十七銀行</td><td><span class="badge badge-a">A</span></td><td>77b-with.co.jp（七十七ビジネスウィズ公式）</td></tr>
+        <tr><td>京都銀行</td><td><span class="badge badge-a">A</span></td><td>IR PDF + SeamlessLink紹介ページ</td></tr>
+        <tr><td>群馬銀行</td><td><span class="badge badge-a">A</span></td><td>IR PDF（ぐんぎんビジネスポータル実績）</td></tr>
+        <tr><td>鹿児島銀行</td><td><span class="badge badge-a">A</span></td><td>中期経営計画PDF</td></tr>
+        <tr><td>中国銀行</td><td><span class="badge badge-a">A</span></td><td>ccube-consulting.co.jp（CCube Consulting）</td></tr>
+        <tr><td>名古屋銀行</td><td><span class="badge badge-b">B</span></td><td>naiscorp.co.jp（ナイス / DX支援）</td></tr>
+        <tr><td>佐賀銀行</td><td><span class="badge badge-b">B</span></td><td>sagin-dp.jp（佐銀デジタルパートナーズ）</td></tr>
+        <tr><td>山形銀行</td><td><span class="badge badge-b">B</span></td><td>yamagin-system.co.jp/outsourcing.html</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">ラウンド3: 内容精査（10件）</h3>
+    <p>ラウンド2後も出典として内容が不十分と判断された10件を個別精査。6件を更新、4件は内容確認のうえ現状維持。</p>
+
+    <table>
+      <thead>
+        <tr><th>金融機関</th><th>対応</th><th>変更内容</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>池田泉州銀行</td><td><span class="badge badge-ok">更新</span></td><td>/news/ → /company/group.html（BPO子会社記載を明示）</td></tr>
+        <tr><td>山陰合同銀行</td><td><span class="badge badge-ok">更新</span></td><td>公式TOP → 日経記事（法人手数料 20億→41億を数字で確認）</td></tr>
+        <tr><td>沖縄銀行</td><td><span class="badge badge-ok">更新</span></td><td>銀行TOP → okinawafg.co.jp/group_companies/（おきぎんビジネスサービス）</td></tr>
+        <tr><td>名古屋銀行</td><td><span class="badge badge-ok">更新</span></td><td>汎用URL → naiscorp.co.jp/dx/transfer/ + PR PDF</td></tr>
+        <tr><td>十八親和銀行</td><td><span class="badge badge-ok">更新</span></td><td>銀行TOP → bizship.fukuoka-fg.com/lp/ + 開始ニュース</td></tr>
+        <tr><td>百十四銀行</td><td><span class="badge badge-ok">更新</span></td><td>経営計画一覧 → 地域活性化子会社設立PDF（2025/4）</td></tr>
+        <tr><td>常陽銀行</td><td><span class="badge badge-d">維持</span></td><td>joyonet.jp = 常陽コンピューターサービス（50年超・450社超の給与計算BPO）✓</td></tr>
+        <tr><td>滋賀銀行</td><td><span class="badge badge-d">維持</span></td><td>BPO合併ニュースを指す正当なURL ✓</td></tr>
+        <tr><td>もみじ/山口銀行</td><td><span class="badge badge-d">維持</span></td><td>inesus.jp = イネサス（福利厚生代行BPO）✓</td></tr>
+        <tr><td>佐賀銀行</td><td><span class="badge badge-d">維持</span></td><td>sagin-dp.jp = 佐銀デジタルパートナーズ（DX支援）✓</td></tr>
+      </tbody>
+    </table>
+
+    <div class="highlight-box">
+      <strong>修正作業に使用したスクリプト</strong>
+      <ul>
+        <li><code>scripts/check-bank-urls.py</code> — 全行のURL死亡チェック（105 unique URL、61生存/44死亡を集計）</li>
+        <li><code>scripts/bank-url-summary.py</code> — 死亡URLと影響行の集計</li>
+        <li><code>scripts/verify-new-urls.py</code> — ラウンド2新規導入URLの生存確認（50件全 200 OK）</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section id="results">
+    <h2 class="section-title">調査結果サマリー</h2>
+
+    <table>
+      <thead>
+        <tr><th>確度</th><th>件数</th><th>主要事例</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-a">A</span> BPO明確展開</td>
+          <td>7グループ</td>
+          <td>北國、広島、七十七、中国、肥後、池田泉州、ふくおかFG</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-b">B</span> BPO的展開あり</td>
+          <td>5行</td>
+          <td>横浜、滋賀、大分、ほくほく、常陽</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-c">C</span> 可能性示唆</td>
+          <td>4行</td>
+          <td>伊予、山陰合同、鹿児島、福岡（IBM経由）</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-d">D</span> 該当なし（確認済み）</td>
+          <td>11行以上</td>
+          <td>千葉、静岡、京都、群馬 等</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note-box">
+      <strong>業界構造上の注目点</strong>: SMBC×freee合弁「インクループ」が地域金融機関チャネルでのBPO展開を計画中。今後、地銀がBPOチャネルとして機能するケースが増加する見通し。
+    </div>
+
+    <h3 class="subsection-title">信用金庫・信用組合の動向</h3>
+    <p>信金・信組は「BPOを提供する側」ではなく「BPOを受ける側」が主。取引先向けBPO提供の事例は確認されず。</p>
+    <table>
+      <thead>
+        <tr><th>事例</th><th>内容</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>信金中央金庫「ケイエール」</td><td>中小企業向けポータル。NTT東西と共同でバックオフィスサービスを機能組込（2022年〜）</td></tr>
+        <tr><td>NEC × しんきん情報サービス</td><td>為替振込業務BPO。約80信金に展開。金融業界初の自動化BPO</td></tr>
+        <tr><td>日本ユニシス × 静岡県信金協会</td><td>全国初の手形管理業務共同化BPO（フルアウトソーシング型）</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Targets -->
+  <section id="targets">
+    <h2 class="section-title">営業ターゲット分類</h2>
+
+    <p>調査結果をもとに、セブンリッチグループとしての営業アプローチを2軸で整理。</p>
+
+    <table>
+      <thead>
+        <tr><th>アプローチ</th><th>対象</th><th>提案内容</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>競合/協業型</strong></td>
+          <td>BPO事業を展開している地銀（確度A）</td>
+          <td>BPO専門企業としての協業・ホワイトラベル提供・ノウハウ共有</td>
+        </tr>
+        <tr>
+          <td><strong>チャネル開拓型</strong></td>
+          <td>BPO未展開の地銀（確度D）</td>
+          <td>ビジネスマッチング先としてセブンリッチBPOを紹介してもらう提携</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">Tier 1: 最優先ターゲット（協業提案先）</h3>
+    <table>
+      <thead>
+        <tr><th>#</th><th>金融機関</th><th>BPO事業体</th><th>営業ポイント</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><strong>北國銀行</strong>（北國FHD）</td><td>CCIForward</td><td>セブンリッチグループが既に関与。連携深化・横展開の余地大</td></tr>
+        <tr><td>2</td><td><strong>広島銀行</strong>（ひろぎんHD）</td><td>ひろぎんITソリューションズ</td><td>約30社の顧客基盤。専門BPOとの連携ニーズあり</td></tr>
+        <tr><td>3</td><td><strong>七十七銀行</strong></td><td>七十七ビジネスウィズ</td><td>設立直後。外部展開フェーズ前でパートナー提案の好機</td></tr>
+        <tr><td>4</td><td><strong>中国銀行</strong>（ちゅうぎんFG）</td><td>Cキューブ・コンサルティング</td><td>BPO事業化進行中。外部専門パートナーを求める可能性</td></tr>
+        <tr><td>5</td><td><strong>肥後銀行</strong>（九州FG）</td><td>肥銀オフィスビジネス他</td><td>最も成熟した体制。経理・労務の専門性での補完余地</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">Tier 2: 有力ターゲット（提携提案先）</h3>
+    <table>
+      <thead>
+        <tr><th>#</th><th>金融機関</th><th>現状の取組</th><th>営業ポイント</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>6</td><td><strong>ふくおかFG</strong></td><td>DXコンサルタント40名体制</td><td>400件超の支援顧客基盤にBPOを提案可能</td></tr>
+        <tr><td>7</td><td><strong>池田泉州HD</strong></td><td>池田泉州ビジネスサービス</td><td>経理・労務の専門BPOとの補完的提携可能性</td></tr>
+        <tr><td>8</td><td><strong>横浜銀行</strong>（コンコルディアFG）</td><td>BPO企業とビジネスマッチング</td><td>首都圏最大の地銀。マッチング先としてセブンリッチを登録</td></tr>
+        <tr><td>9</td><td><strong>常陽銀行</strong>（めぶきFG）</td><td>DXコンサルティング（経産省事例）</td><td>北関東エリア大手。DX支援の次のステップとしてBPO紹介</td></tr>
+        <tr><td>10</td><td><strong>滋賀銀行</strong></td><td>しがぎんビジネスサービス</td><td>グループ内BPO体制あり。外部展開の拡張余地</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="report-footer">
+    地方銀行BPO調査リスト 作成ロジック詳解 — p030 — Generated 2026-05-11 — BPIO co., Ltd.
+  </div>
+
+</div>
+
+<script>
+  const pills = document.querySelectorAll('.pill');
+  const sections = document.querySelectorAll('[id]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        pills.forEach(p => p.classList.remove('active'));
+        const active = document.querySelector(`.pill[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-80px 0px -80% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
