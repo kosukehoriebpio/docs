@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>invoice-payment プラグイン 導入手順書 — BPIO</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif; color: #1a1a1a; background: #fff; line-height: 1.7; }
+    html { font-size: 15px; }
+
+    /* Sticky Nav */
+    #sticky-nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.97); border-bottom: 1px solid #ccc; padding: 12px 20px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+    #sticky-nav .nav-label { font-size: 0.72rem; font-weight: 700; color: #777; letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap; }
+    .pill { display: inline-block; padding: 5px 16px; font-size: 0.78rem; font-weight: 600; color: #555; text-decoration: none; border: 1px solid #ccc; border-radius: 999px; transition: all 0.2s ease; white-space: nowrap; }
+    .pill:hover, .pill.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+    /* Main */
+    #main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+
+    /* Report Header */
+    .report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+    .report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+    .report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+    .report-header .summary-box { background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px; }
+    .report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+    .report-header .summary-box ul { padding-left: 20px; font-size: 0.82rem; }
+    .report-header .summary-box li { margin-bottom: 4px; }
+
+    /* Headings */
+    h2.section-title { font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid #999; padding-bottom: 6px; margin-top: 48px; margin-bottom: 20px; }
+    h3.subsection-title { font-size: 1.0rem; font-weight: 700; margin-top: 32px; margin-bottom: 12px; padding-left: 10px; border-left: 3px solid #555; }
+    h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+    table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+    table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+    table td { background: #fff; }
+    table tr:nth-child(even) td { background: #fafafa; }
+
+    /* Text */
+    p { margin-bottom: 10px; font-size: 0.88rem; }
+    ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+    ul li, ol li { margin-bottom: 6px; }
+
+    /* Boxes */
+    .highlight-box { background: #f7f7f7; border: 1px solid #ddd; padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem; }
+    .note-box { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f; }
+    .info-box { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f; }
+    .note-box strong, .info-box strong { display: block; margin-bottom: 4px; font-size: 0.83rem; }
+
+    /* Badge */
+    .badge { display: inline-block; padding: 2px 10px; font-size: 0.72rem; font-weight: 700; border-radius: 999px; letter-spacing: 0.03em; }
+    .badge-ok { background: #d4edda; color: #155724; }
+    .badge-warn { background: #fff3cd; color: #856404; }
+    .badge-info { background: #d1ecf1; color: #0c5460; }
+    .badge-pending { background: #e2e3e5; color: #383d41; }
+
+    /* Code */
+    .code-block { background: #2d2d2d; color: #f8f8f2; padding: 16px 20px; border-radius: 4px; font-family: "Consolas","Monaco",monospace; font-size: 0.78rem; line-height: 1.6; overflow-x: auto; margin: 12px 0 20px; }
+    code { font-family: "Consolas","Monaco",monospace; background: #f0f0f0; padding: 1px 6px; font-size: 0.8rem; }
+
+    /* Flow */
+    .flow { display: flex; align-items: center; gap: 0; margin: 20px 0; flex-wrap: wrap; }
+    .flow-step { background: #f0f0f0; border: 1px solid #ccc; padding: 10px 18px; font-size: 0.82rem; font-weight: 600; text-align: center; min-width: 120px; }
+    .flow-step small { display: block; font-weight: 400; font-size: 0.72rem; color: #777; margin-top: 2px; }
+    .flow-step.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .flow-step.active small { color: #ccc; }
+    .flow-arrow { font-size: 1.2rem; color: #999; padding: 0 4px; }
+
+    /* Step number */
+    .step-num { display: inline-block; width: 22px; height: 22px; background: #1a1a1a; color: #fff; border-radius: 999px; font-size: 0.72rem; font-weight: 700; text-align: center; line-height: 22px; margin-right: 6px; flex-shrink: 0; }
+
+    /* Footer */
+    .report-footer { border-top: 1px solid #999; margin-top: 48px; padding-top: 16px; font-size: 0.78rem; color: #777; }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      #main { padding: 24px 20px 60px; }
+      .report-header h1 { font-size: 1.3rem; }
+      h2.section-title { font-size: 1.05rem; }
+      table { font-size: 0.78rem; }
+      table th, table td { padding: 5px 7px; }
+      #sticky-nav { padding: 10px 12px; gap: 6px; }
+      .pill { padding: 4px 12px; font-size: 0.72rem; }
+      .flow { flex-direction: column; align-items: flex-start; }
+      .flow-arrow { transform: rotate(90deg); }
+    }
+
+    /* Print */
+    @media print {
+      #sticky-nav { display: none; }
+      #main { padding: 0; max-width: 100%; }
+      body { font-size: 10pt; }
+      .report-header h1 { font-size: 16pt; }
+      h2.section-title { font-size: 13pt; page-break-after: avoid; }
+      h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+      table { font-size: 8pt; page-break-inside: avoid; }
+      table th, table td { padding: 3px 5px; }
+      .highlight-box, .note-box, .info-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      table th { background: #f0f0f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .code-block { background: #2d2d2d !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">SECTIONS</span>
+  <a class="pill" href="#overview">全体の流れ</a>
+  <a class="pill" href="#ssh">① SSH設定</a>
+  <a class="pill" href="#install">② インストール</a>
+  <a class="pill" href="#credentials">③ APIキー設定</a>
+  <a class="pill" href="#usage">④ 業務実行</a>
+  <a class="pill" href="#update">更新方法</a>
+</nav>
+
+<div id="main">
+
+  <div class="report-header">
+    <p class="subtitle">社内限定 — SevenRich BPO</p>
+    <h1>invoice-payment プラグイン<br>導入・利用手順書</h1>
+    <div class="summary-box">
+      <h3>このドキュメントについて</h3>
+      <ul>
+        <li>Claude Code で請求書振込業務を実行するプラグインの導入手順です</li>
+        <li>初回のみ SSH キー設定（① ③）が必要です。2回目以降は ② → ④ のみです</li>
+        <li>不明点は担当PM（川島）または堀江まで連絡してください</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 全体の流れ -->
+  <section id="overview">
+    <h2 class="section-title">全体の流れ</h2>
+    <div class="flow">
+      <div class="flow-step">
+        ① SSH キー設定<small>初回のみ</small>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        ② install.ps1 実行<small>リポごとに1回</small>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        ③ APIキー設定<small>初回のみ</small>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step active">
+        ④ 業務実行<small>毎月</small>
+      </div>
+    </div>
+
+    <table>
+      <tr><th>ステップ</th><th>内容</th><th>頻度</th></tr>
+      <tr><td>① SSH キー設定</td><td>GitHub にSSH公開鍵を登録する</td><td><span class="badge badge-pending">初回のみ</span></td></tr>
+      <tr><td>② install.ps1 実行</td><td>プラグイン・リファレンスを自動セットアップ</td><td><span class="badge badge-info">リポごとに1回</span></td></tr>
+      <tr><td>③ APIキー設定</td><td>credentials.local.json にバクラクキーを入力</td><td><span class="badge badge-pending">初回のみ</span></td></tr>
+      <tr><td>④ 業務実行</td><td><code>/invoice-payment ship</code> で Claude が案内</td><td><span class="badge badge-ok">毎月</span></td></tr>
+    </table>
+  </section>
+
+  <!-- SSH設定 -->
+  <section id="ssh">
+    <h2 class="section-title">① SSH キーを GitHub に登録する <span class="badge badge-pending">初回のみ</span></h2>
+    <p>プラグインとリファレンスはセキュリティ上 SSH 認証でのみ取得できます。PCごとに1回だけ設定が必要です。</p>
+
+    <div class="info-box">
+      <strong>前提</strong>GitHub アカウントへの招待が完了していることを確認してください。招待が来ていない場合は堀江まで連絡を。
+    </div>
+
+    <h3 class="subsection-title">1-1. SSH キーを生成する</h3>
+    <p>PowerShell を開いて以下を実行します。すでにキーがある方はスキップしてください。</p>
+    <div class="code-block">ssh-keygen -t ed25519 -C "your@email.com"
+# → ファイル名・パスフレーズは全て Enter でOK</div>
+
+    <h3 class="subsection-title">1-2. 公開鍵をコピーする</h3>
+    <div class="code-block">cat ~/.ssh/id_ed25519.pub
+# → 表示された「ssh-ed25519 AAAA...」の1行全体をコピー</div>
+
+    <h3 class="subsection-title">1-3. GitHub に登録する</h3>
+    <p>ブラウザで <code>https://github.com/settings/ssh/new</code> を開き、以下を入力して <strong>Add SSH key</strong> をクリックします。</p>
+    <table>
+      <tr><th>項目</th><th>入力値</th></tr>
+      <tr><td>Title</td><td>自分のPC名（例: SRGWIN0173）</td></tr>
+      <tr><td>Key type</td><td>Authentication Key</td></tr>
+      <tr><td>Key</td><td>コピーした公開鍵を貼り付け</td></tr>
+    </table>
+
+    <h3 class="subsection-title">1-4. 接続確認</h3>
+    <div class="code-block">ssh -T git@github.com
+# → "Hi xxx! You've successfully authenticated..." と表示されればOK</div>
+  </section>
+
+  <!-- インストール -->
+  <section id="install">
+    <h2 class="section-title">② プラグインをインストールする <span class="badge badge-info">作業リポごとに1回</span></h2>
+    <p>Slack で受け取った <code>install.ps1</code> を使って自動セットアップします。</p>
+
+    <h3 class="subsection-title">2-1. install.ps1 を受け取る</h3>
+    <p>担当者から Slack で <code>install.ps1</code> ファイルを受け取り、任意の場所に保存します。</p>
+
+    <h3 class="subsection-title">2-2. 作業リポのフォルダで実行する</h3>
+    <div class="code-block">cd C:\作業リポのパス
+.\install.ps1</div>
+
+    <p>実行すると以下が自動で行われます：</p>
+    <ul>
+      <li><code>[1/4]</code> <code>plugins/invoice-payment/</code> にプラグインを clone</li>
+      <li><code>[2/4]</code> <code>.invoice-payment-references/</code> にリファレンスを clone</li>
+      <li><code>[3/4]</code> <code>.claude/skills/invoice-payment/</code> にスキルを登録</li>
+      <li><code>[4/4]</code> <code>credentials.local.json</code> の雛形を配置</li>
+    </ul>
+
+    <div class="note-box">
+      <strong>PowerShell の実行ポリシーエラーが出た場合</strong>
+      先に以下を実行してください：<br>
+      <code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code>
+    </div>
+  </section>
+
+  <!-- APIキー設定 -->
+  <section id="credentials">
+    <h2 class="section-title">③ バクラク API キーを設定する <span class="badge badge-pending">初回のみ</span></h2>
+
+    <h3 class="subsection-title">3-1. credentials.local.json を開く</h3>
+    <div class="code-block">plugins\invoice-payment\credentials.local.json</div>
+
+    <h3 class="subsection-title">3-2. apiKey を入力して保存する</h3>
+    <div class="code-block">{
+  "bakuraku": {
+    "apiKey": "ここにAPIキーを入力",
+    "environment": "production"
+  }
+}</div>
+    <p>APIキーの取得先：バクラク管理画面 › Settings › API</p>
+
+    <div class="note-box">
+      <strong>⚠ credentials.local.json は絶対に Git にコミットしないでください</strong>
+      .gitignore で除外済みですが、他人に送ったりクラウドに上げないよう注意してください。
+    </div>
+  </section>
+
+  <!-- 業務実行 -->
+  <section id="usage">
+    <h2 class="section-title">④ 業務を実行する <span class="badge badge-ok">毎月</span></h2>
+
+    <h3 class="subsection-title">4-1. 作業リポで Claude Code を起動する</h3>
+    <div class="code-block">claude   # 作業リポのフォルダで実行</div>
+
+    <h3 class="subsection-title">4-2. スキルを呼び出す</h3>
+    <div class="code-block">/invoice-payment ship         # 全9ステップを通し実行
+/invoice-payment ship collect # Step 1（収集）だけ実行</div>
+
+    <table>
+      <tr><th>コマンド例</th><th>実行内容</th></tr>
+      <tr><td><code>/invoice-payment ship</code></td><td>全9ステップを通し実行</td></tr>
+      <tr><td><code>/invoice-payment ship collect</code></td><td>Step 1: 請求書収集のみ</td></tr>
+      <tr><td><code>/invoice-payment ship extract</code></td><td>Step 2: 読取・仕訳登録のみ</td></tr>
+      <tr><td><code>/invoice-payment ship check</code></td><td>Step 3: 内容チェックのみ</td></tr>
+      <tr><td><code>/invoice-payment ship fund</code></td><td>Step 4: 残高確認のみ</td></tr>
+      <tr><td><code>/invoice-payment ship pay</code></td><td>Step 5: 振込データ作成のみ</td></tr>
+      <tr><td><code>/invoice-payment ship approve</code></td><td>Step 6: 承認・振込実行のみ</td></tr>
+      <tr><td><code>/invoice-payment ship deliver</code></td><td>Step 7: 完了報告のみ</td></tr>
+      <tr><td><code>/invoice-payment ship reconcile</code></td><td>Step 8: 消込確認のみ</td></tr>
+      <tr><td><code>/invoice-payment ship tax</code></td><td>Step 9: 税務処理のみ</td></tr>
+    </table>
+
+    <div class="info-box">
+      Claude が各ステップを案内します。判断が必要な場面では確認を求められます。不明な点はそのまま Claude に質問してください。
+    </div>
+  </section>
+
+  <!-- 更新方法 -->
+  <section id="update">
+    <h2 class="section-title">更新方法</h2>
+    <p>新しいクライアントが追加されたとき、またはプラグインのバージョンアップ時は再度 install.ps1 を実行するだけです。</p>
+    <div class="code-block">.\install.ps1
+# → インストール済みの場合は pull のみ実行（再インストール不要）</div>
+
+    <div class="highlight-box">
+      <strong>配布物は2ファイルです</strong><br>
+      <ul style="margin-top:8px;">
+        <li><code>install.ps1</code> — Slack で直接添付して送る</li>
+        <li>この手順書URL — Slack や Notion で共有する</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="report-footer">
+    invoice-payment プラグイン 導入手順書 — p016 — Generated 2026-05-11 — BPIO co., Ltd.
+  </div>
+
+</div>
+
+<script>
+  const pills = document.querySelectorAll('.pill');
+  const sections = document.querySelectorAll('[id]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        pills.forEach(p => p.classList.remove('active'));
+        const active = document.querySelector(`.pill[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-80px 0px -80% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
