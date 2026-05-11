@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>p001 研修事業プロジェクト概要 — BPIO</title>
+  <style>
+    body {
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: #1a1a1a;
+      background: #fff;
+      line-height: 1.7;
+      margin: 0;
+      padding: 0;
+    }
+    html { font-size: 15px; }
+
+    /* Sticky Nav */
+    #sticky-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.97);
+      border-bottom: 1px solid #ccc;
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    #sticky-nav .nav-label {
+      font-size: 0.72rem; font-weight: 700; color: #777;
+      letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+    }
+    .pill {
+      display: inline-block; padding: 5px 16px;
+      font-size: 0.78rem; font-weight: 600; color: #555;
+      text-decoration: none; border: 1px solid #ccc;
+      border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+    }
+    .pill:hover, .pill.active {
+      background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+    }
+
+    /* Main */
+    #main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+
+    /* Report Header */
+    .report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+    .report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+    .report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+    .report-header .summary-box {
+      background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+    }
+    .report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; margin-top: 0; }
+    .report-header .summary-box ul {
+      padding-left: 20px; font-size: 0.82rem; margin: 0;
+    }
+    .report-header .summary-box li { margin-bottom: 4px; }
+
+    /* Section Headings */
+    h2.section-title {
+      font-size: 1.2rem; font-weight: 700;
+      border-bottom: 1px solid #999; padding-bottom: 6px;
+      margin-top: 48px; margin-bottom: 20px;
+    }
+    h3.subsection-title {
+      font-size: 1.0rem; font-weight: 700;
+      margin-top: 32px; margin-bottom: 12px;
+      padding-left: 10px; border-left: 3px solid #555;
+    }
+    h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+    table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+    table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+    table td { background: #fff; }
+    table tr:nth-child(even) td { background: #fafafa; }
+
+    /* Paragraphs & Lists */
+    p { margin-bottom: 10px; font-size: 0.88rem; }
+    ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+    ul li, ol li { margin-bottom: 3px; }
+
+    /* Highlight box */
+    .highlight-box {
+      background: #f7f7f7; border: 1px solid #ddd;
+      padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+    }
+
+    /* Note box */
+    .note-box {
+      background: #fffbeb; border-left: 4px solid #f59e0b;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+    }
+
+    /* Info box */
+    .info-box {
+      background: #eff6ff; border-left: 4px solid #3b82f6;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f;
+    }
+
+    /* Status badges */
+    .badge {
+      display: inline-block; padding: 2px 10px;
+      font-size: 0.72rem; font-weight: 700;
+      border-radius: 999px; letter-spacing: 0.03em;
+    }
+    .badge-ok { background: #d4edda; color: #155724; }
+    .badge-warn { background: #fff3cd; color: #856404; }
+    .badge-info { background: #d1ecf1; color: #0c5460; }
+    .badge-pending { background: #e2e3e5; color: #383d41; }
+
+    /* Code block */
+    .code-block {
+      background: #2d2d2d; color: #f8f8f2;
+      padding: 16px 20px;
+      font-family: "Consolas", "Monaco", monospace;
+      font-size: 0.78rem; line-height: 1.6; overflow-x: auto;
+      margin: 12px 0 20px;
+    }
+
+    /* Flow diagram */
+    .flow {
+      display: flex; align-items: center; gap: 0;
+      margin: 20px 0; flex-wrap: wrap; justify-content: center;
+    }
+    .flow-step {
+      background: #f0f0f0; border: 1px solid #ccc;
+      padding: 8px 14px; font-size: 0.78rem; font-weight: 600;
+      text-align: center; min-width: 80px;
+    }
+    .flow-step.bottleneck { background: #fff3cd; border-color: #f59e0b; color: #78350f; }
+    .flow-arrow { font-size: 1.0rem; color: #999; padding: 0 2px; }
+
+    /* 5年計画 visual */
+    .plan-row {
+      display: flex; gap: 12px; margin: 16px 0 24px; flex-wrap: wrap;
+    }
+    .plan-card {
+      flex: 1; min-width: 160px;
+      border: 1px solid #ccc; padding: 12px 14px;
+      background: #fafafa;
+    }
+    .plan-card .year { font-size: 0.75rem; font-weight: 700; color: #777; margin-bottom: 4px; }
+    .plan-card .revenue { font-size: 1.05rem; font-weight: 700; color: #1a1a1a; }
+    .plan-card .detail { font-size: 0.75rem; color: #555; margin-top: 4px; }
+
+    /* Footer */
+    .report-footer {
+      border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+      font-size: 0.78rem; color: #777;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      #main { padding: 24px 20px 60px; }
+      .report-header h1 { font-size: 1.3rem; }
+      h2.section-title { font-size: 1.05rem; }
+      table { font-size: 0.78rem; }
+      table th, table td { padding: 5px 7px; }
+      #sticky-nav { padding: 10px 12px; gap: 6px; }
+      .pill { padding: 4px 12px; font-size: 0.72rem; }
+      .plan-row { flex-direction: column; }
+    }
+
+    /* Print */
+    @media print {
+      #sticky-nav { display: none; }
+      #main { padding: 0; max-width: 100%; }
+      body { font-size: 10pt; }
+      .report-header h1 { font-size: 16pt; }
+      h2.section-title { font-size: 13pt; page-break-after: avoid; }
+      h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+      table { font-size: 8pt; page-break-inside: avoid; }
+      table th, table td { padding: 3px 5px; }
+      .highlight-box, .note-box, .info-box {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      table th {
+        background: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">SECTIONS</span>
+  <a class="pill" href="#overview">概要</a>
+  <a class="pill" href="#background">作成背景</a>
+  <a class="pill" href="#product">ビピトレ</a>
+  <a class="pill" href="#contents">コンテンツ構成</a>
+  <a class="pill" href="#pipeline">制作工程</a>
+  <a class="pill" href="#roadmap">ロードマップ</a>
+  <a class="pill" href="#members">メンバー</a>
+</nav>
+
+<div id="main">
+
+  <header class="report-header">
+    <h1>p001 研修事業プロジェクト概要</h1>
+    <p class="subtitle">作成背景とコンテンツ構成 — 社内共有資料 / 最終更新: 2026-05-11</p>
+    <div class="summary-box">
+      <h3>このドキュメントについて</h3>
+      <ul>
+        <li>p001（研修事業プロジェクト）の事業コンセプト・立ち上げ背景を整理した社内向け概要資料</li>
+        <li>現在制作中のコンテンツ一覧と制作状況を共有</li>
+        <li>研修プラットフォーム「ビピトレ（仮）」の仕様概要・料金体系を記載</li>
+        <li>対象読者: 社内メンバー（前提知識あり）</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- 1. 概要 -->
+  <section id="overview">
+    <h2 class="section-title">1. プロジェクト概要</h2>
+    <p>
+      p001（研修事業プロジェクト）は、BPIOが経理BPO事業で蓄積してきた実務ノウハウを体系化し、
+      <strong>外販可能な研修・教育プロダクト「ビピトレ（仮）」</strong>として展開する事業プロジェクトです。
+    </p>
+    <p>
+      2025年末にスタートし、現在はPhase 1A（経理BPO基礎コンテンツ制作）を進行中。
+      <strong>2026年7月の労務BPO向けコンテンツ完成</strong>を目標にしています。
+    </p>
+    <div class="highlight-box">
+      <strong>一言で言うと：</strong> BPIOの暗黙知を教材化し、「人を育てられるBPO会社」として外部に研修事業を展開する。
+      研修が既存BPO・コンサル事業のフロントエンドにもなる二重収益構造。
+    </div>
+  </section>
+
+  <!-- 2. 作成背景 -->
+  <section id="background">
+    <h2 class="section-title">2. なぜこの事業を始めたか（作成背景）</h2>
+
+    <h3 class="subsection-title">2-1. BPO事業の強みと暗黙知の課題</h3>
+    <p>
+      BPIOは経理業務の包括サポートを提供してきた中で、
+      <strong>コンサルタントとオペレーターの判断分岐</strong>
+      （「この顧客はコンサル先行か代行先行か」「どのタイミングでコンサルに移行するか」）など、
+      属人的なスキルが社内に蓄積されてきました。
+    </p>
+    <p>
+      この「暗黙知」は現在ベテラン担当者の頭の中にしかなく、新人教育のコスト増大・品質のバラつきを生んでいます。
+      これを<strong>形式知化して教材にする</strong>ことが事業の出発点です。
+    </p>
+
+    <h3 class="subsection-title">2-2. 市場の構造的な問題</h3>
+    <ul>
+      <li><strong>経理人材の構造的不足</strong>：業務細分化により全体像を把握できる人材が希少</li>
+      <li><strong>マニュアル教育の限界</strong>：「思考停止した作業者」を生みやすく、イレギュラー対応力が育たない</li>
+      <li><strong>OJTの属人化</strong>：指導者によって品質がバラバラ、指導コストが高い</li>
+    </ul>
+
+    <h3 class="subsection-title">2-3. 差別化戦略と収益の二重構造</h3>
+    <p>
+      「<strong>人を育てられるBPO会社</strong>」というブランドポジションは、単純な業務代行会社との差別化になります。
+    </p>
+    <table>
+      <tr>
+        <th>収益レイヤー</th>
+        <th>内容</th>
+      </tr>
+      <tr>
+        <td>フロントエンド（フック商品）</td>
+        <td>研修受講企業 → 手が回らなければBPO（代行）へ誘導、定着しなければコンサルへ誘導</td>
+      </tr>
+      <tr>
+        <td>バックエンド（継続収益）</td>
+        <td>研修単体のサブスクリプション収益（ビピトレ月額課金）</td>
+      </tr>
+    </table>
+
+    <h3 class="subsection-title">2-4. 収益目標（5年計画）</h3>
+    <div class="plan-row">
+      <div class="plan-card">
+        <div class="year">1年目</div>
+        <div class="revenue">¥1,140万</div>
+        <div class="detail">~60社 / MRR ¥95万</div>
+      </div>
+      <div class="plan-card">
+        <div class="year">3年目</div>
+        <div class="revenue">¥1億</div>
+        <div class="detail">~540社 / MRR ¥860万</div>
+      </div>
+      <div class="plan-card">
+        <div class="year">5年目</div>
+        <div class="revenue">¥3億</div>
+        <div class="detail">~1,580社 / MRR ¥2,500万</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. ビピトレ -->
+  <section id="product">
+    <h2 class="section-title">3. プロダクト「ビピトレ（仮）」概要</h2>
+
+    <h3 class="subsection-title">プラットフォーム仕様</h3>
+    <table>
+      <tr><th>項目</th><th>内容</th></tr>
+      <tr><td>技術スタック</td><td>Next.js / Supabase / GCS（Google Cloud Storage）</td></tr>
+      <tr><td>主な機能</td><td>動画ライブラリ・進捗可視化・AIカリキュラム・確認テスト・コンピテンシー評価</td></tr>
+      <tr><td>評価設計</td><td>LMSスコア × 実務パフォーマンスの4象限マトリクス</td></tr>
+      <tr><td>現フェーズ</td><td>β版設計完了、初期パートナー（CCIF）での検証準備中</td></tr>
+    </table>
+
+    <h3 class="subsection-title">料金体系</h3>
+    <table>
+      <tr><th>プラン</th><th>月額</th><th>対象</th></tr>
+      <tr><td>Basic</td><td>¥3,000</td><td>個人向け、動画ライブラリ</td></tr>
+      <tr><td>Pro</td><td>¥8,000</td><td>SMEチーム、AIカリキュラム</td></tr>
+      <tr><td>Enterprise</td><td>¥50,000</td><td>大企業、プレミアムサポート</td></tr>
+    </table>
+  </section>
+
+  <!-- 4. コンテンツ構成 -->
+  <section id="contents">
+    <h2 class="section-title">4. コンテンツ構成と制作状況</h2>
+
+    <p>研修コンテンツは2種類で構成されます：</p>
+    <ul>
+      <li><strong>座学コンテンツ（〜とは）</strong>：業務の概要・目的・全体像を解説するスライド動画</li>
+      <li><strong>実践コンテンツ（実践）</strong>：実際のシステム操作・判断フローを演習形式で習得</li>
+    </ul>
+
+    <h3 class="subsection-title">Phase 1A：経理BPO基礎（2026年3月〜　担当：堀江）</h3>
+
+    <h4>スタンダード座学（5本）</h4>
+    <table>
+      <tr><th>コンテンツ名</th><th>状況</th></tr>
+      <tr>
+        <td>バリューチェーン</td>
+        <td><span class="badge badge-warn">台本完成済・録音以降未完</span></td>
+      </tr>
+      <tr>
+        <td>経理業務基礎研修導入編</td>
+        <td><span class="badge badge-warn">台本完成済・録音以降未完</span></td>
+      </tr>
+      <tr>
+        <td>クラウドシステム</td>
+        <td><span class="badge badge-pending">台本完成済・未着手</span></td>
+      </tr>
+      <tr>
+        <td>BPO基礎</td>
+        <td><span class="badge badge-pending">台本完成済・未着手</span></td>
+      </tr>
+      <tr>
+        <td>セキュリティ</td>
+        <td><span class="badge badge-pending">台本完成済・未着手</span></td>
+      </tr>
+    </table>
+
+    <h4>経理実務（12本）</h4>
+    <table>
+      <tr><th>コンテンツ名</th><th>種別</th><th>状況</th></tr>
+      <tr>
+        <td>入金消し込みとは</td>
+        <td>座学</td>
+        <td><span class="badge badge-ok">✅ 完了</span></td>
+      </tr>
+      <tr>
+        <td>売上請求書発行とは</td>
+        <td>座学</td>
+        <td><span class="badge badge-info">着手中</span></td>
+      </tr>
+      <tr>
+        <td>売上請求書発行 実践</td>
+        <td>実践</td>
+        <td><span class="badge badge-pending">未着手</span></td>
+      </tr>
+      <tr>
+        <td>入金消し込み 実践</td>
+        <td>実践</td>
+        <td><span class="badge badge-pending">未着手</span></td>
+      </tr>
+      <tr>
+        <td>立替経費の集計とは</td>
+        <td>座学</td>
+        <td><span class="badge badge-pending">未着手</span></td>
+      </tr>
+      <tr>
+        <td>立替経費 実践</td>
+        <td>実践</td>
+        <td><span class="badge badge-pending">未着手</span></td>
+      </tr>
+      <tr>
+        <td>請求書振込</td>
+        <td>座学</td>
+        <td><span class="badge badge-pending">未着手</span></td>
+      </tr>
+      <tr>
+        <td>請求書振込 実践</td>
+        <td>実践</td>
+        <td><span class="badge badge-pending">未着手</span></td>
+      </tr>
+      <tr>
+        <td>給与振込</td>
+        <td>座学</td>
+        <td><span class="badge badge-pending">未着手</span></td>
+      </tr>
+      <tr>
+        <td>給与振込 実践</td>
+        <td>実践</td>
+        <td><span class="badge badge-pending">未着手</span></td>
+      </tr>
+      <tr>
+        <td>納税管理</td>
+        <td>座学</td>
+        <td><span class="badge badge-pending">未着手</span></td>
+      </tr>
+      <tr>
+        <td>資産表作成（試算表）</td>
+        <td>座学</td>
+        <td><span class="badge badge-pending">未着手</span></td>
+      </tr>
+    </table>
+
+    <h3 class="subsection-title">Phase 1B：労務BPO基礎（★2026年6月完成必須）</h3>
+    <div class="note-box">
+      ★ Phase 1B は 2026年7月の労務BPO実動対応に必要なため、<strong>6月完成が必須</strong>。
+      PM（関口/石井）参画で4月から構成設計を開始予定。
+    </div>
+    <table>
+      <tr><th>コンテンツ名</th><th>状況</th></tr>
+      <tr><td>勤怠管理</td><td><span class="badge badge-pending">コンテンツリスト策定中</span></td></tr>
+      <tr><td>給与計算</td><td><span class="badge badge-pending">コンテンツリスト策定中</span></td></tr>
+      <tr><td>賞与計算</td><td><span class="badge badge-pending">コンテンツリスト策定中</span></td></tr>
+      <tr><td>年末調整</td><td><span class="badge badge-pending">コンテンツリスト策定中</span></td></tr>
+      <tr><td>タレントマネジメント</td><td><span class="badge badge-pending">コンテンツリスト策定中</span></td></tr>
+    </table>
+
+    <h3 class="subsection-title">将来計画（中級・上級）</h3>
+    <ul>
+      <li>実践コンテンツの本格展開（全業務領域）</li>
+      <li>コンサル分岐判断の形式知化（上級コンテンツ）</li>
+      <li>事業計画（予実管理）・稟議対応・購買管理等の高度業務</li>
+    </ul>
+  </section>
+
+  <!-- 5. 制作パイプライン -->
+  <section id="pipeline">
+    <h2 class="section-title">5. 動画制作パイプライン（11工程）</h2>
+
+    <p>コンテンツ1本を完成させるには11工程を経ます。現在は⑥録音以降が制作ボトルネックになっています。</p>
+
+    <div class="flow">
+      <div class="flow-step">①テーマ決定</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">②原稿作成</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">③HTMLスライド</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">④PDF化</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">⑤台本作成</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step bottleneck">⑥録音 ★</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step bottleneck">⑦音声編集 ★</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">⑧JPG変換</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">⑨動画編集</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">⑩エクスポート</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">⑪LMS UP</div>
+    </div>
+
+    <div class="info-box">
+      <strong>現在の進捗状況：</strong>
+      スタンダード座学5本・経理実務系複数は①〜⑤（台本完成）まで完了。
+      ⑥録音以降が未完になっているコンテンツが多数あり、ここが現在の制作ボトルネック。
+    </div>
+  </section>
+
+  <!-- 6. ロードマップ -->
+  <section id="roadmap">
+    <h2 class="section-title">6. 今後のロードマップ</h2>
+
+    <table>
+      <tr><th>時期</th><th>マイルストーン</th></tr>
+      <tr><td>2026年3月末</td><td>Phase 1A 経理BPO基礎 全コンテンツ完成（目標）</td></tr>
+      <tr><td>2026年4月</td><td>Phase 1B 労務BPO 構成設計・原稿作成開始（PM：関口/石井参画）</td></tr>
+      <tr><td>2026年6月</td><td>Phase 1B 労務BPO基礎 コンテンツ完成 <span class="badge badge-warn">★必須</span></td></tr>
+      <tr><td>2026年7月</td><td>労務BPO実動対応・ビピトレβ版提供開始</td></tr>
+      <tr><td>2026年〜</td><td>CCIF等パートナーでの検証・フィードバック収集 → 正式版リリース</td></tr>
+    </table>
+  </section>
+
+  <!-- 7. メンバー -->
+  <section id="members">
+    <h2 class="section-title">7. メンバー</h2>
+
+    <table>
+      <tr><th>役割</th><th>担当者</th></tr>
+      <tr><td>プロジェクトオーナー</td><td>堀江孝輔</td></tr>
+      <tr><td>研修方法論・コアコンテンツ監修</td><td>水島総一郎</td></tr>
+      <tr><td>パートナーサクセス / スクラムマスター</td><td>軽部</td></tr>
+      <tr><td>Phase 1B PM</td><td>関口 / 石井</td></tr>
+    </table>
+  </section>
+
+  <div class="report-footer">
+    p001 研修事業プロジェクト概要 — p001 — Generated 2026-05-11 — BPIO co., Ltd.
+  </div>
+
+</div>
+
+<script>
+  const pills = document.querySelectorAll('.pill');
+  const sections = document.querySelectorAll('[id]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        pills.forEach(p => p.classList.remove('active'));
+        const active = document.querySelector(`.pill[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-80px 0px -80% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
