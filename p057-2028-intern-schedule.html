@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2028卒ワンデーインターン 当日スケジュール3パターン提案 — BPIO</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color: #1a1a1a;
+  background: #fff;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* Sticky Pill Navigation */
+#sticky-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.97);
+  border-bottom: 1px solid #ccc;
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+#sticky-nav .nav-label {
+  font-size: 0.72rem; font-weight: 700; color: #777;
+  letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+}
+.pill {
+  display: inline-block; padding: 5px 16px;
+  font-size: 0.78rem; font-weight: 600; color: #555;
+  text-decoration: none; border: 1px solid #ccc;
+  border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+}
+.pill:hover, .pill.active {
+  background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+}
+
+/* Main */
+#main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+
+/* Header */
+.report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+.report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+.report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+.report-header .summary-box {
+  background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+}
+.report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+.report-header .summary-box ul {
+  padding-left: 20px; font-size: 0.82rem;
+}
+.report-header .summary-box li { margin-bottom: 4px; }
+
+/* Sections */
+h2.section-title {
+  font-size: 1.2rem; font-weight: 700;
+  border-bottom: 1px solid #999; padding-bottom: 6px;
+  margin-top: 48px; margin-bottom: 20px;
+}
+h3.subsection-title {
+  font-size: 1.0rem; font-weight: 700;
+  margin-top: 32px; margin-bottom: 12px;
+  padding-left: 10px; border-left: 3px solid #555;
+}
+h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+
+/* Paragraphs & Lists */
+p { margin-bottom: 10px; font-size: 0.88rem; }
+ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+ul li, ol li { margin-bottom: 3px; }
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+table td { background: #fff; }
+table tr:nth-child(even) td { background: #fafafa; }
+table td.time-col { font-weight: 700; white-space: nowrap; width: 110px; color: #555; }
+table td.rest-row { background: #fafafa; color: #777; }
+
+/* Boxes */
+.highlight-box {
+  background: #f7f7f7; border: 1px solid #ddd;
+  padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+}
+.note-box {
+  background: #fffbeb; border-left: 4px solid #f59e0b;
+  padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+}
+.info-box {
+  background: #eff6ff; border-left: 4px solid #3b82f6;
+  padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f;
+}
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 2px 10px;
+  font-size: 0.72rem; font-weight: 700;
+  border-radius: 999px; letter-spacing: 0.03em;
+}
+.badge-ok { background: #d4edda; color: #155724; }
+.badge-warn { background: #fff3cd; color: #856404; }
+.badge-info { background: #d1ecf1; color: #0c5460; }
+.badge-pending { background: #e2e3e5; color: #383d41; }
+
+.activity-tag {
+  display: inline-block; padding: 1px 8px; margin-right: 4px;
+  font-size: 0.7rem; font-weight: 600;
+  border: 1px solid #bbb; color: #555; background: #fff;
+}
+
+/* Pattern Meta Grid */
+.pattern-meta {
+  margin: 16px 0 20px;
+}
+
+/* Footer */
+.report-footer {
+  border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+  font-size: 0.78rem; color: #777;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  #main { padding: 24px 20px 60px; }
+  .report-header h1 { font-size: 1.3rem; }
+  h2.section-title { font-size: 1.05rem; }
+  table { font-size: 0.78rem; }
+  table th, table td { padding: 5px 7px; }
+  #sticky-nav { padding: 10px 12px; gap: 6px; }
+  .pill { padding: 4px 12px; font-size: 0.72rem; }
+}
+
+/* Print */
+@media print {
+  #sticky-nav { display: none; }
+  #main { padding: 0; max-width: 100%; }
+  body { font-size: 10pt; }
+  .report-header h1 { font-size: 16pt; }
+  h2.section-title { font-size: 13pt; page-break-after: avoid; }
+  h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+  table { font-size: 8pt; page-break-inside: avoid; }
+  table th, table td { padding: 3px 5px; }
+  .highlight-box, .note-box, .info-box {
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  table th {
+    background: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+}
+</style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">SECTIONS</span>
+  <a class="pill" href="#overview">概要</a>
+  <a class="pill" href="#pattern-a">A: ガチンコ実戦型</a>
+  <a class="pill" href="#pattern-b">B: 体験ドリブン型</a>
+  <a class="pill" href="#pattern-c">C: ハイブリッド競技型</a>
+  <a class="pill" href="#compare">3パターン比較</a>
+</nav>
+
+<div id="main">
+
+  <header class="report-header" id="overview">
+    <h1>2028卒ワンデーインターン 当日スケジュール3パターン提案</h1>
+    <p class="subtitle">2026年6月19日（金）開催 / オンライン / 10:00–19:00（延長20–21時可） — p057 ドラフト v1</p>
+
+    <div class="summary-box">
+      <h3>本企画の必須要件</h3>
+      <ul>
+        <li><strong>会社理解</strong>: 学生にうちの会社がどういう会社か・魅力を伝える</li>
+        <li><strong>共感見極め</strong>: 共感している学生 / していない学生を採用側が見極める導線</li>
+        <li><strong>早期選考チケット獲得</strong>: 1日で成果物を作りきる体験を通じて選考通過候補を見出す</li>
+        <li><strong>AI活用 × チーム戦</strong>: AIを使った成果物作成をチーム戦で行う</li>
+        <li><strong>相互認識</strong>: 学生・運営の双方が「早期選考が絡む」ことを了解した状態で当日を迎える（伝達のライト/ヘビーは検討中）</li>
+      </ul>
+    </div>
+
+    <div class="info-box">
+      3つのパターンは「早期選考の見せ方」と「主軸（実戦・共感・競技）」の組み合わせで方向性が異なります。レビュー後に1つ選定、または組み合わせて統合案にすることを想定しています。
+    </div>
+  </header>
+
+  <!-- ============== PATTERN A ============== -->
+  <section id="pattern-a">
+    <h2 class="section-title">A: ガチンコ実戦型「1日コンサルファーム」</h2>
+
+    <p>仮想クライアント（BPO顧客モック）の実課題を受け、AIをフル活用してチームで解決策・提案資料を作りきる。最終プレゼンは「クライアント前」を想定。<strong>実力勝負・突破力重視</strong>のヘビー寄りトーン。</p>
+
+    <table class="pattern-meta">
+      <tr>
+        <th style="width: 140px;">早期選考の見せ方</th>
+        <td><span class="badge badge-warn">ヘビー寄り</span> 実力評価を明示する</td>
+      </tr>
+      <tr>
+        <th>成果物</th>
+        <td>提案資料 + AIプロトタイプ（業務効率化のシミュレーション、自動化フロー、試算データ）</td>
+      </tr>
+      <tr>
+        <th>評価ポイント</th>
+        <td>課題の本質把握 / AI活用の深さ / 成果物の完成度 / プレゼン力 / 質疑応答</td>
+      </tr>
+      <tr>
+        <th>共感見極め</th>
+        <td>課題理解フェーズで「なぜこのクライアントを助けたいか」を一人ずつ言語化させる</td>
+      </tr>
+      <tr>
+        <th>難易度</th>
+        <td><span class="badge badge-warn">高</span> 緊張感のある実戦型。学生によっては脱落感を生むリスクあり</td>
+      </tr>
+    </table>
+
+    <h3 class="subsection-title">タイムテーブル</h3>
+    <table>
+      <thead>
+        <tr><th style="width: 110px;">時刻</th><th>セッション</th><th style="width: 200px;">活動種別</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="time-col">10:00–10:30</td>
+          <td><strong>オープニング・会社紹介・趣旨説明</strong><br>企画意図と「早期選考が絡む」前提を明示。会社のミッション・事業領域を10分で凝縮プレゼン。</td>
+          <td><span class="activity-tag">共感導入</span></td></tr>
+        <tr><td class="time-col">10:30–11:00</td>
+          <td><strong>チーム編成・アイスブレイク</strong><br>4–5名×4–5チーム。各チームに運営メンター1名。自己紹介＋「自分の武器」共有。</td>
+          <td><span class="activity-tag">チーム戦</span></td></tr>
+        <tr><td class="time-col">11:00–11:30</td>
+          <td><strong>ケース発表・課題インプット</strong><br>仮想クライアントの紹介VTR、業務データ・課題ヒアリング資料を一斉開示。質問タイム。</td>
+          <td></td></tr>
+        <tr><td class="time-col">11:30–12:30</td>
+          <td><strong>課題理解・仮説立て</strong><br>業界調査・課題構造化をAI（Claude / ChatGPT / Perplexity）で実施。チーム内で仮説を1本に集約。</td>
+          <td><span class="activity-tag">AI活用</span> <span class="activity-tag">チーム戦</span></td></tr>
+        <tr><td class="time-col rest-row">12:30–13:15</td>
+          <td class="rest-row"><strong>ランチ休憩</strong><br>運営メンターと少人数雑談OK（任意参加）。共感見極めの自然な接点。</td>
+          <td class="rest-row"><span class="activity-tag">休憩</span> <span class="activity-tag">共感見極め</span></td></tr>
+        <tr><td class="time-col">13:15–15:00</td>
+          <td><strong>解決策設計（発散→収束）</strong><br>AIでアイデア発散→評価→絞り込み。チーム内ロールを明確化（リード / AIオペレーター / 分析 / まとめ）。</td>
+          <td><span class="activity-tag">AI活用</span> <span class="activity-tag">チーム戦</span></td></tr>
+        <tr><td class="time-col">15:00–15:15</td>
+          <td><strong>中間チェックイン</strong><br>メンターが各チームを巡回。方向修正FB。ここで「共感の深さ」も観察記録。</td>
+          <td><span class="activity-tag">チェック</span> <span class="activity-tag">共感見極め</span></td></tr>
+        <tr><td class="time-col">15:15–17:00</td>
+          <td><strong>成果物作成フェーズ</strong><br>提案資料（Slides / Canva）、プロトタイプ（GAS / Dify / Claude）、試算シートを並行制作。</td>
+          <td><span class="activity-tag">AI活用</span></td></tr>
+        <tr><td class="time-col rest-row">17:00–17:15</td>
+          <td class="rest-row"><strong>休憩・最終リハーサル</strong><br>プレゼン担当決め。15分でクイック合わせ。</td>
+          <td class="rest-row"><span class="activity-tag">休憩</span></td></tr>
+        <tr><td class="time-col">17:15–18:30</td>
+          <td><strong>最終プレゼン（各チーム15分）</strong><br>プレゼン10分＋質疑5分。審査員（堀江・運営メンター）がルーブリック採点。鋭い質疑で実力測定。</td>
+          <td><span class="activity-tag">評価</span></td></tr>
+        <tr><td class="time-col">18:30–19:00</td>
+          <td><strong>講評・クロージング・早期選考案内</strong><br>全体講評→個別フィードバック予告→早期選考への進み方を明示。</td>
+          <td><span class="activity-tag">共感見極め</span></td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">設計補足</h3>
+
+    <h4>使用想定AIツール</h4>
+    <ul>
+      <li>Claude / ChatGPT（思考補助・資料作成）</li>
+      <li>Perplexity（業界・競合調査）</li>
+      <li>Canva / Gamma（提案資料）</li>
+      <li>Dify / Claude Code（プロトタイプ）</li>
+    </ul>
+
+    <h4>共感見極めの仕掛け</h4>
+    <ul>
+      <li>11:30〜の課題理解フェーズで「このクライアントが困っているのを、なぜ我々が解くべきか」を必ず言語化させる</li>
+      <li>ランチ・中間チェックインで運営メンターが学生の発言・態度を記録（観察シート使用）</li>
+      <li>プレゼン後の質疑で「あなた個人がこの提案にどうコミットしたか」を問う</li>
+    </ul>
+
+    <div class="note-box">
+      <strong>リスク</strong>: 学生負荷が高くサポート不足だと脱落感を生む。仮想クライアント設定の作り込みに事前工数が大きい（最低2週間）。メンターが「答えを与えすぎる」と評価軸が崩れるので事前ブリーフィング必須。
+    </div>
+  </section>
+
+  <!-- ============== PATTERN B ============== -->
+  <section id="pattern-b">
+    <h2 class="section-title">B: 体験ドリブン型「半日会社理解 × 半日プロダクト企画」</h2>
+
+    <p>午前は会社理解（事業紹介・先輩社員パネル・座談会）でカルチャー浸透、午後は「自分たちが使いたいAIサービス」をチームで企画・プロトタイプ。<strong>共感とフィット重視</strong>のライト寄りトーン。</p>
+
+    <table class="pattern-meta">
+      <tr>
+        <th style="width: 140px;">早期選考の見せ方</th>
+        <td><span class="badge badge-ok">ライト寄り</span> 相互理解を強調する</td>
+      </tr>
+      <tr>
+        <th>成果物</th>
+        <td>AIサービス企画書 + 簡易プロトタイプ（LP・デモ動画・ピッチスライド）</td>
+      </tr>
+      <tr>
+        <th>評価ポイント</th>
+        <td>学生視点の課題発見力 / チーム議論への貢献 / ストーリーテリング / カルチャーフィット</td>
+      </tr>
+      <tr>
+        <th>共感見極め</th>
+        <td>午前のパネル・座談会の反応、テーマ選定での価値観、チーム議論の振る舞い</td>
+      </tr>
+      <tr>
+        <th>難易度</th>
+        <td><span class="badge badge-ok">低〜中</span> 対話的でフラット。「相互理解の日」「合うかどうか確かめる日」</td>
+      </tr>
+    </table>
+
+    <h3 class="subsection-title">タイムテーブル</h3>
+    <table>
+      <thead>
+        <tr><th style="width: 110px;">時刻</th><th>セッション</th><th style="width: 200px;">活動種別</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="time-col">10:00–10:30</td>
+          <td><strong>オープニング・参加者自己紹介</strong><br>企画意図を「相互理解の日」として伝達。「早期選考は結果としてついてくる」というライトな見せ方。一人30秒自己紹介。</td>
+          <td><span class="activity-tag">共感導入</span></td></tr>
+        <tr><td class="time-col">10:30–11:30</td>
+          <td><strong>会社紹介・事業説明</strong><br>BPO / SR1 / AI事業のリアル。数字・顧客の声・失敗談まで含めて「赤裸々」に。Q&A時間を厚く取る。</td>
+          <td><span class="activity-tag">共感見極め</span></td></tr>
+        <tr><td class="time-col">11:30–12:30</td>
+          <td><strong>先輩社員パネルディスカッション</strong><br>1〜3年目社員3名＋ファシリ。「入社理由」「最近のしんどい仕事」「逆に楽しい瞬間」をテーマに対話。Slidoで匿名質問を募集。</td>
+          <td><span class="activity-tag">共感見極め</span></td></tr>
+        <tr><td class="time-col rest-row">12:30–13:30</td>
+          <td class="rest-row"><strong>ランチ・少人数座談会</strong><br>運営社員1名＋学生4–5名のブレイクアウト。ご飯食べながら雑談。社員側は観察＆発言記録。</td>
+          <td class="rest-row"><span class="activity-tag">休憩</span> <span class="activity-tag">共感見極め</span></td></tr>
+        <tr><td class="time-col">13:30–14:00</td>
+          <td><strong>午後ワーク説明・チーム編成</strong><br>テーマ「学生・若手の困りごとを解決するAIサービス」を発表。4–5名チーム×4–5チーム。</td>
+          <td><span class="activity-tag">チーム戦</span></td></tr>
+        <tr><td class="time-col">14:00–14:30</td>
+          <td><strong>アイデアブレスト</strong><br>AIで自分たちの「困りごと」を1人20個列挙→チームで集約・選定。テーマ確定。</td>
+          <td><span class="activity-tag">AI活用</span> <span class="activity-tag">チーム戦</span></td></tr>
+        <tr><td class="time-col">14:30–16:30</td>
+          <td><strong>プロトタイプ作成（2時間）</strong><br>AIでLP生成（v0 / Lovable）・デモ動画（Gamma / Canva）・コア機能のプロンプト動作確認。</td>
+          <td><span class="activity-tag">AI活用</span> <span class="activity-tag">チーム戦</span></td></tr>
+        <tr><td class="time-col rest-row">16:30–17:00</td>
+          <td class="rest-row"><strong>休憩・準備</strong><br>ピッチ資料の最終化、リハーサル。</td>
+          <td class="rest-row"><span class="activity-tag">休憩</span></td></tr>
+        <tr><td class="time-col">17:00–18:30</td>
+          <td><strong>ピッチ大会</strong><br>各チーム7分ピッチ＋質疑3分。「ユーザー」「課題」「解決策」「使いたい理由」をストーリーで語る。</td>
+          <td><span class="activity-tag">評価</span></td></tr>
+        <tr><td class="time-col">18:30–19:00</td>
+          <td><strong>全体振り返り・MVP発表・クロージング</strong><br>「今日感じたこと」を全員30秒で共有。MVPチーム発表＋投票。「気になった人は早期選考に進めます」と最後に告知。</td>
+          <td><span class="activity-tag">共感見極め</span></td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">設計補足</h3>
+
+    <h4>使用想定AIツール</h4>
+    <ul>
+      <li>Claude / ChatGPT（アイデア発散・原稿整理）</li>
+      <li>v0 / Lovable / Bolt（LP・UI生成）</li>
+      <li>Gamma / Canva（ピッチスライド）</li>
+      <li>Runway / Veed（デモ動画）</li>
+    </ul>
+
+    <h4>共感見極めの仕掛け</h4>
+    <ul>
+      <li>午前のパネル・Q&A時間に学生の質問内容を記録（深い質問か / 表層か）</li>
+      <li>ランチ座談会のブレイクアウトで運営側が観察シート記入（聞く姿勢、自分の言葉で語れるか）</li>
+      <li>クロージングの「今日感じたこと」一言シェアは絶好の見極めポイント</li>
+    </ul>
+
+    <div class="note-box">
+      <strong>リスク</strong>: 負荷が低めで誰でも楽しめるが、突き抜けた人材を見極めにくい可能性。先輩社員パネル登壇者の選定が成否を分ける。「ライト過ぎて」早期選考が伝わらないリスクがあるためクロージングで明確に告知する。
+    </div>
+  </section>
+
+  <!-- ============== PATTERN C ============== -->
+  <section id="pattern-c">
+    <h2 class="section-title">C: ハイブリッド競技型「AI集中講座 × 業務改善コンテスト」</h2>
+
+    <p>朝はAIツール集中レクチャー（全員同じスタートライン）→ 昼以降はBPO実務テーマの業務改善コンテスト → 夜にプレゼン審査・表彰。<strong>学習速度と協働を測る</strong>ミディアム（上位優先）のトーン。</p>
+
+    <table class="pattern-meta">
+      <tr>
+        <th style="width: 140px;">早期選考の見せ方</th>
+        <td><span class="badge badge-info">ミディアム</span> コンテスト上位 = 早期選考優先と明示</td>
+      </tr>
+      <tr>
+        <th>成果物</th>
+        <td>業務改善プロトタイプ（GAS / Dify / Claude / プロンプトセット）+ ピッチ動画 or スライド</td>
+      </tr>
+      <tr>
+        <th>評価ポイント</th>
+        <td>朝レクチャーの吸収速度 / 実装スピード / プロトタイプ動作品質 / プレゼン説得力</td>
+      </tr>
+      <tr>
+        <th>共感見極め</th>
+        <td>BPOテーマへの取り組み姿勢、難題への食らいつき、レクチャー中の質問・態度</td>
+      </tr>
+      <tr>
+        <th>難易度</th>
+        <td><span class="badge badge-warn">中〜高</span> 熱量高い競技モード。延長で懇親オプション</td>
+      </tr>
+    </table>
+
+    <h3 class="subsection-title">タイムテーブル</h3>
+    <table>
+      <thead>
+        <tr><th style="width: 110px;">時刻</th><th>セッション</th><th style="width: 200px;">活動種別</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="time-col">10:00–10:30</td>
+          <td><strong>オープニング・会社紹介・コンテストルール発表</strong><br>企画意図・早期選考扱い（上位=優先）を明示。1日の流れと審査基準を公開。</td>
+          <td><span class="activity-tag">共感導入</span></td></tr>
+        <tr><td class="time-col">10:30–12:00</td>
+          <td><strong>AI集中レクチャー（90分）</strong><br>Claude / ChatGPT / Notion AI / Dify / Claude Codeを実演＋ハンズオン。「使えるレベル」までの最短距離を共有。</td>
+          <td><span class="activity-tag">AI活用</span> <span class="activity-tag">学習評価</span></td></tr>
+        <tr><td class="time-col rest-row">12:00–12:45</td>
+          <td class="rest-row"><strong>ランチ・チーム編成発表</strong><br>朝の参加態度（質問数・反応速度）でチーム編成を微調整。バランス配分で公平化。</td>
+          <td class="rest-row"><span class="activity-tag">休憩</span> <span class="activity-tag">チーム戦</span></td></tr>
+        <tr><td class="time-col">12:45–13:00</td>
+          <td><strong>課題発表：BPO業務改善コンテスト</strong><br>実在の業務シナリオ（経理・労務・総務のいずれか）を提示。「これをAIで改善する案」を競う。</td>
+          <td></td></tr>
+        <tr><td class="time-col">13:00–15:00</td>
+          <td><strong>アイデア設計フェーズ</strong><br>AS-IS理解→課題特定→AI活用解決策設計。設計書を15:00時点でメンターにレビュー依頼。</td>
+          <td><span class="activity-tag">AI活用</span> <span class="activity-tag">チーム戦</span></td></tr>
+        <tr><td class="time-col rest-row">15:00–15:15</td>
+          <td class="rest-row"><strong>休憩・設計レビュー</strong><br>メンターが各チーム巡回し、設計の妥当性を5分でFB。共感度・コミット度も観察。</td>
+          <td class="rest-row"><span class="activity-tag">休憩</span> <span class="activity-tag">チェック</span> <span class="activity-tag">共感見極め</span></td></tr>
+        <tr><td class="time-col">15:15–17:00</td>
+          <td><strong>プロトタイプ実装フェーズ</strong><br>実際に動くものを作る。GAS自動化、Difyワークフロー、プロンプトセット等。動作デモを必須化。</td>
+          <td><span class="activity-tag">AI活用</span> <span class="activity-tag">チーム戦</span></td></tr>
+        <tr><td class="time-col">17:00–17:30</td>
+          <td><strong>リハーサル</strong><br>プレゼン5分＋デモ動画 or ライブデモ。チームで役割分担して時間内に収める練習。</td>
+          <td></td></tr>
+        <tr><td class="time-col">17:30–19:00</td>
+          <td><strong>コンテスト本番</strong><br>各チーム5分プレゼン＋質疑3分。審査員（堀江＋BPO実務担当＋運営）が4軸ルーブリックで採点。</td>
+          <td><span class="activity-tag">評価</span></td></tr>
+        <tr><td class="time-col">19:00–19:30<br><small>※延長</small></td>
+          <td><strong>結果発表・表彰・早期選考案内</strong><br>入賞チーム表彰＋個人MVP発表。上位入賞者・MVPには早期選考の優先案内。任意で20:00まで懇親OK。</td>
+          <td><span class="activity-tag">共感見極め</span></td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">設計補足</h3>
+
+    <h4>使用想定AIツール</h4>
+    <ul>
+      <li>朝レクチャー: Claude / ChatGPT / Notion AI / Dify / Claude Code</li>
+      <li>実装: GAS（業務自動化スクリプト）、Dify（ワークフロー）、Claude Code（ファイル処理）</li>
+      <li>プレゼン: Gamma / Canva / Loom（デモ録画）</li>
+    </ul>
+
+    <h4>共感見極めの仕掛け</h4>
+    <ul>
+      <li>朝レクチャー中の質問内容・反応速度を運営が記録</li>
+      <li>BPO実務テーマへの取り組み姿勢（顧客の課題に共感できているか）を15:00レビュー時に観察</li>
+      <li>表彰後の「振り返り一言」で価値観発露を見る</li>
+    </ul>
+
+    <div class="note-box">
+      <strong>リスク</strong>: 実装スピードが求められるためAI初心者は苦戦。朝レクチャーで底上げが必須。BPOテーマの難度設定がカギ（難しすぎ→萎縮、易しすぎ→差がつかない）。「コンテスト=競争」が苦手な層を弾く可能性があるため集客時に明示。19時超え延長はオンライン疲労リスクのため任意参加とする。
+    </div>
+  </section>
+
+  <!-- ============== COMPARE ============== -->
+  <section id="compare">
+    <h2 class="section-title">3パターン横並び比較</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>A: ガチンコ実戦型</th>
+          <th>B: 体験ドリブン型</th>
+          <th>C: ハイブリッド競技型</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>早期選考の見せ方</th><td>ヘビー（実力評価を明示）</td><td>ライト（相互理解を強調）</td><td>ミディアム（上位=優先）</td></tr>
+        <tr><th>主軸</th><td>実戦・課題解決</td><td>カルチャー浸透・共感</td><td>AI学習・実装競技</td></tr>
+        <tr><th>成果物</th><td>提案資料＋AIプロトタイプ</td><td>AIサービス企画書＋LP/デモ</td><td>業務改善プロトタイプ＋プレゼン</td></tr>
+        <tr><th>テーマ</th><td>仮想クライアントの課題</td><td>学生視点の困りごと</td><td>BPO実務シナリオ</td></tr>
+        <tr><th>共感見極め強度</th><td>中（プレゼン・質疑で発露）</td><td>強（パネル・座談会・振り返り）</td><td>中（取り組み姿勢の観察）</td></tr>
+        <tr><th>実力測定強度</th><td>強（実戦課題で差が出る）</td><td>中（発想力・議論力）</td><td>強（実装スピード・品質）</td></tr>
+        <tr><th>難易度（学生負荷）</th><td>高</td><td>低〜中</td><td>中〜高</td></tr>
+        <tr><th>事前準備工数</th><td>大（仮想クライアント設計）</td><td>中（登壇者調整・座談会設計）</td><td>大（レクチャー教材・実務題材）</td></tr>
+        <tr><th>メンター必要人数</th><td>4–5名（チーム伴走）</td><td>3–4名（座談会＋伴走）</td><td>4–5名（レクチャー＋伴走＋審査）</td></tr>
+        <tr><th>向いている学生像</th><td>論理思考・突破力タイプ</td><td>共感・対話型・発想型</td><td>学習速度・実装好きタイプ</td></tr>
+        <tr><th>早期選考通過の見極め</th><td>成果物の質＋質疑応答</td><td>共感度＋カルチャーフィット</td><td>コンテスト上位＋MVP</td></tr>
+        <tr><th>想定リスク</th><td>脱落感・サポート不足懸念</td><td>突き抜けた人材が見えにくい</td><td>競争嫌いを弾く・延長疲労</td></tr>
+      </tbody>
+    </table>
+
+    <div class="highlight-box">
+      <strong>次のステップ</strong>: レビュー後、(1) パターン選定、または (2) パターンを組み合わせた統合案の検討、(3)「早期選考が絡む」見せ方（ライト / ヘビー）の意思決定、(4) 集客チャネル・人数想定の確定、(5) メンター・運営アサイン、(6) 当日成果物テーマの具体化 — を順次進めます。
+    </div>
+  </section>
+
+  <div class="report-footer">
+    2028卒ワンデーインターン 当日スケジュール3パターン提案 — p057 — Generated 2026-05-20 — BPIO co., Ltd.
+  </div>
+
+</div>
+
+<script>
+const pills = document.querySelectorAll('.pill');
+const sections = document.querySelectorAll('[id]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      pills.forEach(p => p.classList.remove('active'));
+      const active = document.querySelector(`.pill[href="#${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -80% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
