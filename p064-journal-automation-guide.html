@@ -1,0 +1,524 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>給与仕訳自動化 動作確認ガイド — BPIO</title>
+  <style>
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color: #1a1a1a; background: #fff; line-height: 1.7;
+}
+html { font-size: 15px; }
+
+#sticky-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.97); border-bottom: 1px solid #ccc;
+  padding: 12px 20px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+#sticky-nav .nav-label {
+  font-size: 0.72rem; font-weight: 700; color: #777;
+  letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+}
+.pill {
+  display: inline-block; padding: 5px 16px;
+  font-size: 0.78rem; font-weight: 600; color: #555;
+  text-decoration: none; border: 1px solid #ccc;
+  border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+}
+.pill:hover, .pill.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+#main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+
+.report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+.report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+.report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+.report-header .summary-box {
+  background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+}
+.report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+.report-header .summary-box ul, .report-header .summary-box ol { padding-left: 20px; font-size: 0.82rem; }
+.report-header .summary-box li { margin-bottom: 4px; }
+
+h2.section-title {
+  font-size: 1.2rem; font-weight: 700;
+  border-bottom: 1px solid #999; padding-bottom: 6px;
+  margin-top: 48px; margin-bottom: 20px;
+}
+h3.subsection-title {
+  font-size: 1.0rem; font-weight: 700;
+  margin-top: 32px; margin-bottom: 12px;
+  padding-left: 10px; border-left: 3px solid #555;
+}
+h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+table td { background: #fff; }
+table tr:nth-child(even) td { background: #fafafa; }
+
+p { margin-bottom: 10px; font-size: 0.88rem; }
+ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+ul li, ol li { margin-bottom: 3px; }
+
+.highlight-box {
+  background: #f7f7f7; border: 1px solid #ddd;
+  padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+}
+.note-box {
+  background: #fffbeb; border-left: 4px solid #f59e0b;
+  padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+}
+.info-box {
+  background: #eff6ff; border-left: 4px solid #3b82f6;
+  padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f;
+}
+.confirm-box {
+  background: #f0fdf4; border-left: 4px solid #22c55e;
+  padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #14532d;
+}
+
+.badge {
+  display: inline-block; padding: 2px 10px;
+  font-size: 0.72rem; font-weight: 700;
+  border-radius: 999px; letter-spacing: 0.03em;
+}
+.badge-ok { background: #d4edda; color: #155724; }
+.badge-info { background: #d1ecf1; color: #0c5460; }
+
+.flow {
+  display: flex; align-items: center; gap: 0;
+  margin: 20px 0; flex-wrap: wrap; justify-content: center;
+}
+.flow-step {
+  background: #f0f0f0; border: 1px solid #ccc;
+  padding: 10px 18px; font-size: 0.82rem; font-weight: 600;
+  text-align: center; min-width: 120px;
+}
+.flow-step.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+.flow-arrow { font-size: 1.2rem; color: #999; padding: 0 4px; }
+
+.report-footer {
+  border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+  font-size: 0.78rem; color: #777;
+}
+
+.step-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; background: #1a1a1a; color: #fff;
+  font-size: 0.82rem; font-weight: 700; border-radius: 999px;
+  margin-right: 8px; flex-shrink: 0;
+}
+.step-block { margin-bottom: 24px; }
+.step-block h4 { display: flex; align-items: center; }
+
+@media (max-width: 640px) {
+  #main { padding: 24px 20px 60px; }
+  .report-header h1 { font-size: 1.3rem; }
+  h2.section-title { font-size: 1.05rem; }
+  table { font-size: 0.78rem; }
+  table th, table td { padding: 5px 7px; }
+  #sticky-nav { padding: 10px 12px; gap: 6px; }
+  .pill { padding: 4px 12px; font-size: 0.72rem; }
+  .flow { flex-direction: column; align-items: stretch; }
+  .flow-arrow { transform: rotate(90deg); text-align: center; }
+  .flow-step { min-width: auto; }
+}
+
+@media print {
+  #sticky-nav { display: none; }
+  #main { padding: 0; max-width: 100%; }
+  body { font-size: 10pt; }
+  .report-header h1 { font-size: 16pt; }
+  h2.section-title { font-size: 13pt; page-break-after: avoid; }
+  h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+  table { font-size: 8pt; page-break-inside: avoid; }
+  table th, table td { padding: 3px 5px; }
+  .highlight-box, .note-box, .info-box, .confirm-box {
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  table th {
+    background: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+}
+  </style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">SECTIONS</span>
+  <a class="pill" href="#overview">1. 概要</a>
+  <a class="pill" href="#improvements">2. 改善ポイント</a>
+  <a class="pill" href="#workflow">3. 新しい作業フロー</a>
+  <a class="pill" href="#test">4. テスト手順</a>
+  <a class="pill" href="#confirm">5. 確認ポイント</a>
+  <a class="pill" href="#new-store">6. 新店舗対応</a>
+  <a class="pill" href="#next">7. 今後の予定</a>
+</nav>
+
+<div id="main">
+
+  <header class="report-header">
+    <h1>給与仕訳自動化 — 動作確認ガイド</h1>
+    <p class="subtitle">株式会社Suage Japan 給与仕訳の自動生成 — テスト確認のお願い</p>
+    <div class="summary-box">
+      <h3>このドキュメントについて</h3>
+      <ul>
+        <li>MF給与 → MF会計Plus仕訳取込の自動化GAS（Google スプレッドシートのプログラム）を開発しました</li>
+        <li>2026年4月データで従来の仕訳と<strong>全行全セル完全一致</strong>を確認済みです</li>
+        <li>開発用コピーで動作を確認していただき、問題なければ本体スプレッドシートに反映します</li>
+        <li>鈴木さんの操作・確認が中心です。プログラムの知識は不要です</li>
+      </ul>
+    </div>
+  </header>
+
+
+  <!-- Section 1: 概要 -->
+  <section id="overview">
+    <h2 class="section-title">1. 概要 — 何をしたか</h2>
+
+    <h3 class="subsection-title">現行の手作業フロー</h3>
+    <p>これまでは、以下のような手順で仕訳を作成していました。</p>
+    <ol>
+      <li>MF給与からCSVをダウンロードして「支給控除一覧表」タブに貼り付ける</li>
+      <li>「仕訳作成」タブのSUMIFS関数が各店舗・科目ごとの金額を集計する</li>
+      <li>集計結果を「仕訳取込用」タブに手動で整形・コピーする</li>
+      <li>MF会計PlusへCSVとしてインポートする</li>
+    </ol>
+    <p>この集計・整形の部分を、ボタン1つで自動化しました。</p>
+
+    <h3 class="subsection-title">何が変わるか</h3>
+    <div class="highlight-box">
+      <strong>メニューから「仕訳生成」を実行するだけで、「仕訳取込用」タブが自動生成されます。</strong><br>
+      手動での集計・整形・コピー作業が不要になります。
+    </div>
+
+    <h3 class="subsection-title">何が変わらないか</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>項目</th>
+          <th>変わらないこと</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CSVの貼り付け手順</td>
+          <td>MF給与からダウンロードして「支給控除一覧表」タブに貼り付ける手順はそのままです</td>
+        </tr>
+        <tr>
+          <td>出力形式</td>
+          <td>MF会計Plus取込用の22列フォーマットはそのまま維持されます</td>
+        </tr>
+        <tr>
+          <td>インポート手順</td>
+          <td>仕訳取込用タブからCSV保存 → MF会計Plusへインポートするステップはそのままです</td>
+        </tr>
+        <tr>
+          <td>確認作業</td>
+          <td>生成後の内容確認（勘定科目・金額）は引き続き鈴木さんに行っていただきます</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-box">
+      <strong>検証済み:</strong> 2026年4月データで、従来の手作業で作成した仕訳と自動生成した仕訳を全行全セル比較し、<strong>完全一致</strong>を確認しています。
+    </div>
+  </section>
+
+
+  <!-- Section 2: 改善ポイント -->
+  <section id="improvements">
+    <h2 class="section-title">2. 改善ポイント</h2>
+
+    <h3 class="subsection-title">列ズレ問題の解消</h3>
+    <p>
+      従来の方式では、MF給与から出力されるCSVの列の順番が変わると（例: 新しい項目が追加されて列が1つずれる）、
+      仕訳作成タブのSUMIFS関数が全行ズレてしまい、<strong>列の参照をすべて手修正する必要</strong>がありました。
+    </p>
+    <p>
+      新方式では「支給額」「健康保険」など<strong>列名（ヘッダーの文字）で列を特定</strong>します。
+      列の挿入や並び替えが発生しても修正は不要です。
+    </p>
+
+    <h3 class="subsection-title">新店舗対応の簡易化</h3>
+    <p>
+      従来は新しい店舗が増えるたびに、仕訳作成タブに行を手動で追加し、SUMIFS式を設定し直す必要がありました。
+    </p>
+    <p>
+      新方式では<strong>「店舗マスタ」タブに1行追加するだけ</strong>で、新店舗の仕訳が自動的に生成されます。
+      関数の修正は一切不要です。
+    </p>
+
+    <h3 class="subsection-title">自動検証の追加</h3>
+    <p>仕訳生成と同時に、以下の確認が自動で実行されます。問題があれば結果ダイアログに表示されます。</p>
+    <table>
+      <thead>
+        <tr>
+          <th>検証項目</th>
+          <th>チェック内容</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>借方/貸方バランス</td>
+          <td>全仕訳行の借方合計と貸方合計が一致しているかを確認</td>
+        </tr>
+        <tr>
+          <td>未払金と振込支給額の突合</td>
+          <td>未払金（給与として計上した金額）と実際の振込支給額が一致しているかを確認</td>
+        </tr>
+        <tr>
+          <td>部門未設定者の検出</td>
+          <td>部門コードが設定されていない従業員がいた場合に通知</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+
+  <!-- Section 3: 新しい作業フロー -->
+  <section id="workflow">
+    <h2 class="section-title">3. 新しい作業フロー</h2>
+
+    <p>全体の作業の流れは以下のとおりです。<strong>④だけが新しいステップ</strong>で、それ以外は従来と同じです。</p>
+
+    <div class="flow">
+      <div class="flow-step">
+        ① MF給与から<br>CSVダウンロード
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-step">
+        ② 「支給控除一覧表」タブ<br>にCSV貼り付け
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-step">
+        ③ 「作業手順」タブの<br>計上月を更新
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-step active">
+        ④ メニュー「給与仕訳」<br>→「仕訳生成」を実行<br><small style="font-weight:400;">NEW!</small>
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-step">
+        ⑤ 「仕訳取込用」タブの<br>内容を確認
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-step">
+        ⑥ CSV保存 →<br>MF会計Plusに<br>インポート
+      </div>
+    </div>
+
+    <div class="note-box">
+      <strong>①②③⑤⑥は従来と同じ手順です。</strong> ④の「仕訳生成」実行が今回の新しいステップです。
+      これまで手動で行っていた集計・整形作業がこのボタン1つで完了します。
+    </div>
+  </section>
+
+
+  <!-- Section 4: テスト手順 -->
+  <section id="test">
+    <h2 class="section-title">4. テスト手順</h2>
+
+    <p>
+      開発用コピー（テスト用スプレッドシート）で動作を確認してください。
+      4月分のデータが貼り付け済みの状態で準備してあります。
+    </p>
+
+    <div class="info-box">
+      <strong>テスト用スプレッドシートのURLは、堀江からSlackでお伝えします。</strong><br>
+      本体のスプレッドシートは変更されませんので、安心してご操作ください。
+    </div>
+
+    <div class="step-block">
+      <h4><span class="step-num">1</span>開発用コピーのスプレッドシートを開く</h4>
+      <p>堀江からお伝えしたURLをブラウザで開いてください。Googleアカウントでのログインが必要です。</p>
+      <p>4月分の支給控除一覧データがすでに「支給控除一覧表」タブに貼り付けられています。</p>
+    </div>
+
+    <div class="step-block">
+      <h4><span class="step-num">2</span>「仕訳生成」を実行する</h4>
+      <p>画面上部のメニューバーから <strong>「給与仕訳」→「仕訳生成」</strong> をクリックしてください。</p>
+      <div class="note-box">
+        <strong>メニューが表示されない場合:</strong> ページをリロード（キーボードの <strong>F5</strong> キー、またはブラウザの更新ボタン）してください。
+        再読み込み後に「給与仕訳」メニューが表示されます。
+      </div>
+      <div class="note-box">
+        <strong>初回実行時「承認が必要です」と表示された場合:</strong>
+        <ol style="margin-top:8px;">
+          <li>「許可を確認」をクリック</li>
+          <li>Googleアカウントの選択画面でご自身のアカウントを選択</li>
+          <li>「このアプリはGoogleで確認されていません」と表示された場合 → 「詳細」→「（アプリ名）に移動」をクリック</li>
+          <li>「許可」をクリック</li>
+        </ol>
+        この承認操作は初回のみ必要です。2回目以降は表示されません。
+      </div>
+    </div>
+
+    <div class="step-block">
+      <h4><span class="step-num">3</span>検証結果のダイアログを確認する</h4>
+      <p>「仕訳生成」を実行すると、自動で検証結果のダイアログ（ポップアップ）が表示されます。</p>
+      <table>
+        <thead>
+          <tr>
+            <th>表示</th>
+            <th>意味</th>
+            <th>対応</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-ok">[ OK ]</span></td>
+            <td>チェック正常</td>
+            <td>問題ありません</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-info">[ INFO ]</span></td>
+            <td>参考情報（マイナス支給者の通知など）</td>
+            <td>確認のみ。通常は対応不要です</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>全項目が [ OK ] であることをご確認ください。</strong> [ NG ] や [ ERROR ] が表示された場合は、堀江にSlackでご連絡ください。</p>
+    </div>
+
+    <div class="step-block">
+      <h4><span class="step-num">4</span>「仕訳取込用」タブを確認する</h4>
+      <p>「仕訳取込用」タブを開くと、自動生成された仕訳データが表示されています。</p>
+      <ul>
+        <li>従来と同じ形式（22列）で出力されています</li>
+        <li>勘定科目・補助科目・税区分・金額・摘要の内容をご確認ください</li>
+        <li>確認ポイントの詳細はセクション5をご参照ください</li>
+      </ul>
+    </div>
+
+    <div class="step-block">
+      <h4><span class="step-num">5</span>「原本突合」で従来の仕訳と比較する（任意）</h4>
+      <p>
+        メニューから <strong>「給与仕訳」→「原本突合」</strong> をクリックすると、
+        従来の手作業で作成した仕訳取込用タブと自動生成結果を全セル比較し、差分を表示します。
+      </p>
+      <div class="highlight-box">
+        <strong>「差分ゼロ — 完全一致」</strong> と表示されれば、従来の仕訳と完全に一致しています。
+      </div>
+      <p>4月分では完全一致を確認済みですが、念のため目視でもご確認いただけますと幸いです。</p>
+    </div>
+  </section>
+
+
+  <!-- Section 5: 確認ポイント -->
+  <section id="confirm">
+    <h2 class="section-title">5. 確認してほしいこと</h2>
+
+    <p>以下の観点で「仕訳取込用」タブの内容をご確認いただけますでしょうか。経理のご専門家として鈴木さんのご判断をお聞かせください。</p>
+
+    <div class="confirm-box">
+      <ol style="margin:0; padding-left:20px;">
+        <li style="margin-bottom:8px;"><strong>勘定科目・補助科目・税区分は正しいですか？</strong><br>
+          各仕訳行の科目や税区分が、従来の仕訳と一致しているかご確認ください。</li>
+        <li style="margin-bottom:8px;"><strong>各店舗の金額は従来と一致していますか？</strong><br>
+          店舗ごとの給与・社保・雇用保険等の金額が正しいかご確認ください。</li>
+        <li style="margin-bottom:8px;"><strong>摘要の表記（「正社員給与（渋谷）」等）は問題ないですか？</strong><br>
+          摘要欄の文言が実務で使用している表記と合っているかご確認ください。</li>
+        <li><strong>他に気になる点はありますか？</strong><br>
+          気になる表現・不足している情報・使い勝手など、何でもお知らせいただけますと助かります。</li>
+      </ol>
+    </div>
+
+    <p>ご確認後、Slackで堀江まで結果をお知らせください。「問題なし」「〇〇が気になる」など、ひとことで大丈夫です。</p>
+  </section>
+
+
+  <!-- Section 6: 新店舗対応 -->
+  <section id="new-store">
+    <h2 class="section-title">6. 新店舗が増えた時の手順</h2>
+
+    <p>新店舗が開業した際は、以下の手順で対応できます。仕訳定義の修正は不要です。</p>
+
+    <div class="highlight-box">
+      <ol style="margin:0; padding-left:20px;">
+        <li style="margin-bottom:8px;"><strong>「店舗マスタ」タブを開く</strong></li>
+        <li style="margin-bottom:8px;"><strong>最下行に新店舗の情報を追加する</strong><br>
+          店舗名・MF部門名・摘要表記（仕訳に表示される名前）・列キー（MF給与CSVの対応列名）・有効フラグ（TRUE）を入力してください。</li>
+        <li style="margin-bottom:8px;"><strong>「雑給店舗別マッピング」タブに新店舗のアルバイト給与列名を追加する</strong><br>
+          MF給与CSVにおけるアルバイト給与の列名を追記してください。</li>
+        <li><strong>以上で完了です</strong><br>
+          次回の「仕訳生成」実行時から、新店舗の仕訳が自動的に生成されます。</li>
+      </ol>
+    </div>
+
+    <div class="note-box">
+      初回の新店舗対応時は、堀江と一緒に確認しながら設定することをお勧めします。不明な点はSlackでお知らせください。
+    </div>
+  </section>
+
+
+  <!-- Section 7: 今後の予定 -->
+  <section id="next">
+    <h2 class="section-title">7. 今後の予定</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ステップ</th>
+          <th>内容</th>
+          <th>タイミング</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>動作確認（鈴木さん）</td>
+          <td>開発用コピーで本ガイドの手順を実施し、確認結果を堀江へSlack連絡</td>
+          <td>今回お願いしたいこと</td>
+        </tr>
+        <tr>
+          <td>本体への反映</td>
+          <td>鈴木さんの確認OKをもとに、本体スプレッドシートにGASを組み込む</td>
+          <td>確認OK後</td>
+        </tr>
+        <tr>
+          <td>作業手順タブの更新</td>
+          <td>「作業手順」タブを新フロー（メニュー実行方式）の説明に更新する</td>
+          <td>本体反映と同時</td>
+        </tr>
+        <tr>
+          <td>継続確認</td>
+          <td>5月分以降のデータで問題なく動作するか確認を続ける</td>
+          <td>翌月以降</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-box">
+      ご不明な点・ご要望はいつでも堀江（Slack）までお知らせください。
+      初回の5月分処理は一緒に確認しながら進めることも可能です。
+    </div>
+  </section>
+
+
+  <div class="report-footer">
+    給与仕訳自動化 動作確認ガイド — p064 — Generated 2026-06-11 — BPIO co., Ltd.
+  </div>
+
+</div>
+
+<script>
+const pills = document.querySelectorAll('.pill');
+const sections = document.querySelectorAll('[id]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      pills.forEach(p => p.classList.remove('active'));
+      const active = document.querySelector(`.pill[href="#${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-80px 0px -80% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
