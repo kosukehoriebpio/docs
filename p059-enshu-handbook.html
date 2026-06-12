@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>労務BPO実践演習ハンドブック（MoneyForward版）— 受講者用</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 15px; scroll-behavior: smooth; }
+  body { font-family: "Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif; color:#1a1a1a; background:#f4f5f7; line-height:1.75; }
+
+  /* nav */
+  #sticky-nav { position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.97); border-bottom:1px solid #ccc; padding:10px 18px; display:flex; align-items:center; gap:7px; flex-wrap:wrap; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
+  #sticky-nav .nav-label { font-size:0.72rem; font-weight:700; color:#2b2b2b; letter-spacing:0.04em; margin-right:4px; white-space:nowrap; }
+  .pill { display:inline-block; padding:5px 14px; font-size:0.76rem; font-weight:600; color:#555; text-decoration:none; border:1px solid #ccc; border-radius:999px; transition:all .2s ease; white-space:nowrap; }
+  .pill:hover, .pill.active { background:#2b2b2b; color:#fff; border-color:#2b2b2b; }
+  .pill.day { border-color:#b9b9b9; }
+
+  /* layout */
+  #main { max-width:940px; margin:0 auto; padding:34px 44px 90px; background:#fff; }
+  section[id] { scroll-margin-top:74px; }
+  li[id] { scroll-margin-top:74px; }
+  .report-header { border-bottom:3px solid #2b2b2b; padding-bottom:18px; margin-bottom:10px; }
+  .report-header h1 { font-size:1.6rem; font-weight:700; line-height:1.35; margin-bottom:4px; }
+  .report-header .subtitle { font-size:0.9rem; color:#555; margin-bottom:14px; }
+  .summary-box { background:#f7f7f7; border:1px solid #ddd; border-radius:8px; padding:14px 18px; margin-top:14px; }
+  .summary-box h3 { font-size:0.85rem; font-weight:700; margin-bottom:8px; color:#2b2b2b; }
+  .summary-box ul { padding-left:20px; font-size:0.84rem; }
+  .summary-box li { margin-bottom:4px; }
+
+  h2.section-title { font-size:1.28rem; font-weight:700; border-bottom:2px solid #2b2b2b; padding-bottom:6px; margin-top:46px; margin-bottom:18px; color:#1a1a1a; }
+  h3.subsection-title { font-size:1.02rem; font-weight:700; margin-top:26px; margin-bottom:11px; padding-left:10px; border-left:4px solid #2b2b2b; }
+  h4 { font-size:0.92rem; font-weight:700; margin:16px 0 8px; color:#333; }
+  p { margin-bottom:10px; font-size:0.9rem; }
+  ul, ol { margin-bottom:10px; padding-left:22px; font-size:0.9rem; }
+  li { margin-bottom:5px; }
+  a { color:#0969da; }
+  code { background:#eef1f4; padding:1px 6px; border-radius:4px; font-family:"Consolas","Monaco",monospace; font-size:0.82rem; }
+  strong { color:#111; }
+
+  table { width:100%; border-collapse:collapse; margin:12px 0 18px; font-size:0.82rem; }
+  th, td { border:1px solid #bbb; padding:7px 9px; text-align:left; vertical-align:top; }
+  th { background:#f0f1f2; font-weight:700; }
+  tr:nth-child(even) td { background:#fafbfb; }
+
+  /* day section wrapper */
+  .day-section { border:1px solid #d7ddd9; border-radius:10px; padding:8px 22px 22px; margin-top:30px; background:#fcfdfd; }
+  .goal-box { background:#f5f6f7; color:#1a1a1a; border:1px solid #ddd; border-left:4px solid #2b2b2b; border-radius:6px; padding:12px 16px; margin:12px 0 8px; font-size:0.9rem; }
+  .goal-box strong { color:#111; }
+
+  /* progress rail */
+  .flow { display:flex; align-items:stretch; gap:0; margin:14px 0 18px; flex-wrap:wrap; }
+  .flow-step { background:#eef0ef; border:1px solid #cdd4d0; padding:8px 12px; font-size:0.76rem; font-weight:600; text-align:center; min-width:84px; display:flex; align-items:center; justify-content:center; line-height:1.35; border-radius:5px; }
+  .flow-step.active { background:#2b2b2b; color:#fff; border-color:#2b2b2b; }
+  .flow-step.done { background:#e8eaec; color:#1a1a1a; }
+  .flow-arrow { font-size:1.1rem; color:#9aa6a0; padding:0 3px; display:flex; align-items:center; }
+
+  /* step block */
+  .step { margin:20px 0 8px; padding-top:6px; }
+  .step-head { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+  .step-num { flex:0 0 auto; width:26px; height:26px; border-radius:50%; background:#2b2b2b; color:#fff; font-size:0.8rem; font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .step-title { font-size:1.0rem; font-weight:700; }
+  .step-time { margin-left:auto; font-size:0.72rem; color:#777; white-space:nowrap; }
+
+  /* 5-type callouts */
+  .cap { border-left:4px solid #999; border-radius:0 6px 6px 0; padding:9px 14px; margin:9px 0; font-size:0.85rem; }
+  .cap b { display:inline-block; margin-bottom:2px; }
+  .cap-open, .cap-write, .cap-op, .cap-why, .cap-done { background:#f7f8f9; border-color:#c4cad0; color:#1a1a1a; }
+  .cap-mentor{ background:#f4f5f6; border-left-style:dashed; border-color:#aab1b8; color:#444; }
+  .cap a { font-weight:600; }
+
+  /* brake / warning / info */
+  .brake-box { background:#fbf2f0; border:1px solid #e0bcb4; border-left:4px solid #b23b2e; border-radius:0 6px 6px 0; padding:11px 16px; margin:12px 0; font-size:0.86rem; color:#7a241b; }
+  .info-box { background:#f7f8f9; border-left:4px solid #b9bfc5; padding:10px 16px; margin:12px 0; font-size:0.85rem; color:#1a1a1a; border-radius:0 6px 6px 0; }
+  .note-box { background:#f7f8f9; border-left:4px solid #b9bfc5; padding:10px 16px; margin:12px 0; font-size:0.85rem; color:#1a1a1a; border-radius:0 6px 6px 0; }
+
+  /* checklist */
+  .check { list-style:none; padding-left:0; margin:10px 0; }
+  .check li { display:flex; align-items:flex-start; gap:9px; padding:6px 10px; border:1px solid #e0e5e2; border-radius:6px; margin-bottom:6px; background:#fff; font-size:0.86rem; }
+  .check input[type=checkbox] { margin-top:3px; width:16px; height:16px; accent-color:#2b2b2b; flex:0 0 auto; }
+
+  /* next button */
+  .next-btn { display:inline-block; padding:9px 22px; background:#2b2b2b; color:#fff !important; border-radius:7px; text-decoration:none; font-size:0.88rem; font-weight:700; margin:10px 0 4px; }
+  .next-btn:hover { background:#111111; }
+  .back-link { display:inline-block; font-size:0.78rem; color:#0969da; margin:4px 0 14px; }
+
+  /* role badges */
+  .role { display:inline-block; padding:1px 9px; font-size:0.7rem; font-weight:700; border-radius:999px; }
+  .role-bpo { background:#e8eaec; color:#1a1a1a; }      /* BPO=あなた */
+  .role-client { background:#e8eaec; color:#1a1a1a; }   /* 顧客 */
+  .role-pro { background:#f6e7e3; color:#7a241b; }       /* 専門家=止める（注意色のみ） */
+
+  /* inbox / message card */
+  .msg { background:#f7f8fa; border:1px solid #d7dde3; border-radius:8px; padding:12px 16px; margin:10px 0; }
+  .msg .from { font-size:0.76rem; color:#666; font-weight:700; margin-bottom:4px; }
+  .doc-card { border:1px solid #d7ddd9; border-radius:8px; padding:14px 18px; margin:12px 0; background:#fff; }
+
+  .report-footer { border-top:1px solid #ccc; margin-top:46px; padding-top:16px; font-size:0.78rem; color:#777; }
+  .report-footer p { margin-bottom:4px; font-size:0.78rem; }
+
+  @media (max-width:680px){
+    #main { padding:22px 15px 60px; }
+    .report-header h1 { font-size:1.3rem; }
+    .flow { flex-direction:column; align-items:stretch; }
+    .flow-arrow { transform:rotate(90deg); align-self:center; }
+    table { font-size:0.78rem; }
+  }
+  @media print { #sticky-nav{display:none;} #main{max-width:100%;padding:18px;} section{break-inside:avoid;} .next-btn{display:none;} }
+</style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">演習ハンドブック</span>
+  <a class="pill" href="#intro">はじめに</a>
+  <a class="pill" href="#map">月次サイクル地図</a>
+  <a class="pill day" href="#day1">Day1</a>
+  <a class="pill day" href="#day2">Day2</a>
+  <a class="pill day" href="#day3">Day3</a>
+  <a class="pill" href="#selfcheck">セルフチェック</a>
+  <a class="pill" href="#ref-data">参照データ</a>
+  <a class="pill" href="#inbox">お客様資料</a>
+  <a class="pill" href="#worksheets">ワークシート</a>
+  <a class="pill" href="#opguide">操作ガイド</a>
+</nav>
+
+<div id="main">
+
+<header class="report-header">
+  <h1>労務BPO実践演習ハンドブック<br><span style="font-size:1.05rem;font-weight:400;">MoneyForward版 — 受講者用</span></h1>
+  <div class="subtitle">架空の顧問先「株式会社サンプル商事」／ Day1（6/12）・Day2（6/16）・Day3（6/23）／ 全データはダミー</div>
+  <div class="summary-box">
+    <h3>このハンドブックだけで演習が進められます</h3>
+    <ul>
+      <li>あなたは架空の顧問先「サンプル商事」の<strong>労務BPO担当者</strong>として、MoneyForwardで月次業務を1サイクル体験します</li>
+      <li>各ステップは <b>今すぐ開く資料 / 記入するシート / 実機手順 / なぜ / できたら次へ</b> の箱で案内します。データ（会社情報・従業員一覧・連絡表など）はスプレッドシート（マスタ）で開きます</li>
+      <li>ゴールは「月次1サイクルを<strong>“止める判断つきで”回す</strong>」こと。まず下の「はじめに」から読んでください</li>
+    </ul>
+  </div>
+</header>
+
+<!-- ============ はじめに ============ -->
+<section id="intro">
+  <h2 class="section-title">はじめに — この演習について</h2>
+
+  <p>これからあなたは、座学ではなく<strong>実際のMoneyForward（以下「MF」と表記。勤怠＋給与）を操作して</strong>、架空の顧問先「サンプル商事」の労務BPO業務を一通り体験します。3日間（各5〜6時間）で、月次の給与計算サイクルを<strong>入口から納品まで自分の手で通します</strong>。</p>
+
+  <h3 class="subsection-title">なぜこの演習をやるのか</h3>
+  <div class="cap cap-why">
+    <b>労務BPOの中核は「正しく処理する」＋「自分でやってはいけないことを見分けて止める」</b><br>
+    給与計算や勤怠の処理はもちろん、<strong>有資格者（社会保険労務士・税理士）でないと判断・提出できない領域</strong>に踏み込まないことが、労務BPO担当者の生命線です。3日間のゴールは、月次1サイクルを<strong>「止める判断つきで」回せるようになる</strong>こと。これは7月からの常駐OJTで本物の顧客を担当する土台になります。
+  </div>
+
+  <h3 class="subsection-title">登場人物・舞台設定</h3>
+  <table>
+    <thead><tr><th>役</th><th>誰</th><th>あなたとの関係</th></tr></thead>
+    <tbody>
+      <tr><td><strong>あなた</strong></td><td>サンプル商事の労務BPO担当者</td><td>この演習の主役。実際に手を動かす人</td></tr>
+      <tr><td>お客様</td><td>サンプル商事 人事課 田所さん</td><td>連絡表（＝当月の人事変動をまとめた通知書。基本給改定・手当変更・入退社など）や依頼を送ってくる。書いていない・迷う点は<strong>演習チャンネルで照会</strong>できる</td></tr>
+      <tr><td>連携先</td><td>社会保険労務士・税理士</td><td>資格者の独占領域は、あなたが止めてここへ渡す</td></tr>
+      <tr><td>メンター</td><td>労務BPOチームのメンバー（指導役）</td><td>進行を見守り、要所で確定の許可を出す。困ったら相談する相手</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="subsection-title">必ず守る3つのブレーキ</h3>
+  <div class="brake-box">
+    <strong>この3つは、自分の判断だけで進めてはいけません。</strong>
+    <ol style="margin:6px 0 0;">
+      <li><strong>給与の「確定処理」は自分で押さない</strong> — 取り消せない操作です。メンターの確定許可を受けてから。</li>
+      <li><strong>お客様・社労士への「送信」は指示後</strong> — 通知文はドラフトまで。送信は「送って」の指示を待つ。</li>
+      <li><strong>業際キーワードは止めて渡す</strong> — 離職票・算定基礎・賞与支払届 等が出たら、引き受けず連携先（社労士・税理士）へ。</li>
+    </ol>
+  </div>
+
+  <h3 class="subsection-title">進め方</h3>
+  <ul>
+    <li>この順に進みます： <strong>はじめに → 月次サイクル地図 → Day1 → Day2 → Day3 → セルフチェック</strong>。</li>
+    <li>各Dayは、ステップごとに「<b>今すぐ開く資料</b>」「<b>記入するシート</b>」「<b>実機手順</b>」「<b>なぜ</b>」「<b>できたら次へ</b>」の箱で案内します。</li>
+    <li>会社の台帳データ（会社情報・従業員一覧・連絡表・通知など）は<strong>スプレッドシート（マスタ）</strong>にあり、リンクを押すと別タブで開きます。記入シート・手引き・操作ガイドはこのページにあります。</li>
+  </ul>
+
+  <h3 class="subsection-title">困ったとき</h3>
+  <div class="info-box">
+    判断に迷ったら、<strong>自分で勝手に決めず「照会する」のが正解</strong>です。お客様（田所さん）への照会は<strong><a href="https://seven-rich.slack.com/archives/C0B8H0NJ1JN" target="_blank" rel="noopener">演習チャンネル</a>でできます</strong>（照会文の型は <a href="#c2">照会文テンプレート</a>）。MFの操作が分からないときは <a href="#opguide">操作ガイド</a> を見てください。それでも進めないときはメンターに相談を。
+  </div>
+
+  <a class="next-btn" href="#map">まず全体像「月次サイクル地図」へ</a>
+</section>
+
+<!-- ============ 月次サイクル地図 ============ -->
+<section id="map">
+  <h2 class="section-title">月次サイクル地図 — 今どこをやっているか</h2>
+  <p>労務BPOの月次業務は、毎月この順番で流れます。<strong>あなたが3日間でやるのは、この地図全体を1周すること</strong>です。各Dayの冒頭で「今日はこの地図のどこか」をミニ地図で示します。</p>
+
+  <div class="flow">
+    <div class="flow-step">①勤怠締め<br><span style="font-size:0.66rem;font-weight:400;">Day1</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">②給与計算<br><span style="font-size:0.66rem;font-weight:400;">Day1</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">③突合チェック<br><span style="font-size:0.66rem;font-weight:400;">Day2</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">④事前検算<br><span style="font-size:0.66rem;font-weight:400;">Day3</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">⑤確定・納品<br><span style="font-size:0.66rem;font-weight:400;">Day3</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">⑥スポット<br><span style="font-size:0.66rem;font-weight:400;">賞与/住民税・Day3</span></div>
+  </div>
+
+  <table>
+    <thead><tr><th>工程</th><th>何をする</th><th>Day</th><th>誰の仕事か</th></tr></thead>
+    <tbody>
+      <tr><td><strong>①勤怠締め・点検・補正依頼</strong></td><td>打刻漏れ・休日労働・有給などを点検して勤怠を確定</td><td>Day1</td><td><span class="role role-bpo">BPO（あなた）</span></td></tr>
+      <tr><td><strong>②給与計算</strong></td><td>締めた勤怠と連絡表をもとにMF給与で計算（確定は押さない）</td><td>Day1</td><td><span class="role role-bpo">BPO（あなた）</span></td></tr>
+      <tr><td><strong>③突合チェック</strong></td><td>勤怠×連絡表×給与の三者を突き合わせ、誤りを発見・照会</td><td>Day2</td><td><span class="role role-bpo">BPO（あなた）</span></td></tr>
+      <tr><td><strong>④事前検算</strong></td><td>本番反映前に手で検算。確定の許可はメンターが出す</td><td>Day3</td><td><span class="role role-bpo">BPO</span> ＋ 許可=メンター</td></tr>
+      <tr><td><strong>⑤確定・納品</strong></td><td>明細公開・振込データ・完了連絡。確定は不可逆</td><td>Day3</td><td><span class="role role-bpo">BPO</span> ＋ 確定＝許可のあと</td></tr>
+      <tr><td><strong>⑥スポット業務</strong></td><td>賞与計算・住民税の新年度反映（月次に並走）</td><td>Day3</td><td><span class="role role-bpo">BPO</span>／届出は<span class="role role-pro">社労士</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="subsection-title">業際の壁 — 止めて渡すライン</h3>
+  <div class="cap cap-why">
+    <b>この地図の随所に「資格者の領域」が顔を出します。</b><br>
+    基本パターンは「<strong>データ準備まではBPO／作成・提出は専門家</strong>」。下の依頼が来たら、引き受けずに止めて連携先へ渡すのが正解です。これを反射的にできることが労務BPOの中核スキルです。
+  </div>
+  <table>
+    <thead><tr><th>依頼の例</th><th>引き受ける？</th><th>渡す先</th></tr></thead>
+    <tbody>
+      <tr><td>給与計算・明細発行・振込・住民税の反映</td><td><span class="role role-bpo">引き受ける</span></td><td>BPO（あなた）の仕事</td></tr>
+      <tr><td>離職票（退職者）</td><td><span class="role role-pro">止める</span></td><td>社会保険労務士</td></tr>
+      <tr><td>算定基礎届・社会保険の各種届出</td><td><span class="role role-pro">止める</span></td><td>社会保険労務士</td></tr>
+      <tr><td>賞与の<strong>計算</strong>はBPO／賞与<strong>支払届</strong></td><td><span class="role role-pro">届出は止める</span></td><td>社会保険労務士</td></tr>
+      <tr><td>年末調整後の法定調書・税務署提出</td><td><span class="role role-pro">止める</span></td><td>税理士</td></tr>
+    </tbody>
+  </table>
+
+  <a class="next-btn" href="#day1">Day1（6/12）を始める</a>
+</section>
+
+<section id="day1" class="day-section">
+  <h2 class="section-title" style="border:none;margin-top:8px;">Day1（6/12）— 勤怠を締めて給与計算まで</h2>
+
+  <div class="flow">
+    <div class="flow-step active">①勤怠締め</div><div class="flow-arrow">→</div>
+    <div class="flow-step active">②給与計算</div><div class="flow-arrow">→</div>
+    <div class="flow-step">③突合</div><div class="flow-arrow">→</div>
+    <div class="flow-step">④事前検算</div><div class="flow-arrow">→</div>
+    <div class="flow-step">⑤納品</div><div class="flow-arrow">→</div>
+    <div class="flow-step">⑥スポット</div>
+  </div>
+
+  <div class="goal-box"><strong>今日のゴール：</strong>投入済みのサンプル商事のデータを締め、<strong>給与計算を実行するまで</strong>を自分の手で通す（確定は押さない）。所要 約5.5〜6時間。</div>
+
+  <div class="step" id="day1-s1">
+    <div class="step-head"><span class="step-num">1</span><span class="step-title">オリエン — 全体像をつかむ</span><span class="step-time">約0.5h</span></div>
+    <p>今日は月次サイクルの <strong>①勤怠締め → ②給与計算</strong> をやります。会社の基本情報（締め日・支給日・割増率など）を先に頭に入れておきましょう。</p>
+    <div class="cap cap-why"><b>なぜ</b> — 全体像を持つと、いまやっている作業が「サイクルのどこか」分かり、迷いません。</div>
+    <div class="cap cap-open"><b>今すぐ開く</b> — <a href="https://docs.google.com/spreadsheets/d/1_GE7UKs3b43xaRmLoBejvfI6Um_n6K-lZkd2wgYY748/edit" target="_blank" rel="noopener">サンプル商事の会社情報・従業員一覧（労務マスタ）</a></div>
+    <div class="cap cap-done"><b>できたら次へ</b> — 「3日間で何をやるか」を自分の言葉で言えたら、次の <strong>『2. 勤怠の締め確認』</strong> へ進みましょう。</div>
+  </div>
+
+  <div class="step" id="day1-s2">
+    <div class="step-head"><span class="step-num">2</span><span class="step-title">勤怠の締め確認</span><span class="step-time">約1.0h</span></div>
+    <p>MFクラウド勤怠で、全員の勤怠に<strong>未確定（打刻待ち・申請待ち）が残っていないか</strong>を確認します。残っていれば内容を担当者に確認し、<strong>クライアント（上長）に締めてもらいます</strong>。</p>
+    <div class="cap cap-why"><b>なぜ</b> — 締めは給与計算の前提です。ここが崩れると後工程が全部ずれます。</div>
+    <div class="cap cap-op"><b>実機手順</b> — <a href="#op-day1-1">操作ガイド：Day1（勤怠の締め確認）</a></div>
+    <div class="note-box"><strong>【演習では】</strong>演習環境では管理者権限があるため、自分で締め操作を行います。実務ではBPO側が直接勤怠を締めることはありません。未確定があればクライアントに連絡し、締めてもらう流れです。</div>
+    <div class="cap cap-done"><b>できたら次へ</b> — 未確定ゼロを確認して締めたら、次の <strong>『3. 勤怠データの点検・補正依頼』</strong> へ進みましょう。</div>
+  </div>
+
+  <div class="step" id="day1-s3">
+    <div class="step-head"><span class="step-num">3</span><span class="step-title">勤怠データの点検・補正依頼 — 特殊事情を1件ずつ</span><span class="step-time">約1.5h</span></div>
+    <p>勤怠には「そのまま計算に乗せてはいけない」特殊事情が混ざっています。下の論点表を見ながら<strong>1件ずつ</strong>点検し、必要なら補正を依頼します。<strong>勘で飛ばさず全員分</strong>を見てください。</p>
+    <div class="note-box" style="margin-bottom:0.5em;">
+      <strong>「勤怠の論点」とは？</strong><br>
+      当月の勤怠で特に注意が必要な従業員と確認ポイントをまとめた一覧表です。
+      勤怠データには目に見えにくい特殊事情（固定残業の上限超過、深夜割増の区分、直行直帰、打刻漏れ等）が混ざっています。
+      これを見落としたまま給与計算に進むと数字が狂うため、<strong>論点表の各行をMFクラウド勤怠の該当従業員と1件ずつ照合</strong>し、問題があれば補正を依頼します。
+      <p style="font-size:0.84rem;margin-top:0.8em;">論点表のC列「勤怠の特殊事情」に挙がっている項目は、それぞれ以下の理由で給与計算に影響します：</p>
+      <table style="font-size:0.82rem;">
+        <thead><tr><th>特殊事情</th><th>見落とすと何が起きるか</th></tr></thead>
+        <tbody>
+          <tr><td>固定残業の上限超過</td><td>超過分の割増賃金が未払いになる</td></tr>
+          <tr><td>深夜割増の区分</td><td>22時以降の深夜手当が漏れる</td></tr>
+          <tr><td>直行直帰</td><td>打刻漏れと混同し、欠勤扱いや誤った時刻で計上される</td></tr>
+          <tr><td>打刻漏れ</td><td>労働時間0hで計算され、給与が未払いになる</td></tr>
+          <tr><td>休日出勤（法定/所定）</td><td>割増率を間違え、過払いまたは未払いが生じる</td></tr>
+          <tr><td>遅刻・早退の控除</td><td>控除すべきでないケース（同日の取り戻し等）で不当に控除される</td></tr>
+          <tr><td>有給取得</td><td>有給残日数の管理ミス、取得日の労働時間計算誤り</td></tr>
+          <tr><td>月またぎ振休</td><td>前月の振替休日が当月に影響し、所定労働日数がずれる</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cap cap-open"><b>今すぐ開く</b> — <a href="https://docs.google.com/spreadsheets/d/1_GE7UKs3b43xaRmLoBejvfI6Um_n6K-lZkd2wgYY748/edit#gid=1865682120" target="_blank" rel="noopener">当月（5月）勤怠の論点（労務マスタ）</a></div>
+    <div class="cap cap-why"><b>なぜ</b> — 誤りを含んだままのデータで計算しないこと。点検・補正依頼（おかしな箇所の修正をクライアントに依頼する作業）が先です。</div>
+    <div class="cap cap-op"><b>実機手順</b> — <a href="#op-day1-3">操作ガイド：Day1（打刻補正依頼・休日区分・有給）</a></div>
+    <ul class="check">
+      <li><input type="checkbox"> E010：<strong>打刻漏れ</strong>に自分で気づいて補正依頼した</li>
+      <li><input type="checkbox"> E006：<strong>直行直帰</strong>を「打刻漏れ」と区別して処理した</li>
+      <li><input type="checkbox"> E012：休日出勤の<strong>割増率を判定</strong>した（法定／所定で率が変わる）</li>
+      <li><input type="checkbox"> E008：遅刻・早退の<strong>控除をどう扱うか</strong>を自分で判断した</li>
+      <li><input type="checkbox"> E004の有給・E009の月またぎ振休も確認した</li>
+    </ul>
+    <div class="cap cap-done"><b>できたら次へ</b> — 特殊事情を点検・補正依頼したら、次の <strong>『4. 残業・有給の集計』</strong> へ進みましょう。</div>
+  </div>
+
+  <div class="step" id="day1-s4">
+    <div class="step-head"><span class="step-num">4</span><span class="step-title">勤怠の最終確認＋残業・有給の集計</span><span class="step-time">約1.0h</span></div>
+    <p>まず、<strong>勤怠確認ページで全従業員のエラー（ピンク表示）がゼロ</strong>になっていることを確認します。エラーが残った状態で給与計算に進んではいけません。</p>
+    <p>エラーゼロを確認したら、<strong>残業時間・有給取得日数</strong>などの集計値を確認します。ステップ3で点検した従業員の数値が、補正後に正しく反映されているかを照合するために、もう一度論点表を参照します。</p>
+    <div class="cap cap-open"><b>今すぐ開く</b> — <a href="https://docs.google.com/spreadsheets/d/1_GE7UKs3b43xaRmLoBejvfI6Um_n6K-lZkd2wgYY748/edit#gid=1865682120" target="_blank" rel="noopener">勤怠の論点（労務マスタ）</a></div>
+    <div class="cap cap-why"><b>なぜ</b> — 集計値は給与計算の直接の入力です。エラーが残ったまま給与計算すると結果が狂います。</div>
+    <div class="cap cap-op"><b>実機手順</b> — <a href="#op-day1-5">操作ガイド：Day1（勤怠の最終確認＋残業・休暇の集計）</a></div>
+    <div class="cap cap-done"><b>できたら次へ</b> — 勤怠確認でエラーゼロ＋残業・有給を集計できたら、次の <strong>『5. 給与計算の実行』</strong> へ進みましょう。</div>
+  </div>
+
+  <div class="step" id="day1-s5">
+    <div class="step-head"><span class="step-num">5</span><span class="step-title">給与計算の実行</span><span class="step-time">約1.5h</span></div>
+    <p>締めた勤怠と、<strong>お客様から届いた連絡表の変動事項</strong>を反映して、MFクラウド給与で月次計算を実行します。連絡表を開いて、①〜④の変更がMFに入っているかを意識しながら進めます。</p>
+    <div class="cap cap-open"><b>今すぐ開く</b> — <a href="https://docs.google.com/spreadsheets/d/1vkFKkaA3cLtY8kjd5dGLcR7o8c7RxHr_R-WeIabdjao/edit#gid=589000328" target="_blank" rel="noopener">給与賞与連絡表（5月度・スプレッドシート）</a></div>
+    <div class="cap cap-why"><b>なぜ</b> — 確定は不可逆。突合（Day2）で誤りを見つけてから直すので、ここでは止めておきます。</div>
+    <div class="cap cap-op"><b>実機手順</b> — <a href="#op-day1-6">操作ガイド：Day1（給与計算の実行）</a></div>
+    <div class="brake-box"><strong>ブレーキ：</strong>計算は実行しますが、<strong>「確定処理」は押しません</strong>。今日は計算結果を出すところまでです。</div>
+    <div class="cap cap-done"><b>できたら次へ</b> — 給与計算を実行し、<strong>確定を押さず止めた</strong>ら、次の <strong>『6. 振り返り』</strong> へ進みましょう。</div>
+  </div>
+
+  <div class="step" id="day1-s6">
+    <div class="step-head"><span class="step-num">6</span><span class="step-title">振り返り</span><span class="step-time">約0.5h</span></div>
+    <p>今日できたこと・難しかったことを言葉にします。セルフチェックの Day1 欄を記入してください。</p>
+    <div class="cap cap-write"><b>記入する</b> — <a href="#selfcheck">セルフチェックシート（Day1欄）</a></div>
+    <div class="cap cap-done"><b>Day1完了</b> — 下のチェックが全部ついたらDay1は完了です。Day2（6/16）当日にまた開いてください。</div>
+  </div>
+
+  <h4>Day1 達成チェック</h4>
+  <ul class="check">
+    <li><input type="checkbox"> 未確定ゼロを確認して勤怠を締めた</li>
+    <li><input type="checkbox"> 打刻漏れ・休日・有給などの特殊事情を点検・補正依頼した</li>
+    <li><input type="checkbox"> 連絡表の変動を意識して給与計算を実行した</li>
+    <li><input type="checkbox"> <strong>確定を押さずに止めた</strong></li>
+    <li><input type="checkbox"> セルフチェックDay1欄を記入した</li>
+  </ul>
+
+  <a class="next-btn" href="#day2">Day2（6/16）へ</a>
+</section>
+
+<section id="day2" class="day-section">
+  <h2 class="section-title" style="border:none;margin-top:8px;">Day2（6/16）— 突合チェックで誤りを見つける</h2>
+
+  <div class="flow">
+    <div class="flow-step done">①勤怠締め</div><div class="flow-arrow">→</div>
+    <div class="flow-step done">②給与計算</div><div class="flow-arrow">→</div>
+    <div class="flow-step active">③突合</div><div class="flow-arrow">→</div>
+    <div class="flow-step">④事前検算</div><div class="flow-arrow">→</div>
+    <div class="flow-step">⑤納品</div><div class="flow-arrow">→</div>
+    <div class="flow-step">⑥スポット</div>
+  </div>
+
+  <div class="goal-box"><strong>今日のゴール：</strong>Day1で計算した結果に対し、<strong>差分を発見</strong>し、「誤り（直す）」と「正当な差（直さない）」を切り分け、<strong>照会文のドラフト</strong>まで組み立てる。所要 約5〜6時間。</div>
+
+  <div class="cap cap-why"><b>なぜ今日が大事か</b> — 突合チェックは労務BPOで<strong>最も付加価値が高い工程</strong>です。ここを見逃すと、過払い・過少支給がそのままお客様に届いてしまいます。「全部見る」のが突合です。</div>
+
+  <div class="step" id="day2-s1">
+    <div class="step-head"><span class="step-num">1</span><span class="step-title">前回の振り返り</span><span class="step-time">約0.5h</span></div>
+    <p>Day1で計算した給与結果を受け取り、「今日は計算結果が正しいか確かめる日」だと確認します。突合とは<strong>勤怠 × 連絡表 × 給与計算結果</strong>の三者が整合しているかを突き合わせることです。</p>
+    <div class="cap cap-done"><b>できたら次へ</b> — 三者突合の目的を理解したら、次の <strong>『2. 三者突合の実行』</strong> へ進みましょう。</div>
+  </div>
+
+  <div class="step" id="day2-s2">
+    <div class="step-head"><span class="step-num">2</span><span class="step-title">三者突合の実行</span><span class="step-time">約2.0h</span></div>
+    <p>突合チェックシートを開き、観点ごとに<strong>1件ずつ</strong>突き合わせて、差異を書き出します。連絡表の変更（基本給・通勤手当など）がMFに反映されているか、勤怠の判定（残業・休日割増・打刻補正の反映）が正しく計算に乗っているか、を確認します。</p>
+    <div class="cap cap-write"><b>記入する</b> — <a href="#c1">突合チェックシート（パートA・B）</a></div>
+    <div class="cap cap-open"><b>今すぐ開く</b> — <a href="https://docs.google.com/spreadsheets/d/1vkFKkaA3cLtY8kjd5dGLcR7o8c7RxHr_R-WeIabdjao/edit#gid=589000328" target="_blank" rel="noopener">連絡表（5月度）</a>／<a href="https://docs.google.com/spreadsheets/d/1_GE7UKs3b43xaRmLoBejvfI6Um_n6K-lZkd2wgYY748/edit#gid=1865682120" target="_blank" rel="noopener">勤怠の論点</a></div>
+    <div class="cap cap-op"><b>実機手順</b> — <a href="#op-day2-1">操作ガイド：Day2（計算結果のチェック・一覧表の出力）</a></div>
+    <div class="cap cap-done"><b>できたら次へ</b> — 全項目を機械的に突き合わせ、差分を洗い出したら、次の <strong>『3. 誤りの発見・分析』</strong> へ進みましょう。</div>
+  </div>
+
+  <div class="step" id="day2-s3">
+    <div class="step-head"><span class="step-num">3</span><span class="step-title">誤りの発見・分析</span><span class="step-time">約1.5h</span></div>
+    <p>洗い出した差分から<strong>本当の誤り</strong>を特定し、それぞれの「原因」と「あるべき姿（正しい数値・処理）」を<strong>自分の言葉で</strong>書きます。「なぜ差が出たのか（連絡表の転記漏れか／勤怠判定のミスか）」まで踏み込みます。</p>
+    <div class="cap cap-write"><b>記入する</b> — <a href="#c1">突合チェックシート（パートC・発見記録表）</a></div>
+    <div class="cap cap-done"><b>できたら次へ</b> — 発見した誤りと「あるべき数値」を説明できたら、次の <strong>『4. 誤り／正当な差の仕分け』</strong> へ進みましょう。</div>
+  </div>
+
+  <div class="step" id="day2-s4">
+    <div class="step-head"><span class="step-num">4</span><span class="step-title">誤り／正当な差の仕分け</span><span class="step-time">約1.0h</span></div>
+    <p>洗い出した差分を「<strong>誤り（修正すべき）</strong>」と「<strong>正当な差（許容すべき）</strong>」に分類します。正当な差の例：有給による所定時間差／退職月の社保処理／月またぎ振休／直行直帰の所定計上／月中入社の所定調整。これらが<strong>なぜ正当といえるか</strong>を説明できるようにします。</p>
+    <div class="cap cap-why"><b>なぜ</b> — 正当な差を「誤り」と誤認して全部照会すると、お客様・社労士の信頼と工数を浪費します。「正当だと説明できる」ことも実力のうちです。</div>
+    <div class="cap cap-done"><b>できたら次へ</b> — 誤りと正当な差を分類し、「なぜ正当か」を言えたら、次の <strong>『5. 照会先の判断・照会文ドラフト』</strong> へ進みましょう。</div>
+  </div>
+
+  <div class="step" id="day2-s5">
+    <div class="step-head"><span class="step-num">5</span><span class="step-title">照会先の判断・照会文ドラフト</span><span class="step-time">約1.0h</span></div>
+    <p>各差分を「<strong>誰に照会するか</strong>」判断し、照会文のドラフトを書きます。連絡表のミスはお客様（<code>ex_</code>）、計算の仕様は社労士（<code>shd_</code>）、社内の判断は内部（<code>cl_</code>）へ。</p>
+    <div class="cap cap-write"><b>記入する</b> — <a href="#c2">照会文ドラフト テンプレート</a></div>
+    <div class="brake-box"><strong>ブレーキ：</strong>照会文は<strong>ドラフトまで</strong>。送信はしません（回答待ち）。修正・納品はDay3です。</div>
+    <div class="cap cap-mentor"><b>メンター</b> — メンターがお客様役・社労士役になって、あなたの照会に答えます。</div>
+    <div class="cap cap-done"><b>Day2完了</b> — 照会先を振り分け、要点を押さえた照会文ドラフトを作れたら完了。<a href="#selfcheck">セルフチェックDay2欄</a>を記入してください。</div>
+  </div>
+
+  <h4>Day2 達成チェック</h4>
+  <ul class="check">
+    <li><input type="checkbox"> 三者突合を全項目やり切った</li>
+    <li><input type="checkbox"> 見つけた誤りをリストアップし、あるべき数値を説明できた</li>
+    <li><input type="checkbox"> 正当な差を「なぜ正当か」説明できた</li>
+    <li><input type="checkbox"> 照会先を振り分け、照会文ドラフトを作れた</li>
+    <li><input type="checkbox"> セルフチェックDay2欄を記入した（C1・C2はDay3に持参）</li>
+  </ul>
+
+  <a class="next-btn" href="#day3">Day3（6/23）へ</a>
+</section>
+
+<section id="day3" class="day-section">
+  <h2 class="section-title" style="border:none;margin-top:8px;">Day3（6/23）— 納品・業際・賞与で1サイクルを締める</h2>
+
+  <div class="flow">
+    <div class="flow-step done">①勤怠締め</div><div class="flow-arrow">→</div>
+    <div class="flow-step done">②給与計算</div><div class="flow-arrow">→</div>
+    <div class="flow-step done">③突合</div><div class="flow-arrow">→</div>
+    <div class="flow-step active">④事前検算</div><div class="flow-arrow">→</div>
+    <div class="flow-step active">⑤納品</div><div class="flow-arrow">→</div>
+    <div class="flow-step active">⑥スポット</div>
+  </div>
+
+  <div class="goal-box"><strong>今日のゴール：</strong>誤りを直して<strong>納品まで仕上げ</strong>、<strong>業際で「止める」判断</strong>を体験し、賞与にも触れて月次1サイクルを完遂する。所要 約5.5〜6時間。</div>
+
+  <div class="step" id="day3-s1">
+    <div class="step-head"><span class="step-num">1</span><span class="step-title">前回の振り返り</span><span class="step-time">約0.5h</span></div>
+    <p>Day2で見つけた誤り・照会結果を確認します。「今日は直して納品まで仕上げる」と意識します。</p>
+    <ul class="check">
+      <li><input type="checkbox"> Day2の突合シート（パートC）を開き、発見した誤りが ____ 件あることを確認</li>
+      <li><input type="checkbox"> 各誤りの照会先（顧客／社労士／内部）と照会文ドラフトを見直した</li>
+      <li><input type="checkbox"> 正当な差（WARN）の「なぜ正当か」を自分の言葉で言える</li>
+    </ul>
+    <div class="cap cap-write"><b>開く</b> — <a href="#c1">Day2に記入した突合シート</a></div>
+    <div class="cap cap-done"><b>できたら次へ</b> — 何を直すか明確になったら、次の <strong>『2. 誤りの修正・再計算』</strong> へ進みましょう。</div>
+  </div>
+
+  <div class="step" id="day3-s2">
+    <div class="step-head"><span class="step-num">2</span><span class="step-title">誤りの修正・再計算</span><span class="step-time">約1.0h</span></div>
+    <p>Day2で発見した誤りを「あるべき姿」に修正して再計算します。<strong>直す場所が連絡表側（給与設定）か勤怠側か</strong>を、原因に応じて判断します。</p>
+    <div class="cap cap-why"><b>なぜ</b> — 直す場所を間違えると、別の差が新たに生まれます。原因を見極めてから直します。</div>
+    <div class="cap cap-op"><b>実機手順</b> — <a href="#op-day3-1">操作ガイド：Day3（手当・控除の修正／打刻補正依頼／再計算）</a></div>
+    <div class="cap cap-done"><b>できたら次へ</b> — 修正後の突合で「誤りゼロ・正当な差のみ」になったら、次の <strong>『3. 事前検算（本番反映前の確認）』</strong> へ進みましょう。</div>
+  </div>
+
+  <div class="step" id="day3-s3">
+    <div class="step-head"><span class="step-num">3</span><span class="step-title">事前検算（本番反映前の確認）</span><span class="step-time">約1.0h</span></div>
+    <p>サンプル3名（特殊ケース優先＝E003残業／E007退職／E011入社）を<strong>手で検算</strong>し、MFの計算結果と一致するか確認します。フォーマットと原本の保全も確認します。</p>
+    <div class="cap cap-write"><b>記入する</b> — <a href="#c3">事前検算シート</a></div>
+    <div class="cap cap-why"><b>なぜ</b> — 確定前の最後の砦です。だからサンプルは「特殊ケース」を優先して検算します。</div>
+    <div class="cap cap-op"><b>実機手順</b> — <a href="#op-day3-3">操作ガイド：Day3（検算・一覧表の出力）</a></div>
+    <div class="brake-box"><strong>ブレーキ：</strong>確定の<strong>許可は、あなたが出しません</strong>。手で検算して結果が合うことを確認したら、メンターの確定許可を待ちます。</div>
+    <div class="cap cap-done"><b>できたら次へ</b> — 手で検算して一致・原本の保全・<strong>確定許可の受領</strong>ができたら、次の <strong>『4. 納品物の作成』</strong> へ進みましょう。</div>
+  </div>
+
+  <div class="step" id="day3-s4">
+    <div class="step-head"><span class="step-num">4</span><span class="step-title">納品物の作成</span><span class="step-time">約1.0h</span></div>
+    <p>給与の確定・明細公開設定（公開＝支給日9:00）・振込データを作成し、完了連絡のドラフトを書きます。あわせて<strong>住民税の特別徴収（6月から新年度額）</strong>の反映にも触れます。</p>
+    <div class="cap cap-write"><b>記入する</b> — <a href="#c3">納品物テンプレート（明細・振込・完了連絡）</a></div>
+    <div class="cap cap-open"><b>今すぐ開く</b> — <a href="https://docs.google.com/spreadsheets/d/1vkFKkaA3cLtY8kjd5dGLcR7o8c7RxHr_R-WeIabdjao/edit#gid=561353256" target="_blank" rel="noopener">住民税 決定通知（2026年度）</a></div>
+    <div class="cap cap-op"><b>実機手順</b> — <a href="#op-day3-4">操作ガイド：Day3（明細公開・振込・住民税反映）</a></div>
+    <div class="brake-box"><strong>ブレーキ：</strong>確定・送信は不可逆。<strong>確定許可のあと・人の確認後にのみ</strong>進めます。完了連絡はドラフトまで。</div>
+    <div class="cap cap-done"><b>できたら次へ</b> — 明細・振込・完了連絡ドラフトが揃い、送信前確認を守れたら、次の <strong>『5. 業際シナリオ — 止める判断』</strong> へ進みましょう。</div>
+  </div>
+
+  <div class="step" id="day3-s5">
+    <div class="step-head"><span class="step-num">5</span><span class="step-title">業際シナリオ — 止める判断（今日の山場）</span><span class="step-time">約1.0h</span></div>
+    <p>Day3当日、お客様から<strong>複数の依頼</strong>が届きます。それぞれを「<strong>引き受けてよいか／止めて連携先へ渡すべきか</strong>」を自分で判断してください。止めるなら「誰に渡すか・なぜか」を考えます。</p>
+    <div class="cap cap-open"><b>今すぐ開く</b> — <a href="#b2">お客様から届いたメッセージ（Day3・5件）</a></div>
+    <div class="cap cap-write"><b>記入する</b> — <a href="#c1">突合シート パートD（業際メモ）</a></div>
+    <div class="cap cap-why"><b>なぜ（ここが中核）</b> — 資格者（社会保険労務士・税理士）でないと作成・提出できない書類を、<strong>反射的に見分けて止める</strong>のが労務BPOの中核スキルです。判断基準は「<strong>無資格の自分が作成・提出してよい書類か？</strong>」。少しでも資格者の独占領域に触れるなら、いったん止めて渡します。</div>
+    <div class="cap cap-mentor"><b>メンター</b> — メンターがお客様役になって依頼を差し込みます。あなたの「止める／引き受ける」の判断を見ています。</div>
+    <div class="cap cap-done"><b>できたら次へ</b> — 業際の依頼に反射して止め、正しい連携先を言えたら、次の <strong>『6. 賞与計算の体験』</strong> へ進みましょう。</div>
+  </div>
+
+  <div class="step" id="day3-s6">
+    <div class="step-head"><span class="step-num">6</span><span class="step-title">賞与計算の体験</span><span class="step-time">約0.5〜1.0h</span></div>
+    <p>MFクラウド給与の<strong>賞与計算</strong>を実際に触ります。賞与の<strong>計算</strong>はBPOの仕事ですが、賞与<strong>支払届</strong>の作成・提出は社労士の領域です。退職したE007が対象者に混ざっていないか、E011（入社2か月未満）の対象可否はどうか、を点検します。</p>
+    <div class="cap cap-open"><b>今すぐ開く</b> — <a href="https://docs.google.com/spreadsheets/d/1_GE7UKs3b43xaRmLoBejvfI6Um_n6K-lZkd2wgYY748/edit#gid=1301029433" target="_blank" rel="noopener">夏季賞与データ（対象者・労務マスタ）</a></div>
+    <div class="cap cap-why"><b>なぜ</b> — 賞与も「計算はBPO／届出は社労士」。境界を体で覚えます。退職者は賞与対象外です。</div>
+    <div class="cap cap-op"><b>実機手順</b> — <a href="#op-day3-6">操作ガイド：Day3（賞与計算）</a></div>
+    <div class="cap cap-done"><b>できたら次へ</b> — 賞与の計算と「届出は社労士」の境界を理解できたら、次の <strong>『7. 振り返り・業務フロー図に着手』</strong> へ進みましょう。</div>
+  </div>
+
+  <div class="step" id="day3-s7">
+    <div class="step-head"><span class="step-num">7</span><span class="step-title">振り返り・業務フロー図に着手</span><span class="step-time">約0.5h</span></div>
+    <p>セルフチェックのDay3欄を記入し、<strong>3日間でやった月次1サイクルを1枚のフロー図</strong>にまとめ始めます（仕上げは宿題）。各工程が「誰の仕事か」をレーンで分けるのがポイントです。</p>
+    <div class="cap cap-write"><b>記入する</b> — <a href="#c4">業務フロー図テンプレート</a>／<a href="#selfcheck">セルフチェック（Day3・総合振り返り）</a></div>
+    <div class="cap cap-done"><b>演習完了</b> — 月次の流れを自分の言葉で説明でき、次の課題が言えたら、3日間の演習は完了です。</div>
+  </div>
+
+  <h4>Day3 達成チェック（＝演習全体ゴール）</h4>
+  <ul class="check">
+    <li><input type="checkbox"> 誤りを修正し、突合で「誤りゼロ」にした</li>
+    <li><input type="checkbox"> 事前の検算で結果が合うことを確認し、<strong>確定の許可を待った</strong></li>
+    <li><input type="checkbox"> 明細・振込・完了連絡を作り、送信前確認を守った</li>
+    <li><input type="checkbox"> <strong>業際シナリオで「止める」判断ができ、連携先を言えた</strong></li>
+    <li><input type="checkbox"> 賞与計算に触れ、月次1サイクルを通した</li>
+    <li><input type="checkbox"> 業務フロー図に着手した</li>
+  </ul>
+
+  <div class="cap cap-done" style="font-size:0.92rem;"><b>おつかれさまでした。</b>3日間で、月次BPOサイクルを「止める判断つきで」1周しました。<a href="#selfcheck">セルフチェック</a>でメンターと答え合わせをして、できる／できないの境界をはっきりさせましょう。</div>
+</section>
+
+<section id="selfcheck">
+  <h2 class="section-title">セルフチェック</h2>
+  <div class="info-box"><strong>いつ開くか：</strong>各Dayの最後（振り返りステップ）に開いて記入します。<strong>○＝自力でできた／△＝ヒントありでできた／×＝できなかった</strong>。正直に付けることで、自分の「できる／できない」の境界がはっきりします。「メンター」列はメンターが記入し、終了後に答え合わせをします。</div>
+
+  <h3 class="subsection-title">Day1（勤怠＋給与計算）</h3>
+  <table>
+    <thead><tr><th>ミッション</th><th>自己採点</th><th>メンター</th></tr></thead>
+    <tbody>
+      <tr><td>月次業務の全体像（3日で何をやるか）を理解した</td><td>○ △ ×</td><td></td></tr>
+      <tr><td>未確定ゼロを確認して勤怠を締めた</td><td>○ △ ×</td><td></td></tr>
+      <tr><td>E010の打刻漏れに自分で気づいて補正依頼した</td><td>○ △ ×</td><td></td></tr>
+      <tr><td>休日出勤の割増率を正しく判定した</td><td>○ △ ×</td><td></td></tr>
+      <tr><td>勤怠確認のエラーゼロを確認し、残業・有給を集計した</td><td>○ △ ×</td><td></td></tr>
+      <tr><td>給与計算を実行し、確定を押さず止めた</td><td>○ △ ×</td><td></td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="subsection-title">Day2（突合チェック）</h3>
+  <table>
+    <thead><tr><th>ミッション</th><th>自己採点</th><th>メンター</th></tr></thead>
+    <tbody>
+      <tr><td>三者突合（勤怠×連絡表×給与）を全項目やり切った</td><td>○ △ ×</td><td></td></tr>
+      <tr><td>隠れた誤りを見つけた（発見数：____ 件）</td><td>○ △ ×</td><td></td></tr>
+      <tr><td>各誤りの「あるべき数値」と原因を説明できた</td><td>○ △ ×</td><td></td></tr>
+      <tr><td>誤りと正当な差を正しく仕分けた</td><td>○ △ ×</td><td></td></tr>
+      <tr><td>照会先を振り分け、照会文ドラフトを書けた</td><td>○ △ ×</td><td></td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="subsection-title">Day3（納品＋業際＋賞与）</h3>
+  <table>
+    <thead><tr><th>ミッション</th><th>自己採点</th><th>メンター</th></tr></thead>
+    <tbody>
+      <tr><td>誤りを修正し、突合で誤りゼロにした</td><td>○ △ ×</td><td></td></tr>
+      <tr><td>事前の検算でサンプル3名を手で計算し直し、結果が合うことを確認した</td><td>○ △ ×</td><td></td></tr>
+      <tr><td>確定の許可を自分で出さず、メンターの許可を待った</td><td>○ △ ×</td><td></td></tr>
+      <tr><td>明細・振込・完了連絡を作り、送信前確認を守った</td><td>○ △ ×</td><td></td></tr>
+      <tr><td>業際シナリオで「止める」判断ができ、連携先を言えた</td><td>○ △ ×</td><td></td></tr>
+      <tr><td>賞与計算に触れ、「計算はBPO／届出は社労士」の境界を理解した</td><td>○ △ ×</td><td></td></tr>
+      <tr><td>業務フロー図に着手した</td><td>○ △ ×</td><td></td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="subsection-title">3日間の総振り返り</h3>
+  <ul>
+    <li>一番できたこと：</li>
+    <li>一番難しかったこと：</li>
+    <li>次（7月の常駐OJT）までにやりたいこと：</li>
+  </ul>
+  <a class="back-link" href="#day1">↑ Dayに戻る</a>
+</section>
+
+<section id="ref-data">
+  <h2 class="section-title">参照データ — サンプル商事</h2>
+  <p style="font-size:0.84rem;color:#666;">会社の台帳データは、実務と同じく<strong>スプレッドシート（マスタ）</strong>にあります。MFで見るのは勤怠・給与の計算データ、それ以外（会社情報・従業員一覧など）はこのマスタを参照します。全データは架空のダミー。リンクは別タブで開きます。</p>
+  <div class="doc-card">
+    <strong>サンプル商事 労務マスタ</strong>（スプレッドシート）
+    <ul>
+      <li><a href="https://docs.google.com/spreadsheets/d/1_GE7UKs3b43xaRmLoBejvfI6Um_n6K-lZkd2wgYY748/edit#gid=170367022" target="_blank" rel="noopener">会社情報</a> — 締め日・支給日・割増率・通勤手当などの基準</li>
+      <li><a href="https://docs.google.com/spreadsheets/d/1_GE7UKs3b43xaRmLoBejvfI6Um_n6K-lZkd2wgYY748/edit#gid=1920909118" target="_blank" rel="noopener">従業員一覧（12名）</a> — 番号・氏名・雇用形態・基本給/時給・手当・社保/雇保・特徴</li>
+      <li><a href="https://docs.google.com/spreadsheets/d/1_GE7UKs3b43xaRmLoBejvfI6Um_n6K-lZkd2wgYY748/edit#gid=1865682120" target="_blank" rel="noopener">当月（2026年5月）勤怠の論点</a> — Day1の点検・補正依頼で1件ずつ確認</li>
+      <li><a href="https://docs.google.com/spreadsheets/d/1_GE7UKs3b43xaRmLoBejvfI6Um_n6K-lZkd2wgYY748/edit#gid=1301029433" target="_blank" rel="noopener">夏季賞与データ</a> — Day3で使用（対象者・支給額・確認ポイント）</li>
+    </ul>
+    <p style="font-size:0.8rem;color:#888;margin:0;">マスタ全体を開く: <a href="https://docs.google.com/spreadsheets/d/1_GE7UKs3b43xaRmLoBejvfI6Um_n6K-lZkd2wgYY748/edit" target="_blank" rel="noopener">スプレッドシート</a></p>
+  </div>
+
+  <h3 class="subsection-title">従業員12名 早見表</h3>
+  <p style="font-size:0.84rem;color:#666;">演習中にすぐ参照できるよう、基本属性をまとめています。詳細はマスタの従業員一覧を確認してください。</p>
+  <table>
+    <thead><tr><th>番号</th><th>氏名</th><th>雇用形態</th><th>特徴・備考</th></tr></thead>
+    <tbody>
+      <tr><td>E001</td><td>山田太郎</td><td>正社員</td><td>管理監督者（部長）。時間外割増の対象外</td></tr>
+      <tr><td>E002</td><td>佐藤花子</td><td>正社員</td><td>5月に基本給改定（280,000→295,000）</td></tr>
+      <tr><td>E003</td><td>鈴木一郎</td><td>正社員</td><td>固定残業20h込み。残業多め（月45h）</td></tr>
+      <tr><td>E004</td><td>高橋美咲</td><td>正社員</td><td>5月に有給3日取得</td></tr>
+      <tr><td>E005</td><td>田中健太</td><td>正社員</td><td>5月から通勤手当0（在宅勤務切替）＋過払い控除</td></tr>
+      <tr><td>E006</td><td>伊藤さくら</td><td>正社員</td><td>5/8・5/22に直行直帰あり</td></tr>
+      <tr><td>E007</td><td>渡辺大輝</td><td>正社員</td><td>5/31退職。最終精算・社保・住民税の処理あり</td></tr>
+      <tr><td>E008</td><td>中村七海</td><td>正社員</td><td>時短勤務。遅刻あるが取り戻しルール適用</td></tr>
+      <tr><td>E009</td><td>小林蓮</td><td>アルバイト</td><td>4月休出→5月に振替休日（月またぎ）</td></tr>
+      <tr><td>E010</td><td>加藤結衣</td><td>アルバイト</td><td>5/20に退勤打刻漏れ</td></tr>
+      <tr><td>E011</td><td>吉田颯</td><td>アルバイト</td><td>5/15中途入社。時給1,300円。日割り計算</td></tr>
+      <tr><td>E012</td><td>山口莉子</td><td>正社員</td><td>5/4（所定休日）・5/17（法定休日）に休日出勤</td></tr>
+    </tbody>
+  </table>
+
+  <a class="back-link" href="#day1">↑ Dayに戻る</a>
+</section>
+
+<section id="inbox">
+  <h2 class="section-title">お客様から届く資料</h2>
+  <p style="font-size:0.84rem;color:#666;">サンプル商事の人事担当（田所さん）から届いた、という想定の資料です。連絡表・通知は<strong>スプレッドシート</strong>で届きます（実務と同じ）。これを読み取って処理するのがあなたの仕事です。リンクは別タブで開きます。</p>
+
+  <h3 class="subsection-title" id="b1">給与賞与連絡表（2026年5月度）<span style="font-size:0.72rem;font-weight:400;color:#888;">— Day1 S5・Day2 S2で使用</span></h3>
+  <div class="doc-card">
+    田所さんから届いた、今月の変更点（基本給改定・通勤手当変更・退職・中途入社）の一覧です。連絡事項として夏季賞与の予定・6月からの住民税切替の連絡も含まれます。
+    <p style="margin:8px 0 0;"><a href="https://docs.google.com/spreadsheets/d/1vkFKkaA3cLtY8kjd5dGLcR7o8c7RxHr_R-WeIabdjao/edit#gid=589000328" target="_blank" rel="noopener">給与賞与連絡表（スプレッドシート）を開く</a></p>
+  </div>
+  <div class="cap cap-why" style="font-size:0.82rem;">この①〜④を、勤怠・給与のどちらにどう反映するか考えます。<strong>連絡表には、適用月や金額が書かれていない・判断に迷う項目があります</strong>。勝手に決めず、<strong>演習チャンネルで田所さん（お客様役）に照会</strong>して確認するのが正解です（照会文の型は <a href="#c2">テンプレート</a>）。</div>
+
+  <h3 class="subsection-title" id="b2">お客様から届いたメッセージ（Day3・5件）<span style="font-size:0.72rem;font-weight:400;color:#888;">— Day3 S5で使用</span></h3>
+  <p style="font-size:0.82rem;color:#666;">それぞれ、あなたが「引き受けてよいか／止めて専門家に渡すべきか」を判断してください。<strong>資格者でないと作成・提出できない書類</strong>を見分けるのがポイントです。</p>
+  <div class="msg"><div class="from">田所（サンプル商事）— メッセージ1</div>おはようございます。5月分の給与明細、今日中に確定して公開できそうでしょうか？ 支給日は6/25なので、明細の公開タイミングも教えてください。</div>
+  <div class="msg"><div class="from">田所（サンプル商事）— メッセージ2</div>5月末で退職した渡辺さん（E007）の件ですが、本人から「離職票がほしい」と連絡がありました。離職票の発行もそちらでお願いできますか？</div>
+  <div class="msg"><div class="from">田所（サンプル商事）— メッセージ3</div>今年の社会保険の算定基礎届、例年この時期にやっていると思うのですが、これもBPOさんで作成・提出までやってもらえますか？</div>
+  <div class="msg"><div class="from">田所（サンプル商事）— メッセージ4</div>6月分の住民税ですが、市区町村から特別徴収税額の決定通知が届きました。新しい金額の通知書を共有しますので、6月給与から反映をお願いします。</div>
+  <div class="msg"><div class="from">田所（サンプル商事）— メッセージ5</div>先の話ですが、年末調整のあとの法定調書合計表の作成と税務署への提出も、ゆくゆくはお願いしたいです。これは引き受けてもらえる範囲でしょうか？</div>
+  <div class="cap cap-write" style="font-size:0.82rem;">各メッセージの判定は<a href="#c1">突合シート パートD（業際メモ）</a> に記入します。基準は「無資格の自分が作成・提出してよい書類か？」。</div>
+
+  <h3 class="subsection-title" id="b3">住民税 特別徴収税額 決定通知（2026年度）<span style="font-size:0.72rem;font-weight:400;color:#888;">— Day3 S4で使用</span></h3>
+  <div class="doc-card">
+    市区町村から届いた、6月からの新年度の住民税月額（特別徴収）の通知です。在籍者の新年度額が一覧になっています（アルバイトは普通徴収のため対象外、退職・中途入社者は切替・残額処理の判断が必要）。
+    <p style="margin:8px 0 0;"><a href="https://docs.google.com/spreadsheets/d/1vkFKkaA3cLtY8kjd5dGLcR7o8c7RxHr_R-WeIabdjao/edit#gid=561353256" target="_blank" rel="noopener">住民税 決定通知（スプレッドシート）を開く</a></p>
+  </div>
+  <a class="back-link" href="#day3">↑ Dayに戻る</a>
+</section>
+
+<section id="worksheets">
+  <h2 class="section-title">ワークシート（記入用）</h2>
+  <div class="note-box">これらは<strong>あなたが自分で埋める</strong>作業用シートです。答えは載っていません。<strong>スプレッドシート版</strong>を用意しています — そちらに直接記入してください。下のHTML版は参照・印刷用です。
+    <ul style="margin:8px 0 0;">
+      <li><a href="https://docs.google.com/spreadsheets/d/1_GE7UKs3b43xaRmLoBejvfI6Um_n6K-lZkd2wgYY748/edit#gid=553635546" target="_blank" rel="noopener"><strong>突合チェックシート</strong>（スプレッドシート）</a> — Day2 パートA〜D</li>
+      <li><a href="https://docs.google.com/spreadsheets/d/1_GE7UKs3b43xaRmLoBejvfI6Um_n6K-lZkd2wgYY748/edit#gid=120710445" target="_blank" rel="noopener"><strong>事前検算シート</strong>（スプレッドシート）</a> — Day3 検算・完了連絡ドラフト</li>
+    </ul>
+  </div>
+
+  <h3 class="subsection-title" id="c1">突合チェックシート<span style="font-size:0.72rem;font-weight:400;color:#888;">— Day2で使用</span></h3>
+  <h4>パートA：連絡表×MF 反映チェック</h4>
+  <table>
+    <thead><tr><th>連絡表項目</th><th>連絡表の指示</th><th>MFの現状（記入）</th><th>一致？</th><th>対応</th></tr></thead>
+    <tbody>
+      <tr><td>① E002 基本給</td><td>280,000→295,000</td><td></td><td>□一致 □不一致</td><td></td></tr>
+      <tr><td>② E005 通勤手当</td><td>5,000→0（＋過払い控除）</td><td></td><td>□一致 □不一致</td><td></td></tr>
+      <tr><td>③ E007 退職精算</td><td>5/31退職・最終精算</td><td></td><td>□一致 □不一致</td><td></td></tr>
+      <tr><td>④ E011 中途入社</td><td>5/15〜・時給1,300・日割り</td><td></td><td>□一致 □不一致</td><td></td></tr>
+    </tbody>
+  </table>
+  <h4>パートB：勤怠×給与 突合の観点チェック</h4>
+  <table>
+    <thead><tr><th>観点</th><th>確認すること</th><th>差異？</th><th>誤り／正当な差</th><th>あるべき姿・対応</th></tr></thead>
+    <tbody>
+      <tr><td>時間外（固定残業）</td><td>固定残業との関係は正しいか（E003）</td><td>□有 □無</td><td></td><td></td></tr>
+      <tr><td>休日割増</td><td>法定/所定の割増率は正しいか（E012）</td><td>□有 □無</td><td></td><td></td></tr>
+      <tr><td>打刻の補正依頼</td><td>打刻漏れの補正反映後に計算したか（E010）</td><td>□有 □無</td><td></td><td></td></tr>
+      <tr><td>遅刻早退の控除</td><td>同日の取り戻しを見ているか（E008）</td><td>□有 □無</td><td></td><td></td></tr>
+      <tr><td>管理職の割増</td><td>管理職に時間外割増が付いていないか（E001）</td><td>□有 □無</td><td></td><td></td></tr>
+      <tr><td>通勤手当・住民税</td><td>全員最新か／住民税の切替時期は</td><td>□有 □無</td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  <h4>パートC：発見記録表（自由記入）</h4>
+  <table>
+    <thead><tr><th>#</th><th>社員</th><th>項目</th><th>連絡表/勤怠の値</th><th>MFの値</th><th>誤り/正当</th><th>あるべき姿</th><th>照会要否</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>2</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>4</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>5</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>…</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  <h4>パートD：業際メモ（Day3・<a href="#b2">お客様メッセージ</a>連動）</h4>
+  <table>
+    <thead><tr><th>メッセージ</th><th>引き受ける/止める</th><th>止める場合：渡す先</th><th>理由</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td></td><td></td><td></td></tr>
+      <tr><td>2</td><td></td><td></td><td></td></tr>
+      <tr><td>3</td><td></td><td></td><td></td></tr>
+      <tr><td>4</td><td></td><td></td><td></td></tr>
+      <tr><td>5</td><td></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:0.82rem;">自己集計： 見つけた誤り ____ 件／正当な差として説明できたもの ____ 件／業際で止めたメッセージ ____ 件</p>
+
+  <h3 class="subsection-title" id="c2">照会文ドラフト テンプレート<span style="font-size:0.72rem;font-weight:400;color:#888;">— Day2 S5で使用</span></h3>
+  <p style="font-size:0.84rem;">迷う点を「誰に・何を」照会するか決めて下書きします（<strong>送信はしません</strong>）。順番は ①事実 → ②確認したいこと → ③こちらの推測・選択肢 → ④期限。</p>
+  <table>
+    <thead><tr><th>照会先</th><th>使う場面</th><th>件名（記入）</th><th>要点（記入）</th></tr></thead>
+    <tbody>
+      <tr><td><code>ex_</code> お客様</td><td>連絡表のミス・事実確認</td><td></td><td></td></tr>
+      <tr><td><code>shd_</code> 社労士など専門家</td><td>資格者でないと判断・提出できない事項</td><td></td><td></td></tr>
+      <tr><td><code>cl_</code> 社内・内部</td><td>社内ルール・運用の判断</td><td></td><td></td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="subsection-title" id="c3">納品物テンプレート<span style="font-size:0.72rem;font-weight:400;color:#888;">— Day3で使用</span></h3>
+  <h4>事前検算シート</h4>
+  <table>
+    <thead><tr><th>社員</th><th>検算する論点</th><th>手検算の値</th><th>MFの値</th><th>一致？</th></tr></thead>
+    <tbody>
+      <tr><td>E003 鈴木</td><td>時間外（固定残業差引後）・深夜割増</td><td></td><td></td><td>□一致 □不一致</td></tr>
+      <tr><td>E007 渡辺</td><td>退職月の社保・最終精算</td><td></td><td></td><td>□一致 □不一致</td></tr>
+      <tr><td>E011 吉田</td><td>入社日割り</td><td></td><td></td><td>□一致 □不一致</td></tr>
+    </tbody>
+  </table>
+  <ul class="check">
+    <li><input type="checkbox"> フォーマットが崩れていない／原本を保全している</li>
+    <li><input type="checkbox"> メンターの確定許可をもらった（許可者・時刻を記録）</li>
+  </ul>
+  <h4>完了連絡ドラフト（送信は指示後）</h4>
+  <p style="font-size:0.84rem;">宛先（お客様経理／振込担当／専門家への連携事項）ごとに、支給日・公開時刻・総額・連携が必要な事項を書きます。</p>
+
+  <h3 class="subsection-title" id="c4">業務フロー図テンプレート<span style="font-size:0.72rem;font-weight:400;color:#888;">— Day3 S7で着手</span></h3>
+  <p style="font-size:0.84rem;">3日間でやった月次1サイクルを、自分の言葉で1枚にまとめます。各ステップが「<strong>誰の仕事か</strong>（顧客／BPO／社労士・税理士）」をレーンで分けるのが肝です。</p>
+  <table>
+    <thead><tr><th>順</th><th>ステップ</th><th>誰が</th><th>何を</th><th>次の渡し先</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>勤怠の締め</td><td></td><td></td><td></td></tr>
+      <tr><td>2</td><td>点検・補正依頼</td><td></td><td></td><td></td></tr>
+      <tr><td>3</td><td>連絡表の反映</td><td></td><td></td><td></td></tr>
+      <tr><td>4</td><td>給与計算</td><td></td><td></td><td></td></tr>
+      <tr><td>5</td><td>突合チェック</td><td></td><td></td><td></td></tr>
+      <tr><td>6</td><td>照会・修正</td><td></td><td></td><td></td></tr>
+      <tr><td>7</td><td>事前検算・確定許可</td><td></td><td></td><td></td></tr>
+      <tr><td>8</td><td>明細公開・振込</td><td></td><td></td><td></td></tr>
+      <tr><td>9</td><td>完了連絡</td><td></td><td></td><td></td></tr>
+      <tr><td>10</td><td>賞与・住民税</td><td></td><td></td><td></td></tr>
+      <tr><td>11</td><td>資格者へ渡す業務（届出・離職票 等）</td><td></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  <a class="back-link" href="#day2">↑ Dayに戻る</a>
+</section>
+
+<section id="opguide">
+  <h2 class="section-title">操作ガイド（MoneyForward）</h2>
+  <div class="note-box">サンプル商事の演習で使うMFの操作手順です。各Dayの「実機手順」から飛んできます。<strong>画面キャプチャは、演習用テナントの準備が整い次第ここに差し込みます</strong>（現段階は操作の流れをテキストで示します）。分からない箇所はメンターに聞いてください。</div>
+
+  <h3 class="subsection-title" id="op-day1">Day1 の操作 — 勤怠締め・給与計算（対象：<strong>5月分</strong>）</h3>
+  <ol>
+    <li id="op-day1-1"><strong>勤怠の締め確認</strong>：<a href="https://attendance.moneyforward.com/admin/attendances" target="_blank" rel="noopener">MFクラウド勤怠＞上長メニュー「勤怠確認」</a>で<strong>5月</strong>を選択し、各従業員のステータス列（承認申請・上長承認・勤怠締め）のアイコン色を確認。未確定（灰色）が残っていないかを全員分確認します。あわせて「受信ワークフロー＞未承認」に未処理の申請がないかも確認します。未処理の申請がある場合は、クライアント（上長）に承認を依頼します。</li>
+    <li id="op-day1-2"><strong>残業申請・早退申請のエラー確認</strong>：ワークフロー申請が必要な勤怠（残業・早退など）で「申請なし」エラーが表示される場合があります。<br>
+      上長メニュー＞「勤怠確認」で<strong>5月</strong>を選択し、ステータス列にエラーアイコンが出ている従業員を特定。対象者の「一覧」→ 日次勤怠画面で<strong>エラーが出ているかを確認します</strong>。<br>
+      <span style="font-size:0.82rem;">※ エラーがなければ勤怠は正しく締まっています — そのまま次のステップへ進みましょう。エラーがある場合は、次の『3. 勤怠データの点検・補正依頼』でクライアントへの確認・補正依頼を行います。</span>
+      <div class="cap cap-return" style="margin:1em 0 0.3em; padding:0.5em 1em; background:#e8f4fd; border-left:4px solid #2196F3; font-size:0.88rem;">↩ ここまで終わったら <a href="#day1-s3">次の『3. 勤怠データの点検・補正依頼』</a> に進みましょう。</div>
+    </li>
+    <li id="op-day1-3"><strong>勤怠データの点検・補正依頼</strong> — エラーや特殊事情を1件ずつ確認し、クライアントに補正を依頼します。
+
+      <h4>3-A. 残業申請・早退申請の補正依頼</h4>
+      <p>ステップ2で確認したエラー（「残業申請なし」「早退申請なし」等）の補正を依頼します。</p>
+      <div class="cap cap-write"><b>顧客への連絡</b><br>
+        確認したエラー内容をもとに、<a href="https://seven-rich.slack.com/archives/C0B8H0NJ1JN" target="_blank" rel="noopener">演習用Slackチャンネル</a>に投稿：<br>
+        「○○さんの5/XX、残業申請（早退申請）が出ていません。ご確認いただけますか？」<br>
+        （<strong>@田所</strong> のメンションを付けて投稿してください。「田所さん」Botが自動応答します）
+      </div>
+      <div class="cap cap-op"><b>回答を得てから代理申請</b><br>
+        Bot返信を確認したら、以下の手順で代理申請します。
+        <ol style="margin:0.3em 0 0.3em 1.2em; font-size:0.9rem;">
+          <li>対象者の日次勤怠画面に戻る</li>
+          <li>エラーが出ている日の行の「申請」ボタンをクリック → 申請種別を選択（<strong>残業申請</strong> or <strong>早退申請</strong>）</li>
+          <li>「代理で追加」画面で必要事項を入力して申請</li>
+          <li>代理申請後、「受信ワークフロー」画面で承認する（演習環境のため）</li>
+        </ol>
+      </div>
+      <strong>【実務】</strong>BPO側は申請の承認権限を持たないため、クライアントに依頼します。対象従業員が申請 → 上長が承認、という流れです。この往復にタイムラグが生じるため、<strong>勤怠の締めがすぐに完了しないことは珍しくありません</strong>。<br>
+      <span style="font-size:0.82rem;">※ 「代理申請」はクライアント側の上長が使う機能です。BPOメンバーが本番で直接操作することは原則ありません（演習では体験のため操作します）。</span>
+
+      <h4>3-B. 退勤打刻だけ欠けている場合（E010 加藤結衣 5/20）</h4>
+      <p>勤怠確認画面で E010 の5/20を見ると、<strong>出勤 9:00 ／ 退勤 —（空欄）</strong>になっています。出勤は打刻済みで退勤だけが欠けているため、退勤時刻の打刻忘れです。</p>
+      <p><strong>ただし、「早退した」「体調不良で途中帰宅した」可能性もあるため、BPO側で退勤時刻を勝手に入れてはいけません。</strong></p>
+      <div class="cap cap-write"><b>顧客への確認（必須）</b><br>
+        <a href="https://seven-rich.slack.com/archives/C0B8H0NJ1JN" target="_blank" rel="noopener">演習用Slackチャンネル</a>に投稿：<br>
+        「加藤さんの5/20の退勤打刻がないんですが、何時ごろまで勤務されていましたか？」<br>
+        → 田所さんBot回答例：<em>「確認しました。その日は通常通り18時ごろまで勤務していたと思います」</em>
+      </div>
+      <div class="cap cap-op"><b>回答を得てから補正依頼（演習ではMFで代理操作）</b><br>
+        勤怠確認 ＞ E010の「一覧」＞ 5/20の行「編集」＞ 退勤欄に <strong>18:00</strong> を入力して保存
+      </div>
+      <div class="cap cap-done"><b>正しい状態</b> — 5/20の退勤が18:00に補正され、勤務時間が <strong>8:00</strong>（9:00〜18:00、休憩1h差引）と表示されている</div>
+      <div class="brake-box"><strong>NG例</strong><br>
+        ・ 打刻漏れを見逃す → 顧客も気づかないまま勤務時間0hで給与計算に進み、加藤さんの給与が未払いになる<br>
+        ・ 顧客に確認せず退勤時刻を決めてしまう → 実際は早退や体調不良だった可能性がある（本番では顧客に実時刻を確認してから補正してもらう）</div>
+
+      <h4>3-C. 出退勤ともに欠けている場合（E006 伊藤さくら 5/8・5/22）</h4>
+      <p>E006の5/8と5/22が<strong>出勤 — ／ 退勤 —（両方空欄）</strong>になっています。一見すると「欠勤」か「打刻漏れ」に見えますが、<strong>もう1つ「直行直帰」の可能性があります</strong>。3パターンのどれかによって対応がまったく違います。</p>
+      <table>
+        <tr><th>可能性</th><th>意味</th><th>正しい対応</th></tr>
+        <tr><td>欠勤</td><td>出勤しなかった</td><td>欠勤扱い（労働時間0h、給与控除あり）</td></tr>
+        <tr><td>打刻漏れ</td><td>出勤したが打刻を忘れた</td><td>実際の出退勤時刻を聞いて手入力</td></tr>
+        <tr><td><strong>直行直帰</strong></td><td>取引先へ直接行き、帰りも直帰した</td><td>勤務種別「直行直帰」で所定時間8hを計上</td></tr>
+      </table>
+      <p><strong>BPO側だけでは判別できない</strong>ため、顧客への確認が必要です。</p>
+      <div class="cap cap-write"><b>顧客への確認（必須）</b><br>
+        Slackに投稿：「伊藤さんの5/8と5/22、出退勤の打刻がどちらもないんですが、お休みでしたか？」<br>
+        → 田所さんBot回答例：<em>「すみません、その日は取引先への訪問で直行直帰でした」</em>
+      </div>
+      <div class="cap cap-op"><b>「直行直帰」と分かったらMFで設定</b><br>
+        勤怠確認 ＞ E006の「一覧」＞ 5/8と5/22の「編集」＞ 勤務種別を<strong>「直行直帰」</strong>に変更して保存。<br>
+        ※ 出退勤時刻は手入力しない（勤務種別の設定で所定8hが自動計上される）
+      </div>
+      <div class="cap cap-done"><b>正しい状態</b> — 5/8と5/22の勤務種別が「直行直帰」で、所定労働時間 <strong>8:00</strong> が計上されている。出退勤時刻は空欄のままでOK</div>
+      <div class="note-box"><strong>【演習では】</strong>演習環境では管理者権限があるため、自分で勤務種別を変更します。実務ではBPO側が直接変更することはありません。顧客に「直行直帰でしたので、勤務種別を直行直帰に変更をお願いします」と依頼する流れです。</div>
+      <div class="brake-box"><strong>NG例</strong><br>
+        ・ 「打刻漏れ」と判断して出退勤時刻の補正を顧客に依頼してしまう → 数字は合うが「直行直帰」と管理上の意味が異なる<br>
+        ・ 見逃して欠勤扱いのまま → 顧客が修正しないまま給与が減額される（本人は働いている）<br>
+        ・ 顧客に聞かず「打刻漏れだろう」と思い込む → 直行直帰と打刻漏れでは勤務種別が違い、正しく設定されない</div>
+    </li>
+
+    <li id="op-day1-4"><strong>休日出勤・遅刻・振替休日・有給の判定</strong> — それぞれ「何が正しい状態か」と「よくある間違い」を整理します。
+
+      <h4>4-A. 休日出勤の割増判定（E012 山口莉子 5/4・5/17）</h4>
+      <p>E012 の5/4と5/17に出勤データ（出勤9:00 退勤18:00）があります。カレンダー上は休日のため、<strong>割増率の判定</strong>が必要です。</p>
+      <p><strong>ここが最重要ポイント</strong>：サンプル商事の就業規則では、休日の種類ごとに割増率が違います。</p>
+      <table>
+        <tr><th>日付</th><th>休日の種類</th><th>根拠</th><th>割増率</th></tr>
+        <tr><td>5/4（みどりの日）</td><td><strong>所定休日</strong></td><td>祝日 → サンプル商事の所定休日は「土曜日・祝日」</td><td><strong>1.25</strong></td></tr>
+        <tr><td>5/17（日曜日）</td><td><strong>法定休日</strong></td><td>日曜日 → サンプル商事の法定休日は「日曜日」</td><td><strong>1.35</strong></td></tr>
+      </table>
+      <div class="cap cap-write"><b>顧客への確認</b><br>
+        Slackに投稿：「山口さんが5/4に出勤されているようですが、休日出勤ということでよろしいですか？」<br>
+        → 田所さんBot回答例：<em>「はい、急ぎの業務で出勤してもらいました。9:00〜18:00でした」</em><br>
+        ※ <strong>割増率は田所さんに聞かない</strong>（就業規則から判定するのがBPOの仕事）
+      </div>
+      <div class="cap cap-op"><b>MFでの確認</b><br>
+        勤怠確認 ＞ E012の日次勤怠 ＞ 5/4と5/17の休日区分を確認。<br>
+        5/4 →「所定休日労働」（割増1.25）、5/17 →「法定休日労働」（割増1.35）になっていること
+      </div>
+      <div class="cap cap-done"><b>正しい状態</b> — 5/4 = 所定休日（1.25）、5/17 = 法定休日（1.35）、各8h勤務</div>
+      <div class="brake-box"><strong>NG例</strong><br>
+        ・ 5/17（日曜）の休日区分を見逃す → 所定休日（1.25）のまま計算され、<strong>法定休日（1.35）との差額が未払い</strong>になる<br>
+        ・ 両方とも所定休日と判断してしまう → 5/17分の法定休日割増が適用されず差額が未払い<br>
+        ・ 休日出勤に気づかず確認しない → 割増なしの通常勤務で計算される（重大な未払い）</div>
+
+      <h4>4-B. 遅刻の控除判定（E008 中村七海 5月中2回）</h4>
+      <p>E008の出勤時刻が始業（E008は時短勤務のため所定の始業時刻）より遅い日が2日あります。</p>
+      <p><strong>遅刻 ＝ 即控除、ではありません。</strong>同じ日の退勤時刻も確認してください。</p>
+      <table>
+        <tr><th>判定ルール</th><th>条件</th><th>結果</th></tr>
+        <tr><td>取り戻しルール</td><td>遅刻した日の<strong>実労働時間 ≧ 所定労働時間</strong></td><td><strong>控除ゼロ</strong>（遅刻の時間を退勤延長で取り戻している）</td></tr>
+        <tr><td>控除対象</td><td>遅刻した日の実労働時間 ＜ 所定労働時間</td><td>不足分を控除</td></tr>
+      </table>
+      <div class="cap cap-op"><b>確認方法</b><br>
+        E008の日次勤怠で、遅刻した各日の出勤・退勤・実労働時間を確認。<br>
+        E008の場合は退勤が遅く、<strong>実労働 ≧ 所定なので控除ゼロが正解</strong>
+      </div>
+      <div class="note-box"><strong>顧客への確認は不要</strong> — 遅刻控除の判定はBPOの専門領域です。田所さんに「控除していいですか？」と聞く性質のものではありません（田所さんは控除ルールを知りません）。遅刻の事実は確認できますが、計算はBPO側の仕事です。</div>
+      <div class="cap cap-done"><b>正しい状態</b> — 遅刻の記録はそのまま。遅刻控除額は <strong>0円</strong></div>
+      <div class="brake-box"><strong>NG例</strong><br>
+        ・ 遅刻＝控除と即断して報告する → <strong>取り戻しルールを見落としている</strong>（実労働≧所定なら控除ゼロ）<br>
+        ・ 「遅刻をなかったことにして」と顧客に出勤時刻の修正を依頼する → 記録改ざんにあたる</div>
+
+      <h4>4-C. 振替休日（E009 小林蓮 — 4月休出→5月振休）</h4>
+      <p>E009の5月中に<strong>所定労働日なのに休みの日</strong>があります。勤務種別が「振替休日」になっていれば正常です。</p>
+      <div class="cap cap-write"><b>顧客への確認</b><br>
+        Slackに投稿：「小林さんの5月で平日にお休みの日があるんですが、振替休日でしょうか？」<br>
+        → 田所さんBot回答例：<em>「はい、先月の休出の振替で5月にお休みをいただいています」</em>
+      </div>
+      <div class="cap cap-done"><b>正しい状態</b> — 振替休日の日が勤務種別「振替休日」で設定済み。<strong>当月の給与計算に追加の変更は不要</strong>（休出は前月で処理済み、振休は勤務種別で吸収）</div>
+      <div class="brake-box"><strong>NG例</strong><br>
+        ・ 振休に気づかず確認しない → 欠勤扱いのまま給与が減額される<br>
+        ・ 「有給ですか？」と顧客に聞いてしまう → 有給として処理され残日数を誤消費する<br>
+        ・ 「前月の休出も当月で計算し直すべきでは」と判断する → 月またぎの賃金再計算は不要（前月処理済み）</div>
+
+      <h4>4-D. 有給休暇（E004 高橋美咲 — 5月中3日取得）</h4>
+      <p>E004の一部の日が<strong>労働時間 0h</strong>で表示されています。これは有給休暇なので<strong>正常</strong>です。エラーではありません。</p>
+      <table>
+        <tr><th>有給休暇のポイント</th><th>内容</th></tr>
+        <tr><td>労働時間</td><td><strong>0h</strong>（働いていないので）</td></tr>
+        <tr><td>所定時間</td><td><strong>カウントする</strong>（出勤扱い）</td></tr>
+        <tr><td>給与</td><td><strong>減額なし</strong>（有給 ＝ 休んでも給与が出る制度）</td></tr>
+      </table>
+      <div class="cap cap-write"><b>顧客への確認（必要に応じて）</b><br>
+        有給の取得日がMFで設定済みならそのまま確認。不明な場合は田所さんに確認：<br>
+        「高橋さんの5月の有給取得日を確認したいのですが、何日取られていますか？」<br>
+        → 田所さんBot回答例：<em>「5月に3日ほど有給を取っています」</em>
+      </div>
+      <div class="cap cap-done"><b>正しい状態</b> — 有給3日が勤務種別「有給休暇」で登録済み。労働時間0h、所定カウントあり、給与は満額</div>
+      <div class="brake-box"><strong>NG例</strong><br>
+        ・ 「労働0hの日があります」と顧客にエラー報告する → 有給は正常なので確認不要（不要な問い合わせ）<br>
+        ・ 有給に気づかず欠勤として扱う → 顧客が修正しないまま給与が減額される<br>
+        ・ 「勤務時間が入っていません」と顧客に補正を依頼する → 有給日に労働時間を入れると実労働の水増しになる</div>
+
+      <h4>4-E. 管理職の残業（E001 山田太郎）</h4>
+      <p>E001には残業時間のデータがありますが、E001は<strong>管理監督者</strong>（部長）のため、<strong>時間外割増の対象外</strong>です（深夜割増は別途対象）。MF上で残業時間が計上されていても、割増手当を付けてはいけません。</p>
+      <div class="note-box"><strong>顧客への確認は不要</strong> — 管理監督者の割増除外は労働基準法の規定です。BPO側が判断します。</div>
+      <div class="cap cap-done"><b>正しい状態</b> — E001に時間外割増手当がついていない（深夜割増のみ対象）</div>
+      <div class="brake-box"><strong>NG例</strong> — E001の残業時間を見て「時間外割増が必要」と判断する → 管理監督者は対象外なので過払いになる</div>
+      <div class="cap cap-return" style="margin:1em 0 0.3em; padding:0.5em 1em; background:#e8f4fd; border-left:4px solid #2196F3; font-size:0.88rem;">↩ ここまで終わったら <a href="#day1-s3">Day1『3. 勤怠データの点検・補正依頼』</a> に戻って、次のステップを確認しましょう。</div>
+    </li>
+
+    <li id="op-day1-5"><strong>勤怠の最終確認＋残業・休暇の集計</strong> — エラーゼロを確認してから、残業・有給の数字を確認します。
+
+      <h4>5-A. 勤怠確認ページでエラーゼロを確認</h4>
+      <p>勤怠＞勤怠確認（/admin/attendances）を開き、対象月を選択して全従業員の勤怠状況を一覧表示します。</p>
+      <ul>
+        <li><strong>ピンク（エラー）行がゼロ</strong>になっていることを確認してください</li>
+        <li>ピンク行が残っている場合 → ステップ3の点検・補正依頼が完了していません。<a href="#op-day1-4">操作ガイド4（打刻エラーの点検）</a>に戻ってください</li>
+      </ul>
+      <div class="cap cap-done"><b>クリア基準</b> — 勤怠確認ページにピンク（エラー）行がゼロ。全従業員の勤怠が正常に処理されている状態</div>
+
+      <h4>5-B. 残業時間の集計（E003 鈴木一郎が最重要）</h4>
+      <p>勤怠確認ページの各従業員の勤怠データと、正解例スプレッドシートの「月次集計正解」シートを照合して、残業・深夜・休日労働の数字を確認します。</p>
+      <p>E003 鈴木一郎の場合：</p>
+      <table>
+        <tr><th>項目</th><th>正しい数字</th><th>意味</th></tr>
+        <tr><td>月間時間外</td><td><strong>45h</strong></td><td>18:00以降の残業合計</td></tr>
+        <tr><td>うち深夜</td><td><strong>5h</strong></td><td>22:00以降の残業</td></tr>
+        <tr><td>固定残業</td><td>20h</td><td>基本給に含まれる分（追加手当なし）</td></tr>
+        <tr><td><strong>追加残業</strong></td><td><strong>25h</strong></td><td>45h − 20h ＝ 追加で手当を支給する分</td></tr>
+      </table>
+      <div class="cap cap-done"><b>正しい状態</b> — 月間45h（深夜5h）と集計できている。固定残業20hを差し引いた<strong>25hが追加支給対象</strong>と理解している</div>
+      <div class="brake-box"><strong>NG例</strong><br>
+        ・ 固定残業の差し引きを見落とす → 45h全額が追加残業代として計算され<strong>過払い</strong>になる<br>
+        ・ 深夜5hの区別を見逃す → 通常残業と同じ割増率で計算され、深夜割増（0.25加算）が漏れる</div>
+
+      <h4>5-C. 有給残の確認</h4>
+      <p>上長メニュー＞分析レポート＞「有給休暇管理簿」でE004の有給残日数と、年5日取得義務の進捗を確認します。</p>
+      <div class="note-box"><strong>有給管理はクライアント側の責務です。</strong>BPOが自発的に「有給が足りていません」と指摘する立場ではありません。<br>
+        ただし、<strong>クライアントから依頼があった場合</strong>（例：「年5日取得が危ない人がいたら教えて」）には、該当する従業員の担当者にアラートを出すことがあります。依頼の有無と範囲はクライアントごとに異なるため、案件の取り決めを確認してください。</div>
+      <div class="cap cap-return" style="margin:1em 0 0.3em; padding:0.5em 1em; background:#e8f4fd; border-left:4px solid #2196F3; font-size:0.88rem;">↩ ここまで終わったら <a href="#day1-s4">Day1『4. 勤怠の最終確認＋残業・有給の集計』</a> に戻って、次のステップを確認しましょう。</div>
+    </li>
+
+    <li id="op-day1-6"><strong>給与計算の実行</strong> — MFクラウド給与＞給与計算（/payrolls）で<strong>5月</strong>を選択して計算を実行します。
+
+      <h4>6-A. 計算結果の見方</h4>
+      <p>全12名分の計算結果が一覧で表示されます。<strong>この時点で確認すべきポイント：</strong></p>
+      <ul>
+        <li>E003（鈴木）の残業手当 → 固定残業差引後の25h分（＋深夜5h分）が計上されているか</li>
+        <li>E012（山口）の休日割増 → 5/4は1.25、5/17は1.35で計算されているか</li>
+        <li>E004（高橋）の給与 → 有給3日があっても<strong>月額満額</strong>になっているか</li>
+        <li>E010（加藤）の勤務時間 → 5/20の補正依頼が給与に反映されているか</li>
+      </ul>
+      <div class="brake-box"><strong>確定（データロック）は絶対に押さない</strong><br>
+        計算結果が合っているかどうかの確認（突合）はDay2の作業です。<strong>「確定処理」は確認が終わるまで押してはいけません</strong>。メンバーは確定前にレビューを受けるのがBPOの基本です。</div>
+      <div class="cap cap-done"><b>正しい状態</b> — 全12名分の計算が完了し、結果を閲覧できる状態。<strong>確定は未実行</strong></div>
+      <div class="brake-box"><strong>NG例</strong><br>
+        ・ 「確定処理」を押してしまった → Day2の突合で誤りが見つかっても戻せなくなる<br>
+        ・ 全員分ノーチェックで「計算完了」と報告 → 数字の違和感に気づく力がつかない</div>
+      <div class="cap cap-return" style="margin:1em 0 0.3em; padding:0.5em 1em; background:#e8f4fd; border-left:4px solid #2196F3; font-size:0.88rem;">↩ ここまで終わったら <a href="#day1-s5">Day1『5. 給与計算の実行』</a> に戻って、次のステップを確認しましょう。</div>
+    </li>
+  </ol>
+  <div class="info-box" style="font-size:0.82rem;">ここにサンプル商事の画面キャプチャを差し込み予定（テナント構築後）。</div>
+
+  <h3 class="subsection-title" id="op-day2">Day2 の操作 — 突合チェック（対象：<strong>5月分</strong>）</h3>
+  <p>Day1で実行した給与計算の結果が<strong>正しいかどうか</strong>を確かめる日です。「勤怠 × 連絡表 × 給与計算結果」の三者を突き合わせ、仕込んだ誤り（NG）と正当な差（WARN）を見分けます。</p>
+  <ol>
+    <li id="op-day2-1"><strong>突合の材料を揃える</strong> — まず3つの材料を手元に出します。
+
+      <h4>1-A. 給与計算結果</h4>
+      <p>MFクラウド給与 ＞ 給与計算（/payrolls）で<strong>5月</strong>を開きます。12名分の計算結果が一覧表示されます。</p>
+      <div class="cap cap-op"><b>確認する列</b><br>
+        各従業員の行で以下を確認します：基本給／時間外手当／深夜手当／休日手当／通勤手当／健保料／厚年料／所得税／住民税／差引支給額</div>
+
+      <h4>1-B. 帳票の出力</h4>
+      <p>MFクラウド給与 ＞ 帳票一覧（/reports）から以下を出力します：</p>
+      <ul>
+        <li><strong>支給控除一覧表（給与）</strong> — 全員の支給・控除を横並びで見る材料</li>
+        <li><strong>給与振込一覧表</strong> — 振込金額の一覧</li>
+      </ul>
+      <p>これを連絡表（変動事項）・勤怠サマリと並べて突き合わせます。</p>
+
+      <h4>1-C. 勤怠側の数字</h4>
+      <p>MFクラウド勤怠 ＞ 上長メニュー ＞ 分析レポート ＞「法定外・休日労働時間レポート」で、給与に乗っている残業・深夜・休日労働の<strong>根拠</strong>を確認します。</p>
+    </li>
+
+    <li id="op-day2-2"><strong>三者突合の実行</strong> — 材料を並べて1人ずつ差分を探します。
+
+      <h4>2-A. 連絡表 × 給与の突合</h4>
+      <p>変動事項（連絡表）がMF給与に正しく反映されているかを確認します。</p>
+      <table>
+        <tr><th>従業員</th><th>連絡表の内容</th><th>確認ポイント</th></tr>
+        <tr><td>E002 佐藤花子</td><td>基本給 280,000 → 295,000</td><td>MF給与の基本給が<strong>295,000</strong>になっているか</td></tr>
+        <tr><td>E005 田中健太</td><td>通勤手当 5,000 → 0 ＋ 過払い控除</td><td>通勤手当が<strong>0</strong>で、4月分過払い<strong>5,000の控除</strong>があるか</td></tr>
+        <tr><td>E007 渡辺大輝</td><td>5月末退職</td><td>退職月の社保控除が正しいか（2か月分の場合あり）</td></tr>
+        <tr><td>E011 吉田颯</td><td>5/15中途入社（日割り）</td><td>日割り計算が正しいか</td></tr>
+      </table>
+
+      <h4>2-B. 勤怠 × 給与の突合</h4>
+      <p>Day1で確認した勤怠の論点が給与計算に正しく反映されているかを確認します。</p>
+      <table>
+        <tr><th>従業員</th><th>勤怠の論点</th><th>給与で確認すること</th></tr>
+        <tr><td>E003 鈴木一郎</td><td>時間外45h（深夜5h）・固定残業20h</td><td>追加残業25h分 ＋ 深夜5h分の手当が計上されているか</td></tr>
+        <tr><td>E010 加藤結衣</td><td>5/20の打刻漏れ補正依頼</td><td>補正後の勤務時間が給与に反映されているか</td></tr>
+        <tr><td>E012 山口莉子</td><td>休日出勤（5/4所定1.25／5/17法定1.35）</td><td>割増率が正しく区別されているか</td></tr>
+        <tr><td>E008 中村七海</td><td>遅刻あり・取り戻しルールで控除ゼロ</td><td>遅刻控除が<strong>0円</strong>になっているか</td></tr>
+        <tr><td>E001 山田太郎</td><td>管理職＝時間外割増対象外</td><td>時間外割増手当がついて<strong>いない</strong>か</td></tr>
+      </table>
+
+      <div class="note-box"><strong>このステップではMFの値を直接変えません。</strong>差分の「発見と記録」に集中してください。修正はDay3です。</div>
+      <div class="cap cap-return" style="margin:1em 0 0.3em; padding:0.5em 1em; background:#e8f4fd; border-left:4px solid #2196F3; font-size:0.88rem;">↩ ここまで終わったら <a href="#day2-s2">Day2『2. 三者突合の実行』</a> に戻って、次のステップを確認しましょう。</div>
+    </li>
+
+    <li id="op-day2-3"><strong>仕込んだ誤り（NG）の発見</strong> — 突合で見つかる差のうち、<strong>直すべき誤り</strong>は8件です。
+      <div class="note-box"><strong>【演習の手引き】</strong>以下は、この演習データに仕込まれている誤り8件と正当な差5件の一覧です。<strong>実務ではこのような正解リストはありません。</strong>すべての差分に対して「なぜこの差があるか」を自分で説明できることが目標です。ここでは学習のために、発見すべき誤りの全容を示します。</div>
+
+      <details style="margin:12px 0;"><summary style="cursor:pointer;font-weight:700;font-size:0.88rem;padding:8px 0;">▶ NG8件 — 答え合わせ（クリックで開く）</summary>
+      <table>
+        <tr><th>#</th><th>誤りの内容</th><th>正しい状態（あるべき姿）</th><th>発見のヒント</th></tr>
+        <tr><td>誤1</td><td>E002 基本給が旧額280,000のまま</td><td>連絡表どおり<strong>295,000</strong></td><td>連絡表×給与の突合で発見</td></tr>
+        <tr><td>誤2</td><td>E005 通勤手当5,000が残り、過払い控除なし</td><td>通勤手当<strong>0</strong>＋過払い<strong>5,000控除</strong></td><td>連絡表×給与の突合で発見</td></tr>
+        <tr><td>誤3</td><td>E003 時間外45h全額で計算（固定残業差引なし）</td><td>固定残業20h差引後<strong>25h追加</strong></td><td>残業手当の金額が大きすぎる</td></tr>
+        <tr><td>誤4</td><td>E010 打刻漏れ(5/20)が未補正のまま</td><td>Day1で補正依頼済みのはず → 給与に反映されているか</td><td>E010の勤務時間が0hの日がないか</td></tr>
+        <tr><td>誤5</td><td>E012 5/17(日)が所定休日(1.25)で計算</td><td><strong>法定休日(1.35)</strong>が正しい</td><td>休日手当の金額をE012の2日分で検算</td></tr>
+        <tr><td>誤6</td><td>E008 遅刻控除がされている</td><td>取り戻しルール適用で<strong>控除ゼロ</strong></td><td>E008の控除額が0でないなら誤り</td></tr>
+        <tr><td>誤7</td><td>E001 管理職に時間外割増がついている</td><td>管理監督者は<strong>時間外割増対象外</strong></td><td>E001に時間外手当の金額があれば誤り</td></tr>
+        <tr><td>誤8</td><td>住民税が前年度額のまま（新年度未反映）</td><td>6月から<strong>新年度税額</strong>に更新</td><td>住民税額が変わっていない従業員を確認</td></tr>
+      </table>
+      </details>
+      <div class="cap cap-done"><b>目標</b> — NG8件をすべて自力で発見し、各NGの「あるべき数値」を説明できる</div>
+      <div class="brake-box"><strong>NG例</strong><br>
+        ・ 「全部合っていそう」と流してしまう → 1人ずつ突き合わせないと誤りは見つからない<br>
+        ・ 差額があるのに「こういうものかな」とスルー → すべての差に理由を説明できなければ誤りの可能性がある</div>
+      <div class="cap cap-return" style="margin:1em 0 0.3em; padding:0.5em 1em; background:#e8f4fd; border-left:4px solid #2196F3; font-size:0.88rem;">↩ ここまで終わったら <a href="#day2-s3">Day2『3. 誤りの発見・分析』</a> に戻って、次のステップを確認しましょう。</div>
+    </li>
+
+    <li id="op-day2-4"><strong>NG / WARN の仕分け</strong> — 差分のすべてが「誤り」ではありません。<strong>正当な差（WARN）</strong>もあります。
+
+      <details style="margin:12px 0;"><summary style="cursor:pointer;font-weight:700;font-size:0.88rem;padding:8px 0;">▶ WARN5件 — 答え合わせ（クリックで開く）</summary>
+      <table>
+        <tr><th>#</th><th>差の内容</th><th>なぜ正当か</th></tr>
+        <tr><td>W1</td><td>E004 有給日の所定時間差</td><td>有給は労働0h・所定カウント — 正常</td></tr>
+        <tr><td>W2</td><td>E007 退職月の社保が2か月分</td><td>退職月処理として正常（末日退職の場合）</td></tr>
+        <tr><td>W3</td><td>E009 月またぎ振休</td><td>社労士合意の型。当月の賃金変更は不要</td></tr>
+        <tr><td>W4</td><td>E006 直行直帰で打刻なしだが所定計上</td><td>直行直帰フラグで正常</td></tr>
+        <tr><td>W5</td><td>E011 新入社員の所定時間調整</td><td>月中入社の日割り調整として正常</td></tr>
+      </table>
+      </details>
+      <div class="cap cap-done"><b>目標</b> — NG8件とWARN5件を正しく分類し、WARNについて「なぜ正当か」を説明できる</div>
+      <div class="brake-box"><strong>NG例</strong><br>
+        ・ WARNをNGと誤認して顧客に照会する → 不要な問い合わせで顧客の手を煩わせる<br>
+        ・ NGをWARNだと思い込んで見逃す → 誤った給与が確定してしまう</div>
+      <div class="cap cap-return" style="margin:1em 0 0.3em; padding:0.5em 1em; background:#e8f4fd; border-left:4px solid #2196F3; font-size:0.88rem;">↩ ここまで終わったら <a href="#day2-s4">Day2『4. 誤り／正当な差の仕分け』</a> に戻って、次のステップを確認しましょう。</div>
+    </li>
+
+    <li id="op-day2-5"><strong>照会先の判断・照会文ドラフト</strong> — 発見したNG・確認が必要なWARNについて、<strong>誰に照会するか</strong>を判断し、照会文のドラフトを書きます。
+
+      <h4>照会先の振り分けルール</h4>
+      <table>
+        <tr><th>差分の原因</th><th>照会先</th><th>例</th></tr>
+        <tr><td>連絡表の転記漏れ・内容確認</td><td><strong>顧客</strong></td><td>誤1（基本給）・誤2（通勤手当）</td></tr>
+        <tr><td>計算仕様・法定ルールの確認</td><td><strong>社労士</strong></td><td>誤5（休日区分）・誤6（遅刻控除ルール）</td></tr>
+        <tr><td>社内の判断・処理方針</td><td><strong>内部（メンター／上位者）</strong></td><td>誤8（住民税の反映タイミング）</td></tr>
+      </table>
+
+      <div class="cap cap-write"><b>照会文のポイント</b><br>
+        ・ <strong>事実</strong>（何と何を突き合わせたらどう違った）を先に書く<br>
+        ・ <strong>質問</strong>（確認したいこと）を具体的に1つだけ書く<br>
+        ・ 演習ではSlackチャンネルに投稿し、メンターが顧客役・社労士役で応答します</div>
+      <div class="brake-box"><strong>ブレーキ：</strong>照会文は<strong>ドラフトまで</strong>。送信はしません（回答待ち）。修正・納品はDay3です。</div>
+      <div class="cap cap-return" style="margin:1em 0 0.3em; padding:0.5em 1em; background:#e8f4fd; border-left:4px solid #2196F3; font-size:0.88rem;">↩ ここまで終わったら <a href="#day2-s5">Day2『5. 照会先の判断・照会文ドラフト』</a> に戻って、次のステップを確認しましょう。</div>
+    </li>
+  </ol>
+  <div class="info-box" style="font-size:0.82rem;">ここにサンプル商事の画面キャプチャを差し込み予定（テナント構築後）。</div>
+
+  <h3 class="subsection-title" id="op-day3">Day3 の操作 — 修正・納品・賞与・住民税（対象：<strong>5月分</strong>）</h3>
+  <p>Day2で発見した誤りを修正し、検算→確定→納品物作成まで仕上げます。さらに賞与計算と住民税反映にも触れ、月次1サイクルを完遂します。</p>
+  <ol>
+    <li id="op-day3-1"><strong>NG修正</strong> — Day2で発見した誤り8件を1つずつ修正します。
+
+      <h4>1-A. 連絡表起因の修正（給与側で直す）</h4>
+      <p>連絡表の内容がMF給与に反映されていない誤りは、MFクラウド給与で修正します。</p>
+      <table>
+        <tr><th>誤り</th><th>修正操作</th><th>MFの画面</th></tr>
+        <tr><td>誤1 — E002 基本給 280,000→295,000</td><td>基本給を295,000に更新</td><td>従業員情報 ＞ E002「給与情報」＞ 基本給</td></tr>
+        <tr><td>誤2 — E005 通勤手当 5,000→0 ＋過払い控除</td><td>通勤手当を0に変更、控除に過払い5,000を追加</td><td>従業員情報 ＞ E005「給与情報」＞ 通勤手当 ／ 給与計算 ＞ E005の控除欄で調整</td></tr>
+        <tr><td>誤8 — 住民税が前年度額のまま</td><td>新年度の住民税月額に更新</td><td>従業員情報 ＞ 給与情報 ＞ 住民税納付額</td></tr>
+      </table>
+
+      <h4>1-B. 計算ロジック起因の修正（設定・判定で直す）</h4>
+      <table>
+        <tr><th>誤り</th><th>修正操作</th><th>確認ポイント</th></tr>
+        <tr><td>誤3 — E003 固定残業差引漏れ</td><td>固定残業20hを差し引いた25hで再計算されるよう設定確認</td><td>追加残業＝45h−20h＝<strong>25h</strong></td></tr>
+        <tr><td>誤5 — E012 5/17の休日区分</td><td>法定休日（1.35）に修正</td><td>5/4＝所定(1.25)、5/17＝法定(1.35)</td></tr>
+        <tr><td>誤6 — E008 遅刻控除を0に</td><td>取り戻しルール適用で控除を解除</td><td>控除額＝<strong>0円</strong></td></tr>
+        <tr><td>誤7 — E001 時間外割増を削除</td><td>管理監督者のため時間外割増を外す</td><td>時間外手当＝<strong>0円</strong>（深夜は残す）</td></tr>
+      </table>
+
+      <h4>1-C. 勤怠起因の修正（勤怠側で直してから再取込）</h4>
+      <table>
+        <tr><th>誤り</th><th>修正操作</th></tr>
+        <tr><td>誤4 — E010 打刻漏れ未補正</td><td>MF勤怠 ＞ 勤怠確認 ＞ E010「一覧」＞ 5/20「編集」で退勤を補正 → MF給与 ＞ 給与計算 ＞「メニュー」＞「<strong>マネーフォワード クラウド勤怠から勤怠データをインポート</strong>」で再取込</td></tr>
+      </table>
+      <div class="note-box"><strong>修正の原則：</strong>「原因がどこにあるか」で修正場所が決まります。連絡表の転記漏れ → 給与側（従業員情報）。勤怠の打刻・区分 → 勤怠側で直して「メニュー」＞「マネーフォワード クラウド勤怠から勤怠データをインポート」で再取込。場所を間違えると別の差が生まれます。</div>
+    </li>
+
+    <li id="op-day3-2"><strong>再計算</strong> — 修正が終わったらMFクラウド給与で5月の給与を再計算します。
+
+      <div class="cap cap-op"><b>操作</b> — MFクラウド給与 ＞ 給与計算（/payrolls）＞ 5月 ＞ 「メニュー」＞「一括で自動計算に戻す」を実行</div>
+      <div class="cap cap-done"><b>正しい状態</b> — 再計算後、Day2で見つけたNG8件がすべて解消。WARN5件のみが残っている</div>
+      <div class="brake-box"><strong>NG例</strong><br>
+        ・ 一部の修正を忘れて再計算 → 突合でNGが残る（全件修正を確認してから再計算）<br>
+        ・ 勤怠側を直したのに再取込を忘れる → 給与計算に修正が反映されない</div>
+      <div class="cap cap-return" style="margin:1em 0 0.3em; padding:0.5em 1em; background:#e8f4fd; border-left:4px solid #2196F3; font-size:0.88rem;">↩ ここまで終わったら <a href="#day3-s2">Day3『2. 誤りの修正・再計算』</a> に戻って、次のステップを確認しましょう。</div>
+    </li>
+
+    <li id="op-day3-3"><strong>dry-run（検算）</strong> — 再計算結果が正しいか、<strong>手で検算</strong>して確認します。
+
+      <h4>検算対象（特殊ケースを優先）</h4>
+      <table>
+        <tr><th>従業員</th><th>検算ポイント</th></tr>
+        <tr><td>E003 鈴木一郎</td><td>追加残業25h × 割増率 ＋ 深夜5h × 深夜割増 が合っているか</td></tr>
+        <tr><td>E007 渡辺大輝</td><td>退職月の社保控除（2か月分）・最終給与が正しいか</td></tr>
+        <tr><td>E011 吉田颯</td><td>日割り計算（5/15入社）が正しいか</td></tr>
+      </table>
+      <p>帳票一覧（/reports）から「支給控除一覧表」を出力し、手計算の結果と突き合わせます。</p>
+      <div class="brake-box"><strong>ブレーキ：</strong>確定の<strong>許可は、あなたが出しません</strong>。手で検算して結果が合うことを確認したら、メンターの確定許可を待ちます。</div>
+      <div class="brake-box"><strong>NG例</strong><br>
+        ・ 検算せず「再計算したから大丈夫」と報告 → 修正が正しく反映されたか確認できていない<br>
+        ・ 確定許可を待たずに「確定処理」を押す → 不可逆操作。誤りが残っていたら戻せない</div>
+      <div class="cap cap-return" style="margin:1em 0 0.3em; padding:0.5em 1em; background:#e8f4fd; border-left:4px solid #2196F3; font-size:0.88rem;">↩ ここまで終わったら <a href="#day3-s3">Day3『3. 事前検算（本番反映前の確認）』</a> に戻って、次のステップを確認しましょう。</div>
+    </li>
+
+    <li id="op-day3-4"><strong>納品物の作成</strong> — 確定許可を得たら、納品物を揃えます。
+
+      <h4>4-A. 給与確定</h4>
+      <p>メンターから確定許可が出たら、給与計算画面で<strong>「確定処理」</strong>を押します。</p>
+      <div class="brake-box"><strong>確定は不可逆です。</strong>GOが出る前に絶対に押さないでください。</div>
+
+      <h4>4-B. 明細の発行</h4>
+      <p>MFクラウド給与 ＞ 帳票一覧（/reports）＞「給与明細」からPDF出力（またはWeb公開設定）。</p>
+
+      <h4>4-C. 振込データ（FBデータ）の作成</h4>
+      <p>MFクラウド給与 ＞ 支払業務 ＞「給与・賞与」タブでFBデータを作成します。</p>
+      <div class="note-box"><strong>FBデータ</strong>（ファームバンキングデータ）は銀行振込用のデータファイルです。作成＝即振込ではありません。振込実行はクライアントの経理担当が銀行サイトにアップロードして行います。</div>
+
+      <h4>4-D. 完了連絡のドラフト</h4>
+      <p>以下の宛先に完了連絡のドラフトを作成します（<strong>送信はメンターの指示後</strong>）。</p>
+      <ul>
+        <li>顧客経理 — 「5月給与の計算が完了しました。明細・振込データをお送りします」</li>
+        <li>社労士 — 「5月給与の確定データをお送りします。届出に必要な情報はこちらです」</li>
+      </ul>
+      <div class="brake-box"><strong>ブレーキ：</strong>確定・送信は不可逆。<strong>確定許可のあと・人の確認後にのみ</strong>進めます。完了連絡はドラフトまで。</div>
+    </li>
+
+    <li id="op-day3-5"><strong>住民税の新年度反映</strong> — 6月給与から新年度の住民税額に切り替えます。
+
+      <h4>5-A. 通常の切替</h4>
+      <p>MFクラウド給与 ＞ 従業員情報 ＞ 各従業員の「給与情報」＞「住民税納付額」で、市区町村からの決定通知にもとづき<strong>2026年度の月額</strong>に更新します。</p>
+      <div class="note-box">「基本設定 ＞ 住民税」タブは<strong>特別徴収の指定番号</strong>を管理する画面です。月額の入力場所と間違えやすいので注意してください。</div>
+
+      <h4>5-B. 特殊ケース</h4>
+      <table>
+        <tr><th>従業員</th><th>論点</th><th>対応</th></tr>
+        <tr><td>E011 吉田颯（中途入社）</td><td>前職では普通徴収 → 特別徴収に切替？</td><td>切替するかどうかはクライアントに確認。切替届の提出は社労士との連携が必要</td></tr>
+        <tr><td>E007 渡辺大輝（退職）</td><td>退職後の住民税残額</td><td>一括徴収（最終給与で残額を差引）か普通徴収切替か。クライアントの希望を確認</td></tr>
+      </table>
+      <div class="note-box"><strong>住民税の特別徴収反映はBPOの主担当業務です。</strong>ただし切替届の提出を伴う場合は社労士と連携します。</div>
+      <div class="brake-box"><strong>NG例</strong><br>
+        ・ 住民税を更新し忘れる → 前年度額のまま徴収される（誤8と同じ誤り）<br>
+        ・ E007の残額処理方法をクライアントに確認せず決めてしまう → 一括か普通か本人の希望が関わる</div>
+      <div class="cap cap-return" style="margin:1em 0 0.3em; padding:0.5em 1em; background:#e8f4fd; border-left:4px solid #2196F3; font-size:0.88rem;">↩ ここまで終わったら <a href="#day3-s4">Day3『4. 納品物の作成』</a> に戻って、次のステップを確認しましょう。</div>
+    </li>
+
+    <li id="op-day3-6"><strong>賞与計算</strong> — 月次給与と並走して、夏季賞与（6月支給）の計算にも触れます。
+
+      <h4>6-A. 対象者の確認</h4>
+      <p>MFクラウド給与 ＞ 賞与計算（/bonuses）で対象者を選択します。</p>
+      <table>
+        <tr><th>区分</th><th>対象</th><th>理由</th></tr>
+        <tr><td><strong>対象</strong></td><td>E001/E002/E003/E004/E005/E006/E008/E012</td><td>在籍正社員8名</td></tr>
+        <tr><td><strong>対象外</strong></td><td>E007</td><td>退職済み</td></tr>
+        <tr><td><strong>対象外</strong></td><td>E009/E010/E011</td><td>アルバイト</td></tr>
+      </table>
+      <div class="brake-box"><strong>NG例</strong><br>
+        ・ 退職済みのE007が対象に混ざっているのを見逃す → 退職者への誤支給<br>
+        ・ E011（入社2か月未満）を深く考えず対象に入れる → 会社規定の確認が必要（アルバイトなので今回は対象外だが、正社員で入社直後のケースは要確認）</div>
+
+      <h4>6-B. 計算と確認</h4>
+      <p>賞与計算を実行し、以下を確認します：</p>
+      <ul>
+        <li>標準賞与額（基本給 × 1.0ヶ月分。E001管理職は×1.2、E008時短は所定按分）</li>
+        <li>社保料（健保・厚年・雇保）の控除</li>
+        <li>源泉所得税</li>
+      </ul>
+      <p>帳票一覧 ＞「賞与明細」からPDFを出力します。</p>
+
+      <h4>6-C. 業際の確認</h4>
+      <div class="note-box"><strong>賞与計算はBPOの主担当業務です。</strong>ただし<strong>賞与支払届の作成・届出は社労士の領域</strong>です。「計算まではBPO、届出は社労士」の線引きを覚えてください。</div>
+    </li>
+
+    <li id="op-day3-7"><strong>業際シナリオ ★Day3の山場</strong> — メンターが顧客役で差し込みをしてきます。
+
+      <h4>シナリオ例</h4>
+      <p>メンター（顧客役）：「退職したE007さんの<strong>離職票</strong>もお願いできますか？」</p>
+      <p>あなたはこの依頼に対して<strong>「止める」判断</strong>ができるかどうかが問われます。</p>
+
+      <div class="cap cap-done"><b>正解</b> — 「離職証明書（離職票）の作成・届出は社労士の領域になります。退職日や最終給与のデータはこちらで準備しますので、社労士の先生へお繋ぎしますね」</div>
+      <div class="brake-box"><strong>NG例</strong><br>
+        ・ 「分かりました、作っておきます」と引き受けてしまう → 離職票は社労士の独占業務。BPOが作成すると違法<br>
+        ・ 「できません」とだけ答える → 止めるだけでなく、<strong>正しい連携先を案内する</strong>のがBPOの役割</div>
+
+      <div class="note-box"><strong>追加の差し込み（メンターの判断で実施）</strong><br>
+        ・ 「算定基礎もお願い」→ 社労士領域<br>
+        ・ 「年末調整の法定調書も」→ 税理士領域<br>
+        いずれも「止めて、正しい連携先を案内する」が正解です。</div>
+      <div class="cap cap-return" style="margin:1em 0 0.3em; padding:0.5em 1em; background:#e8f4fd; border-left:4px solid #2196F3; font-size:0.88rem;">↩ ここまで終わったら <a href="#day3-s5">Day3『5. 業際シナリオ — 止める判断』</a> に戻って、次のステップを確認しましょう。</div>
+    </li>
+  </ol>
+  <div class="info-box" style="font-size:0.82rem;">ここにサンプル商事の画面キャプチャを差し込み予定（テナント構築後）。</div>
+  <a class="back-link" href="#day1">↑ Dayに戻る</a>
+</section>
+
+<div class="report-footer">
+  <p>労務BPO実践演習ハンドブック（MoneyForward版）— 受講者用　／　p059 労務BPO人材育成プログラム</p>
+  <p>全データは架空のダミーです。実在の企業・個人とは関係ありません。</p>
+</div>
+
+</div>
+
+<script>
+  const sections = document.querySelectorAll('section[id]');
+  const pills = document.querySelectorAll('#sticky-nav .pill');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const active = document.querySelector('#sticky-nav a[href="#' + e.target.id + '"]');
+        if (active) { pills.forEach(p => p.classList.remove('active')); active.classList.add('active'); }
+      }
+    });
+  }, { rootMargin: '-15% 0px -75% 0px' });
+  sections.forEach(s => obs.observe(s));
+</script>
+
+</body>
+</html>
