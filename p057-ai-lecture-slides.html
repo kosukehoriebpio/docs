@@ -1,0 +1,1732 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI集中講義 + Hands-on — BPIO 1dayインターン 2026</title>
+<style>
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+  color: #1a1a1a;
+  background: #fff;
+  line-height: 1.7;
+  --accent: #60b6b2;
+  --heading: #001d3b;
+}
+
+.slide-container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+.slide {
+  display: none;
+  width: 100%;
+  height: 100%;
+  padding: 60px 80px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.slide.active {
+  display: flex;
+}
+
+/* ── Counter ── */
+.slide-counter {
+  position: fixed;
+  bottom: 20px;
+  right: 32px;
+  font-size: 0.8rem;
+  color: #999;
+  z-index: 100;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Progress bar ── */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--accent);
+  z-index: 100;
+  transition: width 0.3s ease;
+}
+
+/* ── Layout: title ── */
+.layout-title {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.layout-title .main-title {
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: 32px;
+  color: var(--heading);
+}
+
+.layout-title .sub-info {
+  font-size: 1.2rem;
+  color: #555;
+  line-height: 2;
+}
+
+.layout-title .sub-info span {
+  display: block;
+}
+
+/* ── Layout: content ── */
+.layout-content {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.layout-content .slide-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: var(--heading);
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 12px;
+  display: inline-block;
+}
+
+.layout-content .points {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  display: inline-block;
+}
+
+.layout-content .points li {
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+  padding-left: 24px;
+  position: relative;
+  color: #333;
+}
+
+.layout-content .points li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: #aaa;
+}
+
+/* ── Layout: twoColumn ── */
+.layout-twoColumn {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.layout-twoColumn .slide-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 36px;
+  color: var(--heading);
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 12px;
+  display: inline-block;
+}
+
+.layout-twoColumn .columns {
+  display: flex;
+  gap: 48px;
+  flex: 1;
+  max-height: calc(100vh - 220px);
+  text-align: left;
+}
+
+.layout-twoColumn .col {
+  flex: 1;
+}
+
+.layout-twoColumn .col-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.layout-twoColumn .points {
+  list-style: none;
+  padding: 0;
+}
+
+.layout-twoColumn .points li {
+  font-size: 1.2rem;
+  margin-bottom: 16px;
+  padding-left: 20px;
+  position: relative;
+  color: #333;
+}
+
+.layout-twoColumn .points li::before {
+  content: "·";
+  position: absolute;
+  left: 0;
+  color: #aaa;
+  font-weight: 700;
+}
+
+/* ── Layout: quote ── */
+.layout-quote {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: #f8f9fa;
+}
+
+.layout-quote .slide-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 48px;
+  color: var(--heading);
+}
+
+.layout-quote .points {
+  list-style: none;
+  padding: 0;
+  max-width: 720px;
+}
+
+.layout-quote .points li {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #444;
+}
+
+.layout-quote .points li:last-child {
+  margin-top: 36px;
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 1.6rem;
+}
+
+/* ── Layout: bridge ── */
+.layout-bridge {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: #001d3b;
+  color: #fff;
+}
+
+.layout-bridge .slide-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #fff;
+}
+
+.layout-bridge .points {
+  list-style: none;
+  padding: 0;
+}
+
+.layout-bridge .points li {
+  font-size: 1.3rem;
+  margin-bottom: 16px;
+  color: rgba(255,255,255,0.8);
+}
+
+.layout-bridge .points li:last-child {
+  margin-top: 24px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ── Layout: demo ── */
+.layout-demo {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.layout-demo .slide-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: var(--heading);
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 12px;
+  display: inline-block;
+}
+
+.layout-demo .points {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  display: inline-block;
+}
+
+.layout-demo .points li {
+  font-size: 1.25rem;
+  margin-bottom: 20px;
+  padding-left: 80px;
+  position: relative;
+  color: #333;
+}
+
+.layout-demo .points li::before {
+  content: attr(data-step);
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: system-ui, sans-serif;
+  font-size: 1.25rem;
+  width: 68px;
+  text-align: right;
+}
+
+/* ── Layout: handson ── */
+.layout-handson {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.layout-handson .slide-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: var(--heading);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 12px;
+  display: inline-block;
+}
+
+.layout-handson .points {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  display: inline-block;
+}
+
+.layout-handson .points li {
+  font-size: 1.25rem;
+  margin-bottom: 24px;
+  padding-left: 48px;
+  position: relative;
+  color: #333;
+}
+
+.layout-handson .badge {
+  position: absolute;
+  left: 0;
+  top: -2px;
+  width: 32px;
+  height: 32px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* ── Accent ── */
+strong {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ── Section label (small tag above title) ── */
+.section-label {
+  font-size: 0.85rem;
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.layout-bridge .section-label {
+  color: var(--accent);
+}
+
+/* ── Arrow hint on slide 1 ── */
+.arrow-hint {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.85rem;
+  color: #bbb;
+}
+
+/* ── Transition ── */
+.slide {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.slide.active {
+  opacity: 1;
+}
+
+/* ── Layout: exercise (all-in-one) ── */
+.layout-exercise {
+  justify-content: flex-start;
+  padding: 28px 48px 48px;
+  gap: 0;
+}
+
+.layout-exercise .exercise-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  width: 100%;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.layout-exercise .exercise-header .slide-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--heading);
+  margin: 0;
+}
+
+.layout-exercise .exercise-header .exercise-time {
+  font-size: 0.9rem;
+  color: #fff;
+  background: var(--accent);
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.layout-exercise .scenario-bar {
+  width: 100%;
+  background: #f8f9fa;
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 14px 24px;
+  display: flex;
+  gap: 36px;
+  font-size: 1.25rem;
+  color: #444;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.layout-exercise .scenario-bar span {
+  white-space: nowrap;
+}
+
+.layout-exercise .scenario-bar strong {
+  color: var(--heading);
+  font-weight: 700;
+}
+
+.layout-exercise .flow-section {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.layout-exercise .flow-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #999;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.layout-exercise .flow-diagram {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  width: 100%;
+  padding: 6px 0;
+  justify-content: center;
+}
+
+.layout-exercise .flow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+.layout-exercise .flow-step .step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--heading);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.layout-exercise .flow-step .step-text {
+  font-size: 0.85rem;
+  color: #333;
+  text-align: center;
+  line-height: 1.4;
+  max-width: 130px;
+}
+
+.layout-exercise .flow-step .step-who {
+  font-size: 0.72rem;
+  color: var(--accent);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.layout-exercise .flow-arrow {
+  font-size: 1.2rem;
+  color: #ccc;
+  flex-shrink: 0;
+  margin: 0 4px;
+  padding-top: 4px;
+}
+
+.layout-exercise .flow-loop {
+  font-size: 0.78rem;
+  color: #c0392b;
+  font-weight: 700;
+  margin: 0 4px;
+  padding-top: 4px;
+  background: #fff3f3;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.layout-exercise .flow-time {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+  padding: 8px 16px;
+  background: #c0392b;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.layout-exercise .questions-section {
+  width: 100%;
+  background: var(--heading);
+  border-radius: 10px;
+  padding: 18px 28px;
+  display: flex;
+  gap: 48px;
+  flex-shrink: 0;
+}
+
+.layout-exercise .questions-section .q-group {
+  flex: 1;
+}
+
+.layout-exercise .questions-section .q-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(96,182,178,0.3);
+}
+
+/* ── Layout: exercise-answer (Before/After) ── */
+.layout-exercise-answer {
+  justify-content: flex-start;
+  padding: 28px 48px 48px;
+  gap: 0;
+}
+
+.layout-exercise-answer .exercise-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  width: 100%;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.layout-exercise-answer .exercise-header .slide-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--heading);
+  margin: 0;
+}
+
+.layout-exercise-answer .ba-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  gap: 16px;
+}
+
+.layout-exercise-answer .ba-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+}
+
+.layout-exercise-answer .ba-label {
+  width: 72px;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 6px 0;
+  border-radius: 6px;
+}
+
+.layout-exercise-answer .ba-label.before {
+  background: #fee2e2;
+  color: #c0392b;
+}
+
+.layout-exercise-answer .ba-label.after {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.layout-exercise-answer .ba-flow {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 10px 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.layout-exercise-answer .ba-flow.before-flow {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.layout-exercise-answer .ba-flow.after-flow {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.layout-exercise-answer .ba-flow .flow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 100px;
+  flex-shrink: 0;
+}
+
+.layout-exercise-answer .ba-flow .flow-step .step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+
+.layout-exercise-answer .before-flow .flow-step .step-num {
+  background: #999;
+}
+
+.layout-exercise-answer .after-flow .flow-step .step-num {
+  background: var(--accent);
+}
+
+.layout-exercise-answer .ba-flow .flow-step .step-text {
+  font-size: 0.78rem;
+  color: #333;
+  text-align: center;
+  line-height: 1.35;
+  max-width: 110px;
+}
+
+.layout-exercise-answer .ba-flow .flow-step .step-who {
+  font-size: 0.68rem;
+  color: #999;
+  margin-top: 2px;
+}
+
+.layout-exercise-answer .ba-flow .flow-arrow {
+  font-size: 1rem;
+  color: #ccc;
+  flex-shrink: 0;
+  margin: 0 3px;
+  padding-bottom: 14px;
+}
+
+.layout-exercise-answer .ba-flow .flow-loop {
+  font-size: 0.72rem;
+  color: #c0392b;
+  font-weight: 700;
+  margin: 0 3px;
+  padding-bottom: 14px;
+}
+
+.layout-exercise-answer .ba-flow .flow-time {
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: 8px;
+  margin-bottom: 14px;
+}
+
+.layout-exercise-answer .before-flow .flow-time {
+  background: #c0392b;
+  color: #fff;
+}
+
+.layout-exercise-answer .after-flow .flow-time {
+  background: #065f46;
+  color: #fff;
+}
+
+.layout-exercise-answer .ba-flow .step-removed {
+  opacity: 0.35;
+  text-decoration: line-through;
+}
+
+.layout-exercise-answer .ba-flow .step-new .step-num {
+  box-shadow: 0 0 0 3px rgba(96,182,178,0.3);
+}
+
+.layout-exercise-answer .takeaway-bar {
+  width: 100%;
+  background: var(--heading);
+  border-radius: 10px;
+  padding: 22px 32px;
+  display: flex;
+  gap: 40px;
+  flex-shrink: 0;
+  margin-top: 12px;
+}
+
+.layout-exercise-answer .takeaway-bar .tw-item {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.layout-exercise-answer .takeaway-bar .tw-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.layout-exercise-answer .takeaway-bar .tw-text {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.92);
+  line-height: 1.5;
+}
+
+.layout-exercise .questions-section li {
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.92);
+  margin-bottom: 8px;
+  list-style: none;
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.layout-exercise .questions-section li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-size: 0.85rem;
+}
+
+/* ── Side Panel (slide navigator) ── */
+.panel-toggle {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 210;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.06);
+  color: #666;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.panel-toggle:hover {
+  background: rgba(0,0,0,0.12);
+}
+
+.side-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 240px;
+  height: 100vh;
+  background: #f7f7f8;
+  border-right: 1px solid #e5e7eb;
+  z-index: 200;
+  transform: translateX(-100%);
+  transition: transform 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.side-panel.open {
+  transform: translateX(0);
+}
+
+.side-panel-header {
+  padding: 14px 16px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #999;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.side-panel-close {
+  border: none;
+  background: none;
+  color: #999;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.side-panel-close:hover {
+  background: rgba(0,0,0,0.08);
+  color: #333;
+}
+
+.side-panel-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.side-panel-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: #555;
+  line-height: 1.4;
+  border-left: 3px solid transparent;
+  transition: background 0.12s;
+}
+.side-panel-item:hover {
+  background: rgba(0,0,0,0.04);
+}
+.side-panel-item.active {
+  background: rgba(0,29,59,0.06);
+  color: var(--heading);
+  font-weight: 600;
+  border-left-color: var(--accent);
+}
+.side-panel-item .item-num {
+  flex-shrink: 0;
+  width: 22px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: #aaa;
+  font-size: 0.75rem;
+}
+.side-panel-item.active .item-num {
+  color: var(--accent);
+}
+.side-panel-item .item-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.side-panel-section {
+  padding: 10px 16px 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #bbb;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* overlay to close panel on outside click */
+.panel-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 190;
+  background: rgba(0,0,0,0.15);
+}
+.panel-overlay.open {
+  display: block;
+}
+</style>
+</head>
+<body>
+
+<button class="panel-toggle" id="panelToggle" title="スライド一覧">☰</button>
+<div class="panel-overlay" id="panelOverlay"></div>
+<nav class="side-panel" id="sidePanel">
+  <div class="side-panel-header">
+    <span>スライド一覧</span>
+    <button class="side-panel-close" id="panelClose">✕</button>
+  </div>
+  <div class="side-panel-list" id="sidePanelList"></div>
+</nav>
+
+<div class="progress-bar" id="progressBar"></div>
+<div class="slide-counter" id="slideCounter"></div>
+
+<div class="slide-container" id="slideContainer">
+
+<!-- ========== SLIDE 1 ========== -->
+<div class="slide layout-title" data-section="オープニング">
+  <div class="main-title">AI集中講義 + Hands-on</div>
+  <div class="sub-info">
+    <span>BPIO 1dayインターン 2026</span>
+    <span style="margin-top:12px; font-size:1.05rem; color:#777;">10:35 – 11:35（60分）</span>
+    <span style="font-size:1.05rem; color:#777;">講師: 堀江（BPIO）</span>
+  </div>
+  <div class="arrow-hint">← →  矢印キーまたはクリックで操作</div>
+</div>
+
+<!-- ========== SLIDE 2 ========== -->
+<div class="slide layout-content" data-section="オープニング">
+  <div class="section-label">オープニング</div>
+  <div class="slide-title">今日の60分で扱うこと</div>
+  <ul class="points">
+    <li><strong>前半</strong> — AIツールの変遷と、実務での正しい使い方</li>
+    <li><strong>後半</strong> — Google製品を使ったハンズオン体験</li>
+    <li><strong>ゴール</strong> — 午後のワークショップに必要な武器を全て手に入れる</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 3 ========== -->
+<div class="slide layout-quote" data-section="オープニング">
+  <div class="slide-title">AIで業務改善と聞いて、何を思い浮かべるか？</div>
+  <ul class="points">
+    <li>ChatGPTに文章を書かせる？</li>
+    <li>自動で議事録をまとめる？</li>
+    <li>何かを「生成」すること？</li>
+    <li>60分後、この答えが変わる</li>
+  </ul>
+</div>
+
+<!-- ペース配分メモ: Slide 5-13（AIの変遷）は情報密度が高い。1枚2-3分を目安に、全体で約15分。Slide 14, 22のブリッジは数秒で通過。 -->
+<!-- ========== SLIDE 4 ========== -->
+<div class="slide layout-bridge" data-section="AIツールの変遷">
+  <div class="section-label">AIツールの変遷</div>
+  <div class="slide-title">まずは変遷から</div>
+  <ul class="points">
+    <li>まずは、AIツールがどのような流れで進化してきたのか。</li>
+    <li>ビジネスの現場がどう変わったのかを見ていきましょう。</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 5 ========== -->
+<div class="slide layout-content" data-section="AIツールの変遷">
+  <div class="section-label">AIツールの変遷</div>
+  <div class="slide-title">AIツール 3つの時代</div>
+  <ul class="points">
+    <li><strong>第1世代: Chat時代</strong>（2022〜）</li>
+    <li><strong>第2世代: ワークフロー構築ツール時代</strong>（2023〜）</li>
+    <li><strong>第3世代: AIエージェント時代</strong>（2025〜）</li>
+    <li>わずか3年で大きく変化した</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 6 ========== -->
+<div class="slide layout-content" data-section="AIツールの変遷">
+  <div class="section-label">AIツールの変遷 — 第1世代</div>
+  <div class="slide-title">第1世代: Chat時代 — 対話型AIの始まり</div>
+  <ul class="points">
+    <li><strong>ChatGPT</strong>（2022年11月）が火付け役</li>
+    <li><strong>Claude</strong> — Anthropic社の対話AI。安全性と長文理解に強み。現在ChatGPTと並ぶ主力ツール</li>
+    <li>できること: 質問応答、文章作成、翻訳、要約</li>
+    <li>限界: 人間が1回ずつ指示を出す必要がある</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 7 ========== -->
+<div class="slide layout-content" data-section="AIツールの変遷">
+  <div class="section-label">AIツールの変遷 — 第1世代</div>
+  <div class="slide-title">Chat時代 — ビジネスの現場では</div>
+  <ul class="points">
+    <li>主な用途: メール下書き、議事録要約、翻訳、情報の整理</li>
+    <li>期待: 「ホワイトカラーの仕事がAIに置き換わる」と言われた</li>
+    <li>実態: 個人の作業効率は上がったが、業務プロセス全体は変わらなかった</li>
+    <li>課題: 1回ずつ人間が指示する必要があり、大量の定型業務には向かなかった</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 8 ========== -->
+<div class="slide layout-twoColumn" data-section="AIツールの変遷">
+  <div class="section-label">AIツールの変遷 — 第2世代</div>
+  <div class="slide-title">第2世代: ワークフロー構築ツール時代</div>
+
+  <div class="columns">
+    <div class="col">
+      <div class="col-label">主なツール</div>
+      <ul class="points">
+        <li><strong>Dify / Make</strong> — アプリ間をつなぐローコード/ノーコードツール</li>
+        <li><strong>Notion AI</strong> — ドキュメント内でAIを活用</li>
+      </ul>
+    </div>
+    <div class="col">
+      <div class="col-label">実態</div>
+      <ul class="points">
+        <li>当時の期待: 複数アプリをAIでつないで業務自動化</li>
+        <li>現実: コスト高 + 各アプリが自社AI機能を内蔵し始めた</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 9 ========== -->
+<div class="slide layout-content" data-section="AIツールの変遷">
+  <div class="section-label">AIツールの変遷 — 第2世代</div>
+  <div class="slide-title">Workflow時代 — ビジネスの現場では</div>
+  <ul class="points">
+    <li>主な用途: CRMの更新 → メール自動送信 → スプレッドシートに記録、のような連携</li>
+    <li>期待: 「ノーコードで業務自動化が誰でもできる」と注目された</li>
+    <li>実態: 初期構築はできても、保守・運用コストが想定以上に膨らんだ</li>
+    <li>課題: ツール間の接続が壊れやすく、エラー対応に専門知識が必要だった</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 10 ========== -->
+<div class="slide layout-content" data-section="AIツールの変遷">
+  <div class="section-label">AIツールの変遷 — 第2世代</div>
+  <div class="slide-title">ワークフローツールが縮小した理由</div>
+  <ul class="points">
+    <li>各アプリが<strong>自社でAI機能を実装</strong>し始めた</li>
+    <li>外部ツールで「つなぐ」必要性が低下した</li>
+    <li>運用コストの高さがボトルネックになった</li>
+    <li>Dify/Makeは消えてはいないが、主流ではなくなった</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 11 ========== -->
+<div class="slide layout-content" data-section="AIツールの変遷">
+  <div class="section-label">AIツールの変遷 — 第3世代</div>
+  <div class="slide-title">第3世代: AIエージェント時代</div>
+  <ul class="points">
+    <li><strong>Claude Code / Codex</strong>（開発者向けAIツール）— AIが自律的にコードを書き、タスクを実行する</li>
+    <li>人間は「ゴール」を伝えるだけでよい</li>
+    <li>AIが<strong>計画 → 実行 → 検証</strong>まで一気通貫で行う</li>
+    <li>2025年〜、実用化が始まっている</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 12 ========== -->
+<div class="slide layout-content" data-section="AIツールの変遷">
+  <div class="section-label">AIツールの変遷 — 第3世代</div>
+  <div class="slide-title">Agent時代 — ビジネスの現場では</div>
+  <ul class="points">
+    <li>主な用途: コード生成、ドキュメント作成、データ分析の自動化</li>
+    <li>期待: 「AIエージェントがワークフロー全体を担う」という構想が広がっている</li>
+    <li>実態: ツールを作る能力は高いが、クライアント成果物の品質保証は別問題</li>
+    <li><strong>ここに今日のテーマ「AIに自動化ツールを作らせる」の考え方が出てくる</strong></li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 13 ========== -->
+<div class="slide layout-content" data-section="AIツールの変遷">
+  <div class="section-label">AIツールの変遷 — まとめ</div>
+  <div class="slide-title">3世代の整理 — 何が変わったのか</div>
+  <ul class="points">
+    <li><strong>Chat時代</strong> — 人間が1回ずつ指示 → AIが1回答える</li>
+    <li><strong>Workflow時代</strong> — 人間が事前にフローを設計 → AIが決まった手順を実行</li>
+    <li><strong>Agent時代</strong> — 人間がゴールを伝える → AIが自律的に完遂</li>
+    <li>共通課題: どの時代も「AIをどう業務に組み込むか」が問われた</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 14 ========== -->
+<div class="slide layout-bridge" data-section="実務でAIをどう使うか">
+  <div class="section-label">実務でAIをどう使うか</div>
+  <div class="slide-title">ではビジネス現場でどう使えばいいのか</div>
+  <ul class="points">
+    <li>ツールの進化は分かった。では、実際のビジネス現場ではどう使えばいいのか。</li>
+    <li>ここからが今日一番伝えたいことです。</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 15 ========== -->
+<div class="slide layout-quote" data-section="実務でAIをどう使うか">
+  <div class="slide-title">よくある誤解: 「AIで自動生成 = 業務改善」？</div>
+  <ul class="points">
+    <li>AIに議事録を書かせる、メールを生成する、レポートを作らせる...</li>
+    <li>それ自体は便利ですが、<strong>業務改善ではありません</strong></li>
+    <li>なぜか？ — 業務フロー全体を見ていないからです</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 16 ========== -->
+<div class="slide layout-content" data-section="実務でAIをどう使うか">
+  <div class="section-label">コアメッセージ</div>
+  <div class="slide-title">現実①: 業務フローの改善が大前提</div>
+  <ul class="points">
+    <li>AIを入れる前に、まず<strong>業務の流れを整理します</strong></li>
+    <li>どこに無駄があるか、どこで人が詰まっているかを把握します</li>
+    <li>フローが悪いままAIを載せても、余計に混乱を招くだけです</li>
+    <li>BPOの現場で最も重要なのはこの工程です</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 17 ========== -->
+<div class="slide layout-twoColumn" data-section="実務でAIをどう使うか">
+  <div class="section-label">コアメッセージ</div>
+  <div class="slide-title">現実②: フローの中の「自動化できるポイント」を洗い出す</div>
+  <div class="columns">
+    <div class="col">
+      <div class="col-label">自動化に向くもの</div>
+      <ul class="points">
+        <li>繰り返し作業</li>
+        <li>計算処理</li>
+        <li>定型フォーマット出力</li>
+        <li>データ転記</li>
+      </ul>
+    </div>
+    <div class="col">
+      <div class="col-label">人間が担うべきもの</div>
+      <ul class="points">
+        <li>判断が必要な承認</li>
+        <li>例外対応</li>
+        <li>対人コミュニケーション</li>
+        <li style="margin-top:24px; font-size:1.05rem; color:#666;">例: 支払通知書の作成・送信 → 計算もフォーマットも毎月同じ → <strong>自動化の好適対象</strong></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 18 ========== -->
+<div class="slide layout-content" data-section="実務でAIをどう使うか">
+  <div class="section-label">コアメッセージ</div>
+  <div class="slide-title">重要な指摘: なぜAIをフローに直接入れないのか</div>
+  <ul class="points">
+    <li>LLM（大規模言語モデル）は出力に<strong>「揺れ」</strong>がある</li>
+    <li>同じ指示でも、毎回微妙に違う結果になる</li>
+    <li>自然言語で生成 → フォーマット・数値の一貫性を保証できない</li>
+    <li>クライアント成果物 = 毎回同じルールで<strong>確実に</strong>出力される必要がある</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 19 ========== -->
+<div class="slide layout-twoColumn" data-section="実務でAIをどう使うか">
+  <div class="section-label">コアメッセージ</div>
+  <div class="slide-title">クライアント成果物に求められる品質</div>
+  <div class="columns">
+    <div class="col">
+      <div class="col-label">AI直接生成の問題</div>
+      <ul class="points">
+        <li>フォーマットのブレ</li>
+        <li>数値の丸め誤差</li>
+        <li>項目の抜け漏れ</li>
+        <li>毎回の確認・修正コストが発生 → 自動化の意味が薄れる</li>
+      </ul>
+    </div>
+    <div class="col">
+      <div class="col-label">求められる品質</div>
+      <ul class="points">
+        <li>同じ入力 → 同じ出力（<strong>決定的な処理</strong>）</li>
+        <li>計算は1円単位で正確</li>
+        <li>レイアウトは完全に統一</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 20 ========== -->
+<div class="slide layout-content" data-section="実務でAIをどう使うか">
+  <div class="section-label">コアメッセージ</div>
+  <div class="slide-title">正しいアプローチ: AIに「自動化ツール」を作らせる</div>
+  <ul class="points">
+    <li>AIがフローに介在するのではありません</li>
+    <li>フローを自動化する<strong>プログラム（GAS等）</strong>を、AIに書かせます</li>
+    <li>プログラムは同じ入力に対して常に同じ出力を返します</li>
+    <li>AIの役割 = <strong>ツールを作る職人</strong>。実行するのはプログラムです</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 21 ========== -->
+<div class="slide layout-content" data-section="実務でAIをどう使うか">
+  <div class="section-label">コアメッセージ — まとめ</div>
+  <div class="slide-title">実務で通用するAI業務改善</div>
+  <ul class="points">
+    <li><strong>Step 1.</strong> 業務フローを整理・改善する</li>
+    <li><strong>Step 2.</strong> 自動化できるポイントを特定する</li>
+    <li><strong>Step 3.</strong> 自動化ツール（GAS等）を<strong>AIに作らせる</strong></li>
+    <li><strong>Step 4.</strong> ツールが正確に繰り返し実行</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 22 ========== -->
+<div class="slide layout-bridge" data-section="演習">
+  <div class="section-label">Exercise</div>
+  <div class="slide-title">演習: 今の考え方を使ってみましょう</div>
+  <ul class="points">
+    <li>あるバックオフィス業務のフローを見て</li>
+    <li>改善点を見つけてください（15分間）</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 23 ========== -->
+<div class="slide layout-content" data-section="演習">
+  <div class="section-label">Exercise</div>
+  <div class="slide-title">シナリオ: ある企業の見積書作成</div>
+  <ul class="points">
+    <li>営業30名・経理2名の中小企業</li>
+    <li>月に約50件の見積書を作成・送付しています</li>
+    <li>顧客から依頼を受けてから見積書が届くまで、平均2営業日かかっています</li>
+    <li>経営者から「もっと速くできないか」と相談を受けました</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 24 ========== -->
+<div class="slide layout-demo" data-section="演習">
+  <div class="section-label">Exercise — 現状</div>
+  <div class="slide-title">現状のフロー</div>
+  <ul class="points">
+    <li data-step="1">営業が顧客から見積依頼を受けます</li>
+    <li data-step="2">営業→経理にメールで依頼（過去の見積書をコピペして要件を説明）</li>
+    <li data-step="3">経理がExcelテンプレートを開き、手動で書き換えます</li>
+    <li data-step="4">経理→上長にメールで承認依頼</li>
+    <li data-step="5">上長が確認・返信（修正指示 → ステップ3に戻る。平均1.5往復）</li>
+    <li data-step="6">確定後、PDF化 → 営業にメール返送 → 営業が顧客にメール送信</li>
+    <li data-step="⏱">全体所要時間: <strong>平均2営業日</strong></li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 25 ========== -->
+<div class="slide layout-exercise" data-section="演習">
+  <div class="exercise-header">
+    <div class="slide-title">演習: 見積書作成フローを改善せよ</div>
+    <div class="exercise-time">15分間</div>
+  </div>
+
+  <div class="scenario-bar">
+    <span><strong>企業</strong> 営業30名・経理2名の中小企業</span>
+    <span><strong>業務</strong> 月50件の見積書を作成・送付</span>
+    <span><strong>課題</strong> 「もっと速くできないか」と経営者から相談</span>
+  </div>
+
+  <div class="flow-section">
+    <div class="flow-label">現状のフロー</div>
+    <div class="flow-diagram">
+      <div class="flow-step">
+        <div class="step-num">1</div>
+        <div class="step-text">見積依頼<br>を受ける</div>
+        <div class="step-who">営業</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num">2</div>
+        <div class="step-text">メールで<br>経理に依頼</div>
+        <div class="step-who">営業</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num">3</div>
+        <div class="step-text">Excelを<br>手動で書換</div>
+        <div class="step-who">経理</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num">4</div>
+        <div class="step-text">メールで<br>承認依頼</div>
+        <div class="step-who">経理→上長</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num">5</div>
+        <div class="step-text">確認・返信<br>(修正あり)</div>
+        <div class="step-who">上長</div>
+      </div>
+      <div class="flow-loop">↺ 平均1.5往復</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num">6</div>
+        <div class="step-text">PDF化<br>→メール送信</div>
+        <div class="step-who">営業</div>
+      </div>
+      <div class="flow-time">⏱ 平均2営業日</div>
+    </div>
+  </div>
+
+  <div class="questions-section">
+    <div class="q-group">
+      <div class="q-label">ヒント</div>
+      <ul>
+        <li>メールが何往復していますか？</li>
+        <li>同じ情報を何回転記していますか？</li>
+        <li>誰かの「待ち」で止まる箇所は？</li>
+      </ul>
+    </div>
+    <div class="q-group">
+      <div class="q-label">考えてみましょう</div>
+      <ul>
+        <li>フローのどこを変えれば速くなりますか？</li>
+        <li>どの作業を自動化できますか？</li>
+        <li>AIはどの場面で使えますか？</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 26 ========== -->
+<div class="slide layout-exercise-answer" data-section="演習">
+  <div class="exercise-header">
+    <div class="slide-title">改善例: Before → After</div>
+  </div>
+
+  <div class="ba-container">
+    <!-- Before row -->
+    <div class="ba-row">
+      <div class="ba-label before">Before</div>
+      <div class="ba-flow before-flow">
+        <div class="flow-step">
+          <div class="step-num">1</div>
+          <div class="step-text">見積依頼<br>を受ける</div>
+          <div class="step-who">営業</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step step-removed">
+          <div class="step-num">2</div>
+          <div class="step-text">メールで<br>経理に依頼</div>
+          <div class="step-who">営業</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step step-removed">
+          <div class="step-num">3</div>
+          <div class="step-text">Excelを<br>手動で書換</div>
+          <div class="step-who">経理</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step step-removed">
+          <div class="step-num">4</div>
+          <div class="step-text">メールで<br>承認依頼</div>
+          <div class="step-who">経理→上長</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step step-removed">
+          <div class="step-num">5</div>
+          <div class="step-text">確認・返信<br>(修正あり)</div>
+          <div class="step-who">上長</div>
+        </div>
+        <div class="flow-loop">↺ 1.5往復</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step step-removed">
+          <div class="step-num">6</div>
+          <div class="step-text">PDF化<br>→メール送信</div>
+          <div class="step-who">営業</div>
+        </div>
+        <div class="flow-time">⏱ 2営業日</div>
+      </div>
+    </div>
+
+    <!-- After row -->
+    <div class="ba-row">
+      <div class="ba-label after">After</div>
+      <div class="ba-flow after-flow">
+        <div class="flow-step">
+          <div class="step-num">1</div>
+          <div class="step-text">見積依頼<br>を受ける</div>
+          <div class="step-who">営業</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step step-new">
+          <div class="step-num">2</div>
+          <div class="step-text">フォームに<br>入力</div>
+          <div class="step-who">営業</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step step-new">
+          <div class="step-num">3</div>
+          <div class="step-text">見積書を<br>自動生成</div>
+          <div class="step-who">GAS</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step step-new">
+          <div class="step-num">4</div>
+          <div class="step-text">Slackで<br>ワンクリック承認</div>
+          <div class="step-who">上長</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step step-new">
+          <div class="step-num">5</div>
+          <div class="step-text">PDF生成<br>→自動送信</div>
+          <div class="step-who">GAS</div>
+        </div>
+        <div class="flow-time">⏱ 30分以内</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="takeaway-bar">
+    <div class="tw-item">
+      <div class="tw-label">フロー改善</div>
+      <div class="tw-text">メール往復を廃止 → フォーム + ワンクリック承認に</div>
+    </div>
+    <div class="tw-item">
+      <div class="tw-label">自動化</div>
+      <div class="tw-text">見積書生成・PDF化・送信をGASで自動実行</div>
+    </div>
+    <div class="tw-item">
+      <div class="tw-label">AIの役割</div>
+      <div class="tw-text">このGASコードをAIに書かせた</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 27 ========== -->
+<div class="slide layout-bridge" data-section="今日のツールとデモ">
+  <div class="section-label">今日のツールとデモ</div>
+  <div class="slide-title">次は実際に手を動かして実践します</div>
+  <ul class="points">
+    <li>演習で体感した考え方を、このあと実際に手を動かして実践します。</li>
+    <li>まずは今日使うツールの紹介とデモをご覧ください。</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 28 ========== -->
+<div class="slide layout-content" data-section="今日のツールとデモ">
+  <div class="section-label">ツール選択</div>
+  <div class="slide-title">なぜGoogle製品か</div>
+  <ul class="points">
+    <li>変遷で紹介したDify等のワークフローツールもありますが、実務ではクライアントの環境に合わせて最適なツールを選びます</li>
+    <li>企業のIT基盤は大きく2系統: <strong>Microsoft 365</strong> / <strong>Google Workspace</strong></li>
+    <li>今回の架空クライアント（S社）はGoogle Workspace利用企業です</li>
+    <li>→ Google製品（Gemini / GAS / NotebookLM）で統一します</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 29 ========== -->
+<div class="slide layout-content" data-section="今日のツールとデモ">
+  <div class="section-label">ツール選択</div>
+  <div class="slide-title">今日使う3つのツール — 役割の切り分け</div>
+  <ul class="points">
+    <li><strong>NotebookLM</strong> — 資料をアップロード → その内容だけを根拠に回答するAI</li>
+    <li><strong>Gemini</strong> — Google製のAI。今日はGASコードを書かせるために使う</li>
+    <li><strong>GAS</strong>（Google Apps Script）— Googleサービスをプログラムで自動操作するツール</li>
+    <li>3つの役割は明確に異なります。混同しないようにしましょう</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 30 ========== -->
+<div class="slide layout-demo" data-section="今日のツールとデモ">
+  <div class="section-label">デモ</div>
+  <div class="slide-title">GASで支払通知書を自動生成・送信</div>
+  <ul class="points">
+    <li data-step="Before">Excelで1人ずつ計算 → 通知書を手作業で作成 → メールで個別送信（<strong>月3営業日</strong>）</li>
+    <li data-step="After">ボタン1つで計算 → PDF生成 → メール送信が全自動（<strong>数分</strong>）</li>
+    <li data-step="実演">スプレッドシートの「支払通知書送信」ボタンを押す</li>
+    <li data-step="要点">AIが書いたGASコードがこの自動化を実現しています</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 31 ========== -->
+<div class="slide layout-content" data-section="今日のツールとデモ">
+  <div class="section-label">デモ</div>
+  <div class="slide-title">デモで見てほしいポイント</div>
+  <ul class="points">
+    <li><strong>計算の正確性</strong> — 消費税・源泉徴収が1円単位で正確</li>
+    <li><strong>フォーマットの統一</strong> — インボイス登録有/無の2パターンでPDFが切り替わる</li>
+    <li><strong>安全策</strong> — TEST_MODEで本番送信を防止できる</li>
+    <li>これがAIに作らせた「確実に動くツール」の実例です</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 32 ========== -->
+<div class="slide layout-bridge" data-section="ハンズオン">
+  <div class="section-label">Hands-on</div>
+  <div class="slide-title">ハンズオン: 午後ワークの予行演習</div>
+  <ul class="points">
+    <li>Phase 1: NotebookLMで顧客bot作成</li>
+    <li>Phase 2: ヒアリングで課題発見</li>
+    <li>Phase 3: GeminiでGASコード生成</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 33 ========== -->
+<div class="slide layout-content" data-section="ハンズオン">
+  <div class="section-label">ハンズオン — 背景</div>
+  <div class="slide-title">S社（株式会社スプラウト）の紹介</div>
+  <ul class="points">
+    <li>SNSマーケティング支援企業（社員25名 + 業務委託者約40名）</li>
+    <li>経理担当: <strong>佐藤あゆみさん</strong>（ひとり経理 + 総務兼任）</li>
+    <li>困りごと: 毎月40名分の支払通知書を手作業で作成・送信</li>
+    <li>皆さんは「業務改善コンサルタント」として課題解決に取り組む</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 34 ========== -->
+<div class="slide layout-twoColumn" data-section="ハンズオン">
+  <div class="section-label">ハンズオン — 用語</div>
+  <div class="slide-title">知っておきたい用語（経理の基礎知識）</div>
+  <div class="columns">
+    <div class="col">
+      <div class="col-label">経理用語</div>
+      <ul class="points">
+        <li><strong>業務委託</strong> — 正社員ではなく外部専門家への発注契約</li>
+        <li><strong>支払通知書</strong> — 業務委託者への「給与明細」に相当する書類</li>
+        <li><strong>源泉徴収</strong> — 報酬から所得税を先に差し引く仕組み（税率10.21%、報酬100万円以下の場合）</li>
+      </ul>
+    </div>
+    <div class="col">
+      <div class="col-label">ツール用語</div>
+      <ul class="points">
+        <li><strong>インボイス制度</strong> — 2023年開始。登録番号の有無で通知書の形式が変わる</li>
+        <li><strong>GAS</strong> — Googleサービスをプログラムで自動操作するツール</li>
+        <li><strong>NotebookLM</strong> — アップロード資料だけを根拠に回答するAI</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 35 ========== -->
+<div class="slide layout-handson" data-section="ハンズオン">
+  <div class="section-label">Phase 1</div>
+  <div class="slide-title">NotebookLMで顧客botを触ってみる</div>
+  <ul class="points">
+    <li><span class="badge">1</span>スライド下部のQRコード、またはチャットで共有されたNotebookLMリンクをブラウザで開く</li>
+    <li><span class="badge">2</span>チャット欄に質問を入力 → 佐藤さん（bot）が回答</li>
+    <li><span class="badge">3</span>試してみよう: <strong>「普段のお仕事を教えてください」</strong></li>
+    <li><span class="badge">!</span>NotebookLMの特徴: アップロードした資料の範囲だけで回答します（嘘をつきにくい設計です）</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 36 ========== -->
+<div class="slide layout-handson" data-section="ハンズオン">
+  <div class="section-label">Phase 2</div>
+  <div class="slide-title">ヒアリングで課題を引き出しましょう</div>
+  <ul class="points">
+    <li><span class="badge">1</span>顧客bot（佐藤さん）に質問して、業務の実態と課題を聞き出してください</li>
+    <li><span class="badge">2</span>どのような質問をすれば核心に迫れるか、チームで相談しながら進めましょう</li>
+    <li><span class="badge">3</span>聞き出した内容をもとに、課題を整理し、改善のねらいどころを定義してください</li>
+    <li><span class="badge">!</span>午前の講義で学んだ「業務フロー → 自動化ポイント」の考え方を活かしましょう</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 37 ========== -->
+<div class="slide layout-handson" data-section="ハンズオン">
+  <div class="section-label">Phase 3</div>
+  <div class="slide-title">AIを使って自動化ツールを作りましょう</div>
+  <ul class="points">
+    <li><span class="badge">1</span>Phase 2で特定した課題に対して、どう自動化するかをチームで設計してください</li>
+    <li><span class="badge">2</span>Geminiにプロンプト（= AIへの指示文）を投げて、GASコードを生成させましょう</li>
+    <li><span class="badge">3</span>どんなプロンプトを書けば正しいコードが返ってくるか、試行錯誤してみてください</li>
+    <li><span class="badge">!</span>講義で伝えた通り、AIの役割は「ツールを作る職人」です。完成したツールが正確に動くかを検証しましょう</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 38 ========== -->
+<div class="slide layout-content" data-section="ハンズオン">
+  <div class="section-label">午後のワークショップ</div>
+  <div class="slide-title">午後の全体の流れ</div>
+  <ul class="points">
+    <li><strong>12:35-14:20 設計スプリント</strong> — 顧客bot作成 → ヒアリング → 課題定義</li>
+    <li><strong>14:35-16:20 実装スプリント</strong> — GASでPDF生成 → メール送信 → ボタン一発実行化</li>
+    <li><strong>16:40-17:40 最終発表</strong> — 顧客理解 → 課題 → 自動化のストーリーでデモ</li>
+    <li>評価: 課題の捉え方 / 改善の実装度 / デモの完成度とストーリー</li>
+  </ul>
+</div>
+
+<!-- ========== SLIDE 39 ========== -->
+<div class="slide layout-content" data-section="ハンズオン">
+  <div class="section-label">まとめ</div>
+  <div class="slide-title">ランチ前のまとめ</div>
+  <ul class="points">
+    <li><strong>AIの正しい使い方</strong> — フロー改善 → 自動化ポイント特定 → AIにツールを作らせる</li>
+    <li><strong>今日の武器</strong> — NotebookLM（顧客理解）/ Gemini（コード生成）/ GAS（自動化実行）</li>
+    <li><strong>午後のゴール</strong> — S社 佐藤さんの支払通知書作業を自動化する</li>
+    <li>困ったらメンターに声をかけてください</li>
+  </ul>
+</div>
+
+</div><!-- /slide-container -->
+
+<script>
+(function() {
+  var slides = document.querySelectorAll('.slide');
+  var total = slides.length;
+  var current = 0;
+  var counter = document.getElementById('slideCounter');
+  var progress = document.getElementById('progressBar');
+
+  // ── Side Panel ──
+  var panel = document.getElementById('sidePanel');
+  var panelList = document.getElementById('sidePanelList');
+  var panelToggle = document.getElementById('panelToggle');
+  var panelClose = document.getElementById('panelClose');
+  var overlay = document.getElementById('panelOverlay');
+  var panelItems = [];
+
+  function buildPanel() {
+    var lastSection = '';
+    for (var i = 0; i < total; i++) {
+      var slide = slides[i];
+      var section = slide.getAttribute('data-section') || '';
+      if (section && section !== lastSection) {
+        var sec = document.createElement('div');
+        sec.className = 'side-panel-section';
+        sec.textContent = section;
+        panelList.appendChild(sec);
+        lastSection = section;
+      }
+      var titleEl = slide.querySelector('.slide-title') || slide.querySelector('.main-title');
+      var title = titleEl ? titleEl.textContent : 'Slide ' + (i + 1);
+      var item = document.createElement('div');
+      item.className = 'side-panel-item';
+      item.setAttribute('data-idx', i);
+      item.innerHTML = '<span class="item-num">' + (i + 1) + '</span><span class="item-title">' + title + '</span>';
+      item.addEventListener('click', (function(idx) {
+        return function(e) {
+          e.stopPropagation();
+          show(idx);
+          closePanel();
+        };
+      })(i));
+      panelList.appendChild(item);
+      panelItems.push(item);
+    }
+  }
+
+  function openPanel() {
+    panel.classList.add('open');
+    overlay.classList.add('open');
+    panelToggle.style.display = 'none';
+    updatePanelHighlight();
+    // scroll active item into view
+    var activeItem = panelList.querySelector('.side-panel-item.active');
+    if (activeItem) activeItem.scrollIntoView({ block: 'nearest' });
+  }
+
+  function closePanel() {
+    panel.classList.remove('open');
+    overlay.classList.remove('open');
+    panelToggle.style.display = '';
+  }
+
+  function updatePanelHighlight() {
+    for (var i = 0; i < panelItems.length; i++) {
+      panelItems[i].classList.toggle('active', i === current);
+    }
+  }
+
+  panelToggle.addEventListener('click', function(e) { e.stopPropagation(); openPanel(); });
+  panelClose.addEventListener('click', function(e) { e.stopPropagation(); closePanel(); });
+  overlay.addEventListener('click', function(e) { e.stopPropagation(); closePanel(); });
+
+  buildPanel();
+
+  // ── Slide navigation ──
+  function show(idx) {
+    if (idx < 0 || idx >= total) return;
+    slides[current].classList.remove('active');
+    current = idx;
+    slides[current].classList.add('active');
+    counter.textContent = (current + 1) + ' / ' + total;
+    progress.style.width = ((current + 1) / total * 100) + '%';
+    updatePanelHighlight();
+  }
+
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+
+  show(0);
+
+  document.addEventListener('keydown', function(e) {
+    // Escape to toggle panel
+    if (e.key === 'Escape') {
+      if (panel.classList.contains('open')) { closePanel(); } else { openPanel(); }
+      return;
+    }
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+      e.preventDefault();
+      next();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      prev();
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      show(0);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      show(total - 1);
+    }
+  });
+
+  document.addEventListener('click', function(e) {
+    if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') return;
+    if (panel.classList.contains('open')) return;
+    var x = e.clientX;
+    if (x < window.innerWidth * 0.25) {
+      prev();
+    } else {
+      next();
+    }
+  });
+})();
+</script>
+</body>
+</html>
