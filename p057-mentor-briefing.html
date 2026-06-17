@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>メンター向け 当日ブリーフィング | p057 2028卒 1dayインターン</title>
+<style>
+/* ===== Base ===== */
+html { font-size: 15px; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color: #1a1a1a;
+  background: #fff;
+  line-height: 1.7;
+}
+
+/* ===== Layout ===== */
+.page-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+}
+
+/* ===== Sticky Pill Navigation ===== */
+.nav-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  border-bottom: 1px solid #ccc;
+  padding: 0.6rem 0;
+}
+.nav-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.4rem;
+  align-items: center;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.nav-inner::-webkit-scrollbar { display: none; }
+.nav-pill {
+  display: inline-block;
+  padding: 0.3rem 1rem;
+  border-radius: 999px;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #555;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.nav-pill:hover {
+  background: #f0f0f0;
+  color: #1a1a1a;
+  border-color: #999;
+}
+.nav-pill.active {
+  background: #1a1a1a;
+  color: #fff;
+  border-color: #1a1a1a;
+}
+
+/* ===== Report Header ===== */
+.report-header {
+  padding: 2.5rem 0 2rem;
+  border-bottom: 1px solid #bbb;
+  margin-bottom: 2rem;
+}
+.report-header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.4rem;
+}
+.report-subtitle {
+  color: #555;
+  font-size: 0.9rem;
+  margin-bottom: 1.4rem;
+}
+.summary-box {
+  border: 1px solid #bbb;
+  padding: 1rem 1.4rem;
+  background: #fafafa;
+}
+.summary-box ul {
+  list-style: none;
+  padding: 0;
+}
+.summary-box ul li {
+  padding: 0.2rem 0;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #e8e8e8;
+}
+.summary-box ul li:last-child { border-bottom: none; }
+.summary-box ul li::before {
+  content: "\25B8 ";
+  color: #888;
+}
+.summary-label {
+  font-weight: 600;
+  color: #333;
+}
+
+/* ===== Section Headings ===== */
+.section-block {
+  margin-bottom: 3rem;
+  scroll-margin-top: 70px;
+}
+h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid #999;
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.02em;
+}
+h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  padding-left: 0.7rem;
+  border-left: 3px solid #555;
+  margin: 1.4rem 0 0.7rem;
+}
+
+/* ===== Tables ===== */
+.table-wrap {
+  overflow-x: auto;
+  margin: 0.6rem 0 1.2rem;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+th {
+  background: #f0f0f0;
+  text-align: left;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid #bbb;
+  font-weight: 600;
+  white-space: nowrap;
+}
+td {
+  padding: 0.55rem 0.8rem;
+  border: 1px solid #bbb;
+  vertical-align: top;
+}
+tr:nth-child(even) td { background: #fafafa; }
+tr:nth-child(odd) td { background: #fff; }
+
+/* ===== Timetable specific ===== */
+.tt-table { font-size: 0.8rem; }
+.tt-table td { line-height: 1.65; }
+.tt-table th { white-space: nowrap; }
+.tt-time { white-space: nowrap; font-weight: 600; color: #333; }
+.tt-break td { background: #f7f7f7 !important; color: #666; }
+.tt-break .tt-time { color: #888; }
+
+/* Phase border colors */
+.phase-opening td:first-child { border-left: 3px solid #1a1a1a; }
+.phase-lecture td:first-child { border-left: 3px solid #1a1a1a; }
+.phase-break td:first-child { border-left: 3px solid #999; }
+.phase-design td:first-child { border-left: 3px solid #666; }
+.phase-dev td:first-child { border-left: 3px solid #666; }
+.phase-presentation td:first-child { border-left: 3px solid #1a1a1a; }
+.phase-closing td:first-child { border-left: 3px solid #1a1a1a; }
+
+/* Snapshot marker */
+.snapshot-marker {
+  display: inline-block;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  margin-left: 0.3rem;
+  vertical-align: middle;
+}
+
+/* ===== Role Cards ===== */
+.role-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.role-card {
+  border: 1px solid #ccc;
+  padding: 1rem 1.2rem;
+  background: #fff;
+}
+.role-card-header {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+.role-card-phase {
+  display: inline-block;
+  background: #f0f0f0;
+  color: #555;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  margin-right: 0.4rem;
+}
+.role-card p, .role-card ul {
+  font-size: 0.85rem;
+  color: #333;
+  line-height: 1.75;
+}
+.role-card ul {
+  padding-left: 1.2rem;
+  margin-top: 0.3rem;
+}
+.role-card li { margin-bottom: 0.2rem; }
+
+/* ===== Eval Cards ===== */
+.eval-layer {
+  border: 1px solid #bbb;
+  margin-bottom: 1.2rem;
+  background: #fff;
+}
+.eval-layer-header {
+  background: #f0f0f0;
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-bottom: 1px solid #bbb;
+}
+.eval-layer-body {
+  padding: 1rem;
+}
+.eval-layer-body p, .eval-layer-body li {
+  font-size: 0.85rem;
+  line-height: 1.75;
+}
+.eval-layer-body ul {
+  padding-left: 1.4rem;
+  margin: 0.4rem 0;
+}
+.eval-criteria-item {
+  margin-bottom: 0.5rem;
+}
+.eval-criteria-label {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+.eval-link {
+  display: inline-block;
+  margin-top: 0.6rem;
+  font-size: 0.82rem;
+  color: #1a1a1a;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.eval-link:hover { color: #555; }
+
+/* ===== Warning Section ===== */
+.warning-section {
+  border: 2px solid #1a1a1a;
+  padding: 1.2rem 1.4rem;
+  margin: 0.6rem 0 1.2rem;
+  background: #fafafa;
+}
+.warning-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid #ccc;
+}
+.warning-list {
+  list-style: none;
+  padding: 0;
+}
+.warning-list li {
+  font-size: 0.85rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid #eee;
+  line-height: 1.7;
+}
+.warning-list li:last-child { border-bottom: none; }
+.warning-ng {
+  display: inline-block;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  margin-right: 0.3rem;
+}
+.warning-ok {
+  display: inline-block;
+  background: #fff;
+  color: #1a1a1a;
+  border: 1px solid #1a1a1a;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  margin-right: 0.3rem;
+}
+.warning-note {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.8rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid #ddd;
+}
+
+/* ===== Resource Links ===== */
+.resource-group {
+  margin-bottom: 1.4rem;
+}
+.resource-group-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+.resource-table {
+  font-size: 0.82rem;
+}
+.resource-table td { padding: 0.4rem 0.7rem; }
+.resource-table a {
+  color: #1a1a1a;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.resource-table a:hover { color: #555; }
+.resource-type {
+  display: inline-block;
+  font-size: 0.68rem;
+  color: #777;
+  border: 1px solid #ccc;
+  padding: 0 0.4rem;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+/* ===== FAQ ===== */
+.faq-item {
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0.8rem 0;
+}
+.faq-item:last-child { border-bottom: none; }
+.faq-q {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.3rem;
+}
+.faq-a {
+  font-size: 0.85rem;
+  color: #444;
+  line-height: 1.75;
+  padding-left: 1rem;
+}
+
+/* ===== Report Footer ===== */
+.report-footer {
+  border-top: 1px solid #999;
+  margin-top: 3rem;
+  padding-top: 1rem;
+  font-size: 0.78rem;
+  color: #888;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+  html { font-size: 14px; }
+  .report-header h1 { font-size: 1.3rem; }
+  .page-wrap { padding: 0 1rem 3rem; }
+  .nav-inner { gap: 0.3rem; }
+  .nav-pill { font-size: 0.75rem; padding: 0.25rem 0.8rem; }
+  h2 { font-size: 1.05rem; }
+  table { font-size: 0.78rem; }
+  .tt-table { font-size: 0.72rem; }
+  th, td { padding: 0.45rem 0.6rem; }
+  .role-card { padding: 0.8rem 1rem; }
+  .warning-section { padding: 1rem; }
+}
+
+/* ===== Print ===== */
+@media print {
+  .nav-bar { display: none; }
+  .section-block { page-break-inside: avoid; }
+  .report-header { padding-top: 0; }
+  body { font-size: 12px; }
+  .page-wrap { max-width: 100%; padding: 0; }
+  .warning-section { border-width: 1px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Sticky Pill Navigation -->
+<nav class="nav-bar" aria-label="ページ内ナビゲーション">
+  <div class="nav-inner">
+    <a href="#sec-overview" class="nav-pill" data-section="sec-overview">概要</a>
+    <a href="#sec-timetable" class="nav-pill" data-section="sec-timetable">タイムテーブル</a>
+    <a href="#sec-role" class="nav-pill" data-section="sec-role">メンターの役割</a>
+    <a href="#sec-evaluation" class="nav-pill" data-section="sec-evaluation">評価ガイド</a>
+    <a href="#sec-caution" class="nav-pill" data-section="sec-caution">注意事項</a>
+    <a href="#sec-links" class="nav-pill" data-section="sec-links">資料リンク</a>
+    <a href="#sec-faq" class="nav-pill" data-section="sec-faq">FAQ</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- ============================================================ -->
+  <!-- Section 1: Overview -->
+  <!-- ============================================================ -->
+  <header class="report-header" id="sec-overview">
+    <h1>メンター向け 当日ブリーフィング</h1>
+    <p class="report-subtitle">p057 2028卒 1dayインターンシップ｜オンライン開催（Google Meet）</p>
+    <div class="summary-box">
+      <ul>
+        <li><span class="summary-label">目的：</span>この資料だけ見ればメンターとして当日動ける状態を作ること</li>
+        <li><span class="summary-label">テーマ：</span>架空クライアント「S社」（株式会社スプラウト）の支払通知書業務をAI+GASで自動化する1dayワークショップ</li>
+        <li><span class="summary-label">形式：</span>オンライン（Google Meet メインルーム + breakout rooms）</li>
+        <li><span class="summary-label">時間：</span>10:00 〜 18:00（8時間、うち昼休憩45分）</li>
+        <li><span class="summary-label">対象：</span>2028卒の未経験〜初心者学生（選考要素あり）</li>
+        <li><span class="summary-label">進行の流れ：</span>学生はNotebookLM上の「Aさんbot」にヒアリング → 課題発見 → 解決策設計 → GASプロトタイプ作成 → コンテスト形式で発表</li>
+        <li><span class="summary-label">ツール：</span>ChatGPT / NotebookLM / Gemini / GAS</li>
+        <li><span class="summary-label">評価：</span>Layer 1（チーム発表 100点満点）+ Layer 2（個人Snapshot観察、定性評価）の二層構造</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- ============================================================ -->
+  <!-- Section 2: Timetable -->
+  <!-- ============================================================ -->
+  <section class="section-block" id="sec-timetable">
+    <h2>タイムテーブル</h2>
+    <div class="table-wrap">
+      <table class="tt-table">
+        <thead>
+          <tr>
+            <th>時間</th>
+            <th>セッション</th>
+            <th>内容</th>
+            <th>メンターの動き</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Opening -->
+          <tr class="phase-opening">
+            <td class="tt-time">10:00-10:20</td>
+            <td>オープニング<br><span style="font-size:0.7rem;color:#888;">20分</span></td>
+            <td>Google Meet接続確認・入室確認、会社紹介、当日の流れ説明、選考要素ありの説明、緊急時の連絡フロー共有。学生には「個別FBあり」は伝えない。</td>
+            <td>接続確認を補助し、学生の入室状況・第一印象を観察する。禁止ワード（「個別FBします」等）を口にしないよう留意。</td>
+          </tr>
+          <tr class="phase-opening">
+            <td class="tt-time">10:20-10:35</td>
+            <td>自己紹介・チーム発表<br><span style="font-size:0.7rem;color:#888;">15分</span></td>
+            <td>学生の自己紹介、チーム編成の発表、各breakout roomへの移動。ランチを純休憩にするため午前に前倒し。</td>
+            <td>自己紹介での学生の発言内容・コミュニケーション姿勢を観察。担当breakout roomへ移動し受け入れ準備。</td>
+          </tr>
+          <!-- AI Lecture -->
+          <tr class="phase-lecture">
+            <td class="tt-time">10:35-11:35</td>
+            <td>AI集中講義 + hands-on<br><span style="font-size:0.7rem;color:#888;">60分</span></td>
+            <td>リモート講師によるオンライン登壇。前半（約25-30分）: 生成AI/ChatGPTの基礎・プロンプト操作（完全未経験Lv1向け）。後半（約25-30分+バッファ5分）: ツールハンズオン — NotebookLMで顧客bot体験 → GeminiでGASコード自然言語生成 → GASを貼り付けてPDF生成・Gmail送信を実行。Claude Codeはデモのみ。</td>
+            <td>各breakout roomで未経験者(Lv1)を重点フォロー。巡回頻度を上げ、つまずきを即解消。Lv2層が冗長にならないよう並行課題もサポート。講師の回線トラブル時は事前録画版への切替を運営と連携。</td>
+          </tr>
+          <tr class="phase-lecture">
+            <td class="tt-time">11:35-11:50</td>
+            <td>BPO課題説明<br><span style="font-size:0.7rem;color:#888;">15分</span></td>
+            <td>Google Meetメインルームで堀江が画面共有。BPO課題テーマの説明、提出形式、審査基準、フォールバック提出物の案内。</td>
+            <td>学生の反応・理解度を観察。質問が出た場合に補足説明できるよう課題内容を把握しておく。</td>
+          </tr>
+          <!-- Break -->
+          <tr class="phase-break tt-break">
+            <td class="tt-time">11:50-12:35</td>
+            <td>昼休憩<br><span style="font-size:0.7rem;color:#888;">45分</span></td>
+            <td>ランチ専用の純休憩。発表・運営説明は入れない。</td>
+            <td>休憩を取る。午後の設計スプリントに向けてbreakout room準備・観察シートの確認。</td>
+          </tr>
+          <!-- Design -->
+          <tr class="phase-design">
+            <td class="tt-time">12:35-14:20</td>
+            <td>設計スプリント<br><span style="font-size:0.7rem;color:#888;">105分</span></td>
+            <td>breakout roomでメンター密着。AS-IS把握、課題定義、解決案、ユーザーフロー、プロンプト案、テストケース設計を進める。</td>
+            <td>breakout roomに密着し、チームの課題構造化・仮説の質・役割分担を観察。技術的な質問に回答しつつ、学生の自走を促す。過度な介入は避け、ファシリテーションに徹する。</td>
+          </tr>
+          <tr class="phase-design">
+            <td class="tt-time">14:20-14:35</td>
+            <td>設計レビュー <span class="snapshot-marker">Snapshot 1</span><br><span style="font-size:0.7rem;color:#888;">15分</span></td>
+            <td>各breakout roomを回り5分レビュー。メンターは観察シートに短文記録のみ。連続採点はしない。</td>
+            <td><strong>Snapshot 1を記録:</strong> 課題構造化、仮説の質、役割の取り方をStrong/Neutral/Concernの3値+1行メモで記入。各breakout roomを巡回し5分レビューを実施。</td>
+          </tr>
+          <!-- GAS Dev -->
+          <tr class="phase-dev">
+            <td class="tt-time">14:35-15:30</td>
+            <td>実装スプリント前半<br><span style="font-size:0.7rem;color:#888;">55分</span></td>
+            <td>no-code実装を本命として開発に着手。NotebookLM + GAS等でプロトタイプ構築。</td>
+            <td>breakout roomに密着し、実装の進捗を観察。技術的なつまずきをサポートしつつ、学生がAIツールを活用して自力で解決する姿勢を見守る。</td>
+          </tr>
+          <tr class="phase-dev">
+            <td class="tt-time">15:30-15:40</td>
+            <td>実装チェック <span class="snapshot-marker">Snapshot 2</span><br><span style="font-size:0.7rem;color:#888;">10分</span></td>
+            <td>実装進捗を確認。未完成チームはフォールバック提出物（設計書+プロンプト集+想定入出力+テストケース）の並行作成に切り替え。</td>
+            <td><strong>Snapshot 2を記録:</strong> 学習吸収、詰まり時の自走、協働姿勢をStrong/Neutral/Concernの3値+1行メモで記入。未完成チームにはフォールバック提出物への切り替えを案内。</td>
+          </tr>
+          <tr class="phase-dev">
+            <td class="tt-time">15:40-16:20</td>
+            <td>実装スプリント後半<br><span style="font-size:0.7rem;color:#888;">40分</span></td>
+            <td>動作プロトタイプの仕上げ、またはフォールバック提出物（設計書+プロンプト集+想定出力）の完成を進める。</td>
+            <td>breakout roomで密着サポート。完成に向けた技術支援と、フォールバック提出物チームの設計書・プロンプト集の品質確認。残り時間を意識した進捗管理の声掛け。</td>
+          </tr>
+          <!-- Presentation -->
+          <tr class="phase-presentation">
+            <td class="tt-time">16:20-16:40</td>
+            <td>発表準備<br><span style="font-size:0.7rem;color:#888;">20分</span></td>
+            <td>5分発表資料の作成、デモURLまたはフォールバック提出物の準備。画面共有の動作確認。</td>
+            <td>発表構成のアドバイス（時間配分・デモ手順）。画面共有の動作テストを支援。発表リハーサルを促す。</td>
+          </tr>
+          <tr class="phase-presentation">
+            <td class="tt-time">16:40-17:40</td>
+            <td>最終発表・審査 <span class="snapshot-marker">Snapshot 3</span><br><span style="font-size:0.7rem;color:#888;">60分</span></td>
+            <td>メインルームで画面共有による発表。1チームあたり発表5分+質疑3分。完成デモが無い場合も設計書+プロンプト集+想定出力で審査する。</td>
+            <td><strong>Snapshot 3を記録:</strong> 伝達力、当事者意識、価値観の相性をStrong/Neutral/Concernの3値+1行メモで記入。審査員とともに質疑を行い、学生の理解度・当事者意識を確認。観察シートを最終回収。</td>
+          </tr>
+          <!-- Closing -->
+          <tr class="phase-closing">
+            <td class="tt-time">17:40-18:00</td>
+            <td>表彰・クロージング<br><span style="font-size:0.7rem;color:#888;">20分</span></td>
+            <td>順位発表、MVP表彰、今後の案内。個別FB提供の約束はしない。</td>
+            <td>学生を称え、ポジティブな雰囲気を維持する。禁止ワード（「個別FBします」「早期選考確約」等）を口にしないよう留意。観察シートを運営に提出。</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Snapshot 記録タイミング一覧</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Snapshot</th>
+            <th>時点</th>
+            <th>観察ポイント</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1</strong></td>
+            <td>14:20 設計レビュー時</td>
+            <td>課題構造化、仮説の質、役割の取り方</td>
+          </tr>
+          <tr>
+            <td><strong>2</strong></td>
+            <td>15:30 実装チェック時</td>
+            <td>学習吸収、詰まり時の自走、協働姿勢</td>
+          </tr>
+          <tr>
+            <td><strong>3</strong></td>
+            <td>16:40-17:40 最終発表時</td>
+            <td>伝達力、当事者意識、価値観の相性（メンター+審査員）</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- Section 3: Mentor Role -->
+  <!-- ============================================================ -->
+  <section class="section-block" id="sec-role">
+    <h2>メンターの役割</h2>
+    <p style="font-size:0.85rem;color:#555;margin-bottom:1rem;">フェーズごとに関わり方が異なります。基本姿勢は「学生の自走を促す」こと。</p>
+
+    <div class="role-cards">
+
+      <div class="role-card">
+        <div class="role-card-header"><span class="role-card-phase">10:00-11:50</span> オープニング〜AI講義</div>
+        <p><strong>基本姿勢: 静観。</strong>学生の反応を観察する時間です。</p>
+        <ul>
+          <li>接続確認を補助し、学生の入室状況・第一印象をメモ</li>
+          <li>AI講義中は未経験者(Lv1)のフォローに注力</li>
+          <li>ハンズオンで操作に詰まっている学生がいたら操作方法だけサポート</li>
+          <li>学生の自己紹介での発言内容・コミュニケーション姿勢を観察</li>
+        </ul>
+      </div>
+
+      <div class="role-card">
+        <div class="role-card-header"><span class="role-card-phase">12:35-14:20</span> ヒアリング・設計フェーズ（最重要）</div>
+        <p><strong>基本姿勢: 観察重視。</strong>学生がNotebookLMで「Aさんbot」にどう質問するかを観察します。</p>
+        <ul>
+          <li><strong>質問テンプレートは意図的に提供していません</strong>（質問力を評価するため）</li>
+          <li>困っている学生にはNotebookLMの<strong>操作方法だけ</strong>助ける</li>
+          <li>内容のヒント（「こう聞いてみたら？」等）は出さない</li>
+          <li>思考の整理を手助け: 「それ、もう少し具体的にすると？」程度のファシリテーション</li>
+          <li>チームの課題構造化・仮説の質・役割分担を観察し、Snapshot 1に備える</li>
+        </ul>
+      </div>
+
+      <div class="role-card">
+        <div class="role-card-header"><span class="role-card-phase">14:35-16:20</span> GAS開発フェーズ</div>
+        <p><strong>基本姿勢: 技術サポート。</strong>学生の自力解決を優先しつつ、適切なタイミングでヒントを出します。</p>
+        <ul>
+          <li>エラーが出たら<strong>まず学生自身にエラーメッセージを読ませる</strong>（学習機会）</li>
+          <li>5分以上詰まったらヒントを提供</li>
+          <li>Geminiの使い方を教えるのはOK（「プロンプトにエラーメッセージを貼って聞いてみて」等）</li>
+          <li>15:30のSnapshot 2で進捗を評価し、未完成チームにはフォールバック切替を案内</li>
+        </ul>
+      </div>
+
+      <div class="role-card">
+        <div class="role-card-header"><span class="role-card-phase">16:20-17:40</span> プレゼンフェーズ</div>
+        <p><strong>基本姿勢: 評価シート記入に集中。</strong>質問は堀江が主導します。</p>
+        <ul>
+          <li>発表準備では構成アドバイス（時間配分・デモ手順）と画面共有テストを支援</li>
+          <li>最終発表中はSnapshot 3の記入に集中</li>
+          <li>質疑は堀江が主導するが、メンターからの質問も可</li>
+        </ul>
+      </div>
+
+      <div class="role-card">
+        <div class="role-card-header"><span class="role-card-phase">全セッション共通</span> Snapshotメモ</div>
+        <p><strong>計3回、所定のタイミングで各学生について記録します。</strong></p>
+        <ul>
+          <li>記録形式: <strong>Strong / Neutral / Concern</strong> の3値 + 具体的行動メモ1行</li>
+          <li>例: 「Strong — Aさんの心理的負荷まで言語化し、チームに共有していた」</li>
+          <li>例: 「Concern — 他メンバーの発言を遮り、自分の意見だけ進めていた」</li>
+          <li>キーワードだけのメモでもOK。詳細は終了後に記入</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- Section 4: Evaluation Guide -->
+  <!-- ============================================================ -->
+  <section class="section-block" id="sec-evaluation">
+    <h2>評価ガイド</h2>
+    <p style="font-size:0.85rem;color:#555;margin-bottom:1rem;">評価は2つのレイヤーで構成されています。Layer 1はチーム発表の点数評価、Layer 2は個人の定性観察です。</p>
+
+    <!-- Layer 1 -->
+    <div class="eval-layer">
+      <div class="eval-layer-header">Layer 1: コンテスト評価（チーム発表評価）— 100点満点</div>
+      <div class="eval-layer-body">
+        <p style="margin-bottom:0.6rem;">配点: 観点A 40点 + 観点B 40点 + 観点C 20点</p>
+
+        <div class="eval-criteria-item">
+          <p><span class="eval-criteria-label">観点A: 課題の捕らえ方（40点）</span></p>
+          <p>ヒアリングで表面的な「作業時間が長い」を超え、心理的負荷・機会損失など2次課題まで言語化できているか。数値で削減効果を示せているか。</p>
+        </div>
+        <div class="eval-criteria-item">
+          <p><span class="eval-criteria-label">観点B: 改善の実装度（動いたか）（40点）</span></p>
+          <p>GASが正常動作し、6件全員分のPDF生成・Gmail送信デモを完遍したか。金額計算（源泉=floor(A*0.1021)、差引=A+消費税+交通費-源泉）が正確か。</p>
+        </div>
+        <div class="eval-criteria-item">
+          <p><span class="eval-criteria-label">観点C: デモの完成度・ストーリー（20点）</span></p>
+          <p>Aさんの声 → ツール選定理由 → ライブデモ → 導入前後比較のストーリーが明確か。非エンジニアの審査員にも伝わるか。</p>
+        </div>
+
+        <p style="margin-top:0.8rem;font-size:0.82rem;color:#555;"><strong>4段階スケール:</strong> Lv4卓越（36-40/18-20点）、Lv3十分（28-35/13-17点）、Lv2基礎（16-27/7-12点）、Lv1未到達（0-15/0-6点）。各観点に具体的な到達記述があり、「何ができていれば何点」が明確に定義されています。</p>
+      </div>
+    </div>
+
+    <!-- Layer 2 -->
+    <div class="eval-layer">
+      <div class="eval-layer-header">Layer 2: 個人見極め評価（スナップショット観察）— 定性評価</div>
+      <div class="eval-layer-body">
+        <p style="margin-bottom:0.6rem;">点数化せず、4観点 x Lv1-4の定性評価。総合判定は「Lv3以上が何観点あるか」「Lv1があるか」で行います。</p>
+
+        <div class="eval-criteria-item">
+          <p><span class="eval-criteria-label">観点(1): ヒアリングの深さ（共感・課題発見力）</span></p>
+          <p>Aさんの心理的負荷まで言語化できたか。課題を「作業問題」でなく「人の問題」として捕らえているか。</p>
+        </div>
+        <div class="eval-criteria-item">
+          <p><span class="eval-criteria-label">観点(2): AIの使いこなし</span></p>
+          <p>プロンプトを3回以上反復改善し、条件（源泉計算式・6件マスタ・PDF出力形式）を自分で言語化してGeminiに伝えられたか。エラーからの原因推測 → 再プロンプトループを独力で回せたか。</p>
+        </div>
+        <div class="eval-criteria-item">
+          <p><span class="eval-criteria-label">観点(3): チーム協働</span></p>
+          <p>役割を明示・合意して進行し、詰まっている他メンバーを観察して自発的にサポートしたか。意見の相違を建設的に調整できたか。</p>
+        </div>
+        <div class="eval-criteria-item">
+          <p><span class="eval-criteria-label">観点(4): つまずいた時の粘り</span></p>
+          <p>2回以上の詰まり局面で代替手段（別プロンプト・部分実装・スコープ縮小）を提案・実行したか。振り返りで「こうすれば乗り越えられた」と言語化できたか。</p>
+        </div>
+
+        <p style="margin-top:0.8rem;font-size:0.82rem;color:#555;"><strong>レベル基準:</strong> Lv4 = 自発的・主体的に行動し言語化もできている / Lv3 = 概ねできているが自発性や深さに不足 / Lv2 = 受動的で表層にとどまる / Lv1 = 行動・言語化がほぼ観察されない</p>
+      </div>
+    </div>
+
+    <!-- Snapshot Method -->
+    <h3>Snapshotの書き方</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>評価</th>
+            <th>意味</th>
+            <th>記入例</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Strong</strong></td>
+            <td>期待を上回る行動が観察された</td>
+            <td>Aさんの心理的負荷まで言語化し、チームに共有していた</td>
+          </tr>
+          <tr>
+            <td><strong>Neutral</strong></td>
+            <td>標準的な行動</td>
+            <td>指示された作業は遂行。自発的な提案は見られず</td>
+          </tr>
+          <tr>
+            <td><strong>Concern</strong></td>
+            <td>懸念が残る行動が観察された</td>
+            <td>他メンバーの発言を遮り、自分の意見だけで進めていた</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Early Selection Criteria -->
+    <h3>選考判断基準</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>区分</th>
+            <th>条件</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>優先案内（特別ルート）</strong></td>
+            <td>Layer1合計75点以上（観点A Lv3以上 かつ 観点B Lv2以上が必須）+ Layer2で4観点中3観点以上がLv3以上かつLv1がゼロ。例外昇格: Layer1が65-74点でもLayer2全観点Lv4、または観点(1)(4)が両方Lv4ならメンター協議で優先案内可。</td>
+          </tr>
+          <tr>
+            <td><strong>通常ルート</strong></td>
+            <td>Layer1合計50-74点 + Layer2でLv1が1-2観点あってもLv3以上が2観点あれば可。</td>
+          </tr>
+          <tr>
+            <td><strong>案内見送り</strong></td>
+            <td>Layer1合計49点以下（観点B Lv1=動作確認ゼロかつ他観点も低い場合）、またはLayer2で観点(3)チーム協働がLv1かつ複数観点にLv1がある場合。</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:0.8rem;color:#555;margin-top:0.4rem;">当日運用: 発表後30分以内にシート記入 → キャリブレーション(5分) → リードが特別ルート候補リスト作成 → 翌営業日中にメールで個別案内。</p>
+
+    <p style="margin-top:1rem;">
+      <a class="eval-link" href="https://docs.google.com/spreadsheets/d/1803Jkcec5Oxjas-4-Ec0U18IfJwO8ZQQuKhwikENsEA" target="_blank" rel="noopener">参加者評価テンプレート（Google Sheets）</a>
+      <span style="color:#ccc;margin:0 0.5rem;">|</span>
+      <a class="eval-link" href="https://docs.google.com/spreadsheets/d/1e9tksPxLWrOsTUs9avQoQkHJkGKCZbBVvM9fmJmMzpA" target="_blank" rel="noopener">評価ルーブリック（Google Sheets）</a>
+    </p>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- Section 5: Caution -->
+  <!-- ============================================================ -->
+  <section class="section-block" id="sec-caution">
+    <h2>注意事項（禁止ワード・行動指針）</h2>
+
+    <div class="warning-section">
+      <div class="warning-title">当日の発言・行動ルール</div>
+      <ul class="warning-list">
+        <li><span class="warning-ng">NG</span> 「個別フィードバックします」 → 全員に公平に接する。特定学生への個別FB約束は禁止</li>
+        <li><span class="warning-ng">NG</span> 「早期選考に進めます」 → 確約は絶対にしない。選考判定は人事（堀江）が別途行う</li>
+        <li><span class="warning-ng">NG</span> 学生の解答を否定する → 「違う」ではなく「別の視点もあるかも」と促す</li>
+        <li><span class="warning-ng">NG</span> ヒアリングの"正解"を教える → 質問力の評価が目的。具体的な質問例の提示は禁止</li>
+        <li><span class="warning-ok">OK</span> NotebookLMの操作で困っていたら操作方法を教える</li>
+        <li><span class="warning-ok">OK</span> GASのエラー対応は学生に考えさせてからヒントを出す</li>
+        <li><span class="warning-ok">OK</span> 時間管理の声掛け（「あと10分です」等）</li>
+      </ul>
+      <p class="warning-note">架空企業「S社（株式会社スプラウト）」であることは冒頭で説明済みです。途中で繰り返す必要はありません。</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- Section 6: Resource Links -->
+  <!-- ============================================================ -->
+  <section class="section-block" id="sec-links">
+    <h2>資料リンク一覧</h2>
+
+    <!-- NotebookLM Sources -->
+    <div class="resource-group">
+      <div class="resource-group-title">NotebookLMソース（学生ヒアリング用）</div>
+      <div class="table-wrap">
+        <table class="resource-table">
+          <thead><tr><th>資料名</th><th>種別</th><th>備考</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><a href="https://docs.google.com/document/d/1bvUQwqgh8JauySKOrOP3bvfVlCbSuWW3rn0j1NvrF5c/edit" target="_blank" rel="noopener">S社 会社情報</a></td>
+              <td><span class="resource-type">Google Doc</span></td>
+              <td>NotebookLMに投入する客観的事実データ</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.google.com/document/d/1ieH-NSgza6iyJSAaMG2b6FPV2j0wZ-jPvfSjXY_3nqs/edit" target="_blank" rel="noopener">S社 ヒアリング用設定</a></td>
+              <td><span class="resource-type">Google Doc</span></td>
+              <td>Aさんの深層情報・人物像（学生非公開）</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.google.com/spreadsheets/d/1HGhyW_0uEbFih1jeAA91EkbqSEPaixzoppzNlRbQc2U/edit" target="_blank" rel="noopener">AさんGmail連絡先</a></td>
+              <td><span class="resource-type">Google SS</span></td>
+              <td>メールアドレス40名分（ヒアリングで引き出す）</td>
+            </tr>
+            <tr>
+              <td><a href="https://notebooklm.google.com/notebook/af92abbd-32ca-48c4-9791-45becea56415" target="_blank" rel="noopener">NotebookLM（Aさんbot）</a></td>
+              <td><span class="resource-type">NotebookLM</span></td>
+              <td>セットアップ済みのノートブック本体</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Student Handouts -->
+    <div class="resource-group">
+      <div class="resource-group-title">学生配布物</div>
+      <div class="table-wrap">
+        <table class="resource-table">
+          <thead><tr><th>資料名</th><th>種別</th><th>備考</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><a href="https://kosukehoriebpio.github.io/docs/p057-student-brief.html" target="_blank" rel="noopener">S社 課題ブリーフ</a></td>
+              <td><span class="resource-type">HTML</span></td>
+              <td>当日配布用（会社情報・ヒアリング手順・用語）</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.google.com/spreadsheets/d/1QX-T_duLaZlVq-GORvM5ujkg0hVqfRwi/edit" target="_blank" rel="noopener">委託者マスタExcel</a></td>
+              <td><span class="resource-type">Excel</span></td>
+              <td>40名の単価・交通費・インボイス（メアドなし）</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.google.com/spreadsheets/d/1UPw60qTf_tPsbwkL6mx6WIwZVNX5tWqs/edit" target="_blank" rel="noopener">支払通知書サンプルExcel</a></td>
+              <td><span class="resource-type">Excel</span></td>
+              <td>完成形の見本（インボイス有/無 2パターン）</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Lecture & Guides -->
+    <div class="resource-group">
+      <div class="resource-group-title">講義・ガイド</div>
+      <div class="table-wrap">
+        <table class="resource-table">
+          <thead><tr><th>資料名</th><th>種別</th><th>備考</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><a href="https://kosukehoriebpio.github.io/docs/p057-ai-lecture-slides.html" target="_blank" rel="noopener">AI集中講義スライド</a></td>
+              <td><span class="resource-type">HTML</span></td>
+              <td>講師が投影するHTMLプレゼンページ</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.google.com/spreadsheets/d/1Sr2ikIpY9lL5DOu2oCERX85rF_UNsPJDTaGBXO0w2pA/edit" target="_blank" rel="noopener">設計資料マスター</a></td>
+              <td><span class="resource-type">Google SS</span></td>
+              <td>委託者マスタ + WS設計 + NLMガイド + GASガイド（4タブ）</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.google.com/spreadsheets/d/1Gerl9vLJyZBfJ1HtDeAUbA_Tk-MwDsWGhSCy1SoaNlI/edit" target="_blank" rel="noopener">デモ用 支払通知書自動送信SS</a></td>
+              <td><span class="resource-type">Google SS</span></td>
+              <td>当日デモで使用するGAS付きスプレッドシート</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Operations -->
+    <div class="resource-group">
+      <div class="resource-group-title">運営ツール</div>
+      <div class="table-wrap">
+        <table class="resource-table">
+          <thead><tr><th>資料名</th><th>種別</th><th>備考</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><a href="https://kosukehoriebpio.github.io/docs/p057-timetable.html" target="_blank" rel="noopener">当日進行表（タイムテーブル）</a></td>
+              <td><span class="resource-type">HTML</span></td>
+              <td>当日の進行スケジュール</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.google.com/spreadsheets/d/1gCIgEYFwk6bKhYonZzxMw2zIVEjiaCC69fbUNu34wXM/edit" target="_blank" rel="noopener">配布物チェックリスト</a></td>
+              <td><span class="resource-type">Google SS</span></td>
+              <td>前日・当日朝の準備物一覧</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.google.com/forms/d/e/1FAIpQLScf4vQlkSFcbezStBI4xkGJFfKspngHPdrjdSY1LPM42pCZ2g/viewform" target="_blank" rel="noopener">事後アンケート</a></td>
+              <td><span class="resource-type">Google Form</span></td>
+              <td>終了後フィードバック収集</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Evaluation Tools -->
+    <div class="resource-group">
+      <div class="resource-group-title">評価ツール</div>
+      <div class="table-wrap">
+        <table class="resource-table">
+          <thead><tr><th>資料名</th><th>種別</th><th>備考</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><a href="https://docs.google.com/spreadsheets/d/1e9tksPxLWrOsTUs9avQoQkHJkGKCZbBVvM9fmJmMzpA/edit" target="_blank" rel="noopener">評価ルーブリック</a></td>
+              <td><span class="resource-type">Google SS</span></td>
+              <td>学生の成果物採点基準（4シート構成）</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.google.com/spreadsheets/d/1803Jkcec5Oxjas-4-Ec0U18IfJwO8ZQQuKhwikENsEA/edit" target="_blank" rel="noopener">参加者評価テンプレート</a></td>
+              <td><span class="resource-type">Google SS</span></td>
+              <td>参加者ごとの評価テンプレート（タブコピーして使用、Layer1+2+総合判定+メモ）</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Drive -->
+    <div class="resource-group">
+      <div class="resource-group-title">全体</div>
+      <div class="table-wrap">
+        <table class="resource-table">
+          <thead><tr><th>資料名</th><th>種別</th><th>備考</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><a href="https://docs.google.com/spreadsheets/d/1cSj_xcemO62orVYozaVnE5B46E4QdeT1TE-q7z_Hl2U" target="_blank" rel="noopener">ダッシュボード</a></td>
+              <td><span class="resource-type">Google SS</span></td>
+              <td>全資料・リンクの集約管理シート</td>
+            </tr>
+            <tr>
+              <td><a href="https://drive.google.com/drive/folders/15kguCIY4Dc7gQFwSfQhKfUEF_z2KKc-A" target="_blank" rel="noopener">全資料の格納先（Driveフォルダ）</a></td>
+              <td><span class="resource-type">Folder</span></td>
+              <td>上記全ファイルがこのフォルダに集約</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- Section 7: FAQ -->
+  <!-- ============================================================ -->
+  <section class="section-block" id="sec-faq">
+    <h2>FAQ / トラブルシューティング</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">Q. NotebookLMが応答しない</div>
+      <div class="faq-a">ページリロードを試す。それでも復旧しない場合は講師（堀江）に連絡してください。</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Q. GASでエラーが出て学生が完全に止まった</div>
+      <div class="faq-a">まずエラーメッセージを学生自身に読ませてください。それでも5分以上詰まったら、一緒にデバッグに入ります。「Geminiにエラーメッセージを貼って聞いてみて」と促すのも有効です。</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Q. 学生の進捗がバラバラ</div>
+      <div class="faq-a">早い学生にはボーナス課題を案内します（UIカスタマイズ、エラーハンドリング追加、追加機能の実装等）。遅い学生にはフォールバック提出物（設計書+プロンプト集+想定入出力+テストケース）への切り替えを15:30の実装チェック時に案内します。</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Q. Google Meet接続不良</div>
+      <div class="faq-a">チャットで状況を確認してください。必要に応じて堀江に連絡。学生が再接続する場合は同じMeetリンクに再入室を案内します。3分以内に戻らない場合は緊急連絡先へ連絡。</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Q. 学生がヒアリングで全然質問できていない</div>
+      <div class="faq-a">NotebookLMの使い方だけサポートしてください。「何を聞きたい？」と問いかけるのはOKです。ただし、具体的な質問の提示（「こう聞いてみたら？」）はNGです。質問力の評価が目的であることを念頭に置いてください。</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Q. 評価シートの記入が追いつかない</div>
+      <div class="faq-a">Snapshotメモ（キーワードだけ）を優先してください。Strong / Neutral / Concern の3値だけでも記録があれば、詳細は終了後に記入できます。</div>
+    </div>
+
+  </section>
+
+  <!-- Footer -->
+  <footer class="report-footer">
+    <div>※本資料はp057 1dayインターンシップ運営チーム用の内部文書です</div>
+    <div>登場する企業・人物はすべて架空のフィクションです</div>
+    <div>最終更新: 2026-06-17 — p057 2028卒 1dayインターンシップ プログラム</div>
+  </footer>
+
+</div><!-- /page-wrap -->
+
+<script>
+(function () {
+  'use strict';
+  var sections = document.querySelectorAll('.section-block[id], .report-header[id]');
+  var pills = document.querySelectorAll('.nav-pill[data-section]');
+  if (!sections.length || !pills.length) return;
+
+  var pillMap = {};
+  pills.forEach(function (p) { pillMap[p.dataset.section] = p; });
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        pills.forEach(function (p) { p.classList.remove('active'); });
+        var active = pillMap[entry.target.id];
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-10% 0px -80% 0px', threshold: 0 });
+
+  sections.forEach(function (s) { observer.observe(s); });
+
+  pills.forEach(function (p) {
+    p.addEventListener('click', function (e) {
+      e.preventDefault();
+      var target = document.getElementById(p.dataset.section);
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
