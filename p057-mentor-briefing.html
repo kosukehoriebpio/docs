@@ -434,12 +434,12 @@ tr:nth-child(odd) td { background: #fff; }
     <div class="summary-box">
       <ul>
         <li><span class="summary-label">目的：</span>この資料だけ見ればメンターとして当日動ける状態を作ること</li>
-        <li><span class="summary-label">テーマ：</span>架空クライアント「S社」（株式会社スプラウト）の支払通知書業務をAI+GASで自動化する1dayワークショップ</li>
+        <li><span class="summary-label">テーマ：</span>架空クライアント「S社」（株式会社S）の支払通知書業務をAI+GASで自動化する1dayワークショップ</li>
         <li><span class="summary-label">形式：</span>オンライン（Google Meet メインルーム + breakout rooms）</li>
         <li><span class="summary-label">時間：</span>10:00 〜 18:30（8.5時間、うち昼休憩45分）</li>
         <li><span class="summary-label">対象：</span>2028卒の未経験〜初心者学生（選考要素あり）</li>
-        <li><span class="summary-label">進行の流れ：</span>学生はNotebookLM上の「Aさんbot」にヒアリング → 課題発見 → 解決策設計 → GASプロトタイプ作成 → コンテスト形式で発表</li>
-        <li><span class="summary-label">ツール：</span>ChatGPT / NotebookLM / Gemini / GAS</li>
+        <li><span class="summary-label">進行の流れ：</span>学生はGoogle Gemini のカスタムGem「Aさんbot」にヒアリング → 課題発見 → 解決策設計 → GASプロトタイプ作成 → コンテスト形式で発表</li>
+        <li><span class="summary-label">ツール：</span>ChatGPT / Gemini Gem / Gemini / GAS</li>
         <li><span class="summary-label">評価：</span>Layer 1（チーム発表 100点満点）+ Layer 2（個人Snapshot観察、定性評価）の二層構造</li>
       </ul>
     </div>
@@ -478,7 +478,7 @@ tr:nth-child(odd) td { background: #fff; }
           <tr class="phase-lecture">
             <td class="tt-time">10:35-11:35</td>
             <td>AI集中講義 + hands-on<br><span style="font-size:0.7rem;color:#888;">60分</span></td>
-            <td>リモート講師によるオンライン登壇。前半（約25-30分）: 生成AI/ChatGPTの基礎・プロンプト操作（完全未経験Lv1向け）。後半（約25-30分+バッファ5分）: ツールハンズオン — NotebookLMで顧客bot体験 → GeminiでGASコード自然言語生成 → GASを貼り付けてPDF生成・Gmail送信を実行。Claude Codeはデモのみ。</td>
+            <td>リモート講師によるオンライン登壇。前半（約25-30分）: 生成AI/ChatGPTの基礎・プロンプト操作（完全未経験Lv1向け）。後半（約25-30分+バッファ5分）: ツールハンズオン — Gemini Gemで顧客bot体験 → GeminiでGASコード自然言語生成 → GASを貼り付けてPDF生成・Gmail送信を実行。Claude Codeはデモのみ。</td>
             <td>各breakout roomで未経験者(Lv1)を重点フォロー。巡回頻度を上げ、つまずきを即解消。Lv2層が冗長にならないよう並行課題もサポート。講師の回線トラブル時は事前録画版への切替を運営と連携。</td>
           </tr>
           <tr class="phase-lecture">
@@ -511,7 +511,7 @@ tr:nth-child(odd) td { background: #fff; }
           <tr class="phase-dev">
             <td class="tt-time">14:35-15:30</td>
             <td>実装スプリント前半<br><span style="font-size:0.7rem;color:#888;">55分</span></td>
-            <td>no-code実装を本命として開発に着手。NotebookLM + GAS等でプロトタイプ構築。</td>
+            <td>no-code実装を本命として開発に着手。Gemini Gem + GAS等でプロトタイプ構築。</td>
             <td>breakout roomに密着し、実装の進捗を観察。技術的なつまずきをサポートしつつ、学生がAIツールを活用して自力で解決する姿勢を見守る。</td>
           </tr>
           <tr class="phase-dev">
@@ -610,12 +610,15 @@ tr:nth-child(odd) td { background: #fff; }
 
       <div class="role-card">
         <div class="role-card-header"><span class="role-card-phase">12:35-14:20</span> ヒアリング・設計フェーズ（最重要）</div>
-        <p><strong>基本姿勢: 観察重視。</strong>学生がNotebookLMで「Aさんbot」にどう質問するかを観察します。</p>
+        <p><strong>基本姿勢: 観察重視。</strong>学生がGemini Gemで「Aさんbot」にどう質問するかを観察します。</p>
         <ul>
-          <li><strong>質問テンプレートは意図的に提供していません</strong>（質問力を評価するため）</li>
-          <li>困っている学生にはNotebookLMの<strong>操作方法だけ</strong>助ける</li>
+          <li><strong>質問テンプレートは意図的に提供していません</strong>（質問力を評価するため。Gemにはサジェスト質問がないため、学生が自力で考える必要があります）</li>
+          <li>困っている学生にはGemの<strong>操作方法だけ</strong>助ける</li>
           <li>内容のヒント（「こう聞いてみたら？」等）は出さない</li>
           <li>思考の整理を手助け: 「それ、もう少し具体的にすると？」程度のファシリテーション</li>
+          <li><strong>難易度が上がっています:</strong> ヒアリングの情報設計上、学生が支払通知書業務にすぐたどり着かない可能性があります。支払通知書以外の業務効率化（経費精算・請求書照合・月次レポート等）に進もうとしている場合は、状況を確認しながらさりげなく示唆してください（例: 「他にも自動化できそうな業務はありそう？」）</li>
+          <li><strong>各業務の現状資料はメンターが保持しています:</strong> 支払通知書以外の業務についてもサンプル資料（Excel）を用意しています。学生から「今使っている資料を見せてほしい」と言われたら、<strong>Google Meet画面共有で提供</strong>してください。配布可能な資料はDriveの「インターン生に配布する資料」フォルダに格納されています</li>
+          <li><strong>冒頭でアナウンス:</strong> 設計スプリント開始時に「各業務について、現在使っている資料はメンターが持っています。必要であれば声をかけてください」と案内する</li>
           <li>チームの課題構造化・仮説の質・役割分担を観察し、Snapshot 1に備える</li>
         </ul>
       </div>
@@ -626,7 +629,7 @@ tr:nth-child(odd) td { background: #fff; }
         <ul>
           <li>エラーが出たら<strong>まず学生自身にエラーメッセージを読ませる</strong>（学習機会）</li>
           <li>5分以上詰まったらヒントを提供</li>
-          <li>Geminiの使い方を教えるのはOK（「プロンプトにエラーメッセージを貼って聞いてみて」等）</li>
+          <li><strong>Geminiの使い方を教えるのは原則NG</strong>（AI活用力は評価対象。学生自身でプロンプトを試行錯誤するプロセスを観察する）</li>
           <li>15:30のSnapshot 2で進捗を評価し、未完成チームにはフォールバック切替を案内</li>
         </ul>
       </div>
@@ -800,11 +803,13 @@ tr:nth-child(odd) td { background: #fff; }
         <li><span class="warning-ng">NG</span> 「早期選考に進めます」 → 確約は絶対にしない。選考判定は人事（堀江）が別途行う</li>
         <li><span class="warning-ng">NG</span> 学生の解答を否定する → 「違う」ではなく「別の視点もあるかも」と促す</li>
         <li><span class="warning-ng">NG</span> ヒアリングの"正解"を教える → 質問力の評価が目的。具体的な質問例の提示は禁止</li>
-        <li><span class="warning-ok">OK</span> NotebookLMの操作で困っていたら操作方法を教える</li>
-        <li><span class="warning-ok">OK</span> GASのエラー対応は学生に考えさせてからヒントを出す</li>
+        <li><span class="warning-ok">OK</span> Gemの操作で困っていたら操作方法を教える</li>
+        <li><span class="warning-ng">NG</span> 開発フェーズでGeminiの使い方（プロンプトの書き方・聞き方）を教える → AI活用力は評価対象。学生の自走を観察する</li>
+        <li><span class="warning-ok">OK</span> GASのエラー対応は学生に考えさせてからヒントを出す（5分以上詰まったらヒント提供）</li>
         <li><span class="warning-ok">OK</span> 時間管理の声掛け（「あと10分です」等）</li>
+        <li><span class="warning-ok">OK</span> 学生から業務の現状資料を求められたらMeet画面共有で提供する</li>
       </ul>
-      <p class="warning-note">架空企業「S社（株式会社スプラウト）」であることは冒頭で説明済みです。途中で繰り返す必要はありません。</p>
+      <p class="warning-note">架空企業「S社（株式会社S）」であることは冒頭で説明済みです。途中で繰り返す必要はありません。</p>
     </div>
   </section>
 
@@ -814,9 +819,9 @@ tr:nth-child(odd) td { background: #fff; }
   <section class="section-block" id="sec-links">
     <h2>資料リンク一覧</h2>
 
-    <!-- NotebookLM Sources -->
+    <!-- Gem Sources -->
     <div class="resource-group">
-      <div class="resource-group-title">NotebookLMソース（学生ヒアリング用）</div>
+      <div class="resource-group-title">Gemソース・設定（運営スタッフ用）</div>
       <div class="table-wrap">
         <table class="resource-table">
           <thead><tr><th>資料名</th><th>種別</th><th>備考</th></tr></thead>
@@ -824,7 +829,7 @@ tr:nth-child(odd) td { background: #fff; }
             <tr>
               <td><a href="https://docs.google.com/document/d/1bvUQwqgh8JauySKOrOP3bvfVlCbSuWW3rn0j1NvrF5c/edit" target="_blank" rel="noopener">S社 会社情報</a></td>
               <td><span class="resource-type">Google Doc</span></td>
-              <td>NotebookLMに投入する客観的事実データ</td>
+              <td>GemのナレッジとしてアップロードするS社の客観的事実データ</td>
             </tr>
             <tr>
               <td><a href="https://docs.google.com/document/d/1ieH-NSgza6iyJSAaMG2b6FPV2j0wZ-jPvfSjXY_3nqs/edit" target="_blank" rel="noopener">S社 ヒアリング用設定</a></td>
@@ -837,9 +842,9 @@ tr:nth-child(odd) td { background: #fff; }
               <td>メールアドレス40名分（ヒアリングで引き出す）</td>
             </tr>
             <tr>
-              <td><a href="https://notebooklm.google.com/notebook/af92abbd-32ca-48c4-9791-45becea56415" target="_blank" rel="noopener">NotebookLM（Aさんbot）</a></td>
-              <td><span class="resource-type">NotebookLM</span></td>
-              <td>セットアップ済みのノートブック本体</td>
+              <td>Gemini Gem（Aさんbot）</td>
+              <td><span class="resource-type">Gemini Gem</span></td>
+              <td>セットアップ済みのGem本体（GemのリンクURLを記入してください）</td>
             </tr>
           </tbody>
         </table>
@@ -867,6 +872,26 @@ tr:nth-child(odd) td { background: #fff; }
               <td><a href="https://docs.google.com/spreadsheets/d/1UPw60qTf_tPsbwkL6mx6WIwZVNX5tWqs/edit" target="_blank" rel="noopener">支払通知書サンプルExcel</a></td>
               <td><span class="resource-type">Excel</span></td>
               <td>完成形の見本（インボイス有/無 2パターン）</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.google.com/spreadsheets/d/1xB__M-x6s0mssjS78GMWLV3Oj6c7yI3i/edit" target="_blank" rel="noopener">経費精算書サンプル（デコイ）</a></td>
+              <td><span class="resource-type">Excel</span></td>
+              <td>Aさんの経費精算チェック業務の実資料。学生に求められたらMeet画面共有で提供</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.google.com/spreadsheets/d/1E66O1ojwizNCkOnyPTDhZHnWHbUVXyti/edit" target="_blank" rel="noopener">取引先請求書管理台帳（デコイ）</a></td>
+              <td><span class="resource-type">Excel</span></td>
+              <td>Aさんの請求書照合業務の管理台帳。学生に求められたらMeet画面共有で提供</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.google.com/spreadsheets/d/111uKpuSwN1u2pTFZzsbzYWQDv3Q7dpqk/edit" target="_blank" rel="noopener">月次経営サマリー（デコイ）</a></td>
+              <td><span class="resource-type">Excel</span></td>
+              <td>Aさんの月次レポート作成業務のデータ。学生に求められたらMeet画面共有で提供</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.google.com/spreadsheets/d/10gIAjVm8c5Mv7j2K99Ja4QqqXRbqzYje/edit" target="_blank" rel="noopener">源泉徴収税集計表（デコイ）</a></td>
+              <td><span class="resource-type">Excel</span></td>
+              <td>Aさんの源泉徴収集計業務の実データ。学生に求められたらMeet画面共有で提供</td>
             </tr>
           </tbody>
         </table>
@@ -980,8 +1005,8 @@ tr:nth-child(odd) td { background: #fff; }
     <h2>FAQ / トラブルシューティング</h2>
 
     <div class="faq-item">
-      <div class="faq-q">Q. NotebookLMが応答しない</div>
-      <div class="faq-a">ページリロードを試す。それでも復旧しない場合は講師（堀江）に連絡してください。</div>
+      <div class="faq-q">Q. Gemini Gemが応答しない</div>
+      <div class="faq-a">ページリロードを試す。Gemにアクセスするにはストリームのリンクか直接URLが必要です。それでも復旧しない場合は講師（堀江）に連絡してください。</div>
     </div>
 
     <div class="faq-item">
@@ -1001,7 +1026,12 @@ tr:nth-child(odd) td { background: #fff; }
 
     <div class="faq-item">
       <div class="faq-q">Q. 学生がヒアリングで全然質問できていない</div>
-      <div class="faq-a">NotebookLMの使い方だけサポートしてください。「何を聞きたい？」と問いかけるのはOKです。ただし、具体的な質問の提示（「こう聞いてみたら？」）はNGです。質問力の評価が目的であることを念頭に置いてください。</div>
+      <div class="faq-a">Gemの使い方（チャット入力方法）だけサポートしてください。「何を聞きたい？」と問いかけるのはOKです。ただし、具体的な質問の提示（「こう聞いてみたら？」）はNGです。Gemにはサジェスト質問がないため、学生が自力で質問を考えることが評価の核心です。</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Q. 学生が支払通知書以外の業務を効率化しようとしている</div>
+      <div class="faq-a">難易度設計上、支払通知書にたどり着かない可能性があります。すぐに止める必要はありませんが、設計が進み始めた段階で「他にも自動化できそうな業務はありそう？」とさりげなく示唆してください。なお、経費精算・請求書照合・月次レポート・源泉徴収等についてもデコイ用のサンプル資料を用意しています。学生から「現在の資料を見たい」と言われたらDriveの資料をMeet画面共有で提供してください。</div>
     </div>
 
     <div class="faq-item">
@@ -1015,7 +1045,7 @@ tr:nth-child(odd) td { background: #fff; }
   <footer class="report-footer">
     <div>※本資料はp057 1dayインターンシップ運営チーム用の内部文書です</div>
     <div>登場する企業・人物はすべて架空のフィクションです</div>
-    <div>最終更新: 2026-06-17 — p057 2028卒 1dayインターンシップ プログラム</div>
+    <div>最終更新: 2026-06-18 — p057 2028卒 1dayインターンシップ プログラム</div>
   </footer>
 
 </div><!-- /page-wrap -->
