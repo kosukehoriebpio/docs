@@ -1456,7 +1456,7 @@ strong {
     <li>変遷で紹介したDify等のワークフローツールもありますが、実務ではクライアントの環境に合わせて最適なツールを選びます</li>
     <li>企業のIT基盤は大きく2系統: <strong>Microsoft 365</strong> / <strong>Google Workspace</strong></li>
     <li>今回の架空クライアント（S社）はGoogle Workspace利用企業です</li>
-    <li>→ Google製品（Gemini / GAS / NotebookLM）で統一します</li>
+    <li>→ Google製品（Gemini / GAS / Google Gemini のカスタムGem）で統一します</li>
   </ul>
 </div>
 
@@ -1465,7 +1465,7 @@ strong {
   <div class="section-label">ツール選択</div>
   <div class="slide-title">今日使う3つのツール — 役割の切り分け</div>
   <ul class="points">
-    <li><strong>NotebookLM</strong> — 資料をアップロード → その内容だけを根拠に回答するAI</li>
+    <li><strong>Google Gemini のカスタムGem</strong> — 事前設定した情報とプロンプトを元に回答する専用AIチャットボット</li>
     <li><strong>Gemini</strong> — Google製のAI。今日はGASコードを書かせるために使う</li>
     <li><strong>GAS</strong>（Google Apps Script）— Googleサービスをプログラムで自動操作するツール</li>
     <li>3つの役割は明確に異なります。混同しないようにしましょう</li>
@@ -1501,7 +1501,7 @@ strong {
   <div class="section-label">Hands-on</div>
   <div class="slide-title">ハンズオン: 午後ワークの予行演習</div>
   <ul class="points">
-    <li>Phase 1: NotebookLMで顧客bot作成</li>
+    <li>Phase 1: Gemini Gemで顧客bot体験</li>
     <li>Phase 2: ヒアリングで課題発見</li>
     <li>Phase 3: GeminiでGASコード生成</li>
   </ul>
@@ -1510,7 +1510,7 @@ strong {
 <!-- ========== SLIDE 33 ========== -->
 <div class="slide layout-content" data-section="ハンズオン">
   <div class="section-label">ハンズオン — 背景</div>
-  <div class="slide-title">S社（株式会社スプラウト）の紹介</div>
+  <div class="slide-title">S社（株式会社S）の紹介</div>
   <ul class="points">
     <li>SNSマーケティング支援企業（社員25名 + 業務委託者約40名）</li>
     <li>経理担当: <strong>佐藤あゆみさん</strong>（ひとり経理 + 総務兼任）</li>
@@ -1537,7 +1537,7 @@ strong {
       <ul class="points">
         <li><strong>インボイス制度</strong> — 2023年開始。登録番号の有無で通知書の形式が変わる</li>
         <li><strong>GAS</strong> — Googleサービスをプログラムで自動操作するツール</li>
-        <li><strong>NotebookLM</strong> — アップロード資料だけを根拠に回答するAI</li>
+        <li><strong>Gem（カスタムGem）</strong> — 事前設定した情報とペルソナを元に回答する専用AIチャットボット</li>
       </ul>
     </div>
   </div>
@@ -1546,12 +1546,12 @@ strong {
 <!-- ========== SLIDE 35 ========== -->
 <div class="slide layout-handson" data-section="ハンズオン">
   <div class="section-label">Phase 1</div>
-  <div class="slide-title">NotebookLMで顧客botを触ってみる</div>
+  <div class="slide-title">Gemini Gemで顧客botを触ってみる</div>
   <ul class="points">
-    <li><span class="badge">1</span>スライド下部のQRコード、またはチャットで共有されたNotebookLMリンクをブラウザで開く</li>
+    <li><span class="badge">1</span>スライド下部のQRコード、またはチャットで共有されたGemini GemのリンクをGeminiアプリで開く</li>
     <li><span class="badge">2</span>チャット欄に質問を入力 → 佐藤さん（bot）が回答</li>
     <li><span class="badge">3</span>試してみよう: <strong>「普段のお仕事を教えてください」</strong></li>
-    <li><span class="badge">!</span>NotebookLMの特徴: アップロードした資料の範囲だけで回答します（嘘をつきにくい設計です）</li>
+    <li><span class="badge">!</span>Gemの特徴: 設定した情報とペルソナの範囲で回答します（サジェスト質問なし・自分で考える）</li>
   </ul>
 </div>
 
@@ -1584,8 +1584,8 @@ strong {
   <div class="section-label">午後のワークショップ</div>
   <div class="slide-title">午後の全体の流れ</div>
   <ul class="points">
-    <li><strong>12:35-14:20 設計スプリント</strong> — 顧客bot作成 → ヒアリング → 課題定義</li>
-    <li><strong>14:35-16:20 実装スプリント</strong> — GASでPDF生成 → メール送信 → ボタン一発実行化</li>
+    <li><strong>12:50-14:25 設計スプリント</strong> — 顧客bot作成 → ヒアリング → 課題定義</li>
+    <li><strong>14:40-16:20 実装スプリント</strong> — GASでPDF生成 → メール送信 → ボタン一発実行化</li>
     <li><strong>16:40-17:40 最終発表</strong> — 顧客理解 → 課題 → 自動化のストーリーでデモ</li>
     <li>評価: 課題の捉え方 / 改善の実装度 / デモの完成度とストーリー</li>
   </ul>
@@ -1597,7 +1597,7 @@ strong {
   <div class="slide-title">ランチ前のまとめ</div>
   <ul class="points">
     <li><strong>AIの正しい使い方</strong> — フロー改善 → 自動化ポイント特定 → AIにツールを作らせる</li>
-    <li><strong>今日の武器</strong> — NotebookLM（顧客理解）/ Gemini（コード生成）/ GAS（自動化実行）</li>
+    <li><strong>今日の武器</strong> — Gemini Gem（顧客ヒアリング）/ Gemini（コード生成）/ GAS（自動化実行）</li>
     <li><strong>午後のゴール</strong> — S社 佐藤さんの支払通知書作業を自動化する</li>
     <li>困ったらメンターに声をかけてください</li>
   </ul>

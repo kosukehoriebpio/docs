@@ -1,794 +1,485 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>当日タイムテーブル — C案確定版 | p057 2028卒 1dayインターン</title>
-<style>
-/* ===== Base ===== */
-html { font-size: 15px; }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-  color: #1a1a1a;
-  background: #fff;
-  line-height: 1.7;
-}
-
-/* ===== Layout ===== */
-.page-wrap {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 1.5rem 4rem;
-}
-
-/* ===== Sticky Pill Navigation ===== */
-.nav-bar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: #fff;
-  border-bottom: 1px solid #ccc;
-  padding: 0.6rem 0;
-}
-.nav-inner {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  align-items: center;
-}
-.nav-pill {
-  display: inline-block;
-  padding: 0.3rem 1rem;
-  border-radius: 999px;
-  border: 1px solid #ccc;
-  background: #fff;
-  color: #555;
-  font-size: 0.8rem;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-  white-space: nowrap;
-}
-.nav-pill:hover {
-  background: #f0f0f0;
-  color: #1a1a1a;
-  border-color: #999;
-}
-.nav-pill.active {
-  background: #1a1a1a;
-  color: #fff;
-  border-color: #1a1a1a;
-}
-
-/* ===== Report Header ===== */
-.report-header {
-  padding: 2.5rem 0 2rem;
-  border-bottom: 1px solid #bbb;
-  margin-bottom: 2rem;
-}
-.report-header h1 {
-  font-size: 1.6rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  margin-bottom: 0.4rem;
-}
-.report-subtitle {
-  color: #555;
-  font-size: 0.9rem;
-  margin-bottom: 1.4rem;
-}
-.summary-box {
-  border: 1px solid #bbb;
-  padding: 1rem 1.4rem;
-  background: #fafafa;
-}
-.summary-box ul {
-  list-style: none;
-  padding: 0;
-}
-.summary-box ul li {
-  padding: 0.2rem 0;
-  font-size: 0.9rem;
-  border-bottom: 1px solid #e8e8e8;
-}
-.summary-box ul li:last-child { border-bottom: none; }
-.summary-box ul li::before {
-  content: "▸ ";
-  color: #888;
-}
-.summary-label {
-  font-weight: 600;
-  color: #333;
-}
-
-/* ===== Section Headings ===== */
-.section-block {
-  margin-bottom: 3rem;
-  scroll-margin-top: 70px;
-}
-h2 {
-  font-size: 1.15rem;
-  font-weight: 700;
-  padding-bottom: 0.45rem;
-  border-bottom: 1px solid #999;
-  margin-bottom: 1.2rem;
-  letter-spacing: 0.02em;
-}
-h3 {
-  font-size: 1rem;
-  font-weight: 700;
-  padding-left: 0.7rem;
-  border-left: 3px solid #555;
-  margin: 1.4rem 0 0.7rem;
-}
-
-/* ===== Tables ===== */
-.table-wrap {
-  overflow-x: auto;
-  margin: 0.6rem 0 1.2rem;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-}
-th {
-  background: #f0f0f0;
-  text-align: left;
-  padding: 0.55rem 0.8rem;
-  border: 1px solid #bbb;
-  font-weight: 600;
-  white-space: nowrap;
-}
-td {
-  padding: 0.55rem 0.8rem;
-  border: 1px solid #bbb;
-  vertical-align: top;
-}
-tr:nth-child(even) td { background: #fafafa; }
-tr:nth-child(odd) td { background: #fff; }
-
-/* Timetable specific */
-.tt-table {
-  font-size: 0.8rem;
-}
-.tt-table td { line-height: 1.65; }
-.tt-table th { white-space: nowrap; }
-.tt-time { white-space: nowrap; font-weight: 600; color: #333; }
-.tt-lunch td { background: #f7f7f7 !important; color: #666; }
-.tt-lunch .tt-time { color: #888; }
-
-/* Decision badges */
-.badge-decided {
-  display: inline-block;
-  padding: 0.1rem 0.6rem;
-  border-radius: 999px;
-  background: #1a1a1a;
-  color: #fff;
-  font-size: 0.72rem;
-  font-weight: 600;
-  margin-left: 0.4rem;
-  vertical-align: middle;
-}
-.badge-notadopted {
-  display: inline-block;
-  padding: 0.1rem 0.6rem;
-  border-radius: 999px;
-  border: 1px solid #bbb;
-  color: #999;
-  font-size: 0.72rem;
-  margin-left: 0.4rem;
-  vertical-align: middle;
-}
-
-/* Open Items status */
-.status-open {
-  display: inline-block;
-  padding: 0.1rem 0.7rem;
-  border-radius: 999px;
-  border: 1px solid #cc7700;
-  color: #cc7700;
-  font-size: 0.75rem;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-/* Snapshot table */
-.snapshot-table th:first-child { width: 7em; }
-
-/* ===== Report Footer ===== */
-.report-footer {
-  border-top: 1px solid #999;
-  margin-top: 3rem;
-  padding-top: 1rem;
-  font-size: 0.78rem;
-  color: #888;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-/* ===== Responsive ===== */
-@media (max-width: 640px) {
-  html { font-size: 14px; }
-  .report-header h1 { font-size: 1.3rem; }
-  .page-wrap { padding: 0 1rem 3rem; }
-  .nav-inner { gap: 0.3rem; }
-  .nav-pill { font-size: 0.75rem; padding: 0.25rem 0.8rem; }
-  h2 { font-size: 1.05rem; }
-  table { font-size: 0.78rem; }
-  .tt-table { font-size: 0.72rem; }
-  th, td { padding: 0.45rem 0.6rem; }
-}
-
-/* ===== Print ===== */
-@media print {
-  .nav-bar { display: none; }
-  .section-block { page-break-inside: avoid; }
-  .report-header { padding-top: 0; }
-  body { font-size: 12px; }
-  .page-wrap { max-width: 100%; padding: 0; }
-}
-</style>
-</head>
-<body>
-
-<!-- Sticky Pill Navigation -->
-<nav class="nav-bar" aria-label="ページ内ナビゲーション">
-  <div class="nav-inner">
-    <a href="#sec-timetable" class="nav-pill" data-section="sec-timetable">タイムテーブル</a>
-    <a href="#sec-headcount" class="nav-pill" data-section="sec-headcount">人数別編成</a>
-    <a href="#sec-evaluation" class="nav-pill" data-section="sec-evaluation">評価設計</a>
-    <a href="#sec-ops" class="nav-pill" data-section="sec-ops">運営メモ</a>
-    <a href="#sec-decisions" class="nav-pill" data-section="sec-decisions">確定事項</a>
-    <a href="#sec-open" class="nav-pill" data-section="sec-open">Open Items</a>
-  </div>
-</nav>
-
-<div class="page-wrap">
-
-  <!-- Report Header -->
-  <header class="report-header">
-    <h1>当日タイムテーブル — C案確定版</h1>
-    <p class="report-subtitle">p057 2028卒 1dayインターン｜オンライン開催（Google Meet）</p>
-    <div class="summary-box">
-      <ul>
-        <li><span class="summary-label">開催日：</span>2026年6月19日（金）</li>
-        <li><span class="summary-label">形式：</span>オンライン開催（Google Meet メインルーム + breakout rooms）</li>
-        <li><span class="summary-label">時間：</span>10:00 〜 18:30</li>
-        <li><span class="summary-label">参加人数：</span>確定5名、最大10名、最少催行3名（2028卒 大学3年生）</li>
-        <li><span class="summary-label">テーマ：</span>AI集中講義 × 業務改善コンテスト（BPO課題テーマ TBD、確定期限 2026-06-17 18:00）</li>
-        <li><span class="summary-label">採用プログラム：</span>Plan C確定（選考要素あり / 見極め重視）</li>
-        <li><span class="summary-label">確定事項：</span>A=a（動くプロトタイプ必須維持）/ B=c（1チーム協働＋審査員ベンチマーク比較）/ C=c（snapshotシート＋禁止ワードのみ共有）</li>
-      </ul>
-    </div>
-  </header>
-
-  <!-- Section 1: Timetable -->
-  <section class="section-block" id="sec-timetable">
-    <h2>タイムテーブル</h2>
-    <div class="table-wrap">
-      <table class="tt-table">
-        <thead>
-          <tr>
-            <th>時間</th>
-            <th>内容</th>
-            <th>オーナー</th>
-            <th>Notes</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="tt-time">10:00–10:20</td>
-            <td>オープニング</td>
-            <td>堀江 / 運営</td>
-            <td>接続確認・入室確認、会社紹介、当日の流れ、選考要素ありの説明、緊急時の連絡フロー共有。学生には「個別FBあり」は伝えない。</td>
-          </tr>
-          <tr>
-            <td class="tt-time">10:20–10:35</td>
-            <td>自己紹介・チーム発表</td>
-            <td>運営</td>
-            <td>45分ランチを純休憩にするため、チーム発表と各 breakout room への移動は午前に前倒し。</td>
-          </tr>
-          <tr>
-            <td class="tt-time">10:35–11:35</td>
-            <td>AI集中講義 + hands-on</td>
-            <td>リモート講師 / 堀江 / メンター</td>
-            <td>60分。<strong>講師はオンライン登壇</strong>。未経験者(Lv1)向け二段構成: 前半=生成AI/ChatGPTの基礎・プロンプト操作（約25–30分）、後半=ツールハンズオン（NotebookLM 顧客bot体験 → Gemini でGASコード自然言語生成 → GAS を貼り付けてPDF生成・Gmail送信）約25–30分＋バッファ5分。Claude Code はデモのみ。各 breakout 担当メンターが未経験者を重点フォロー。</td>
-          </tr>
-          <tr>
-            <td class="tt-time">11:35–11:50</td>
-            <td>BPO課題説明</td>
-            <td>堀江</td>
-            <td>Google Meet メインルームで画面共有。課題テーマ説明、提出形式、審査基準、フォールバック提出物を案内。</td>
-          </tr>
-          <tr class="tt-lunch">
-            <td class="tt-time">11:50–12:35</td>
-            <td>昼休憩</td>
-            <td>全員</td>
-            <td>ランチ専用（45分）。発表・運営説明は入れない。</td>
-          </tr>
-          <tr>
-            <td class="tt-time">12:35–14:20</td>
-            <td>設計スプリント</td>
-            <td>各チーム / 各メンター</td>
-            <td>breakout room でメンター密着。AS-IS把握、課題定義、解決案、ユーザーフロー、プロンプト案、テストケース設計。</td>
-          </tr>
-          <tr>
-            <td class="tt-time">14:20–14:35</td>
-            <td>設計レビュー</td>
-            <td>メンター</td>
-            <td><strong>Snapshot 1</strong>。各 breakout room を回り5分レビュー。メンターは観察シートに短文記録のみ。連続採点はしない。</td>
-          </tr>
-          <tr>
-            <td class="tt-time">14:35–15:30</td>
-            <td>実装スプリント前半</td>
-            <td>各チーム / 各メンター</td>
-            <td>no-code 実装を本命とする。</td>
-          </tr>
-          <tr>
-            <td class="tt-time">15:30–15:40</td>
-            <td>実装チェック</td>
-            <td>メンター</td>
-            <td><strong>Snapshot 2</strong>。実装進捗、詰まり方、学習吸収を記録。未完成チームはこの時点でフォールバック提出物（設計書＋プロンプト集＋想定出力）の並行作成に切り替え。</td>
-          </tr>
-          <tr>
-            <td class="tt-time">15:40–16:20</td>
-            <td>実装スプリント後半</td>
-            <td>各チーム / 各メンター</td>
-            <td>動作プロトタイプの仕上げ、または設計書＋プロンプト集＋想定出力の完成を進める。</td>
-          </tr>
-          <tr>
-            <td class="tt-time">16:20–16:40</td>
-            <td>発表準備</td>
-            <td>各チーム</td>
-            <td>5分発表資料、デモURLまたはフォールバック提出物を準備。画面共有の動作確認。</td>
-          </tr>
-          <tr>
-            <td class="tt-time">16:40–17:40</td>
-            <td>最終発表・審査</td>
-            <td>審査員 / 堀江</td>
-            <td>メインルームで画面共有。1チームあたり発表5分＋質疑3分。完成デモが無い場合も設計書＋プロンプト集＋想定出力で審査する。<strong>Snapshot 3</strong> はこの時間に回収。</td>
-          </tr>
-          <tr>
-            <td class="tt-time">17:40–18:00</td>
-            <td>表彰・クロージング</td>
-            <td>堀江</td>
-            <td>順位、MVP、今後の案内。個別FBは次の時間枠（18:00–18:30）で実施する旨を案内。</td>
-          </tr>
-          <tr>
-            <td class="tt-time">18:00–18:30</td>
-            <td>個別FB＋質問タイム</td>
-            <td>メンター / 人事 / 堀江</td>
-            <td><strong>並行トラック</strong>: メインルームでは人事＋堀江が全体向け質問対応（一対多）。同時にブレイクアウトルームでメンターが学生1人ずつ5分の個別FBを実施（入れ替わり制）。早期選考対象者にはこの場で告知。全員完了で18:30クローズ。</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- Section 2: Headcount Fallback -->
-  <section class="section-block" id="sec-headcount">
-    <h2>人数別編成</h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>当日人数</th>
-            <th>チーム編成</th>
-            <th>メンター配置</th>
-            <th>コンテスト運用</th>
-            <th>補足</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>3名</td>
-            <td>1チーム（3名）</td>
-            <td>1名密着＋堀江フォロー</td>
-            <td>1チーム協働＋審査員ベンチマーク比較で contest frame を担保（Decision B=c 確定）</td>
-            <td>個人戦にはしない。選考観察は Snapshot 3回で担保。</td>
-          </tr>
-          <tr>
-            <td>5名</td>
-            <td>2チーム（3名＋2名）</td>
-            <td>2名推奨、不足時は1名＋堀江</td>
-            <td>標準コンテスト運用</td>
-            <td>現時点の本命ケース。breakout room を2室運用。</td>
-          </tr>
-          <tr>
-            <td>8–10名</td>
-            <td>3チーム（3–4名）</td>
-            <td>3名推奨、最低2名</td>
-            <td>標準コンテスト運用</td>
-            <td>breakout room を3室運用。</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- Section 3: Evaluation Design -->
-  <section class="section-block" id="sec-evaluation">
-    <h2>評価設計</h2>
-
-    <h3>Layer 1：学生に見せるコンテスト評価</h3>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>評価軸</th>
-            <th>見る内容</th>
-            <th>備考</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>課題定義</td>
-            <td>BPO課題の理解、真因の捉え方</td>
-            <td>設計の筋を重視</td>
-          </tr>
-          <tr>
-            <td>解決策設計</td>
-            <td>業務フロー、ユーザー体験、実行現実性</td>
-            <td>動作有無だけで決めない</td>
-          </tr>
-          <tr>
-            <td>AI活用の質</td>
-            <td>プロンプト設計、AIへの役割分担、検証の仕方</td>
-            <td>no-code 前提</td>
-          </tr>
-          <tr>
-            <td>実証・伝達</td>
-            <td>デモ、想定出力、テストケース、発表の明快さ</td>
-            <td>動作デモ未完成でも審査可能</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h3>Layer 2：社内用の個人見極め（Snapshot 記録）</h3>
-    <p style="font-size:0.875rem;color:#444;margin-bottom:0.8rem;">常時5軸採点はやめ、以下の3 snapshot だけを記録する。記録形式は <strong>Strong / Neutral / Concern</strong> の3値 + 1行メモ。</p>
-    <div class="table-wrap">
-      <table class="snapshot-table">
-        <thead>
-          <tr>
-            <th>Snapshot</th>
-            <th>時点</th>
-            <th>主に見ること</th>
-            <th>記録者</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>14:20 設計レビュー</td>
-            <td>課題構造化、仮説の質、役割の取り方</td>
-            <td>担当メンター</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>15:30 実装チェック</td>
-            <td>学習吸収、詰まり時の自走、協働姿勢</td>
-            <td>担当メンター</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>最終発表時</td>
-            <td>伝達力、当事者意識、価値観の相性</td>
-            <td>メンター＋審査員</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h3>早期選考候補の暫定 pass criteria</h3>
-    <p style="font-size:0.8rem;color:#777;margin-bottom:0.6rem;">暫定基準。凜子の選考設計との整合が必要（RC-D01）。</p>
-    <ul style="font-size:0.875rem;padding-left:1.4rem;line-height:1.9;">
-      <li>Snapshot 3回のうち2回以上で <strong>Strong</strong> を獲得している</li>
-      <li>「課題構造化」と「自走 / 協働」の両方で <strong>Concern が無い</strong></li>
-      <li>最終発表時に、自分の担当範囲を具体的に説明できる</li>
-      <li>遅刻・離脱・コミュニケーション不全が無い</li>
-    </ul>
-    <p style="font-size:0.8rem;color:#666;margin-top:0.6rem;">→ 凜子との整合後に「早期選考通過候補」「保留」「見送り」の3区分へ確定する。</p>
-
-    <h3>メンターへの共有範囲（Decision C=c 確定 / 2026-06-15）</h3>
-    <ul style="font-size:0.875rem;padding-left:1.4rem;line-height:1.9;">
-      <li><strong>渡すもの：</strong>Snapshot 観察シート（Strong/Neutral/Concern + 1行メモ）と、禁止ワード（「個別FBします」「早期選考確約」等）</li>
-      <li><strong>渡さないもの：</strong>早期選考の通過閾値・選考判定（人事〈堀江/凜子〉の別ブリーフィングで管理）</li>
-    </ul>
-  </section>
-
-  <!-- Section 4: Online Ops -->
-  <section class="section-block" id="sec-ops">
-    <h2>運営メモ</h2>
-    <p style="font-size:0.85rem;color:#555;margin-bottom:0.8rem;">オンライン開催に特有の想定事象と対応</p>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>想定事象</th>
-            <th>対応</th>
-            <th>オーナー</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>参加者の回線落ち・途中離脱</td>
-            <td>まず同じ Google Meet リンクに再入室。3分以内に戻らない場合は当日案内メールへの返信または緊急連絡先へ連絡。チームは待ち過ぎず作業継続。メンターが復帰時にキャッチアップ。</td>
-            <td>運営</td>
-          </tr>
-          <tr>
-            <td>リモート講師の回線・音声トラブル</td>
-            <td>事前録画版を用意し即時切替。別回線（モバイル）でバックアップ接続を確保。</td>
-            <td>運営</td>
-          </tr>
-          <tr>
-            <td>学生の画面共有トラブル</td>
-            <td>事前に共有URLをメインチャットに貼付しておく。音声のみで発表継続も可。</td>
-            <td>運営</td>
-          </tr>
-          <tr>
-            <td>参加者の遅刻・欠席</td>
-            <td>開始前に接続確認を実施。チームは待ち過ぎず作業継続、メンターが復帰時にキャッチアップ。</td>
-            <td>運営</td>
-          </tr>
-          <tr>
-            <td>メンター1名欠席（事前判明）</td>
-            <td>09:30 までにチーム数を圧縮。5名以下なら2チーム維持、3名なら1チーム運用に切り替え。Snapshot 記録は堀江が補完。</td>
-            <td>堀江</td>
-          </tr>
-          <tr>
-            <td>メンター離脱（途中発生）</td>
-            <td>最も近いチーム担当メンターへ吸収し、運営が記録シート入力だけを代行。タイムテーブル自体は崩さない。</td>
-            <td>堀江 / 運営</td>
-          </tr>
-          <tr>
-            <td>BPO課題テーマ未確定のまま前日へ入る</td>
-            <td>2026-06-17 18:00 を最終期限とし、未確定なら堀江判断で経理テーマをデフォルト採用する。6/18 12:00 までに説明資料を固定。</td>
-            <td>堀江</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- Section 5: Decisions -->
-  <section class="section-block" id="sec-decisions">
-    <h2>確定事項</h2>
-
-    <h3>Horie Decision Items（2026-06-15 確定）</h3>
-
-    <p style="font-size:0.85rem;font-weight:600;margin:1rem 0 0.4rem;">A. 成果物難易度の置き方 → <strong>a（動くプロトタイプ必須を維持）</strong></p>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th>Option</th><th>内容</th><th>判断</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>a</td>
-            <td>「動くプロトタイプ必須」を維持する</td>
-            <td><span class="badge-decided">✅ 採用</span></td>
-          </tr>
-          <tr>
-            <td>b</td>
-            <td>正式成果物を「設計書＋プロンプト集」まで緩和する</td>
-            <td><span class="badge-notadopted">—</span></td>
-          </tr>
-          <tr>
-            <td>c</td>
-            <td>6/17 までの dry-run 計測で a / b を決める</td>
-            <td><span class="badge-notadopted">—</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p style="font-size:0.8rem;color:#555;margin:0.4rem 0 1rem;">補足: 「必須」と打ち出すが、silent fallback（未完成時は設計書＋プロンプト集で審査継続）を保険として維持。サイレント失敗（審査不成立）は回避される。RC-C06 のリスクは fallback で吸収。</p>
-
-    <p style="font-size:0.85rem;font-weight:600;margin:0.6rem 0 0.4rem;">B. 3–4名時のコンテスト性の作り方 → <strong>c（1チーム協働＋審査員ベンチマーク比較）</strong></p>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th>Option</th><th>内容</th><th>判断</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>a</td>
-            <td>1チーム協働＋達成基準チャレンジ化</td>
-            <td><span class="badge-notadopted">—</span></td>
-          </tr>
-          <tr>
-            <td>b</td>
-            <td>2小チームに分けて疑似対戦する</td>
-            <td><span class="badge-notadopted">—</span></td>
-          </tr>
-          <tr>
-            <td>c</td>
-            <td>1チーム協働＋審査員ベンチマーク比較にする</td>
-            <td><span class="badge-decided">✅ 採用</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p style="font-size:0.8rem;color:#555;margin:0.4rem 0 1rem;">推奨理由: 初心者を無理に分割すると支援密度が下がる。1チーム協働を維持しつつ、審査員ベンチマーク比較で contest frame だけ残す方が安定する。</p>
-
-    <p style="font-size:0.85rem;font-weight:600;margin:0.6rem 0 0.4rem;">C. 「FB非開示」と評価記録の両立方法 → <strong>c（snapshot sheet＋禁止ワードのみ共有）</strong></p>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th>Option</th><th>内容</th><th>判断</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>a</td>
-            <td>メンターへ選考用途・通過閾値まで全面共有する</td>
-            <td><span class="badge-notadopted">—</span></td>
-          </tr>
-          <tr>
-            <td>b</td>
-            <td>メンターへは観察軸だけ共有し、通過判定は人事のみが持つ</td>
-            <td><span class="badge-notadopted">—</span></td>
-          </tr>
-          <tr>
-            <td>c</td>
-            <td>メンターには snapshot sheet と禁止ワードだけ共有し、司会台本と選考判定は別ブリーフィングに分ける</td>
-            <td><span class="badge-decided">✅ 採用</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p style="font-size:0.8rem;color:#555;margin:0.4rem 0 1rem;">推奨理由: 評価品質を落とさず、学生への不用意な「FBします」発言も防ぎやすい。</p>
-
-    <h3>RC Resolution Table</h3>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>RC</th>
-            <th>指摘内容</th>
-            <th>対応</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>RC-C06</td>
-            <td>初心者に working product 必須は重い</td>
-            <td>成果物を「本命＋silent fallback」の二段構えに変更。未完成でも審査継続可能にした。（Decision A=a で必須維持、fallback でリスク吸収）</td>
-          </tr>
-          <tr>
-            <td>RC-C10</td>
-            <td>Claude Code / GAS が初心者に難しい</td>
-            <td>学生 hands-on を ChatGPT・NotebookLM・Gemini・GAS に再構成（顧客bot=NotebookLM単体、コード生成=Gemini、実装=GAS）。Claude Code はデモ専用へ変更。GAS は講師が生成したコードを貼り付けるだけの操作に限定。</td>
-          </tr>
-          <tr>
-            <td>RC-C05</td>
-            <td>メンター観察負荷が高い</td>
-            <td>5軸の常時採点をやめ、Snapshot 3回の簡易記録に縮小した。</td>
-          </tr>
-          <tr>
-            <td>RC-C11</td>
-            <td>当日 contingency が空白</td>
-            <td>オンライン開催前提で、リモート講師の配信トラブル・回線落ち・途中離脱・欠席・メンター欠席・テーマ未確定時の対処をオンライン運営メモ化した。</td>
-          </tr>
-          <tr>
-            <td>RC-D01</td>
-            <td>早期選考 pass criteria 不明</td>
-            <td>暫定 pass criteria を明文化し、凜子との整合が必要な placeholder を残した。</td>
-          </tr>
-          <tr>
-            <td>RC-D02</td>
-            <td>ランチにチーム発表が混在</td>
-            <td>チーム発表を 10:20–10:35 に移し、昼休憩を純休憩にした。</td>
-          </tr>
-          <tr>
-            <td>RC-C12</td>
-            <td>BPOテーマ確定責任者と期限が曖昧</td>
-            <td>堀江を責任者、2026-06-17 18:00 を期限として明記した。</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- Section 6: Open Items -->
-  <section class="section-block" id="sec-open">
-    <h2>Open Items</h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>項目</th>
-            <th>内容</th>
-            <th>Assignee</th>
-            <th>Deadline</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>BPO課題テーマ確定</td>
-            <td>経理 / 労務 / 総務のいずれかを決定し、サンプル入力と期待出力を1セット用意する</td>
-            <td>堀江</td>
-            <td>2026-06-17 18:00</td>
-            <td><span class="status-open">Open</span></td>
-          </tr>
-          <tr>
-            <td>早期選考 pass criteria 確定</td>
-            <td>凜子の選考設計と照合し、暫定基準を正式化する</td>
-            <td>堀江 / 凜子</td>
-            <td>2026-06-18 12:00</td>
-            <td><span class="status-open">Open</span></td>
-          </tr>
-          <tr>
-            <td>メンター向け観察シート準備</td>
-            <td>Snapshot 3回分だけ入力する簡易シートを作る</td>
-            <td>運営</td>
-            <td>2026-06-18 18:00</td>
-            <td><span class="status-open">Open</span></td>
-          </tr>
-          <tr>
-            <td>オンライン接続・機材の確定</td>
-            <td>各自の通信環境・接続安定性、Google Meet リンク、breakout room 設定、リモート講師の接続テストを完了する</td>
-            <td>運営</td>
-            <td>2026-06-18 18:00</td>
-            <td><span class="status-open">Open</span></td>
-          </tr>
-          <tr>
-            <td>当日バックアップ連絡先固定</td>
-            <td>学生案内と緊急連絡手段（メール・緊急連絡先）を一本化する</td>
-            <td>運営</td>
-            <td>2026-06-18 18:00</td>
-            <td><span class="status-open">Open</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="report-footer">
-    <div>当日タイムテーブル — p057 — Generated 2026-06-16 — BPIO co., Ltd.</div>
-    <div>※ これは架空クライアントを用いた研修用フィクションです。実在の人物・企業・事件とは一切関係ありません。</div>
-  </footer>
-
-</div><!-- /page-wrap -->
-
-<script>
-(function () {
-  'use strict';
-  var sections = document.querySelectorAll('.section-block[id]');
-  var pills = document.querySelectorAll('.nav-pill[data-section]');
-  if (!sections.length || !pills.length) return;
-
-  var pillMap = {};
-  pills.forEach(function (p) { pillMap[p.dataset.section] = p; });
-
-  var observer = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        pills.forEach(function (p) { p.classList.remove('active'); });
-        var active = pillMap[entry.target.id];
-        if (active) active.classList.add('active');
-      }
-    });
-  }, { rootMargin: '-10% 0px -80% 0px', threshold: 0 });
-
-  sections.forEach(function (s) { observer.observe(s); });
-
-  pills.forEach(function (p) {
-    p.addEventListener('click', function (e) {
-      e.preventDefault();
-      var target = document.getElementById(p.dataset.section);
-      if (target) target.scrollIntoView({ behavior: 'smooth' });
-    });
-  });
-})();
-</script>
-
-</body>
-</html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C案 当日タイムテーブル（オンライン開催・確定版）</title><style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif; line-height: 1.7; color: #1a1a1a; background: #f5f6f8; margin: 0; padding: 24px; }
+.wrap { max-width: 1080px; margin: 0 auto; background: #fff; padding: 40px 48px 64px; border-radius: 10px; box-shadow: 0 1px 5px rgba(0,0,0,.08); }
+h1 { font-size: 1.75rem; border-bottom: 3px solid #f08c00; padding-bottom: .3em; }
+h2 { font-size: 1.3rem; margin-top: 2em; border-bottom: 1px solid #e2e5ea; padding-bottom: .25em; }
+h3 { font-size: 1.08rem; margin-top: 1.5em; color: #2b2b2b; }
+table { border-collapse: collapse; width: 100%; margin: 1em 0; font-size: .92rem; }
+th, td { border: 1px solid #d0d4da; padding: 8px 11px; text-align: left; vertical-align: top; }
+th { background: #fff4e6; font-weight: 600; }
+tbody tr:nth-child(even) td { background: #fafbfc; }
+code { background: #eef1f4; padding: 2px 5px; border-radius: 4px; font-size: .9em; }
+ul, ol { padding-left: 1.4em; }
+li { margin: .2em 0; }
+strong { color: #d9480f; }
+hr { border: none; border-top: 1px solid #e2e5ea; margin: 2em 0; }
+</style></head>
+<body><div class="wrap"><hr>
+<h2>id: p057-timetable
+title: C案 当日タイムテーブル（オンライン開催・確定版）
+project: p057
+type: doc
+status: confirmed
+date: 2026-06-15</h2>
+<h1>C案 当日タイムテーブル（オンライン開催・確定版）</h1>
+<blockquote>
+<p>2026-06-15 確定。<strong>開催形式 = オンライン（Google Meet）</strong>。
+堀江判断確定: <strong>A=a（動くプロトタイプ必須を維持）/ B=c（1チーム協働＋審査員ベンチマーク比較）/ C=c（メンターへはsnapshotシート＋禁止ワードのみ共有、選考判定は別ブリーフィング）</strong></p>
+</blockquote>
+<h2>1. Overview</h2>
+<ul>
+<li>開催日: 2026-06-19（金）</li>
+<li>形式: <strong>オンライン開催（Google Meet メインルーム + breakout rooms）</strong>。参加者・メンター・運営はそれぞれの環境からオンラインで参加する</li>
+<li>時間: 10:00-18:30</li>
+<li>対象: 2028卒（2026/6時点で大学3年生）。集客ページは「未経験者でも可」で公開済みのため、<strong>Lv1（完全未経験）〜Lv2（ChatGPTは触ったがツールで&quot;作る&quot;のは初めて）が混在</strong>する前提。標準は Lv2 だが、<strong>AI集中講義の前半に未経験者向け基礎を内包し、メンターの重点フォローで Lv1 も当日中に立ち上げる</strong>（非エンジニア／ノーコード前提）</li>
+<li>参加人数: 6/19時点確定5名、最大10名、最少催行3名</li>
+<li>採用プログラム: Plan C確定（AI集中講義 × 業務改善コンテスト）</li>
+<li>選考方針: 「選考要素あり / 見極め重視」確定。学生には個別フィードバック提供を告知しない</li>
+<li>BPO課題テーマ: TBD（経理 / 労務 / 総務のいずれか）。最終確定期限は 2026-06-17 18:00</li>
+<li>成果物ルール（Decision A=a: 動くプロトタイプ必須を維持 / 2026-06-15確定）:<ul>
+<li>必達目標: no-code で動くプロトタイプ（Gem + GAS など）を「必須」として打ち出す</li>
+<li>未達時の審査継続フォールバック（silent fallback）: 設計書 + プロンプト集 + 想定入出力 + テストケース</li>
+<li>15:30 実装チェックで未完成のチームはフォールバック提出物の並行作成に切り替え、最終審査はどちらの提出物でも受け付ける</li>
+</ul>
+</li>
+<li>オンライン必須準備: 各自の通信環境・接続安定性の事前確認、Google Meet リンク共有、breakout room 設定、学生各自のPC・ブラウザ動作確認、リモート講師の接続テスト</li>
+</ul>
+<h2>2. Detailed Timetable</h2>
+<table>
+<thead>
+<tr>
+<th>時間</th>
+<th>内容</th>
+<th>オーナー</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>10:00-10:20</td>
+<td>オープニング</td>
+<td>堀江 / 運営</td>
+<td>接続確認・入室確認、会社紹介、当日の流れ、選考要素ありの説明、緊急時の連絡フロー共有。学生には「個別FBあり」は伝えない。</td>
+</tr>
+<tr>
+<td>10:20-10:35</td>
+<td>自己紹介・チーム発表</td>
+<td>運営</td>
+<td>60分ランチを純休憩にするため、チーム発表と各 breakout room への移動は午前に前倒し。</td>
+</tr>
+<tr>
+<td>10:35-11:35</td>
+<td>AI集中講義 + hands-on</td>
+<td>リモート講師 / 堀江 / メンター</td>
+<td>60分。<strong>講師はオンライン登壇</strong>。<strong>未経験者(Lv1)を当日中に立ち上げる二段構成</strong>: 前半=生成AI/<code>ChatGPT</code>の基礎・プロンプト操作（完全未経験向け）約25-30分、後半=ツールハンズオン（①Google Gemini のカスタムGem（顧客botとして設定済み）を使い「Aさん」として応答させる顧客botを体験 → ②<code>Gemini</code>でGASコードを自然言語生成 → ③<code>GAS</code>を貼り付けて支払通知書PDF生成・Gmail送信を実行）約25-30分＋バッファ5分。hands-on は各自PCから <code>ChatGPT</code>・カスタムGem・<code>Gemini</code>・<code>GAS</code>（Google Workspace）のブラウザUIに限定。<code>Claude Code</code> はデモのみで学生実技に含めない。各 breakout 担当メンターが<strong>未経験者を重点フォロー</strong>（巡回頻度を上げ、つまずきを即解消）。Lv2層が冗長にならない並行課題も要設計。</td>
+</tr>
+<tr>
+<td>11:35-11:50</td>
+<td>BPO課題説明</td>
+<td>堀江</td>
+<td>Google Meet メインルームで画面共有。課題テーマ説明、提出形式、審査基準、フォールバック提出物を案内。</td>
+</tr>
+<tr>
+<td>11:50-12:50</td>
+<td>昼休憩</td>
+<td>全員</td>
+<td>ランチ専用（60分）。発表・運営説明は入れない。</td>
+</tr>
+<tr>
+<td>12:50-14:25</td>
+<td>設計スプリント</td>
+<td>各チーム / 各メンター</td>
+<td>breakout room でメンター密着。AS-IS把握、課題定義、解決案、ユーザーフロー、プロンプト案、テストケース設計。</td>
+</tr>
+<tr>
+<td>14:25-14:40</td>
+<td>設計レビュー</td>
+<td>メンター</td>
+<td>Snapshot 1。各 breakout room を回り5分レビュー、メンターは観察シートに短文記録のみ。連続採点はしない。</td>
+</tr>
+<tr>
+<td>14:40-15:30</td>
+<td>実装スプリント前半</td>
+<td>各チーム / 各メンター</td>
+<td>no-code 実装を本命とする。</td>
+</tr>
+<tr>
+<td>15:30-15:40</td>
+<td>実装チェック</td>
+<td>メンター</td>
+<td>Snapshot 2。実装進捗、詰まり方、学習吸収を記録。未完成チームはこの時点でフォールバック提出物を並行作成に切り替え。</td>
+</tr>
+<tr>
+<td>15:40-16:20</td>
+<td>実装スプリント後半</td>
+<td>各チーム / 各メンター</td>
+<td>動作プロトタイプの仕上げ、または設計書 + プロンプト集 + 想定出力の完成を進める。</td>
+</tr>
+<tr>
+<td>16:20-16:40</td>
+<td>発表準備</td>
+<td>各チーム</td>
+<td>5分発表資料、デモURLまたはフォールバック提出物を準備。画面共有の動作確認。</td>
+</tr>
+<tr>
+<td>16:40-17:40</td>
+<td>最終発表・審査</td>
+<td>審査員 / 堀江</td>
+<td>メインルームで画面共有。1チームあたり発表5分 + 質疑3分。完成デモが無い場合も設計書 + プロンプト集 + 想定出力で審査する。Snapshot 3 はこの時間に回収。</td>
+</tr>
+<tr>
+<td>17:40-18:00</td>
+<td>表彰・クロージング</td>
+<td>堀江</td>
+<td>順位、MVP、今後の案内。個別FBは次の時間枠（18:00-18:30）で実施する旨を案内。</td>
+</tr>
+<tr>
+<td>18:00-18:30</td>
+<td>個別FB＋質問タイム</td>
+<td>メンター / 人事 / 堀江</td>
+<td><strong>並行トラック</strong>: メインルームでは人事＋堀江が全体向け質問対応（一対多）。同時にブレイクアウトルームでメンターが学生1人ずつ5分の個別FBを実施（入れ替わり制）。早期選考対象者にはこの場で告知。全員完了で18:30クローズ。</td>
+</tr>
+</tbody></table>
+<h2>3. Headcount Fallback</h2>
+<table>
+<thead>
+<tr>
+<th>当日人数</th>
+<th>チーム編成</th>
+<th>メンター配置</th>
+<th>コンテスト運用</th>
+<th>補足</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>3名</td>
+<td>1チーム（3名）</td>
+<td>1名密着 + 堀江フォロー</td>
+<td>1チーム協働＋審査員ベンチマーク比較で contest frame を担保（Decision B=c 確定）</td>
+<td>個人戦にはしない。選考観察は Snapshot 3回で担保。</td>
+</tr>
+<tr>
+<td>5名</td>
+<td>2チーム（3名 + 2名）</td>
+<td>2名推奨、不足時は1名 + 堀江</td>
+<td>標準コンテスト運用</td>
+<td>現時点の本命ケース。breakout room を2室運用。</td>
+</tr>
+<tr>
+<td>8-10名</td>
+<td>3チーム（3-4名）</td>
+<td>3名推奨、最低2名</td>
+<td>標準コンテスト運用</td>
+<td>breakout room を3室運用。</td>
+</tr>
+</tbody></table>
+<h2>4. 2-Layer Evaluation Design + Pass Criteria</h2>
+<h3>Layer 1: 学生に見せるコンテスト評価</h3>
+<table>
+<thead>
+<tr>
+<th>評価軸</th>
+<th>見る内容</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>課題定義</td>
+<td>BPO課題の理解、真因の捉え方</td>
+<td>設計の筋を重視</td>
+</tr>
+<tr>
+<td>解決策設計</td>
+<td>業務フロー、ユーザー体験、実行現実性</td>
+<td>動作有無だけで決めない</td>
+</tr>
+<tr>
+<td>AI活用の質</td>
+<td>プロンプト設計、AIへの役割分担、検証の仕方</td>
+<td>no-code 前提</td>
+</tr>
+<tr>
+<td>実証・伝達</td>
+<td>デモ、想定出力、テストケース、発表の明快さ</td>
+<td>動作デモ未完成でも審査可能</td>
+</tr>
+</tbody></table>
+<h3>Layer 2: 社内用の個人見極め</h3>
+<ul>
+<li>常時5軸採点はやめ、以下の3 snapshot だけを記録する。</li>
+<li>記録形式は <code>Strong / Neutral / Concern</code> の3値 + 1行メモとする。</li>
+<li>※当日メンターが現場で使う配布物はこの Snapshot シート。発表後に集約・解釈する詳細な4観点フレーム（Lv1–Lv4）は <code>docs/materials/evaluation-rubric.md</code> §3 Layer2 を参照。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Snapshot</th>
+<th>時点</th>
+<th>主に見ること</th>
+<th>記録者</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>14:25 設計レビュー</td>
+<td>課題構造化、仮説の質、役割の取り方</td>
+<td>担当メンター</td>
+</tr>
+<tr>
+<td>2</td>
+<td>15:30 実装チェック</td>
+<td>学習吸収、詰まり時の自走、協働姿勢</td>
+<td>担当メンター</td>
+</tr>
+<tr>
+<td>3</td>
+<td>最終発表時</td>
+<td>伝達力、当事者意識、価値観の相性</td>
+<td>メンター + 審査員</td>
+</tr>
+</tbody></table>
+<h3>早期選考候補の暫定 pass criteria</h3>
+<ul>
+<li>暫定基準。<strong>凜子の選考設計との整合が必要（RC-D01）</strong>。</li>
+<li>候補者に上げる条件案:<ul>
+<li>Snapshot 3回のうち2回以上で <code>Strong</code> を獲得している</li>
+<li><code>課題構造化</code> と <code>自走 / 協働</code> の両方で <code>Concern</code> が無い</li>
+<li>最終発表時に、自分の担当範囲を具体的に説明できる</li>
+<li>遅刻・離脱・コミュニケーション不全が無い</li>
+</ul>
+</li>
+<li>凜子との整合後に「早期選考通過候補」「保留」「見送り」の3区分へ確定する。</li>
+</ul>
+<h3>メンターへの共有範囲（Decision C=c 確定 / 2026-06-15）</h3>
+<ul>
+<li>メンターに渡すもの: Snapshot 観察シート（Strong/Neutral/Concern + 1行メモ）と、禁止ワード（「個別FBします」「早期選考確約」等の不用意な約束を当日口にしない）。</li>
+<li>メンターに渡さないもの: 早期選考の通過閾値・選考判定。これは人事（堀江 / 凜子）の別ブリーフィングで管理する。</li>
+<li>司会台本と選考判定ブリーフを分離し、評価品質を保ちつつ学生への不用意な発言を防ぐ。</li>
+</ul>
+<h2>5. オンライン運営メモ</h2>
+<table>
+<thead>
+<tr>
+<th>想定事象</th>
+<th>対応</th>
+<th>オーナー</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>参加者の回線落ち・途中離脱</td>
+<td>まず同じ Google Meet リンクに再入室。3分以内に戻らない場合は、当日案内メールへの返信または緊急連絡先へ連絡。チームは待ち過ぎず作業継続。メンターが復帰時にキャッチアップ。</td>
+<td>運営</td>
+</tr>
+<tr>
+<td>リモート講師の回線・音声トラブル</td>
+<td>事前録画版を用意し即時切替。別回線（モバイル）でバックアップ接続を確保。</td>
+<td>運営</td>
+</tr>
+<tr>
+<td>学生の画面共有トラブル</td>
+<td>事前に共有URLをメインチャットに貼付しておく。音声のみで発表継続も可。</td>
+<td>運営</td>
+</tr>
+<tr>
+<td>参加者の遅刻・欠席</td>
+<td>開始前に接続確認を実施。チームは待ち過ぎず作業継続、メンターが復帰時にキャッチアップ。</td>
+<td>運営</td>
+</tr>
+<tr>
+<td>メンター1名欠席（事前判明）</td>
+<td>09:30 までにチーム数を圧縮。5名以下なら2チーム維持、3名なら1チーム運用に切り替え。Snapshot 記録は堀江が補完。</td>
+<td>堀江</td>
+</tr>
+<tr>
+<td>メンター離脱（途中発生）</td>
+<td>最も近いチーム担当メンターへ吸収し、運営が記録シート入力だけを代行。タイムテーブル自体は崩さない。</td>
+<td>堀江 / 運営</td>
+</tr>
+<tr>
+<td>BPO課題テーマ未確定のまま前日へ入る</td>
+<td>2026-06-17 18:00 を最終期限とし、未確定なら堀江判断で経理テーマをデフォルト採用する。6/18 12:00 までに説明資料を固定。</td>
+<td>堀江</td>
+</tr>
+</tbody></table>
+<h2>6. Open Items</h2>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+<th>Assignee</th>
+<th>Deadline</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BPO課題テーマ確定</td>
+<td>経理 / 労務 / 総務のいずれかを決定し、サンプル入力と期待出力を1セット用意する</td>
+<td>堀江</td>
+<td>2026-06-17 18:00</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>早期選考 pass criteria 確定</td>
+<td>凜子の選考設計と照合し、暫定基準を正式化する</td>
+<td>堀江 / 凜子</td>
+<td>2026-06-18 12:00</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>メンター向け観察シート準備</td>
+<td>Snapshot 3回分だけ入力する簡易シートを作る</td>
+<td>運営</td>
+<td>2026-06-18 18:00</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>オンライン接続・機材の確定</td>
+<td>各自の通信環境・接続安定性、Google Meet リンク、breakout room 設定、リモート講師の接続テストを完了する</td>
+<td>運営</td>
+<td>2026-06-18 18:00</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>当日バックアップ連絡先固定</td>
+<td>学生案内と緊急連絡手段（メール・緊急連絡先）を一本化する</td>
+<td>運営</td>
+<td>2026-06-18 18:00</td>
+<td>Open</td>
+</tr>
+</tbody></table>
+<h2>7. Horie Decision Items（2026-06-15 確定）</h2>
+<h3>A. 成果物難易度の置き方 → ✅ 決定: a（動くプロトタイプ必須を維持）</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>内容</th>
+<th>判断</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a</td>
+<td>「動くプロトタイプ必須」を維持する</td>
+<td>✅ 採用</td>
+</tr>
+<tr>
+<td>b</td>
+<td>正式成果物を「設計書 + プロンプト集」まで緩和する</td>
+<td>—</td>
+</tr>
+<tr>
+<td>c</td>
+<td>6/17 までの dry-run 計測で a / b を決める</td>
+<td>推奨だったが a を選択</td>
+</tr>
+</tbody></table>
+<ul>
+<li>補足: 「必須」と打ち出すが、§1 の silent fallback（未完成時は設計書+プロンプト集で審査継続）を保険として維持するため、サイレント失敗（審査不成立）は回避される。RC-C06 のリスクは fallback で吸収。</li>
+</ul>
+<h3>B. 3-4名時のコンテスト性の作り方 → ✅ 決定: c（1チーム協働＋審査員ベンチマーク比較）</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>内容</th>
+<th>判断</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a</td>
+<td>1チーム協働 + 達成基準チャレンジ化</td>
+<td>—</td>
+</tr>
+<tr>
+<td>b</td>
+<td>2小チームに分けて疑似対戦する</td>
+<td>—</td>
+</tr>
+<tr>
+<td>c</td>
+<td>1チーム協働 + 審査員ベンチマーク比較にする</td>
+<td>✅ 採用</td>
+</tr>
+</tbody></table>
+<ul>
+<li>推奨理由: 初心者を無理に分割すると支援密度が下がる。1チーム協働を維持しつつ、審査員ベンチマーク比較で contest frame だけ残す方が安定する。</li>
+</ul>
+<h3>C. 「FB非開示」と評価記録の両立方法 → ✅ 決定: c（snapshot sheet + 禁止ワードのみ共有、選考判定は別ブリーフィング）</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>内容</th>
+<th>判断</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a</td>
+<td>メンターへ選考用途・通過閾値まで全面共有する</td>
+<td>—</td>
+</tr>
+<tr>
+<td>b</td>
+<td>メンターへは観察軸だけ共有し、通過判定は人事のみが持つ</td>
+<td>—</td>
+</tr>
+<tr>
+<td>c</td>
+<td>メンターには snapshot sheet と禁止ワードだけ共有し、司会台本と選考判定は別ブリーフィングに分ける</td>
+<td>✅ 採用</td>
+</tr>
+</tbody></table>
+<ul>
+<li>推奨理由: 評価品質を落とさず、学生への不用意な「FBします」発言も防ぎやすい。</li>
+</ul>
+<h2>8. RC Resolution Table</h2>
+<table>
+<thead>
+<tr>
+<th>RC</th>
+<th>指摘内容</th>
+<th>対応</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RC-C06</td>
+<td>初心者に working product 必須は重い</td>
+<td>成果物を「本命 + silent fallback」の二段構えに変更。未完成でも審査継続可能にした。（Decision A=a で必須維持、fallbackでリスク吸収）</td>
+</tr>
+<tr>
+<td>RC-C10</td>
+<td>Claude Code / GAS が初心者に難しい</td>
+<td>学生 hands-on を <code>ChatGPT</code>・カスタムGem・<code>Gemini</code>・<code>GAS</code> に再構成（顧客bot=Google Gemini のカスタムGem、コード生成=Gemini、実装=GAS）。<code>Claude Code</code> はデモ専用へ変更。GASは講師が生成したコードを貼り付けるだけの操作に限定し、初心者でも完走できる手順に設計する。</td>
+</tr>
+<tr>
+<td>RC-C05</td>
+<td>メンター観察負荷が高い</td>
+<td>5軸の常時採点をやめ、Snapshot 3回の簡易記録に縮小した。</td>
+</tr>
+<tr>
+<td>RC-C11</td>
+<td>当日 contingency が空白</td>
+<td>オンライン開催前提で、リモート講師の配信トラブル・回線落ち・途中離脱・欠席・メンター欠席・テーマ未確定時の対処をオンライン運営メモ化した。</td>
+</tr>
+<tr>
+<td>RC-D01</td>
+<td>早期選考 pass criteria 不明</td>
+<td>暫定 pass criteria を明文化し、凜子との整合が必要な placeholder を残した。</td>
+</tr>
+<tr>
+<td>RC-D02</td>
+<td>ランチにチーム発表が混在</td>
+<td>チーム発表を 10:20-10:35 に移し、昼休憩を純休憩にした。</td>
+</tr>
+<tr>
+<td>RC-C12</td>
+<td>BPOテーマ確定責任者と期限が曖昧</td>
+<td>堀江を責任者、2026-06-17 18:00 を期限として明記した。</td>
+</tr>
+</tbody></table>
+<hr>
+<p>※これは架空クライアントを用いた研修用フィクションです</p>
+</div></body></html>
