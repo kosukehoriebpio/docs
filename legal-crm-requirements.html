@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法務CRMシステム 要件定義書 v1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+JP:wght@600;900&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#0F172A; --ink-2:#334155; --ink-3:#64748B; --ink-4:#94A3B8;
+  --surface:#F8FAFC; --card:#FFF; --border:#E2E8F0; --border-2:#CBD5E1;
+  --navy:#1E3A5F; --navy-soft:#EFF6FF;
+  --amber:#B45309; --amber-soft:#FEF3C7; --amber-bright:#F59E0B;
+  --teal:#0F766E; --teal-soft:#CCFBF1;
+  --must:#DC2626; --must-bg:#FEF2F2;
+  --should:#D97706; --should-bg:#FFFBEB;
+  --could:#2563EB; --could-bg:#EFF6FF;
+  --wont:#6B7280; --wont-bg:#F9FAFB;
+  --done:#059669; --done-bg:#ECFDF5;
+  --partial:#D97706; --partial-bg:#FFFBEB;
+  --missing:#DC2626; --missing-bg:#FEF2F2;
+  --critical:#991B1B; --critical-bg:#FEF2F2;
+  --major:#92400E; --major-bg:#FFFBEB;
+  --minor:#1E40AF; --minor-bg:#EFF6FF;
+  --side-w:280px;
+  --serif:"Noto Serif JP","Georgia","Times New Roman",serif;
+  --sans:"Inter","Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",system-ui,sans-serif;
+  --mono:"JetBrains Mono","Consolas","Monaco",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+body{font-family:var(--sans);background:var(--surface);color:var(--ink);font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased}
+::selection{background:var(--amber-soft);color:var(--ink)}
+
+/* === NAV === */
+.nav{position:fixed;top:0;left:0;width:var(--side-w);height:100vh;background:var(--navy);color:#FFF;overflow-y:auto;z-index:60;display:flex;flex-direction:column;transition:transform .3s}
+.nav-brand{padding:28px 24px 20px;border-bottom:1px solid rgba(255,255,255,.1)}
+.nav-brand .doc-id{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.08em;text-transform:uppercase}
+.nav-brand h2{font-family:var(--serif);font-size:18px;font-weight:900;margin-top:6px;line-height:1.35;letter-spacing:.01em}
+.nav-brand .ver{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px}
+.nav-toc{flex:1;padding:16px 0;overflow-y:auto}
+.nav-toc::-webkit-scrollbar{width:3px}
+.nav-toc::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:3px}
+.toc-item{display:flex;align-items:baseline;gap:8px;padding:8px 24px;font-size:13px;color:rgba(255,255,255,.65);text-decoration:none;transition:.15s;cursor:pointer;border-left:3px solid transparent}
+.toc-item:hover{color:#FFF;background:rgba(255,255,255,.06)}
+.toc-item.active{color:#FFF;border-left-color:var(--amber-bright);background:rgba(255,255,255,.08)}
+.toc-num{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);min-width:22px}
+.toc-sub{padding-left:44px;font-size:12px}
+.nav-foot{padding:16px 24px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;color:rgba(255,255,255,.3)}
+.nav-toggle{display:none;position:fixed;top:14px;left:14px;z-index:70;width:40px;height:40px;border-radius:10px;background:var(--navy);color:#FFF;border:none;font-size:20px;cursor:pointer;place-items:center;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+
+/* === MAIN === */
+.main{margin-left:var(--side-w);min-height:100vh}
+
+/* === HERO === */
+.hero{background:linear-gradient(135deg,var(--navy) 0%,#2D4A6F 100%);color:#FFF;padding:56px 56px 48px;position:relative;overflow:hidden}
+.hero::before{content:"§";position:absolute;right:-30px;top:-40px;font-size:320px;font-family:var(--serif);color:rgba(255,255,255,.03);line-height:1;pointer-events:none}
+.hero-eyebrow{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.5);letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
+.hero h1{font-family:var(--serif);font-size:36px;font-weight:900;line-height:1.25;letter-spacing:.02em}
+.hero-sub{font-size:16px;color:rgba(255,255,255,.7);margin-top:8px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:24px;margin-top:28px;padding-top:24px;border-top:1px solid rgba(255,255,255,.12)}
+.hero-meta dt{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase}
+.hero-meta dd{font-size:14px;color:rgba(255,255,255,.85);margin-top:2px}
+
+/* === PHASES === */
+.phases{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:0 40px;transform:translateY(-32px);position:relative;z-index:5}
+.phase-card{background:var(--card);padding:28px 24px;border:1px solid var(--border);position:relative}
+.phase-card:first-child{border-radius:14px 0 0 14px}
+.phase-card:last-child{border-radius:0 14px 14px 0}
+.phase-card:not(:last-child){border-right:none}
+.phase-card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px}
+.phase-card:nth-child(1)::before{background:var(--done);border-radius:14px 0 0 0}
+.phase-card:nth-child(2)::before{background:var(--amber)}
+.phase-card:nth-child(3)::before{background:var(--could)}
+.phase-num{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase}
+.phase-name{font-size:17px;font-weight:700;margin:4px 0 6px}
+.phase-desc{font-size:13px;color:var(--ink-3);line-height:1.5;margin-bottom:12px}
+.phase-period{display:inline-block;font-family:var(--mono);font-size:12px;color:var(--amber);background:var(--amber-soft);padding:3px 10px;border-radius:6px;font-weight:500}
+
+/* === CONTENT === */
+.content{padding:16px 56px 80px}
+.section{margin-bottom:56px}
+.section-head{display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--navy)}
+.section-num{font-family:var(--serif);font-size:28px;font-weight:900;color:var(--navy);line-height:1}
+.section-title{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--ink);line-height:1.3}
+
+.sub-head{font-size:17px;font-weight:700;color:var(--ink);margin:32px 0 14px;padding-left:14px;border-left:4px solid var(--amber)}
+.sub-sub-head{font-size:15px;font-weight:700;color:var(--ink-2);margin:24px 0 10px;display:flex;align-items:center;gap:8px}
+.sub-sub-head .fid{font-family:var(--mono);font-size:12px;color:var(--amber);background:var(--amber-soft);padding:2px 8px;border-radius:5px}
+
+p{margin-bottom:14px;color:var(--ink-2)}
+p.lead{font-size:16px;color:var(--ink);line-height:1.8}
+strong{color:var(--ink);font-weight:600}
+
+/* === CARDS === */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card-title{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+
+/* === TABLES === */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-bottom:20px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+thead{background:#F1F5F9}
+th{text-align:left;padding:11px 16px;font-size:12px;font-weight:600;color:var(--ink-3);letter-spacing:.03em;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--ink-2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--navy-soft)}
+td:first-child{font-weight:500;color:var(--ink)}
+
+/* === BADGES === */
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap;letter-spacing:.02em}
+.b-must{background:var(--must-bg);color:var(--must)}
+.b-should{background:var(--should-bg);color:var(--should)}
+.b-could{background:var(--could-bg);color:var(--could)}
+.b-wont{background:var(--wont-bg);color:var(--wont)}
+.b-done{background:var(--done-bg);color:var(--done)}
+.b-partial{background:var(--partial-bg);color:var(--partial)}
+.b-missing{background:var(--missing-bg);color:var(--missing)}
+.b-phase{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:4px;background:var(--navy-soft);color:var(--navy)}
+
+/* === FEATURE DETAIL === */
+.feat-detail{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin:16px 0 24px}
+.feat-detail .label{font-size:12px;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;margin-top:12px;margin-bottom:4px}
+.feat-detail .label:first-child{margin-top:0}
+.feat-detail ul{padding-left:20px;margin-bottom:8px}
+.feat-detail li{font-size:13.5px;color:var(--ink-2);margin-bottom:4px}
+.feat-detail .note{font-size:13px;color:var(--ink-3);background:var(--surface);padding:10px 14px;border-radius:8px;margin-top:8px}
+
+/* === CODE / DIAGRAM === */
+pre{background:#1E293B;color:#E2E8F0;padding:20px 24px;border-radius:10px;font-family:var(--mono);font-size:12.5px;line-height:1.7;overflow-x:auto;margin:16px 0 20px;white-space:pre}
+code{font-family:var(--mono);font-size:13px;background:var(--surface);padding:1px 6px;border-radius:4px;color:var(--navy)}
+pre code{background:none;padding:0;color:inherit}
+.entity-block{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin:12px 0}
+.entity-block h4{font-family:var(--mono);font-size:14px;color:var(--navy);margin-bottom:8px}
+.entity-block .fields{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);line-height:1.8}
+.entity-block .field-new{color:var(--done);font-weight:500}
+.entity-block .field-ext{color:var(--amber);font-weight:500}
+
+/* === SCORE === */
+.score-wrap{display:flex;align-items:center;gap:32px;flex-wrap:wrap}
+.score-gauge{position:relative;width:140px;height:140px}
+.score-gauge svg{width:100%;height:100%;transform:rotate(-90deg)}
+.score-gauge circle{fill:none;stroke-width:12;stroke-linecap:round}
+.score-gauge .track{stroke:var(--border)}
+.score-gauge .fill{stroke:var(--amber);transition:stroke-dashoffset 1s ease}
+.score-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-label .num{font-family:var(--serif);font-size:36px;font-weight:900;color:var(--ink);line-height:1}
+.score-label .unit{font-size:12px;color:var(--ink-3)}
+.score-summary{flex:1;min-width:200px}
+.score-summary li{font-size:14px;color:var(--ink-2);margin-bottom:6px;list-style:none;padding-left:20px;position:relative}
+.score-summary li::before{content:"";position:absolute;left:0;top:8px;width:8px;height:8px;border-radius:50%}
+.score-summary li.s-ok::before{background:var(--done)}
+.score-summary li.s-warn::before{background:var(--amber)}
+.score-summary li.s-err::before{background:var(--must)}
+
+/* === ISSUE CARDS === */
+.issue{padding:16px 20px;border-radius:10px;margin-bottom:12px;border-left:4px solid}
+.issue.critical{background:var(--critical-bg);border-color:var(--critical)}
+.issue.major{background:var(--major-bg);border-color:var(--major)}
+.issue.minor{background:var(--minor-bg);border-color:var(--minor)}
+.issue-title{font-size:14px;font-weight:700;margin-bottom:4px}
+.issue-desc{font-size:13px;color:var(--ink-2);line-height:1.6}
+.issue-sev{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.issue.critical .issue-sev{color:var(--critical)}
+.issue.major .issue-sev{color:var(--major)}
+.issue.minor .issue-sev{color:var(--minor)}
+
+/* === ACTION LIST === */
+.actions{counter-reset:act}
+.action{display:flex;gap:16px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border)}
+.action:last-child{border-bottom:none}
+.action::before{counter-increment:act;content:counter(act);font-family:var(--mono);font-size:12px;font-weight:600;color:#FFF;background:var(--navy);width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.action-text{font-size:14px;color:var(--ink-2)}
+
+/* === FLOW DIAGRAM === */
+.flow{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;margin:16px 0 24px;overflow-x:auto}
+.flow-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;white-space:nowrap}
+.flow-node{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:8px;font-size:13px;font-weight:500}
+.flow-node.dept{background:var(--navy-soft);color:var(--navy)}
+.flow-node.legal{background:var(--teal-soft);color:var(--teal)}
+.flow-node.ext{background:var(--amber-soft);color:var(--amber)}
+.flow-arrow{color:var(--ink-4);font-size:18px}
+.flow-step{font-family:var(--mono);font-size:11px;color:var(--ink-3);min-width:24px;text-align:center}
+
+/* === ROLE TABLE ENHANCED === */
+.role-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:16px 0}
+.role-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;text-align:center}
+.role-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:20px}
+.role-card:nth-child(1) .role-icon{background:var(--must-bg)}
+.role-card:nth-child(2) .role-icon{background:var(--navy-soft)}
+.role-card:nth-child(3) .role-icon{background:var(--teal-soft)}
+.role-card:nth-child(4) .role-icon{background:var(--amber-soft)}
+.role-card:nth-child(5) .role-icon{background:var(--surface)}
+.role-name{font-size:14px;font-weight:700;margin-bottom:4px}
+.role-desc{font-size:12px;color:var(--ink-3);line-height:1.5}
+.role-count{font-family:var(--mono);font-size:11px;color:var(--ink-4);margin-top:6px}
+
+/* === GLOSSARY === */
+.glossary{columns:2;column-gap:24px}
+.gloss-item{break-inside:avoid;padding:10px 0;border-bottom:1px solid var(--border)}
+.gloss-term{font-weight:700;font-size:14px;color:var(--ink)}
+.gloss-def{font-size:13px;color:var(--ink-3);margin-top:2px}
+
+/* === STAT CARDS === */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:16px 0 24px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;text-align:center}
+.stat-num{font-family:var(--serif);font-size:32px;font-weight:900;color:var(--navy);line-height:1}
+.stat-label{font-size:12px;color:var(--ink-3);margin-top:4px}
+
+/* === RESPONSIVE === */
+@media(max-width:960px){
+  .nav{transform:translateX(-100%)}
+  .nav.open{transform:translateX(0)}
+  .nav-toggle{display:grid}
+  .main{margin-left:0}
+  .hero{padding:72px 24px 40px}
+  .hero h1{font-size:26px}
+  .phases{margin:0 16px;transform:translateY(-24px);grid-template-columns:1fr}
+  .phase-card{border-radius:0!important;border-right:1px solid var(--border)!important;border-bottom:none}
+  .phase-card:first-child{border-radius:14px 14px 0 0!important}
+  .phase-card:last-child{border-radius:0 0 14px 14px!important;border-bottom:1px solid var(--border)!important}
+  .content{padding:16px 20px 60px}
+  .section-head{flex-direction:column;gap:4px;align-items:flex-start}
+  .glossary{columns:1}
+  .score-wrap{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:600px){
+  .hero-meta{flex-direction:column;gap:12px}
+  .stat-row{grid-template-columns:1fr 1fr}
+  .role-grid{grid-template-columns:1fr}
+}
+@media print{
+  .nav,.nav-toggle{display:none!important}
+  .main{margin-left:0}
+  .hero{break-after:page}
+  .section{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<button class="nav-toggle" id="navToggle" onclick="document.getElementById('nav').classList.toggle('open');this.textContent=this.textContent==='☰'?'✕':'☰'">☰</button>
+<nav class="nav" id="nav">
+  <div class="nav-brand">
+    <div class="doc-id">RD-LEGAL-CRM-001</div>
+    <h2>法務CRMシステム<br>要件定義書</h2>
+    <div class="ver">v1.0 — 2026-06-22</div>
+  </div>
+  <div class="nav-toc" id="toc">
+    <a class="toc-item" href="#s1"><span class="toc-num">1</span>プロジェクト概要</a>
+    <a class="toc-item toc-sub" href="#s11">背景と目的</a>
+    <a class="toc-item toc-sub" href="#s12">対象ユーザー</a>
+    <a class="toc-item toc-sub" href="#s13">スコープ</a>
+    <a class="toc-item toc-sub" href="#s14">前提条件・制約</a>
+    <a class="toc-item" href="#s2"><span class="toc-num">2</span>業務要件</a>
+    <a class="toc-item toc-sub" href="#s21">業務フロー</a>
+    <a class="toc-item toc-sub" href="#s22">ユーザーロール</a>
+    <a class="toc-item toc-sub" href="#s23">運用シナリオ</a>
+    <a class="toc-item" href="#s3"><span class="toc-num">3</span>機能要件</a>
+    <a class="toc-item toc-sub" href="#s31">案件管理</a>
+    <a class="toc-item toc-sub" href="#s32">契約管理</a>
+    <a class="toc-item toc-sub" href="#s33">コンプライアンス</a>
+    <a class="toc-item toc-sub" href="#s34">ワークフロー</a>
+    <a class="toc-item toc-sub" href="#s35">メンバー管理</a>
+    <a class="toc-item toc-sub" href="#s36">分析・レポート</a>
+    <a class="toc-item toc-sub" href="#s37">ナレッジ管理</a>
+    <a class="toc-item toc-sub" href="#s38">外部連携</a>
+    <a class="toc-item" href="#s4"><span class="toc-num">4</span>非機能要件</a>
+    <a class="toc-item" href="#s5"><span class="toc-num">5</span>データ要件</a>
+    <a class="toc-item" href="#s6"><span class="toc-num">6</span>画面要件</a>
+    <a class="toc-item" href="#s7"><span class="toc-num">7</span>外部IF要件</a>
+    <a class="toc-item" href="#s8"><span class="toc-num">8</span>実装ロードマップ</a>
+    <a class="toc-item" href="#s9"><span class="toc-num">9</span>レビュー結果</a>
+    <a class="toc-item" href="#appendix">付録</a>
+  </div>
+  <div class="nav-foot">SR-ONE社長室 × BPIO</div>
+</nav>
+
+<div class="main">
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-eyebrow">Requirements Definition — v1.0</div>
+  <h1>法務CRMシステム<br>要件定義書</h1>
+  <p class="hero-sub">BPIO法務BPO事業の基盤となるクライアント法務管理プラットフォーム</p>
+  <dl class="hero-meta">
+    <div><dt>文書番号</dt><dd>RD-LEGAL-CRM-001</dd></div>
+    <div><dt>作成日</dt><dd>2026-06-22</dd></div>
+    <div><dt>作成者</dt><dd>SR-ONE社長室 堀江孝輔</dd></div>
+    <div><dt>依頼元</dt><dd>BPIO 佐藤晴己</dd></div>
+    <div><dt>参考</dt><dd>OLGA (GVA TECH)</dd></div>
+    <div><dt>機能数</dt><dd>66機能</dd></div>
+  </dl>
+</header>
+
+<!-- PHASES -->
+<div class="phases">
+  <div class="phase-card">
+    <div class="phase-num">Phase 1</div>
+    <div class="phase-name">プロトタイプ拡張</div>
+    <p class="phase-desc">既存HTMLの機能強化。ファイル添付・履歴・通知を追加し、単一テナント実用レベルに</p>
+    <span class="phase-period">3–4 週</span>
+  </div>
+  <div class="phase-card">
+    <div class="phase-num">Phase 2</div>
+    <div class="phase-name">クラウド化</div>
+    <p class="phase-desc">認証・マルチテナント・API化・DB移行。複数クライアントの本番運用を開始</p>
+    <span class="phase-period">8–12 週</span>
+  </div>
+  <div class="phase-card">
+    <div class="phase-num">Phase 3</div>
+    <div class="phase-name">AI連携</div>
+    <p class="phase-desc">契約書AIレビュー・類似案件検索・NotebookLM連携・電子契約サービス統合</p>
+    <span class="phase-period">12–16 週</span>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- SECTION 1 -->
+<section class="section" id="s1">
+  <div class="section-head">
+    <span class="section-num">§1</span>
+    <span class="section-title">プロジェクト概要</span>
+  </div>
+
+  <h3 class="sub-head" id="s11">1.1 背景と目的</h3>
+
+  <div class="card" style="border-left:4px solid var(--amber)">
+    <div class="card-title" style="color:var(--amber)">発端</div>
+    <p>BPIO 佐藤晴己氏より、グループ（3WELL、SRG等）の法務業務管理のポータル構築と、法務BPOクライアント先への導入を見据えたCRM構想が提起された（2026年6月）。</p>
+    <ul style="font-size:14px;color:var(--ink-2);padding-left:20px;margin-bottom:0">
+      <li>現状はGoogleフォーム等のアンケート機能で依頼を吸い上げ、スプレッドシートで案件管理</li>
+      <li>依頼受付の入り口と案件管理を見やすくし、法務チームのリソース管理も統合したい</li>
+      <li>GVA TECH社のOLGAに着想を得ているが、いきなり導入がハードルの高い企業も多い</li>
+      <li>佐藤氏が既にHTMLプロトタイプ（法務ポータル + 依頼フォーム）を作成済み</li>
+    </ul>
+  </div>
+
+  <div class="card-grid" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-title">ビジネスモデル A — 内部利用</div>
+      <p style="font-size:14px;margin-bottom:0">自社グループ法務（3WELL、SRG）の案件管理ポータルとして活用</p>
+    </div>
+    <div class="card">
+      <div class="card-title">ビジネスモデル B — 外販</div>
+      <p style="font-size:14px;margin-bottom:0">BPO外販先に、法務業務に応じてカスタマイズしたポータルを提供。OLGAが高コストな企業向けの代替ソリューション</p>
+    </div>
+  </div>
+
+  <p class="lead"><strong>目的:</strong></p>
+  <ol style="padding-left:20px;color:var(--ink-2);margin-bottom:20px">
+    <li>クライアント法務部門の案件管理・契約管理・コンプライアンスチェックをデジタル化し、業務効率を向上</li>
+    <li>BPO運営チームが複数クライアントの法務業務を一元的に把握・運用できる統合ワークベンチを提供</li>
+    <li>SLA達成率・対応実績の定量可視化により、BPOサービスの品質と価値を証明</li>
+    <li>段階的なAI機能導入により、法務業務の自動化・高度化を実現</li>
+  </ol>
+
+  <h3 class="sub-head" id="s12">1.2 対象ユーザー</h3>
+  <div class="role-grid">
+    <div class="role-card"><div class="role-icon">⚖</div><div class="role-name">法務担当者</div><div class="role-desc">クライアント企業の法務部門。審査・レビュー・反社チェックを実行</div><div class="role-count">各社 3–10名</div></div>
+    <div class="role-card"><div class="role-icon">📋</div><div class="role-name">事業部依頼者</div><div class="role-desc">クライアント事業部門。法務への依頼・進捗確認</div><div class="role-count">各社 10–50名</div></div>
+    <div class="role-card"><div class="role-icon">🔧</div><div class="role-name">BPO法務担当</div><div class="role-desc">BPIO側の法務スタッフ。クライアント法務業務を代行</div><div class="role-count">5–15名</div></div>
+    <div class="role-card"><div class="role-icon">📊</div><div class="role-name">BPO運営管理者</div><div class="role-desc">複数クライアント横断管理、リソース配分・SLA管理</div><div class="role-count">2–5名</div></div>
+    <div class="role-card"><div class="role-icon">⚙</div><div class="role-name">システム管理者</div><div class="role-desc">テナント設定、ユーザー管理、マスタ管理</div><div class="role-count">1–3名</div></div>
+  </div>
+
+  <h3 class="sub-head" id="s13">1.3 スコープ</h3>
+  <div class="stat-row">
+    <div class="stat"><div class="stat-num">66</div><div class="stat-label">機能要件</div></div>
+    <div class="stat"><div class="stat-num">20</div><div class="stat-label">画面</div></div>
+    <div class="stat"><div class="stat-num">11</div><div class="stat-label">外部連携先</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">フェーズ</div></div>
+  </div>
+
+  <p><strong>スコープ外:</strong> 電子署名機能そのもの / 会計・経理システム直接連携 / 訴訟管理 / 法令DB自社構築</p>
+
+  <h3 class="sub-head" id="s14">1.4 前提条件・制約</h3>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">前提条件</div>
+      <ul style="font-size:13px;color:var(--ink-2);padding-left:18px;margin-bottom:0">
+        <li>Slack / Teams / メールのいずれかを利用</li>
+        <li>既存データモデル（Matter / Contract / AmlCheck）を踏襲</li>
+        <li>STORAGE層の抽象化でクラウドDB移行パスを確保</li>
+        <li>法務部門2–10名規模（大企業50名超はスコープ外）</li>
+        <li>データソースはGWS（Googleフォーム→スプシ）が中心</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">制約</div>
+      <ul style="font-size:13px;color:var(--ink-2);padding-left:18px;margin-bottom:0">
+        <li>Phase 1はサーバー不要、ブラウザ完結（localStorage + IndexedDB）</li>
+        <li>Phase 2はBPIO既存インフラ（Cloudflare / Supabase）を優先</li>
+        <li>テナントデータ分離は論理分離（テナントIDカラム）</li>
+        <li>日本法準拠。海外法務はスコープ外</li>
+        <li>DBは未定（GWSからの段階的移行を想定）</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2 -->
+<section class="section" id="s2">
+  <div class="section-head">
+    <span class="section-num">§2</span>
+    <span class="section-title">業務要件</span>
+  </div>
+
+  <h3 class="sub-head" id="s21">2.1 業務フロー</h3>
+  <pre><code>[事業部門]         [法務部門/BPO]           [外部]
+    |                    |                    |
+    |  (1) 依頼起票      |                    |
+    |------------------->|                    |
+    |                    |  (2) 受付・分類     |
+    |                    |  (3) 担当者アサイン  |
+    |                    |  (4) 反社チェック   |
+    |                    |------------------->| 反社DB照会
+    |                    |<-------------------| 結果返却
+    |  (5) 追加情報依頼   |                    |
+    |<-------------------|                    |
+    |------------------->|  (6) 情報補完       |
+    |                    |  (7) 契約書レビュー  |
+    |                    |  (8) 修正・交渉     |
+    |                    |------------------->| 相手方
+    |                    |<-------------------| 修正版返却
+    |                    |  (9) 最終確認       |
+    |                    | (10) 稟議起案       |
+    |  (11) 承認         |                    |
+    |------------------->|                    |
+    |                    | (12) 締結手続       |
+    |                    |------------------->| 電子契約
+    |                    | (13) 契約台帳登録   |
+    |                    | (14) 期限管理開始   |
+    |  (15) 完了通知      |                    |
+    |<-------------------|                    |</code></pre>
+
+  <h3 class="sub-head" id="s22">2.2 ユーザーロール・権限</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>ロール</th><th>権限範囲</th><th>主な操作</th></tr></thead>
+      <tbody>
+        <tr><td>システム管理者</td><td>全テナント設定、ユーザー管理</td><td>テナント作成、ユーザー招待、マスタ管理</td></tr>
+        <tr><td>BPO運営管理者</td><td>全テナント横断閲覧、自テナント編集</td><td>横断ダッシュボード、リソース配分、SLAレポート</td></tr>
+        <tr><td>法務担当者</td><td>自テナント全案件閲覧・編集</td><td>案件対応、契約レビュー、反社チェック</td></tr>
+        <tr><td>事業部依頼者</td><td>自依頼案件閲覧、新規起票</td><td>依頼フォーム入力、進捗確認</td></tr>
+        <tr><td>閲覧者</td><td>自テナント閲覧のみ</td><td>レポート閲覧、検索</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub-head" id="s23">2.3 運用シナリオ</h3>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">シナリオA: PMI先法務の一元管理</div>
+      <ul style="font-size:13px;color:var(--ink-2);padding-left:18px;margin-bottom:0">
+        <li>M&A取得子会社の法務機能を統合</li>
+        <li>各子会社にテナント割当、ポータル配布</li>
+        <li>BPO運営者が全社法務状況を横断把握</li>
+        <li>組織名・カラーを各社カスタマイズ</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">シナリオB: 外販先法務のBPO代行</div>
+      <ul style="font-size:13px;color:var(--ink-2);padding-left:18px;margin-bottom:0">
+        <li>クライアント企業ごとにテナント作成</li>
+        <li>ホワイトラベルのポータルを提供</li>
+        <li>月次SLA達成率・実績レポート自動生成</li>
+        <li>案件数ベースの請求額自動計算</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3 -->
+<section class="section" id="s3">
+  <div class="section-head">
+    <span class="section-num">§3</span>
+    <span class="section-title">機能要件（MoSCoW分類）</span>
+  </div>
+
+  <!-- 3.1 案件管理 -->
+  <h3 class="sub-head" id="s31">3.1 案件管理（依頼受付・進捗管理・案件台帳）</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>機能ID</th><th>機能名</th><th>優先度</th><th>既存状況</th><th>概要</th></tr></thead>
+      <tbody>
+        <tr><td><code>F-101</code></td><td>案件台帳CRUD</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-done">実装済み</span></td><td>案件の作成・閲覧・編集・削除</td></tr>
+        <tr><td><code>F-102</code></td><td>ステータス管理</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-done">実装済み</span></td><td>受付→対応中→レビュー中→完了/保留</td></tr>
+        <tr><td><code>F-103</code></td><td>チェックリスト・進捗</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-done">実装済み</span></td><td>タスクチェックリストと進捗バー</td></tr>
+        <tr><td><code>F-104</code></td><td>検索・フィルタリング</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-done">実装済み</span></td><td>キーワード検索、カテゴリ・ステータスフィルタ</td></tr>
+        <tr><td><code>F-105</code></td><td>対応履歴タイムライン</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-missing">未実装</span></td><td>操作・コメントの時系列記録</td></tr>
+        <tr><td><code>F-106</code></td><td>ファイル添付</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-missing">未実装</span></td><td>契約書PDF/Word/画像の添付管理</td></tr>
+        <tr><td><code>F-107</code></td><td>依頼フォーム</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-missing">未実装</span></td><td>事業部向けカスタマイズ可能Web依頼フォーム</td></tr>
+        <tr><td><code>F-108</code></td><td>案件間リレーション</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>関連案件・親子案件の紐づけ</td></tr>
+        <tr><td><code>F-109</code></td><td>担当者自動割当</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>種別・稼働状況に基づく自動アサイン</td></tr>
+        <tr><td><code>F-110</code></td><td>期限アラート</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-missing">未実装</span></td><td>期限超過・接近のアラート通知</td></tr>
+        <tr><td><code>F-111</code></td><td>進捗レポート自動生成</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>事業部向けの進捗レポート</td></tr>
+        <tr><td><code>F-112</code></td><td>AI自動ヒアリング</td><td><span class="badge b-could">Could</span></td><td><span class="badge b-missing">未実装</span></td><td>受付時のAI初期ヒアリング</td></tr>
+        <tr><td><code>F-113</code></td><td>類似案件検索</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>過去類似案件の自動検索</td></tr>
+        <tr><td><code>F-114</code></td><td>CSV取込</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-done">実装済み</span></td><td>Googleフォーム/Excel/バクラク対応CSV取込</td></tr>
+        <tr><td><code>F-115</code></td><td>一括操作</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>複数案件のステータス一括変更</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3.2 契約管理 -->
+  <h3 class="sub-head" id="s32">3.2 契約管理（契約書管理・期限管理・更新管理）</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>機能ID</th><th>機能名</th><th>優先度</th><th>既存状況</th><th>概要</th></tr></thead>
+      <tbody>
+        <tr><td><code>F-201</code></td><td>契約台帳CRUD</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-done">実装済み</span></td><td>契約の作成・閲覧・編集・削除</td></tr>
+        <tr><td><code>F-202</code></td><td>ライフサイクル管理</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-done">実装済み</span></td><td>ドラフト→レビュー中→締結済→更新待ち→終了</td></tr>
+        <tr><td><code>F-203</code></td><td>契約書ファイル管理</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-missing">未実装</span></td><td>PDF/Wordの添付・バージョン管理</td></tr>
+        <tr><td><code>F-204</code></td><td>契約期限アラート</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-missing">未実装</span></td><td>30/14/7日前の段階的アラート</td></tr>
+        <tr><td><code>F-205</code></td><td>テンプレート管理</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-missing">未実装</span></td><td>ひな型のカテゴリ別・テナント別管理</td></tr>
+        <tr><td><code>F-206</code></td><td>バージョン管理</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-partial">部分実装</span></td><td>ドラフト版の変更追跡・FIX管理</td></tr>
+        <tr><td><code>F-207</code></td><td>新旧文書比較</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>新旧バージョン差分表示</td></tr>
+        <tr><td><code>F-208</code></td><td>PDF情報自動抽出</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>締結済PDFからのメタデータ自動抽出</td></tr>
+        <tr><td><code>F-209</code></td><td>電子契約連携</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>クラウドサイン/ドキュサイン/GMOサイン</td></tr>
+        <tr><td><code>F-211</code></td><td>AI契約レビュー</td><td><span class="badge b-could">Could</span></td><td><span class="badge b-missing">未実装</span></td><td>AIによるリスク条項検出・修正提案</td></tr>
+        <tr><td><code>F-213</code></td><td>案件-契約リレーション</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>レビュー案件との関連付け</td></tr>
+        <tr><td><code>F-214</code></td><td>契約CSV取込</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>既存契約データのCSV一括取込</td></tr>
+        <tr><td><code>F-215</code></td><td>契約金額管理</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>契約金額・取引額フィールド</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3.3 コンプライアンス -->
+  <h3 class="sub-head" id="s33">3.3 コンプライアンス（反社チェック・広告審査）</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>機能ID</th><th>機能名</th><th>優先度</th><th>既存状況</th><th>概要</th></tr></thead>
+      <tbody>
+        <tr><td><code>F-301</code></td><td>反社チェックCRUD</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-done">実装済み</span></td><td>登録・編集・判定・完了</td></tr>
+        <tr><td><code>F-302</code></td><td>判定フロー管理</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-done">実装済み</span></td><td>確認手段→判定結果→リスク評価</td></tr>
+        <tr><td><code>F-303</code></td><td>再審査期限管理</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-done">実装済み</span></td><td>要再審査の期限管理・アラート</td></tr>
+        <tr><td><code>F-304</code></td><td>自動トリガー</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>新規取引先・契約更新時の自動実行</td></tr>
+        <tr><td><code>F-305</code></td><td>調査証跡添付</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-missing">未実装</span></td><td>スクリーンショット・DB照会結果の添付</td></tr>
+        <tr><td><code>F-306</code></td><td>調査履歴管理</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>同一対象の過去チェック履歴参照</td></tr>
+        <tr><td><code>F-309</code></td><td>広告審査チェック</td><td><span class="badge b-could">Could</span></td><td><span class="badge b-missing">未実装</span></td><td>広告表現の法的適合性チェック</td></tr>
+        <tr><td><code>F-311</code></td><td>反社チェックCSV取込</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-done">実装済み</span></td><td>CSV一括取込</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3.4 ワークフロー -->
+  <h3 class="sub-head" id="s34">3.4 ワークフロー連携（稟議・承認）</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>機能ID</th><th>機能名</th><th>優先度</th><th>既存状況</th><th>概要</th></tr></thead>
+      <tbody>
+        <tr><td><code>F-401</code></td><td>稟議ステータス管理</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-partial">部分実装</span></td><td>ステータス・申請番号・URL管理</td></tr>
+        <tr><td><code>F-402</code></td><td>審査-稟議一気通貫</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-missing">未実装</span></td><td>法務審査完了→締結稟議の自動遷移</td></tr>
+        <tr><td><code>F-403</code></td><td>多段承認フロー</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>金額・種別に応じた承認ルート</td></tr>
+        <tr><td><code>F-405</code></td><td>外部ワークフロー連携</td><td><span class="badge b-could">Could</span></td><td><span class="badge b-missing">未実装</span></td><td>バクラク申請・ジョブカン等</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3.5 メンバー管理 -->
+  <h3 class="sub-head" id="s35">3.5 メンバー管理（ワークロード・アサイン・実績）</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>機能ID</th><th>機能名</th><th>優先度</th><th>既存状況</th><th>概要</th></tr></thead>
+      <tbody>
+        <tr><td><code>F-501</code></td><td>ワークロード可視化</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-done">実装済み</span></td><td>優先度×規模の重み付けバー</td></tr>
+        <tr><td><code>F-502</code></td><td>未アサイン案件管理</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-done">実装済み</span></td><td>案件+反社チェックの未アサイン一覧</td></tr>
+        <tr><td><code>F-503</code></td><td>実績集計・表示</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-done">実装済み</span></td><td>期間別完了件数・ポイント・メンバー別</td></tr>
+        <tr><td><code>F-504</code></td><td>キャパシティ管理</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>上限設定・過負荷警告</td></tr>
+        <tr><td><code>F-507</code></td><td>SLA達成率レポート</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-missing">未実装</span></td><td>応答時間・処理完了時間のSLA達成率</td></tr>
+        <tr><td><code>F-508</code></td><td>CSVエクスポート</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-done">実装済み</span></td><td>実績データCSV書出</td></tr>
+        <tr><td><code>F-509</code></td><td>処理時間計測</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>受付→完了のリードタイム自動計測</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3.6 分析 -->
+  <h3 class="sub-head" id="s36">3.6 分析・レポート</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>機能ID</th><th>機能名</th><th>優先度</th><th>既存状況</th><th>概要</th></tr></thead>
+      <tbody>
+        <tr><td><code>F-601</code></td><td>統合ダッシュボード</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-partial">部分実装</span></td><td>統計カード、案件/契約の優先表示</td></tr>
+        <tr><td><code>F-602</code></td><td>案件分析チャート</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-missing">未実装</span></td><td>カテゴリ分布、月次推移のグラフ</td></tr>
+        <tr><td><code>F-603</code></td><td>担当者別パフォーマンス</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-partial">部分実装</span></td><td>対応件数・平均処理時間・難易度分布</td></tr>
+        <tr><td><code>F-604</code></td><td>テナント別レポート</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-missing">未実装</span></td><td>顧客企業ごとの処理状況レポート</td></tr>
+        <tr><td><code>F-605</code></td><td>トレンド分析</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>前月比/前週比の増減表示</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3.7 ナレッジ -->
+  <h3 class="sub-head" id="s37">3.7 ナレッジ管理</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>機能ID</th><th>機能名</th><th>優先度</th><th>既存状況</th><th>概要</th></tr></thead>
+      <tbody>
+        <tr><td><code>F-701</code></td><td>Q&Aデータベース</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-missing">未実装</span></td><td>法務FAQのカテゴリ別管理・検索</td></tr>
+        <tr><td><code>F-702</code></td><td>Q&Aチャットボット</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>FAQに基づくAIチャットボット</td></tr>
+        <tr><td><code>F-703</code></td><td>ひな型・規程管理</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>契約書ひな型・社内規程の一元管理</td></tr>
+        <tr><td><code>F-705</code></td><td>過去案件AI検索</td><td><span class="badge b-could">Could</span></td><td><span class="badge b-missing">未実装</span></td><td>自然言語による過去案件検索</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3.8 外部連携 -->
+  <h3 class="sub-head" id="s38">3.8 外部連携</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>機能ID</th><th>機能名</th><th>優先度</th><th>既存状況</th><th>概要</th></tr></thead>
+      <tbody>
+        <tr><td><code>F-801</code></td><td>Slack連携</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-missing">未実装</span></td><td>案件通知・期限アラートのSlack投稿</td></tr>
+        <tr><td><code>F-802</code></td><td>メール連携</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-missing">未実装</span></td><td>ステータス変更・期限通知のメール送信</td></tr>
+        <tr><td><code>F-803</code></td><td>Teams連携</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>Teams環境の顧客向け通知</td></tr>
+        <tr><td><code>F-804</code></td><td>GWS連携</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>Drive連携・カレンダー期限管理</td></tr>
+        <tr><td><code>F-805</code></td><td>汎用API/Webhook</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>外部連携用REST API</td></tr>
+        <tr><td><code>F-806</code></td><td>電子契約連携</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-missing">未実装</span></td><td>クラウドサイン/ドキュサイン/GMOサイン</td></tr>
+        <tr><td><code>F-807</code></td><td>Entra ID連携</td><td><span class="badge b-could">Could</span></td><td><span class="badge b-missing">未実装</span></td><td>SSO認証</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SECTION 4 -->
+<section class="section" id="s4">
+  <div class="section-head">
+    <span class="section-num">§4</span>
+    <span class="section-title">非機能要件</span>
+  </div>
+
+  <h3 class="sub-head">4.1 パフォーマンス</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>指標</th><th>Phase 1</th><th>Phase 2以降</th></tr></thead>
+      <tbody>
+        <tr><td>画面表示速度</td><td>初期ロード3秒以内</td><td>API応答1秒以内、画面表示2秒以内</td></tr>
+        <tr><td>データ件数上限</td><td>500件/エンティティ</td><td>100,000件/エンティティ</td></tr>
+        <tr><td>同時利用者数</td><td>1名（ローカル運用）</td><td>テナント50名、全体500名</td></tr>
+        <tr><td>検索応答時間</td><td>500ms以内</td><td>2秒以内（全文検索含む）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub-head">4.2 セキュリティ</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>要件</th><th>Phase</th></tr></thead>
+      <tbody>
+        <tr><td>認証機構（メール+PW / SSO）</td><td><span class="badge b-phase">Phase 2</span></td></tr>
+        <tr><td>RBAC（ロールベースアクセス制御）</td><td><span class="badge b-phase">Phase 2</span></td></tr>
+        <tr><td>テナント間データ完全分離</td><td><span class="badge b-phase">Phase 2</span></td></tr>
+        <tr><td>通信暗号化（HTTPS）</td><td><span class="badge b-phase">Phase 2</span></td></tr>
+        <tr><td>監査ログ全記録</td><td><span class="badge b-phase">Phase 2</span></td></tr>
+        <tr><td>保存時暗号化</td><td><span class="badge b-phase">Phase 2</span></td></tr>
+        <tr><td>XSS対策（HTMLエスケープ）</td><td><span class="badge b-phase">Phase 1</span></td></tr>
+        <tr><td>IPアドレス制限 / 2FA</td><td><span class="badge b-phase">Phase 3</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub-head">4.3 マルチテナント</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>要件</th><th>詳細</th></tr></thead>
+      <tbody>
+        <tr><td>データ論理分離</td><td>テナントIDカラムによる分離。全クエリに自動付与</td></tr>
+        <tr><td>アクセス制御</td><td>ユーザーは所属テナントのみ。BPO運営者は横断閲覧可</td></tr>
+        <tr><td>テナント別設定</td><td>カテゴリ、種別、担当者、ワークフロー設定を独立管理</td></tr>
+        <tr><td>ブランディング</td><td>組織名・ロゴ・ブランドカラーをテナント別カスタマイズ</td></tr>
+        <tr><td>横断ビュー</td><td>BPO運営者向けの全テナント統合ワークベンチ</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SECTION 5 -->
+<section class="section" id="s5">
+  <div class="section-head">
+    <span class="section-num">§5</span>
+    <span class="section-title">データ要件</span>
+  </div>
+
+  <h3 class="sub-head">5.1 データモデル（ER図）</h3>
+  <pre><code>[Tenant] 1───* [User]
+[Tenant] 1───* [Matter]
+[Tenant] 1───* [Contract]
+[Tenant] 1───* [AmlCheck]
+[Tenant] 1───* [Setting]
+
+[Matter] 1───* [MatterComment]      対応履歴タイムライン
+[Matter] 1───* [MatterAttachment]    ファイル添付
+[Matter] *───* [Matter]              関連案件リレーション
+[Matter] *───1 [Contract]            案件-契約紐づけ
+[Matter] *───1 [AmlCheck]            案件-反社チェック紐づけ
+[Matter] *───1 [User]               担当者アサイン
+
+[Contract] 1───* [ContractVersion]   バージョン管理
+[Contract] 1───* [ContractAttachment]
+[AmlCheck] 1───* [AmlAttachment]     調査証跡
+[AmlCheck] 1───* [AmlHistory]        調査履歴
+
+[User] 1───* [AuditLog]             監査ログ
+[Tenant] 1───* [QAEntry]            Q&A
+[Tenant] 1───* [Template]           テンプレート</code></pre>
+
+  <h3 class="sub-head">5.2 主要エンティティ</h3>
+  <div class="card-grid">
+    <div class="entity-block">
+      <h4>Matter（案件）</h4>
+      <div class="fields">
+        id, <span class="field-ext">tenantId</span>, <span class="field-new">caseNumber</span>, name, category, owner, party, entity, priority, size, status, startDate, dueDate, checklist, progress, amendable, stance, wfStatus, wfNumber, wfUrl, completedAt, note, <span class="field-new">contractId</span>, <span class="field-new">amlCheckId</span>, <span class="field-new">relatedMatterIds</span>
+      </div>
+    </div>
+    <div class="entity-block">
+      <h4>Contract（契約）</h4>
+      <div class="fields">
+        id, <span class="field-ext">tenantId</span>, name, type, party, entity, owner, status, signedDate, expiryDate, renewalType, amendable, stance, <span class="field-new">amount</span>, <span class="field-new">currency</span>, <span class="field-new">tags</span>, note
+      </div>
+    </div>
+    <div class="entity-block">
+      <h4>AmlCheck（反社チェック）</h4>
+      <div class="fields">
+        id, <span class="field-ext">tenantId</span>, name, kind, representative, address, requester, entity, owner, method, result, riskLevel, status, recheckDate, startDate, decidedDate, completedAt, <span class="field-new">corporateNumber</span>, <span class="field-new">triggeredBy</span>, note
+      </div>
+    </div>
+  </div>
+  <p style="font-size:12px;color:var(--ink-3)"><span style="color:var(--done);font-weight:600">緑</span> = 新規追加フィールド　<span style="color:var(--amber);font-weight:600">橙</span> = Phase 2で追加（テナントID）</p>
+
+  <h3 class="sub-head">5.3 データ移行</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>移行元</th><th>方式</th><th>備考</th></tr></thead>
+      <tbody>
+        <tr><td>既存プロトタイプ（localStorage）</td><td>JSON→API一括登録</td><td>既存バックアップ機能活用</td></tr>
+        <tr><td>Excel台帳</td><td>CSV取込（既存機能拡張）</td><td>列名エイリアスで柔軟対応</td></tr>
+        <tr><td>Googleフォーム回答</td><td>CSV取込</td><td>バクラク連携対応済み</td></tr>
+        <tr><td>紙台帳・PDFスキャン</td><td>PDF抽出（Phase 3）+ 手動補完</td><td>AI精度に依存</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SECTION 6 -->
+<section class="section" id="s6">
+  <div class="section-head">
+    <span class="section-num">§6</span>
+    <span class="section-title">画面要件</span>
+  </div>
+
+  <h3 class="sub-head">6.1 画面一覧（20画面）</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>画面ID</th><th>画面名</th><th>Phase</th><th>主ユーザー</th></tr></thead>
+      <tbody>
+        <tr><td><code>SC-01</code></td><td>ダッシュボード</td><td><span class="badge b-phase">1</span></td><td>全ロール</td></tr>
+        <tr><td><code>SC-02</code></td><td>案件一覧</td><td><span class="badge b-phase">1</span></td><td>法務担当者、BPO運営者</td></tr>
+        <tr><td><code>SC-03</code></td><td>案件詳細モーダル</td><td><span class="badge b-phase">1</span></td><td>法務担当者</td></tr>
+        <tr><td><code>SC-04</code></td><td>契約一覧</td><td><span class="badge b-phase">1</span></td><td>法務担当者、BPO運営者</td></tr>
+        <tr><td><code>SC-05</code></td><td>契約詳細モーダル</td><td><span class="badge b-phase">1</span></td><td>法務担当者</td></tr>
+        <tr><td><code>SC-06</code></td><td>反社チェック一覧</td><td><span class="badge b-phase">1</span></td><td>法務担当者</td></tr>
+        <tr><td><code>SC-07</code></td><td>反社チェック詳細</td><td><span class="badge b-phase">1</span></td><td>法務担当者</td></tr>
+        <tr><td><code>SC-08</code></td><td>メンバー管理</td><td><span class="badge b-phase">1</span></td><td>BPO運営者</td></tr>
+        <tr><td><code>SC-09</code></td><td>実績</td><td><span class="badge b-phase">1</span></td><td>BPO運営者</td></tr>
+        <tr><td><code>SC-10</code></td><td>設定</td><td><span class="badge b-phase">1</span></td><td>管理者</td></tr>
+        <tr><td><code>SC-11</code></td><td>依頼フォーム</td><td><span class="badge b-phase">2</span></td><td>事業部依頼者</td></tr>
+        <tr><td><code>SC-12</code></td><td>ログイン</td><td><span class="badge b-phase">2</span></td><td>全ロール</td></tr>
+        <tr><td><code>SC-15</code></td><td>BPO統合ワークベンチ</td><td><span class="badge b-phase">2</span></td><td>BPO運営者</td></tr>
+        <tr><td><code>SC-16</code></td><td>顧客ポータル</td><td><span class="badge b-phase">2</span></td><td>事業部依頼者</td></tr>
+        <tr><td><code>SC-17</code></td><td>Q&Aデータベース</td><td><span class="badge b-phase">2</span></td><td>全ロール</td></tr>
+        <tr><td><code>SC-18</code></td><td>SLAレポート</td><td><span class="badge b-phase">2</span></td><td>BPO運営者</td></tr>
+        <tr><td><code>SC-20</code></td><td>AI契約レビュー</td><td><span class="badge b-phase">3</span></td><td>法務担当者</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SECTION 7 -->
+<section class="section" id="s7">
+  <div class="section-head">
+    <span class="section-num">§7</span>
+    <span class="section-title">外部インターフェース要件</span>
+  </div>
+
+  <h3 class="sub-head">7.1 連携先一覧</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>連携先</th><th>方式</th><th>Phase</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td>Slack</td><td>Web API</td><td><span class="badge b-phase">2</span></td><td>案件通知、期限アラート、案件起票</td></tr>
+        <tr><td>メールサーバー</td><td>SendGrid API</td><td><span class="badge b-phase">2</span></td><td>ステータス通知、期限アラート</td></tr>
+        <tr><td>Microsoft Teams</td><td>Graph API</td><td><span class="badge b-phase">2</span></td><td>Slack非利用企業向け通知</td></tr>
+        <tr><td>Google Drive</td><td>Drive API</td><td><span class="badge b-phase">2</span></td><td>ドキュメント共有、契約書保管</td></tr>
+        <tr><td>Google Calendar</td><td>Calendar API</td><td><span class="badge b-phase">2</span></td><td>期限カレンダー同期</td></tr>
+        <tr><td>クラウドサイン</td><td>専用API</td><td><span class="badge b-phase">3</span></td><td>電子契約の締結・状態同期</td></tr>
+        <tr><td>ドキュサイン</td><td>eSignature API</td><td><span class="badge b-phase">3</span></td><td>電子契約の締結・状態同期</td></tr>
+        <tr><td>GMOサイン</td><td>専用API</td><td><span class="badge b-phase">3</span></td><td>電子契約の締結・状態同期</td></tr>
+        <tr><td>バクラク申請</td><td>CSV→API</td><td><span class="badge b-phase">1/3</span></td><td>稟議・ワークフロー連携</td></tr>
+        <tr><td>反社チェックDB</td><td>外部API</td><td><span class="badge b-phase">2</span></td><td>反社チェック自動照会</td></tr>
+        <tr><td>Entra ID</td><td>SAML/OIDC</td><td><span class="badge b-phase">3</span></td><td>SSO認証</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub-head">7.2 API設計方針</h3>
+  <div class="card-grid">
+    <div class="card"><div class="card-title">アーキテクチャ</div><p style="font-size:14px;margin:0">RESTful API（JSON）</p></div>
+    <div class="card"><div class="card-title">認証方式</div><p style="font-size:14px;margin:0">Bearer Token (JWT) + Refresh Token</p></div>
+    <div class="card"><div class="card-title">バージョニング</div><p style="font-size:14px;margin:0">URLパスベース <code>/api/v1/</code></p></div>
+    <div class="card"><div class="card-title">レート制限</div><p style="font-size:14px;margin:0">テナント 1,000 req/min</p></div>
+  </div>
+</section>
+
+<!-- SECTION 8 -->
+<section class="section" id="s8">
+  <div class="section-head">
+    <span class="section-num">§8</span>
+    <span class="section-title">実装ロードマップ</span>
+  </div>
+
+  <h3 class="sub-head">Phase 1: プロトタイプ拡張（3–4週）</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:80px">週</th><th>実装内容</th><th>対応機能ID</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Week 1</strong></td><td>ファイル添付（IndexedDB）、対応履歴タイムライン</td><td><code>F-106, F-105</code></td></tr>
+        <tr><td><strong>Week 2</strong></td><td>リレーション実装、契約書ファイル管理、調査証跡添付</td><td><code>F-108, F-203, F-213, F-305</code></td></tr>
+        <tr><td><strong>Week 3</strong></td><td>ダッシュボード強化（チャート）、契約CSV取込、キャパシティ管理、期限アラート</td><td><code>F-601, F-602, F-214, F-504, F-110, F-204</code></td></tr>
+        <tr><td><strong>Week 4</strong></td><td>テスト・バグ修正、パイロット運用準備、利用マニュアル</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub-head">Phase 2: クラウド化（8–12週）</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:100px">期間</th><th>実装内容</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Week 1–2</strong></td><td>バックエンド基盤（API/DB/認証）、マルチテナント基盤</td></tr>
+        <tr><td><strong>Week 3–4</strong></td><td>既存データのクラウドDB移行、STORAGE層のAPI切替</td></tr>
+        <tr><td><strong>Week 5–6</strong></td><td>ユーザー管理・権限管理、BPO統合ワークベンチ</td></tr>
+        <tr><td><strong>Week 7–8</strong></td><td>通知機能（Slack/メール）、依頼フォーム、承認フロー</td></tr>
+        <tr><td><strong>Week 9–10</strong></td><td>SLAレポート、テナント別レポート、Q&Aデータベース</td></tr>
+        <tr><td><strong>Week 11–12</strong></td><td>監査ログ、セキュリティ強化、負荷テスト、本番デプロイ</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub-head">Phase 3: AI連携（12–16週）</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:100px">期間</th><th>実装内容</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Week 1–3</strong></td><td>AI契約レビュー基盤（LLM連携、リスク条項検出）</td></tr>
+        <tr><td><strong>Week 4–6</strong></td><td>PDF情報自動抽出、過去案件AI検索、類似案件検索</td></tr>
+        <tr><td><strong>Week 7–9</strong></td><td>Q&Aチャットボット、AI自動ヒアリング</td></tr>
+        <tr><td><strong>Week 10–12</strong></td><td>電子契約連携（クラウドサイン/ドキュサイン/GMOサイン）</td></tr>
+        <tr><td><strong>Week 13–16</strong></td><td>文書間整合性チェック、法改正アラート、統合テスト</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" style="border-left:4px solid var(--teal)">
+    <div class="card-title" style="color:var(--teal)">AI技術方針</div>
+    <ul style="font-size:13.5px;color:var(--ink-2);padding-left:18px;margin-bottom:0">
+      <li>契約書レビュー・情報抽出にはLLM API（Claude API等）を活用</li>
+      <li>類似案件検索にはベクトル検索（Embedding + Vector DB）を採用</li>
+      <li>テナント間匿名化参照では、固有名詞のマスキング処理を自動適用</li>
+      <li><strong>NotebookLM連携の検討:</strong> 自社ひな型をNotebookLMに学習させ、AI審査や修正条項の作成に活用（佐藤氏着想。GWS環境との親和性が高く追加コストなし）</li>
+      <li>反社チェック・契約締結ツールとの連携はCSV出力の範囲を基本とし、API連携は段階的に対応</li>
+      <li>AI機能は全てオプション（有効/無効の切替可能）</li>
+    </ul>
+  </div>
+</section>
+
+<!-- SECTION 9 -->
+<section class="section" id="s9">
+  <div class="section-head">
+    <span class="section-num">§9</span>
+    <span class="section-title">レビュー結果・課題一覧</span>
+  </div>
+
+  <div class="score-wrap" style="margin-bottom:28px">
+    <div class="score-gauge">
+      <svg viewBox="0 0 140 140">
+        <circle class="track" cx="70" cy="70" r="58" />
+        <circle class="fill" cx="70" cy="70" r="58" stroke-dasharray="364.4" stroke-dashoffset="101.8" />
+      </svg>
+      <div class="score-label"><span class="num">72</span><span class="unit">/ 100</span></div>
+    </div>
+    <ul class="score-summary">
+      <li class="s-ok">既存プロトタイプからの段階的拡張戦略が明確</li>
+      <li class="s-ok">BPO特有要件（マルチテナント、SLA管理）を差別化ポイントとして組込み</li>
+      <li class="s-ok">MoSCoW分類と機能IDによるトレーサビリティ確保</li>
+      <li class="s-warn">Phase 1の工期に対して実装量が過大</li>
+      <li class="s-err">Phase 1のセキュリティ対策が不十分</li>
+    </ul>
+  </div>
+
+  <h3 class="sub-head">Critical課題（開発着手前に解決必須）</h3>
+  <div class="issue critical">
+    <div class="issue-sev">Critical</div>
+    <div class="issue-title">Phase 1 セキュリティ</div>
+    <div class="issue-desc">認証なし・暗号化なしの状態で法務機密データ（契約書・反社チェック結果）を扱うHTML配布のリスク。パスワード付きZIP配布、機密データ取扱注意書、端末管理ポリシーの策定が必要。</div>
+  </div>
+  <div class="issue critical">
+    <div class="issue-sev">Critical</div>
+    <div class="issue-title">Phase 1 スケジュール過大</div>
+    <div class="issue-desc">3–4週の工期に対して実装機能量が過大。チャートの自前実装とIndexedDB基盤構築は各1週間以上必要。機能を絞り込むか、工期を6–8週に延長する検討が必要。</div>
+  </div>
+  <div class="issue critical">
+    <div class="issue-sev">Critical</div>
+    <div class="issue-title">マルチテナントデータ分離</div>
+    <div class="issue-desc">テナントIDフィルタの実装方式（RLS、ミドルウェア、ORM等）が未定義。BPO運営者の横断閲覧権限との両立設計が必要。</div>
+  </div>
+
+  <h3 class="sub-head">Major課題（v1.1で補完）</h3>
+  <div class="issue major">
+    <div class="issue-sev">Major</div>
+    <div class="issue-title">仕様の深掘りが必要な項目</div>
+    <div class="issue-desc">依頼フォームのカスタマイズ範囲 / 電子契約連携の優先順位と深度 / 承認フローの内製or外部連携 / 課金プラン・収益モデル / テスト要件・運用保守要件 / 個人情報保護法・電子帳簿保存法への対応方針</div>
+  </div>
+
+  <h3 class="sub-head">今後のアクション</h3>
+  <div class="actions">
+    <div class="action"><div class="action-text">本要件定義書を佐藤氏と共有し、機能優先度・スコープの合意を得る</div></div>
+    <div class="action"><div class="action-text">Critical課題3件の解決方針を決定する</div></div>
+    <div class="action"><div class="action-text">Phase 1の機能範囲を確定し、実装に着手する</div></div>
+    <div class="action"><div class="action-text">v1.1でMajor課題・欠落項目を補完する</div></div>
+  </div>
+</section>
+
+<!-- APPENDIX -->
+<section class="section" id="appendix">
+  <div class="section-head">
+    <span class="section-num">§A</span>
+    <span class="section-title">付録</span>
+  </div>
+
+  <h3 class="sub-head">A. 用語集</h3>
+  <div class="glossary">
+    <div class="gloss-item"><div class="gloss-term">テナント</div><div class="gloss-def">システム上の顧客企業単位。データ・設定・ブランディングが独立</div></div>
+    <div class="gloss-item"><div class="gloss-term">BPO</div><div class="gloss-def">Business Process Outsourcing。業務プロセスの外部委託</div></div>
+    <div class="gloss-item"><div class="gloss-term">PMI</div><div class="gloss-def">Post Merger Integration。M&A後の統合プロセス</div></div>
+    <div class="gloss-item"><div class="gloss-term">CLM</div><div class="gloss-def">Contract Lifecycle Management。契約のライフサイクル管理</div></div>
+    <div class="gloss-item"><div class="gloss-term">SLA</div><div class="gloss-def">Service Level Agreement。サービスレベル契約</div></div>
+    <div class="gloss-item"><div class="gloss-term">OLGA</div><div class="gloss-def">GVA TECH社の法務オートメーションSaaS。本システムの参考モデル</div></div>
+    <div class="gloss-item"><div class="gloss-term">反社チェック</div><div class="gloss-def">取引先の反社会的勢力該当性を調査する手続き</div></div>
+    <div class="gloss-item"><div class="gloss-term">FIX管理</div><div class="gloss-def">契約書ドラフトの確定版を明示・管理する手法</div></div>
+    <div class="gloss-item"><div class="gloss-term">ホワイトラベル</div><div class="gloss-def">顧客企業のブランドで提供する方式</div></div>
+    <div class="gloss-item"><div class="gloss-term">稟議</div><div class="gloss-def">組織内の意思決定のための承認手続き</div></div>
+  </div>
+
+  <h3 class="sub-head" style="margin-top:32px">B. プロトタイプ引き継ぎマップ</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>既存モジュール</th><th>既存機能</th><th>対応ID</th><th>Phase 1</th></tr></thead>
+      <tbody>
+        <tr><td>ダッシュボード</td><td>統計カード4枚</td><td><code>F-601</code></td><td>維持+拡張</td></tr>
+        <tr><td>案件管理</td><td>CRUD・検索・チェックリスト</td><td><code>F-101~104</code></td><td>維持</td></tr>
+        <tr><td>案件管理</td><td>稟議連携・CSV取込</td><td><code>F-401, F-114</code></td><td>維持+拡張</td></tr>
+        <tr><td>契約管理</td><td>CRUD・ステータス・CSV</td><td><code>F-201~202</code></td><td>維持</td></tr>
+        <tr><td>反社チェック</td><td>CRUD・判定フロー・再審査・CSV</td><td><code>F-301~303, F-311</code></td><td>維持</td></tr>
+        <tr><td>メンバー管理</td><td>ワークロード・未アサイン</td><td><code>F-501~502</code></td><td>維持+拡張</td></tr>
+        <tr><td>実績</td><td>期間別集計・CSV</td><td><code>F-503, F-508</code></td><td>維持+拡張</td></tr>
+        <tr><td>設定</td><td>ブランド・マスタ・バックアップ</td><td><code>SC-10</code></td><td>維持</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</div><!-- .content -->
+</div><!-- .main -->
+
+<script>
+// TOC active state
+const tocLinks = document.querySelectorAll('.toc-item');
+const sections = document.querySelectorAll('[id^="s"]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tocLinks.forEach(l => l.classList.remove('active'));
+      const id = e.target.id;
+      const link = document.querySelector(`.toc-item[href="#${id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+
+// Mobile nav close on link click
+tocLinks.forEach(l => l.addEventListener('click', () => {
+  if (window.innerWidth <= 960) {
+    document.getElementById('nav').classList.remove('open');
+    document.getElementById('navToggle').textContent = '☰';
+  }
+}));
+</script>
+</body>
+</html>

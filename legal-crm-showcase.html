@@ -1,0 +1,2505 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>グループ法務ポータル構想 | BPIO x セブンリッチグループ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Noto Sans JP', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #0F172A;
+  background: #ffffff;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+/* ===== DESIGN TOKENS ===== */
+:root {
+  --primary: #1E3A5F;
+  --primary-light: #2a4f7a;
+  --accent: #B45309;
+  --accent-light: #D97706;
+  --surface: #F8FAFC;
+  --card: #FFFFFF;
+  --text-dark: #0F172A;
+  --text-mid: #475569;
+  --text-light: #94A3B8;
+  --done: #059669;
+  --done-bg: #ecfdf5;
+  --planned: #2563EB;
+  --planned-bg: #eff6ff;
+  --ai: #7C3AED;
+  --ai-bg: #f5f3ff;
+  --phase3: #EA580C;
+  --phase3-bg: #fff7ed;
+  --danger: #DC2626;
+  --danger-bg: #fef2f2;
+  --warning: #D97706;
+  --border: #E2E8F0;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --section-gap: 100px;
+  --container: 1140px;
+}
+
+/* ===== FIXED NAVIGATION ===== */
+.nav-fixed {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(30, 58, 95, 0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  transition: box-shadow 0.3s;
+}
+.nav-fixed.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.25); }
+.nav-inner {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+.nav-brand {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.nav-links {
+  display: flex;
+  gap: 4px;
+  list-style: none;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.nav-links a {
+  display: block;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  border-radius: var(--radius-sm);
+  transition: color 0.2s, background 0.2s;
+  white-space: nowrap;
+}
+.nav-links a:hover,
+.nav-links a.active {
+  color: #ffffff;
+  background: rgba(255,255,255,0.1);
+}
+
+/* ===== HERO ===== */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #0f1b2d 0%, #1E3A5F 40%, #2a4f7a 70%, #1a3355 100%);
+  overflow: hidden;
+  padding: 80px 24px 60px;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 600px 400px at 20% 30%, rgba(37,99,235,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 350px at 80% 60%, rgba(124,58,237,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='g' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Ccircle cx='30' cy='30' r='0.8' fill='rgba(255,255,255,0.04)'/%3E%3C/pattern%3E%3C/defs%3E%3Crect fill='url(%23g)' width='60' height='60'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  text-align: center;
+}
+.hero-label {
+  display: inline-block;
+  padding: 6px 20px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 32px;
+  letter-spacing: 0.04em;
+}
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.35;
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+.hero-sub {
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  color: rgba(255,255,255,0.65);
+  line-height: 1.8;
+  margin-bottom: 56px;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 720px;
+  margin: 0 auto 60px;
+}
+.hero-kpi {
+  padding: 24px 16px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-lg);
+  background: rgba(255,255,255,0.04);
+}
+.hero-kpi-number {
+  font-family: 'Inter', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+}
+.hero-kpi-number span {
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(255,255,255,0.5);
+}
+.hero-kpi-label {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.5);
+  margin-top: 6px;
+}
+.scroll-hint {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  animation: scrollBounce 2.5s ease-in-out infinite;
+}
+.scroll-hint span {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.1em;
+}
+.scroll-hint svg {
+  width: 20px;
+  height: 20px;
+  stroke: rgba(255,255,255,0.35);
+  fill: none;
+  stroke-width: 2;
+}
+@keyframes scrollBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(10px); }
+}
+
+/* ===== SHARED SECTION STYLES ===== */
+.section {
+  padding: var(--section-gap) 24px;
+}
+.section-alt {
+  background: var(--surface);
+}
+.container {
+  max-width: var(--container);
+  margin: 0 auto;
+}
+.section-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+.section-header h2 {
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+.section-header .subtitle {
+  font-size: 1rem;
+  color: var(--text-mid);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ===== BEFORE / AFTER ===== */
+.ba-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+.ba-column {
+  border-radius: var(--radius-lg);
+  padding: 36px;
+}
+.ba-before { background: #fef2f2; }
+.ba-after  { background: #f0fdf4; }
+.ba-column-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 24px;
+  padding: 6px 16px;
+  border-radius: 100px;
+}
+.ba-before .ba-column-label {
+  background: #fecaca;
+  color: #991b1b;
+}
+.ba-after .ba-column-label {
+  background: #bbf7d0;
+  color: #166534;
+}
+.ba-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ba-card {
+  display: flex;
+  gap: 14px;
+  padding: 18px;
+  background: rgba(255,255,255,0.8);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(0,0,0,0.04);
+}
+.ba-card-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ba-before .ba-card-icon { background: #fee2e2; }
+.ba-after  .ba-card-icon { background: #dcfce7; }
+.ba-card-icon svg {
+  width: 20px;
+  height: 20px;
+}
+.ba-before .ba-card-icon svg { stroke: #dc2626; fill: none; stroke-width: 1.8; }
+.ba-after  .ba-card-icon svg { stroke: #16a34a; fill: none; stroke-width: 1.8; }
+.ba-card p {
+  font-size: 0.88rem;
+  color: var(--text-dark);
+  line-height: 1.7;
+}
+
+/* ===== TABS (already-working) ===== */
+.proto-intro {
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 48px;
+  padding: 20px 28px;
+  background: var(--planned-bg);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--planned);
+}
+.tabs-wrapper {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.tab-buttons {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: #f8fafc;
+  overflow-x: auto;
+}
+.tab-btn {
+  padding: 14px 20px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-mid);
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+.tab-btn:hover {
+  color: var(--primary);
+  background: rgba(37,99,235,0.04);
+}
+.tab-btn.active {
+  color: var(--planned);
+  border-bottom-color: var(--planned);
+  background: #ffffff;
+}
+.tab-panel {
+  display: none;
+  padding: 32px;
+}
+.tab-panel.active { display: block; }
+
+/* --- Mock Shared --- */
+.mock-container {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #f8fafc;
+}
+.mock-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: #f1f5f9;
+  border-bottom: 1px solid var(--border);
+}
+.mock-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+.mock-dot:nth-child(1) { background: #fca5a5; }
+.mock-dot:nth-child(2) { background: #fcd34d; }
+.mock-dot:nth-child(3) { background: #86efac; }
+.mock-titlebar span {
+  font-size: 0.72rem;
+  color: var(--text-light);
+  margin-left: 8px;
+}
+.mock-body {
+  padding: 20px;
+  background: #ffffff;
+}
+
+/* --- Dashboard Mock --- */
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+.stat-card-val {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.2;
+}
+.stat-card-label {
+  font-size: 0.72rem;
+  color: var(--text-light);
+  margin-top: 4px;
+}
+.stat-card-trend {
+  font-size: 0.7rem;
+  margin-top: 6px;
+  font-weight: 600;
+}
+.stat-card-trend.up { color: var(--done); }
+.stat-card-trend.down { color: var(--danger); }
+.mock-two-col {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 20px;
+}
+.mock-table-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+}
+.mock-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+.mock-table th {
+  text-align: left;
+  padding: 8px 10px;
+  background: #f8fafc;
+  color: var(--text-light);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.7rem;
+  white-space: nowrap;
+}
+.mock-table td {
+  padding: 10px;
+  border-bottom: 1px solid #f1f5f9;
+  color: var(--text-dark);
+  vertical-align: middle;
+}
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.badge-blue   { background: #dbeafe; color: #1d4ed8; }
+.badge-green  { background: #dcfce7; color: #166534; }
+.badge-yellow { background: #fef3c7; color: #92400e; }
+.badge-red    { background: #fee2e2; color: #991b1b; }
+.badge-purple { background: #ede9fe; color: #5b21b6; }
+.badge-gray   { background: #f1f5f9; color: #64748b; }
+
+/* --- Case Mgmt Mock --- */
+.mock-toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.mock-searchbar {
+  flex: 1;
+  min-width: 200px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  color: var(--text-mid);
+  background: var(--card);
+}
+.mock-filter-btn {
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-mid);
+  background: var(--card);
+}
+.mock-filter-btn.active-f {
+  background: var(--planned-bg);
+  color: var(--planned);
+  border-color: var(--planned);
+}
+.progress-bar-wrap {
+  width: 80px;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+}
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--planned);
+}
+.mock-overlay-hint {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(37,99,235,0.04);
+  border: 1px dashed var(--planned);
+  border-radius: var(--radius-md);
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--planned);
+}
+
+/* --- Contract Mock --- */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.step-label {
+  padding: 8px 18px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+.step-label.s-active { background: var(--planned); color: #fff; }
+.step-label.s-done   { background: var(--done-bg); color: var(--done); }
+.step-label.s-future { background: #f1f5f9; color: var(--text-light); }
+.step-arrow {
+  width: 24px;
+  text-align: center;
+  color: var(--text-light);
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+/* --- Compliance Mock --- */
+.flow-chart {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.flow-box {
+  padding: 12px 20px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+  background: var(--card);
+  min-width: 100px;
+}
+.flow-box.flow-active {
+  border-color: var(--planned);
+  background: var(--planned-bg);
+  color: var(--planned);
+}
+.flow-arrow {
+  font-size: 1.2rem;
+  color: var(--text-light);
+  padding: 0 6px;
+  flex-shrink: 0;
+}
+.risk-badges {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.risk-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.risk-low  { background: #dcfce7; color: #166534; }
+.risk-mid  { background: #fef3c7; color: #92400e; }
+.risk-high { background: #fee2e2; color: #991b1b; }
+.risk-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+.risk-low .risk-dot  { background: #16a34a; }
+.risk-mid .risk-dot  { background: #d97706; }
+.risk-high .risk-dot { background: #dc2626; }
+
+/* --- Member Mock --- */
+.member-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.member-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+.member-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #ffffff;
+}
+.member-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+}
+.member-count {
+  font-size: 0.72rem;
+  color: var(--text-light);
+  margin-bottom: 10px;
+}
+.workload-bar-track {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.workload-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s;
+}
+.workload-green  { background: var(--done); }
+.workload-yellow { background: var(--warning); }
+.workload-red    { background: var(--danger); }
+.unassigned-list {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.unassigned-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.78rem;
+}
+.unassigned-item:last-child { border-bottom: none; }
+.assign-btn {
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.68rem;
+  font-weight: 600;
+  background: var(--planned-bg);
+  color: var(--planned);
+  border: 1px solid var(--planned);
+}
+
+/* --- Settings Mock --- */
+.settings-section {
+  margin-bottom: 20px;
+}
+.settings-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+}
+.color-picker-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.color-swatch {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  border: 2px solid var(--border);
+  cursor: pointer;
+}
+.color-swatch.selected { border-color: var(--planned); box-shadow: 0 0 0 2px rgba(37,99,235,0.3); }
+.accordion-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.accordion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  background: #f8fafc;
+  cursor: pointer;
+}
+.accordion-header .chevron {
+  transition: transform 0.2s;
+  font-size: 0.7rem;
+  color: var(--text-light);
+}
+.accordion-body {
+  display: none;
+  padding: 12px 16px;
+  font-size: 0.75rem;
+  color: var(--text-mid);
+  border-top: 1px solid var(--border);
+}
+.accordion-item.open .accordion-body { display: block; }
+.accordion-item.open .chevron { transform: rotate(90deg); }
+.mock-btn-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.mock-btn {
+  padding: 8px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--card);
+  color: var(--text-mid);
+}
+.mock-btn-primary {
+  background: var(--planned);
+  color: #fff;
+  border-color: var(--planned);
+}
+
+/* ===== CAPABILITY (ACCORDION) ===== */
+.cap-chart-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 48px;
+}
+.cap-chart-container {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.donut-svg {
+  width: 160px;
+  height: 160px;
+  flex-shrink: 0;
+}
+.cap-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cap-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-mid);
+}
+.cap-legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.cap-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cap-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.cap-item:hover { box-shadow: var(--shadow-sm); }
+.cap-item-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 20px;
+  cursor: pointer;
+  user-select: none;
+}
+.cap-item-header .toggle-icon {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, background 0.2s;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  color: var(--text-light);
+}
+.cap-item.open .cap-item-header .toggle-icon {
+  transform: rotate(90deg);
+  background: var(--planned-bg);
+  color: var(--planned);
+}
+.cap-item-title {
+  flex: 1;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--text-dark);
+}
+.cap-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.cap-count-badge {
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: var(--text-mid);
+}
+.cap-summary {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  display: none;
+}
+@media (min-width: 768px) {
+  .cap-summary { display: block; }
+}
+.cap-item-body {
+  display: none;
+  padding: 0 20px 20px;
+  border-top: 1px solid var(--border);
+  margin-top: 0;
+}
+.cap-item.open .cap-item-body { display: block; padding-top: 16px; }
+.cap-feature-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 20px;
+}
+.cap-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-dark);
+  padding: 5px 0;
+}
+.cap-feature-item .phase-tag {
+  flex-shrink: 0;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+.tag-done   { background: var(--done-bg); color: var(--done); }
+.tag-p1     { background: var(--planned-bg); color: var(--planned); }
+.tag-p2     { background: var(--ai-bg); color: var(--ai); }
+.tag-p3     { background: var(--phase3-bg); color: var(--phase3); }
+
+/* ===== TIMELINE (walkthrough) ===== */
+.timeline {
+  position: relative;
+  padding-left: 48px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 18px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--planned), var(--ai));
+  border-radius: 1px;
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 64px;
+}
+.timeline-item:last-child { margin-bottom: 0; }
+.timeline-dot {
+  position: absolute;
+  left: -38px;
+  top: 4px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--planned);
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 0 2px var(--planned);
+}
+.timeline-time {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--planned);
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
+}
+.timeline-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+}
+.timeline-bubble {
+  display: inline-block;
+  padding: 10px 18px;
+  background: var(--planned-bg);
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  color: var(--planned);
+  margin-bottom: 16px;
+  font-weight: 600;
+  border-left: 3px solid var(--planned);
+}
+.timeline-mock {
+  margin-top: 8px;
+}
+
+/* ===== MULTI-TENANT ===== */
+.value-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 56px;
+}
+.value-card {
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.value-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.value-card-icon {
+  width: 48px; height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  background: var(--planned-bg);
+}
+.value-card-icon svg {
+  width: 24px; height: 24px;
+  stroke: var(--planned);
+  fill: none;
+  stroke-width: 1.8;
+}
+.value-card h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+}
+.value-card p {
+  font-size: 0.82rem;
+  color: var(--text-mid);
+  line-height: 1.7;
+}
+.hub-spoke {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+.hub-center {
+  padding: 24px 40px;
+  background: var(--primary);
+  color: #ffffff;
+  border-radius: var(--radius-lg);
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  position: relative;
+}
+.hub-lines {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+}
+.hub-line-segment {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.hub-line-vertical {
+  width: 2px;
+  height: 40px;
+  background: var(--border);
+}
+.hub-spoke-box {
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+  border: 2px solid;
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+}
+.spoke-a { border-color: var(--planned); color: var(--planned); }
+.spoke-b { border-color: var(--done);    color: var(--done); }
+.spoke-c { border-color: var(--ai);      color: var(--ai); }
+.mt-bottom-note {
+  text-align: center;
+  font-size: 0.92rem;
+  color: var(--text-mid);
+  font-weight: 600;
+  padding: 24px;
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--accent);
+}
+
+/* ===== ROADMAP ===== */
+.roadmap-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  gap: 0;
+  align-items: stretch;
+  margin-bottom: 40px;
+}
+.roadmap-phase {
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  position: relative;
+}
+.roadmap-phase-1 { background: var(--planned-bg); }
+.roadmap-phase-2 { background: var(--ai-bg); }
+.roadmap-phase-3 { background: var(--phase3-bg); }
+.roadmap-phase-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+.roadmap-phase-1 .roadmap-phase-label { color: var(--planned); }
+.roadmap-phase-2 .roadmap-phase-label { color: var(--ai); }
+.roadmap-phase-3 .roadmap-phase-label { color: var(--phase3); }
+.roadmap-phase-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+}
+.roadmap-phase-period {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  margin-bottom: 16px;
+}
+.roadmap-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.roadmap-list li {
+  font-size: 0.78rem;
+  color: var(--text-mid);
+  padding-left: 16px;
+  position: relative;
+  line-height: 1.6;
+}
+.roadmap-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 9px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+}
+.roadmap-phase-1 .roadmap-list li::before { background: var(--planned); }
+.roadmap-phase-2 .roadmap-list li::before { background: var(--ai); }
+.roadmap-phase-3 .roadmap-list li::before { background: var(--phase3); }
+.roadmap-goal {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: auto;
+}
+.roadmap-phase-1 .roadmap-goal { background: rgba(37,99,235,0.1); color: var(--planned); }
+.roadmap-phase-2 .roadmap-goal { background: rgba(124,58,237,0.1); color: var(--ai); }
+.roadmap-phase-3 .roadmap-goal { background: rgba(234,88,12,0.1); color: var(--phase3); }
+.roadmap-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  font-size: 1.5rem;
+  color: var(--text-light);
+}
+.now-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: var(--planned);
+  color: #ffffff;
+  animation: nowPulse 2s ease-in-out infinite;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+@keyframes nowPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(37,99,235,0.4); }
+  50%      { opacity: 0.85; box-shadow: 0 0 0 6px rgba(37,99,235,0); }
+}
+.roadmap-timeline {
+  position: relative;
+  height: 40px;
+  background: #f1f5f9;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.roadmap-tl-fill {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  border-radius: 20px;
+  background: linear-gradient(90deg, var(--planned), var(--ai), var(--phase3));
+  opacity: 0.2;
+}
+.roadmap-tl-markers {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;
+}
+.roadmap-tl-marker {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-mid);
+  text-align: center;
+}
+
+/* ===== COMPARISON TABLE ===== */
+.comparison-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;
+  font-size: 0.82rem;
+}
+.comparison-table thead th {
+  padding: 16px 20px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.78rem;
+  border-bottom: 2px solid var(--border);
+  background: #f8fafc;
+  color: var(--text-dark);
+}
+.comparison-table thead th:first-child {
+  text-align: left;
+  width: 200px;
+}
+.comparison-table thead th.highlight-col {
+  background: var(--planned-bg);
+  color: var(--planned);
+}
+.comparison-table tbody td {
+  padding: 14px 20px;
+  text-align: center;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: top;
+}
+.comparison-table tbody td:first-child {
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+.comparison-table tbody td.highlight-col {
+  background: rgba(37,99,235,0.03);
+}
+.cmp-icon {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+.cmp-note {
+  font-size: 0.72rem;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+.comparison-note {
+  margin-top: 16px;
+  font-size: 0.82rem;
+  color: var(--text-light);
+  text-align: center;
+  font-style: italic;
+}
+
+/* ===== NEXT STEPS ===== */
+.next-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 760px;
+  margin: 0 auto 56px;
+}
+.next-step-card {
+  display: flex;
+  gap: 20px;
+  padding: 28px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s, border-color 0.2s;
+  align-items: flex-start;
+}
+.next-step-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--planned);
+}
+.next-step-circle {
+  flex-shrink: 0;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-light);
+  background: var(--surface);
+  margin-top: 2px;
+}
+.next-step-text h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 6px;
+}
+.next-step-text p {
+  font-size: 0.88rem;
+  color: var(--text-mid);
+  line-height: 1.7;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  padding: 40px 24px;
+  text-align: center;
+  background: var(--primary);
+  color: rgba(255,255,255,0.5);
+  font-size: 0.78rem;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .ba-grid { grid-template-columns: 1fr; }
+  .stat-cards { grid-template-columns: repeat(2, 1fr); }
+  .mock-two-col { grid-template-columns: 1fr; }
+  .member-cards { grid-template-columns: 1fr 1fr; }
+  .value-cards { grid-template-columns: 1fr; }
+  .roadmap-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .roadmap-arrow {
+    transform: rotate(90deg);
+    padding: 4px 0;
+  }
+  .hero-kpis { grid-template-columns: 1fr; gap: 12px; }
+  .cap-feature-list { grid-template-columns: 1fr; }
+  .hub-lines { flex-direction: column; gap: 16px; align-items: center; }
+  .hub-line-vertical { height: 24px; }
+  .nav-links { display: none; }
+}
+@media (max-width: 600px) {
+  .stat-cards { grid-template-columns: 1fr; }
+  .member-cards { grid-template-columns: 1fr; }
+  .step-indicator { flex-direction: column; gap: 4px; }
+  .step-arrow { transform: rotate(90deg); }
+  .flow-chart { flex-direction: column; }
+  .flow-arrow { transform: rotate(90deg); }
+  .section { padding: 60px 16px; }
+}
+
+/* ===== PRINT ===== */
+@media print {
+  body { background: #fff; color: #000; font-size: 10pt; }
+  .nav-fixed { display: none; }
+  .hero { min-height: auto; padding: 40px 20px; background: #fff !important; }
+  .hero h1, .hero-sub, .hero-label, .hero-kpi-number, .hero-kpi-label { color: #000 !important; }
+  .hero-kpi { border-color: #ccc !important; background: #fff !important; }
+  .scroll-hint { display: none; }
+  .section { padding: 30px 0; break-inside: avoid; }
+  .section-alt { background: #fff !important; }
+  .tabs-wrapper { box-shadow: none; border: 1px solid #ccc; }
+  .tab-panel { display: block !important; border-top: 1px solid #ccc; }
+  .tab-buttons { display: none; }
+  .cap-item-body { display: block !important; }
+  .cap-item { break-inside: avoid; }
+  .mock-container { box-shadow: none; }
+  .value-card { box-shadow: none; border: 1px solid #ccc; }
+  .next-step-card { box-shadow: none; border: 1px solid #ccc; }
+  .now-badge { animation: none; }
+  .roadmap-grid { grid-template-columns: 1fr; }
+  .roadmap-arrow { display: none; }
+  a { text-decoration: none; }
+  .footer { background: #fff !important; color: #666 !important; border-top: 1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav-fixed" id="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">グループ法務ポータル</div>
+    <ul class="nav-links">
+      <li><a href="#current-pain">現状と課題</a></li>
+      <li><a href="#already-working">実装済み機能</a></li>
+      <li><a href="#full-capability">66機能</a></li>
+      <li><a href="#ui-walkthrough">業務フロー</a></li>
+      <li><a href="#multi-tenant">外販モデル</a></li>
+      <li><a href="#roadmap">ロードマップ</a></li>
+      <li><a href="#comparison">比較</a></li>
+      <li><a href="#next-step">次のステップ</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <div class="hero-label">BPIO x セブンリッチグループ</div>
+    <h1>法務の「見えない仕事」を、<br>見える管理へ。</h1>
+    <p class="hero-sub">Googleフォームとスプレッドシートによる属人管理から、<br>チーム全体で案件を追える法務CRMへ。</p>
+    <div class="hero-kpis">
+      <div class="hero-kpi">
+        <div class="hero-kpi-number">66<span> 機能</span></div>
+        <div class="hero-kpi-label">8カテゴリに体系化</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-number">3-4<span> 週</span></div>
+        <div class="hero-kpi-label">Phase 1 稼働開始</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-number">BPO<span> 外販</span></div>
+        <div class="hero-kpi-label">クライアント提供も視野</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>SCROLL</span>
+    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+</section>
+
+<!-- ===== CURRENT PAIN (Before / After) ===== -->
+<section class="section" id="current-pain">
+  <div class="container">
+    <div class="section-header">
+      <h2>いま、何が起きているか</h2>
+    </div>
+    <div class="ba-grid">
+      <!-- Before -->
+      <div class="ba-column ba-before">
+        <div class="ba-column-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#991b1b" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          現状（Before）
+        </div>
+        <div class="ba-cards">
+          <div class="ba-card">
+            <div class="ba-card-icon">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <p>依頼がメール・チャットに散在し、誰が何を抱えているか分からない</p>
+          </div>
+          <div class="ba-card">
+            <div class="ba-card-icon">
+              <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+            <p>契約更新の期限を人の記憶とカレンダーで管理。見落としリスクが常にある</p>
+          </div>
+          <div class="ba-card">
+            <div class="ba-card-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <p>反社チェックの証跡がスプレッドシートに埋もれ、監査対応に毎回時間がかかる</p>
+          </div>
+          <div class="ba-card">
+            <div class="ba-card-icon">
+              <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+            <p>案件数・対応時間の実績が取れず、適正な人員配置ができない</p>
+          </div>
+        </div>
+      </div>
+      <!-- After -->
+      <div class="ba-column ba-after">
+        <div class="ba-column-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="16 10 10 16 8 14"/></svg>
+          この仕組みで変わること（After）
+        </div>
+        <div class="ba-cards">
+          <div class="ba-card">
+            <div class="ba-card-icon">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            </div>
+            <p>全案件が一画面に集約。ステータス・担当者・期限が一目で分かる</p>
+          </div>
+          <div class="ba-card">
+            <div class="ba-card-icon">
+              <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+            <p>契約の更新期限を自動通知。3ヶ月前・1ヶ月前・1週間前にアラートが届く</p>
+          </div>
+          <div class="ba-card">
+            <div class="ba-card-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <p>反社チェックの判定履歴・証跡を案件に紐づけて自動保存</p>
+          </div>
+          <div class="ba-card">
+            <div class="ba-card-icon">
+              <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+            <p>メンバー別の案件数・対応時間をリアルタイムで集計しダッシュボード表示</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ALREADY WORKING (Tabs) ===== -->
+<section class="section section-alt" id="already-working">
+  <div class="container">
+    <div class="section-header">
+      <h2>既に動いているもの</h2>
+      <p class="subtitle">プロトタイプで実現済みの機能</p>
+    </div>
+    <div class="proto-intro">構想段階ではありません。以下の機能は既にHTMLプロトタイプとして動作しています。</div>
+    <div class="tabs-wrapper">
+      <div class="tab-buttons">
+        <button class="tab-btn active" data-tab="tab-dashboard">ダッシュボード</button>
+        <button class="tab-btn" data-tab="tab-cases">案件管理</button>
+        <button class="tab-btn" data-tab="tab-contracts">契約管理</button>
+        <button class="tab-btn" data-tab="tab-compliance">反社チェック</button>
+        <button class="tab-btn" data-tab="tab-members">メンバー管理</button>
+        <button class="tab-btn" data-tab="tab-settings">設定</button>
+      </div>
+
+      <!-- TAB: Dashboard -->
+      <div class="tab-panel active" id="tab-dashboard">
+        <div class="mock-container">
+          <div class="mock-titlebar">
+            <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+            <span>法務ポータル - ダッシュボード</span>
+          </div>
+          <div class="mock-body">
+            <div class="stat-cards">
+              <div class="stat-card">
+                <div class="stat-card-val">12</div>
+                <div class="stat-card-label">対応中案件</div>
+                <div class="stat-card-trend up">+2 先月比</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card-val">8</div>
+                <div class="stat-card-label">今月完了</div>
+                <div class="stat-card-trend up">+3 先月比</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card-val">4.2<span style="font-size:0.9rem">日</span></div>
+                <div class="stat-card-label">平均対応日数</div>
+                <div class="stat-card-trend up">-0.8 改善</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card-val">92<span style="font-size:0.9rem">%</span></div>
+                <div class="stat-card-label">SLA達成率</div>
+                <div class="stat-card-trend up">+5% 先月比</div>
+              </div>
+            </div>
+            <div class="mock-two-col">
+              <div>
+                <div class="mock-table-title">対応中の案件</div>
+                <table class="mock-table">
+                  <thead><tr><th>案件名</th><th>依頼元</th><th>担当</th><th>ステータス</th><th>期限</th></tr></thead>
+                  <tbody>
+                    <tr><td>A社 業務委託契約レビュー</td><td>経営企画部</td><td>佐藤</td><td><span class="badge badge-blue">対応中</span></td><td>7/5</td></tr>
+                    <tr><td>B社 NDA締結</td><td>事業開発部</td><td>田中</td><td><span class="badge badge-yellow">レビュー中</span></td><td>7/8</td></tr>
+                    <tr><td>C社 反社チェック依頼</td><td>総務部</td><td>佐藤</td><td><span class="badge badge-blue">対応中</span></td><td>7/3</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div>
+                <div class="mock-table-title">更新期限が近い契約</div>
+                <table class="mock-table">
+                  <thead><tr><th>契約名</th><th>相手方</th><th>更新期限</th><th>残日数</th></tr></thead>
+                  <tbody>
+                    <tr><td>業務委託基本契約</td><td>D社</td><td>7/15</td><td><span class="badge badge-yellow">23日</span></td></tr>
+                    <tr><td>システム保守契約</td><td>E社</td><td>7/5</td><td><span class="badge badge-red">13日</span></td></tr>
+                    <tr><td>秘密保持契約</td><td>F社</td><td>6/30</td><td><span class="badge badge-red">8日</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: Cases -->
+      <div class="tab-panel" id="tab-cases">
+        <div class="mock-container">
+          <div class="mock-titlebar">
+            <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+            <span>法務ポータル - 案件管理</span>
+          </div>
+          <div class="mock-body">
+            <div class="mock-toolbar">
+              <div class="mock-searchbar">案件名・依頼元・担当者で検索...</div>
+              <button class="mock-filter-btn active-f">全て</button>
+              <button class="mock-filter-btn">受付</button>
+              <button class="mock-filter-btn">対応中</button>
+              <button class="mock-filter-btn">レビュー中</button>
+              <button class="mock-filter-btn">完了</button>
+            </div>
+            <table class="mock-table">
+              <thead><tr><th>案件名</th><th>種別</th><th>担当</th><th>ステータス</th><th>進捗</th><th>期限</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>A社 業務委託契約レビュー</td>
+                  <td><span class="badge badge-gray">契約レビュー</span></td>
+                  <td>佐藤</td>
+                  <td><span class="badge badge-blue">対応中</span></td>
+                  <td><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:60%"></div></div> <span style="font-size:0.68rem;color:#94a3b8">3/5</span></td>
+                  <td>7/5</td>
+                </tr>
+                <tr>
+                  <td>B社 NDA締結</td>
+                  <td><span class="badge badge-gray">契約締結</span></td>
+                  <td>田中</td>
+                  <td><span class="badge badge-yellow">レビュー中</span></td>
+                  <td><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:80%"></div></div> <span style="font-size:0.68rem;color:#94a3b8">4/5</span></td>
+                  <td>7/8</td>
+                </tr>
+                <tr>
+                  <td>C社 反社チェック依頼</td>
+                  <td><span class="badge badge-gray">反社チェック</span></td>
+                  <td>佐藤</td>
+                  <td><span class="badge badge-blue">対応中</span></td>
+                  <td><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:40%"></div></div> <span style="font-size:0.68rem;color:#94a3b8">2/5</span></td>
+                  <td>7/3</td>
+                </tr>
+                <tr>
+                  <td>D社 業務提携契約</td>
+                  <td><span class="badge badge-gray">契約作成</span></td>
+                  <td>鈴木</td>
+                  <td><span class="badge badge-green">完了</span></td>
+                  <td><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:100%;background:var(--done)"></div></div> <span style="font-size:0.68rem;color:#94a3b8">5/5</span></td>
+                  <td>6/28</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="mock-overlay-hint">案件をクリックすると、詳細画面が開きます（タイムライン、チェックリスト、添付ファイル）</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: Contracts -->
+      <div class="tab-panel" id="tab-contracts">
+        <div class="mock-container">
+          <div class="mock-titlebar">
+            <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+            <span>法務ポータル - 契約管理</span>
+          </div>
+          <div class="mock-body">
+            <div class="step-indicator">
+              <div class="step-item"><span class="step-label s-done">ドラフト</span></div>
+              <div class="step-arrow">&rarr;</div>
+              <div class="step-item"><span class="step-label s-done">レビュー中</span></div>
+              <div class="step-arrow">&rarr;</div>
+              <div class="step-item"><span class="step-label s-active">承認済み</span></div>
+              <div class="step-arrow">&rarr;</div>
+              <div class="step-item"><span class="step-label s-future">締結</span></div>
+              <div class="step-arrow">&rarr;</div>
+              <div class="step-item"><span class="step-label s-future">更新待ち</span></div>
+            </div>
+            <table class="mock-table">
+              <thead><tr><th>契約名</th><th>相手方</th><th>種別</th><th>ステータス</th><th>締結日</th><th>更新期限</th></tr></thead>
+              <tbody>
+                <tr><td>業務委託基本契約</td><td>D社</td><td><span class="badge badge-gray">業務委託</span></td><td><span class="badge badge-green">締結</span></td><td>2025/1/15</td><td>2026/7/15</td></tr>
+                <tr><td>秘密保持契約</td><td>F社</td><td><span class="badge badge-gray">NDA</span></td><td><span class="badge badge-green">締結</span></td><td>2024/6/30</td><td>2026/6/30</td></tr>
+                <tr><td>システム開発契約</td><td>G社</td><td><span class="badge badge-gray">開発</span></td><td><span class="badge badge-yellow">レビュー中</span></td><td>-</td><td>-</td></tr>
+                <tr><td>顧問契約</td><td>H法律事務所</td><td><span class="badge badge-gray">顧問</span></td><td><span class="badge badge-blue">ドラフト</span></td><td>-</td><td>-</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: Compliance -->
+      <div class="tab-panel" id="tab-compliance">
+        <div class="mock-container">
+          <div class="mock-titlebar">
+            <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+            <span>法務ポータル - 反社チェック</span>
+          </div>
+          <div class="mock-body">
+            <div class="flow-chart">
+              <div class="flow-box">申請</div>
+              <div class="flow-arrow">&rarr;</div>
+              <div class="flow-box flow-active">一次判定</div>
+              <div class="flow-arrow">&rarr;</div>
+              <div class="flow-box">二次判定</div>
+              <div class="flow-arrow">&rarr;</div>
+              <div class="flow-box">最終結果</div>
+            </div>
+            <div class="risk-badges">
+              <div class="risk-badge risk-low"><div class="risk-dot"></div>低リスク: 18件</div>
+              <div class="risk-badge risk-mid"><div class="risk-dot"></div>要注意: 3件</div>
+              <div class="risk-badge risk-high"><div class="risk-dot"></div>高リスク: 1件</div>
+            </div>
+            <table class="mock-table">
+              <thead><tr><th>対象企業</th><th>申請日</th><th>判定ステータス</th><th>リスク</th><th>再審査期限</th></tr></thead>
+              <tbody>
+                <tr><td>I社</td><td>6/20</td><td><span class="badge badge-blue">一次判定中</span></td><td><span class="badge badge-green">低</span></td><td>-</td></tr>
+                <tr><td>J社</td><td>6/18</td><td><span class="badge badge-green">完了</span></td><td><span class="badge badge-green">低</span></td><td>2027/6/18</td></tr>
+                <tr><td>K社</td><td>6/15</td><td><span class="badge badge-yellow">二次判定中</span></td><td><span class="badge badge-yellow">要注意</span></td><td>-</td></tr>
+                <tr><td>L社</td><td>6/10</td><td><span class="badge badge-green">完了</span></td><td><span class="badge badge-red">高</span></td><td>2026/12/10</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: Members -->
+      <div class="tab-panel" id="tab-members">
+        <div class="mock-container">
+          <div class="mock-titlebar">
+            <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+            <span>法務ポータル - メンバー管理</span>
+          </div>
+          <div class="mock-body">
+            <div class="member-cards">
+              <div class="member-card">
+                <div class="member-avatar" style="background:var(--planned)">ST</div>
+                <div class="member-name">佐藤 太郎</div>
+                <div class="member-count">担当案件: 6件</div>
+                <div class="workload-bar-track"><div class="workload-bar-fill workload-yellow" style="width:75%"></div></div>
+              </div>
+              <div class="member-card">
+                <div class="member-avatar" style="background:var(--done)">TH</div>
+                <div class="member-name">田中 花子</div>
+                <div class="member-count">担当案件: 4件</div>
+                <div class="workload-bar-track"><div class="workload-bar-fill workload-green" style="width:50%"></div></div>
+              </div>
+              <div class="member-card">
+                <div class="member-avatar" style="background:var(--ai)">SJ</div>
+                <div class="member-name">鈴木 次郎</div>
+                <div class="member-count">担当案件: 8件</div>
+                <div class="workload-bar-track"><div class="workload-bar-fill workload-red" style="width:95%"></div></div>
+              </div>
+            </div>
+            <div class="mock-table-title">未アサインの案件</div>
+            <div class="unassigned-list">
+              <div class="unassigned-item">
+                <span>M社 利用規約レビュー（期限: 7/12）</span>
+                <button class="assign-btn">アサイン</button>
+              </div>
+              <div class="unassigned-item">
+                <span>N社 反社チェック（期限: 7/15）</span>
+                <button class="assign-btn">アサイン</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: Settings -->
+      <div class="tab-panel" id="tab-settings">
+        <div class="mock-container">
+          <div class="mock-titlebar">
+            <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+            <span>法務ポータル - 設定</span>
+          </div>
+          <div class="mock-body">
+            <div class="settings-section">
+              <div class="settings-label">ブランドカスタマイズ</div>
+              <p style="font-size:0.78rem;color:var(--text-mid);margin-bottom:12px">ポータルのアクセントカラーを選択してください</p>
+              <div class="color-picker-row">
+                <div class="color-swatch selected" style="background:#2563eb"></div>
+                <div class="color-swatch" style="background:#059669"></div>
+                <div class="color-swatch" style="background:#7c3aed"></div>
+                <div class="color-swatch" style="background:#dc2626"></div>
+                <div class="color-swatch" style="background:#d97706"></div>
+                <span style="font-size:0.72rem;color:var(--text-light);margin-left:8px">会社ごとに設定可能</span>
+              </div>
+            </div>
+            <div class="settings-section">
+              <div class="settings-label">マスタデータ管理</div>
+              <div class="accordion-item open">
+                <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+                  案件種別マスタ
+                  <span class="chevron">&#9654;</span>
+                </div>
+                <div class="accordion-body">契約レビュー / 契約締結 / 反社チェック / 法律相談 / 規程整備 / 訴訟対応 / その他</div>
+              </div>
+              <div class="accordion-item">
+                <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+                  ステータスマスタ
+                  <span class="chevron">&#9654;</span>
+                </div>
+                <div class="accordion-body">受付 / 対応中 / レビュー中 / 承認待ち / 完了 / 保留 / キャンセル</div>
+              </div>
+              <div class="accordion-item">
+                <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+                  通知設定
+                  <span class="chevron">&#9654;</span>
+                </div>
+                <div class="accordion-body">期限通知: 3ヶ月前 / 1ヶ月前 / 1週間前 / 当日 | 新規依頼通知 | ステータス変更通知</div>
+              </div>
+            </div>
+            <div class="settings-section">
+              <div class="settings-label">データ入出力</div>
+              <div class="mock-btn-row">
+                <button class="mock-btn mock-btn-primary">CSVエクスポート</button>
+                <button class="mock-btn">CSVインポート</button>
+                <button class="mock-btn">バックアップ</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 66 CAPABILITIES ===== -->
+<section class="section" id="full-capability">
+  <div class="container">
+    <div class="section-header">
+      <h2>8つの柱、66の機能</h2>
+      <p class="subtitle">法務業務を丸ごとカバーする全体像</p>
+    </div>
+
+    <!-- Donut Chart -->
+    <div class="cap-chart-wrap">
+      <div class="cap-chart-container">
+        <svg class="donut-svg" viewBox="0 0 160 160">
+          <circle cx="80" cy="80" r="60" fill="none" stroke="#e2e8f0" stroke-width="20"/>
+          <!-- Done: 20/66 ~ 109deg -->
+          <circle cx="80" cy="80" r="60" fill="none" stroke="#059669" stroke-width="20"
+            stroke-dasharray="115 377" stroke-dashoffset="0" transform="rotate(-90 80 80)"/>
+          <!-- Phase1: 18/66 ~ 99deg -->
+          <circle cx="80" cy="80" r="60" fill="none" stroke="#2563EB" stroke-width="20"
+            stroke-dasharray="103 377" stroke-dashoffset="-115" transform="rotate(-90 80 80)"/>
+          <!-- Phase2: 16/66 ~ 87deg -->
+          <circle cx="80" cy="80" r="60" fill="none" stroke="#7C3AED" stroke-width="20"
+            stroke-dasharray="91 377" stroke-dashoffset="-218" transform="rotate(-90 80 80)"/>
+          <!-- Phase3: 12/66 ~ 65deg -->
+          <circle cx="80" cy="80" r="60" fill="none" stroke="#EA580C" stroke-width="20"
+            stroke-dasharray="68 377" stroke-dashoffset="-309" transform="rotate(-90 80 80)"/>
+          <text x="80" y="76" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a" font-family="Inter">66</text>
+          <text x="80" y="94" text-anchor="middle" font-size="10" fill="#94a3b8" font-family="Noto Sans JP">機能</text>
+        </svg>
+        <div class="cap-legend">
+          <div class="cap-legend-item"><div class="cap-legend-dot" style="background:#059669"></div>実装済み (20)</div>
+          <div class="cap-legend-item"><div class="cap-legend-dot" style="background:#2563EB"></div>Phase 1 (18)</div>
+          <div class="cap-legend-item"><div class="cap-legend-dot" style="background:#7C3AED"></div>Phase 2 (16)</div>
+          <div class="cap-legend-item"><div class="cap-legend-dot" style="background:#EA580C"></div>Phase 3 (12)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accordion -->
+    <div class="cap-accordion">
+      <!-- 1. 案件管理 -->
+      <div class="cap-item open">
+        <div class="cap-item-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="toggle-icon">&#9654;</span>
+          <span class="cap-item-title">案件管理</span>
+          <span class="cap-summary">依頼の受付から完了まで、すべてを一元管理</span>
+          <span class="cap-count-badge">15機能</span>
+        </div>
+        <div class="cap-item-body">
+          <ul class="cap-feature-list">
+            <li class="cap-feature-item"><span class="phase-tag tag-done">実装済</span>案件一覧表示・検索・フィルタリング</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-done">実装済</span>案件新規作成・編集フォーム</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-done">実装済</span>ステータス管理（受付/対応中/完了 等）</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-done">実装済</span>担当者アサイン・変更</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-done">実装済</span>案件種別マスタ管理</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-done">実装済</span>チェックリスト進捗表示</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p1">Phase 1</span>依頼フォーム（外部受付）</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p1">Phase 1</span>案件テンプレート</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p1">Phase 1</span>タイムライン型コメント</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p1">Phase 1</span>ファイル添付管理</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p1">Phase 1</span>期限アラート通知</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>SLA管理・計測</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>案件間の関連付け</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>一括操作（ステータス変更等）</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p3">Phase 3</span>AI案件分類・優先度提案</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 2. 契約管理 -->
+      <div class="cap-item">
+        <div class="cap-item-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="toggle-icon">&#9654;</span>
+          <span class="cap-item-title">契約管理</span>
+          <span class="cap-summary">契約書のライフサイクルを漏れなく追跡</span>
+          <span class="cap-count-badge">13機能</span>
+        </div>
+        <div class="cap-item-body">
+          <ul class="cap-feature-list">
+            <li class="cap-feature-item"><span class="phase-tag tag-done">実装済</span>契約一覧・検索</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-done">実装済</span>契約ステータス管理</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-done">実装済</span>ライフサイクル表示</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p1">Phase 1</span>更新期限の自動通知</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p1">Phase 1</span>契約書テンプレート管理</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p1">Phase 1</span>版管理（バージョン履歴）</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p1">Phase 1</span>関連案件リンク</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>電子署名連携</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>契約金額管理</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>更新・解約ワークフロー</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>契約台帳CSVエクスポート</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p3">Phase 3</span>AI契約書解析・リスク抽出</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p3">Phase 3</span>類似条項検索</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 3. コンプライアンス -->
+      <div class="cap-item">
+        <div class="cap-item-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="toggle-icon">&#9654;</span>
+          <span class="cap-item-title">コンプライアンス</span>
+          <span class="cap-summary">反社チェック・広告審査を証跡付きで管理</span>
+          <span class="cap-count-badge">8機能</span>
+        </div>
+        <div class="cap-item-body">
+          <ul class="cap-feature-list">
+            <li class="cap-feature-item"><span class="phase-tag tag-done">実装済</span>反社チェック依頼・結果管理</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-done">実装済</span>リスクレベル判定表示</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-done">実装済</span>判定フロー管理</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p1">Phase 1</span>証跡の自動保存</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p1">Phase 1</span>再審査期限管理</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>広告審査ワークフロー</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>監査ログ出力</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p3">Phase 3</span>AIリスクスコアリング</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 4. ワークフロー -->
+      <div class="cap-item">
+        <div class="cap-item-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="toggle-icon">&#9654;</span>
+          <span class="cap-item-title">ワークフロー</span>
+          <span class="cap-summary">稟議・承認フローをシステムに乗せる</span>
+          <span class="cap-count-badge">4機能</span>
+        </div>
+        <div class="cap-item-body">
+          <ul class="cap-feature-list">
+            <li class="cap-feature-item"><span class="phase-tag tag-p1">Phase 1</span>承認フロー設定</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>多段階承認</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>代理承認</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>承認履歴・監査証跡</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 5. メンバー管理 -->
+      <div class="cap-item">
+        <div class="cap-item-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="toggle-icon">&#9654;</span>
+          <span class="cap-item-title">メンバー管理</span>
+          <span class="cap-summary">誰が何を抱えているか、リアルタイムで把握</span>
+          <span class="cap-count-badge">7機能</span>
+        </div>
+        <div class="cap-item-body">
+          <ul class="cap-feature-list">
+            <li class="cap-feature-item"><span class="phase-tag tag-done">実装済</span>メンバー一覧・プロフィール</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-done">実装済</span>ワークロード可視化</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-done">実装済</span>担当案件数表示</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p1">Phase 1</span>未アサイン案件の即時割当</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p1">Phase 1</span>スキル・専門分野管理</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>勤務時間・稼働率管理</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p3">Phase 3</span>AI最適アサイン提案</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 6. 分析・レポート -->
+      <div class="cap-item">
+        <div class="cap-item-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="toggle-icon">&#9654;</span>
+          <span class="cap-item-title">分析・レポート</span>
+          <span class="cap-summary">数字で法務部門の実績を可視化</span>
+          <span class="cap-count-badge">5機能</span>
+        </div>
+        <div class="cap-item-body">
+          <ul class="cap-feature-list">
+            <li class="cap-feature-item"><span class="phase-tag tag-done">実装済</span>ダッシュボード統計カード</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p1">Phase 1</span>月別案件数グラフ</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>メンバー別実績レポート</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>案件種別比率分析</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p3">Phase 3</span>AIレポート自動生成</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 7. ナレッジ管理 -->
+      <div class="cap-item">
+        <div class="cap-item-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="toggle-icon">&#9654;</span>
+          <span class="cap-item-title">ナレッジ管理</span>
+          <span class="cap-summary">過去の知見を誰でも引き出せる仕組み</span>
+          <span class="cap-count-badge">4機能</span>
+        </div>
+        <div class="cap-item-body">
+          <ul class="cap-feature-list">
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>FAQ・判例データベース</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>ひな形ライブラリ</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p3">Phase 3</span>AIナレッジ検索チャット</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p3">Phase 3</span>類似案件の自動提案</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 8. 外部連携 -->
+      <div class="cap-item">
+        <div class="cap-item-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="toggle-icon">&#9654;</span>
+          <span class="cap-item-title">外部連携</span>
+          <span class="cap-summary">既存ツールとつながり、二重入力をなくす</span>
+          <span class="cap-count-badge">7機能</span>
+        </div>
+        <div class="cap-item-body">
+          <ul class="cap-feature-list">
+            <li class="cap-feature-item"><span class="phase-tag tag-done">実装済</span>CSVインポート・エクスポート</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p1">Phase 1</span>メール通知連携</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>Slack連携</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>Googleカレンダー連携</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p2">Phase 2</span>クラウドストレージ連携</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p3">Phase 3</span>外部法務サービス連携</li>
+            <li class="cap-feature-item"><span class="phase-tag tag-p3">Phase 3</span>会計システム連携</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== UI WALKTHROUGH (Timeline) ===== -->
+<section class="section section-alt" id="ui-walkthrough">
+  <div class="container">
+    <div class="section-header">
+      <h2>画面で見る、日常の業務フロー</h2>
+    </div>
+    <div class="timeline">
+
+      <!-- Scene 1: Morning -->
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-time">9:00 - 朝</div>
+        <div class="timeline-title">ダッシュボードで今日の状況を確認</div>
+        <div class="timeline-bubble">朝一番に開くだけで、今日やるべきことが分かる</div>
+        <div class="timeline-mock">
+          <div class="mock-container">
+            <div class="mock-titlebar">
+              <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+              <span>ダッシュボード</span>
+            </div>
+            <div class="mock-body">
+              <div class="stat-cards">
+                <div class="stat-card"><div class="stat-card-val">12</div><div class="stat-card-label">対応中</div></div>
+                <div class="stat-card"><div class="stat-card-val" style="color:var(--danger)">3</div><div class="stat-card-label">期限7日以内</div></div>
+                <div class="stat-card"><div class="stat-card-val">28</div><div class="stat-card-label">有効契約</div></div>
+                <div class="stat-card"><div class="stat-card-val">2</div><div class="stat-card-label">反社チェック中</div></div>
+              </div>
+              <div class="mock-table-title" style="margin-top:4px">本日期限の案件</div>
+              <table class="mock-table">
+                <thead><tr><th>案件名</th><th>担当</th><th>ステータス</th></tr></thead>
+                <tbody>
+                  <tr><td>C社 反社チェック依頼</td><td>佐藤</td><td><span class="badge badge-red">本日期限</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 2: Late morning -->
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:var(--done)"></div>
+        <div class="timeline-time">10:30 - 午前</div>
+        <div class="timeline-title">クライアントから新規依頼が届く</div>
+        <div class="timeline-bubble" style="border-left-color:var(--done);background:var(--done-bg);color:var(--done)">フォームで依頼を受け付けるので、メールの見落としがない</div>
+        <div class="timeline-mock">
+          <div class="mock-container">
+            <div class="mock-titlebar">
+              <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+              <span>新規案件の受付</span>
+            </div>
+            <div class="mock-body">
+              <div style="display:flex;flex-direction:column;gap:14px;max-width:480px">
+                <div>
+                  <label style="display:block;font-size:0.75rem;font-weight:600;color:var(--text-mid);margin-bottom:4px">案件種別</label>
+                  <div style="padding:9px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:0.82rem;color:var(--text-dark);background:var(--card);display:flex;justify-content:space-between;align-items:center">
+                    契約レビュー
+                    <span style="font-size:0.65rem;color:var(--text-light)">&#9660;</span>
+                  </div>
+                </div>
+                <div>
+                  <label style="display:block;font-size:0.75rem;font-weight:600;color:var(--text-mid);margin-bottom:4px">依頼内容</label>
+                  <div style="padding:9px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:0.82rem;color:var(--text-light);background:var(--card);min-height:72px">
+                    E社との新規業務委託契約書のレビューをお願いします。先方から届いたドラフトを添付しています。
+                  </div>
+                </div>
+                <div>
+                  <label style="display:block;font-size:0.75rem;font-weight:600;color:var(--text-mid);margin-bottom:4px">添付ファイル</label>
+                  <div style="padding:16px;border:2px dashed var(--border);border-radius:var(--radius-sm);text-align:center;font-size:0.75rem;color:var(--text-light)">
+                    E社_業務委託契約書_draft_v1.pdf (2.3MB)
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px">
+                  <label style="font-size:0.75rem;font-weight:600;color:var(--text-mid)">緊急</label>
+                  <div style="width:40px;height:22px;border-radius:11px;background:var(--danger);position:relative">
+                    <div style="width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:3px;right:3px"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 3: Afternoon -->
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:var(--ai)"></div>
+        <div class="timeline-time">14:00 - 午後</div>
+        <div class="timeline-title">案件を進める・チームに共有する</div>
+        <div class="timeline-bubble" style="border-left-color:var(--ai);background:var(--ai-bg);color:var(--ai)">案件の経緯がすべてタイムラインに残る。引き継ぎ時に聞き直す必要がない</div>
+        <div class="timeline-mock">
+          <div class="mock-container">
+            <div class="mock-titlebar">
+              <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+              <span>案件詳細 - A社 業務委託契約レビュー</span>
+            </div>
+            <div class="mock-body">
+              <div style="display:flex;gap:20px;flex-wrap:wrap">
+                <div style="flex:1;min-width:280px">
+                  <div class="mock-table-title">タイムライン</div>
+                  <div style="display:flex;flex-direction:column;gap:12px">
+                    <div style="padding:10px 14px;background:#f8fafc;border-radius:var(--radius-sm);border-left:3px solid var(--planned)">
+                      <div style="font-size:0.68rem;color:var(--text-light)">6/20 09:15 佐藤</div>
+                      <div style="font-size:0.78rem;color:var(--text-dark)">ドラフト受領。第5条の損害賠償条項を確認中</div>
+                    </div>
+                    <div style="padding:10px 14px;background:#f8fafc;border-radius:var(--radius-sm);border-left:3px solid var(--done)">
+                      <div style="font-size:0.68rem;color:var(--text-light)">6/21 14:30 田中</div>
+                      <div style="font-size:0.78rem;color:var(--text-dark)">知的財産権の帰属条項について修正案を添付</div>
+                    </div>
+                    <div style="padding:10px 14px;background:#f8fafc;border-radius:var(--radius-sm);border-left:3px solid var(--ai)">
+                      <div style="font-size:0.68rem;color:var(--text-light)">6/22 10:00 佐藤</div>
+                      <div style="font-size:0.78rem;color:var(--text-dark)">修正案を反映。レビュー依頼を鈴木さんに送付</div>
+                    </div>
+                  </div>
+                </div>
+                <div style="width:200px;flex-shrink:0">
+                  <div class="mock-table-title">チェックリスト (3/5)</div>
+                  <div style="display:flex;flex-direction:column;gap:6px;font-size:0.78rem">
+                    <label style="display:flex;align-items:center;gap:6px;color:var(--text-mid)"><input type="checkbox" checked disabled style="accent-color:var(--done)"> 契約書受領</label>
+                    <label style="display:flex;align-items:center;gap:6px;color:var(--text-mid)"><input type="checkbox" checked disabled style="accent-color:var(--done)"> 条項チェック</label>
+                    <label style="display:flex;align-items:center;gap:6px;color:var(--text-mid)"><input type="checkbox" checked disabled style="accent-color:var(--done)"> 修正案作成</label>
+                    <label style="display:flex;align-items:center;gap:6px;color:var(--text-light)"><input type="checkbox" disabled> 上長レビュー</label>
+                    <label style="display:flex;align-items:center;gap:6px;color:var(--text-light)"><input type="checkbox" disabled> 最終承認</label>
+                  </div>
+                  <div style="margin-top:14px">
+                    <div class="mock-table-title">ステータス</div>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap">
+                      <button class="mock-btn" style="font-size:0.68rem;padding:4px 10px">対応中</button>
+                      <button class="mock-btn mock-btn-primary" style="font-size:0.68rem;padding:4px 10px">レビュー中</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 4: Weekend / Report -->
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:var(--accent)"></div>
+        <div class="timeline-time">17:00 - 週末</div>
+        <div class="timeline-title">レポートで振り返る</div>
+        <div class="timeline-bubble" style="border-left-color:var(--accent);background:var(--phase3-bg);color:var(--accent)">月次報告の数字が自動で出る。集計作業から解放される</div>
+        <div class="timeline-mock">
+          <div class="mock-container">
+            <div class="mock-titlebar">
+              <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+              <span>分析レポート - 2026年6月</span>
+            </div>
+            <div class="mock-body">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+                <!-- Bar chart mock -->
+                <div>
+                  <div class="mock-table-title">月別案件数</div>
+                  <div style="display:flex;align-items:flex-end;gap:8px;height:100px;padding-top:10px">
+                    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                      <div style="width:100%;background:var(--planned-bg);border-radius:3px 3px 0 0;height:40px"></div>
+                      <span style="font-size:0.6rem;color:var(--text-light)">1月</span>
+                    </div>
+                    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                      <div style="width:100%;background:var(--planned-bg);border-radius:3px 3px 0 0;height:52px"></div>
+                      <span style="font-size:0.6rem;color:var(--text-light)">2月</span>
+                    </div>
+                    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                      <div style="width:100%;background:var(--planned-bg);border-radius:3px 3px 0 0;height:35px"></div>
+                      <span style="font-size:0.6rem;color:var(--text-light)">3月</span>
+                    </div>
+                    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                      <div style="width:100%;background:var(--planned-bg);border-radius:3px 3px 0 0;height:68px"></div>
+                      <span style="font-size:0.6rem;color:var(--text-light)">4月</span>
+                    </div>
+                    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                      <div style="width:100%;background:var(--planned-bg);border-radius:3px 3px 0 0;height:80px"></div>
+                      <span style="font-size:0.6rem;color:var(--text-light)">5月</span>
+                    </div>
+                    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                      <div style="width:100%;background:var(--planned);border-radius:3px 3px 0 0;height:90px"></div>
+                      <span style="font-size:0.6rem;color:var(--planned);font-weight:600">6月</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Pie chart mock (using SVG) -->
+                <div>
+                  <div class="mock-table-title">案件種別比率</div>
+                  <div style="display:flex;align-items:center;gap:16px">
+                    <svg width="80" height="80" viewBox="0 0 80 80">
+                      <circle cx="40" cy="40" r="30" fill="none" stroke="#e2e8f0" stroke-width="14"/>
+                      <circle cx="40" cy="40" r="30" fill="none" stroke="#2563eb" stroke-width="14"
+                        stroke-dasharray="75 189" stroke-dashoffset="0" transform="rotate(-90 40 40)"/>
+                      <circle cx="40" cy="40" r="30" fill="none" stroke="#059669" stroke-width="14"
+                        stroke-dasharray="47 189" stroke-dashoffset="-75" transform="rotate(-90 40 40)"/>
+                      <circle cx="40" cy="40" r="30" fill="none" stroke="#7c3aed" stroke-width="14"
+                        stroke-dasharray="38 189" stroke-dashoffset="-122" transform="rotate(-90 40 40)"/>
+                      <circle cx="40" cy="40" r="30" fill="none" stroke="#d97706" stroke-width="14"
+                        stroke-dasharray="28 189" stroke-dashoffset="-160" transform="rotate(-90 40 40)"/>
+                    </svg>
+                    <div style="display:flex;flex-direction:column;gap:4px;font-size:0.7rem;color:var(--text-mid)">
+                      <div style="display:flex;align-items:center;gap:6px"><div style="width:8px;height:8px;border-radius:2px;background:#2563eb"></div>契約レビュー 40%</div>
+                      <div style="display:flex;align-items:center;gap:6px"><div style="width:8px;height:8px;border-radius:2px;background:#059669"></div>契約締結 25%</div>
+                      <div style="display:flex;align-items:center;gap:6px"><div style="width:8px;height:8px;border-radius:2px;background:#7c3aed"></div>反社チェック 20%</div>
+                      <div style="display:flex;align-items:center;gap:6px"><div style="width:8px;height:8px;border-radius:2px;background:#d97706"></div>法律相談 15%</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Member results table -->
+              <div style="margin-top:20px">
+                <div class="mock-table-title">メンバー別実績</div>
+                <table class="mock-table">
+                  <thead><tr><th>メンバー</th><th>完了案件</th><th>平均対応日数</th><th>SLA達成率</th></tr></thead>
+                  <tbody>
+                    <tr><td>佐藤 太郎</td><td>5件</td><td>3.8日</td><td><span class="badge badge-green">95%</span></td></tr>
+                    <tr><td>田中 花子</td><td>4件</td><td>4.1日</td><td><span class="badge badge-green">92%</span></td></tr>
+                    <tr><td>鈴木 次郎</td><td>3件</td><td>5.2日</td><td><span class="badge badge-yellow">85%</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MULTI-TENANT ===== -->
+<section class="section" id="multi-tenant">
+  <div class="container">
+    <div class="section-header">
+      <h2>クライアントごとにカスタマイズして提供</h2>
+      <p class="subtitle">BPO外販モデルとしての価値</p>
+    </div>
+    <div class="value-cards">
+      <div class="value-card">
+        <div class="value-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <h3>ブランドカスタマイズ</h3>
+        <p>クライアント企業のロゴ・カラーに合わせたポータルを即時提供。BPIOのシステムだと気づかれない白ラベル対応</p>
+      </div>
+      <div class="value-card">
+        <div class="value-card-icon" style="background:var(--done-bg)">
+          <svg viewBox="0 0 24 24" style="stroke:var(--done)"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        </div>
+        <h3>会社ごとの独立環境</h3>
+        <p>クライアントごとにデータは完全分離。他社の案件情報が見えることはありません</p>
+      </div>
+      <div class="value-card">
+        <div class="value-card-icon" style="background:var(--ai-bg)">
+          <svg viewBox="0 0 24 24" style="stroke:var(--ai)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3>段階的オンボーディング</h3>
+        <p>初月はフォーム+案件管理だけ。慣れたら契約管理、反社チェックと段階的に機能を開放</p>
+      </div>
+    </div>
+
+    <!-- Hub & Spoke diagram -->
+    <div class="hub-spoke">
+      <div class="hub-center">BPIO 法務CRM基盤</div>
+      <div class="hub-lines">
+        <div class="hub-line-segment">
+          <div class="hub-line-vertical"></div>
+          <div class="hub-spoke-box spoke-a">3WELL 法務ポータル<br><span style="font-size:0.68rem;font-weight:400;opacity:0.7">独立環境 A</span></div>
+        </div>
+        <div class="hub-line-segment">
+          <div class="hub-line-vertical"></div>
+          <div class="hub-spoke-box spoke-b">SRG リーガルデスク<br><span style="font-size:0.68rem;font-weight:400;opacity:0.7">独立環境 B</span></div>
+        </div>
+        <div class="hub-line-segment">
+          <div class="hub-line-vertical"></div>
+          <div class="hub-spoke-box spoke-c">新規クライアント<br><span style="font-size:0.68rem;font-weight:400;opacity:0.7">独立環境 C</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-bottom-note">法務BPOの受託時に「管理ポータル込み」で提案できることが、競合との決定的な差別化になります。</div>
+  </div>
+</section>
+
+<!-- ===== ROADMAP ===== -->
+<section class="section section-alt" id="roadmap">
+  <div class="container">
+    <div class="section-header">
+      <h2>3つのフェーズで、段階的に進化させる</h2>
+    </div>
+    <div class="roadmap-grid">
+      <!-- Phase 1 -->
+      <div class="roadmap-phase roadmap-phase-1">
+        <div class="roadmap-phase-label">Phase 1 <span class="now-badge">NOW</span></div>
+        <div class="roadmap-phase-title">プロトタイプ拡張</div>
+        <div class="roadmap-phase-period">3-4週間</div>
+        <ul class="roadmap-list">
+          <li>既存プロトタイプの機能強化</li>
+          <li>会社ごとのデータ分離の準備</li>
+          <li>設定画面のブランドカスタマイズ</li>
+          <li>CSV入出力の安定化</li>
+        </ul>
+        <div class="roadmap-goal">グループ法務（3WELL, SRG）での試験運用開始</div>
+      </div>
+      <div class="roadmap-arrow">&rarr;</div>
+      <!-- Phase 2 -->
+      <div class="roadmap-phase roadmap-phase-2">
+        <div class="roadmap-phase-label">Phase 2</div>
+        <div class="roadmap-phase-title">クラウド化</div>
+        <div class="roadmap-phase-period">8-12週間</div>
+        <ul class="roadmap-list">
+          <li>クラウドサーバーへの移行</li>
+          <li>ユーザー認証・権限管理</li>
+          <li>会社間のデータ分離の実装</li>
+          <li>Slack・メール通知連携</li>
+          <li>契約期限の自動アラート</li>
+        </ul>
+        <div class="roadmap-goal">本番環境での安定稼働。クライアント1社への提供開始</div>
+      </div>
+      <div class="roadmap-arrow">&rarr;</div>
+      <!-- Phase 3 -->
+      <div class="roadmap-phase roadmap-phase-3">
+        <div class="roadmap-phase-label">Phase 3</div>
+        <div class="roadmap-phase-title">AI連携</div>
+        <div class="roadmap-phase-period">12-16週間</div>
+        <ul class="roadmap-list">
+          <li>契約書のAI解析・リスク抽出</li>
+          <li>ナレッジ検索チャットボット</li>
+          <li>類似案件の自動提案</li>
+          <li>レポート自動生成</li>
+        </ul>
+        <div class="roadmap-goal">AI機能でBPO外販の付加価値を最大化</div>
+      </div>
+    </div>
+    <!-- Timeline bar -->
+    <div class="roadmap-timeline">
+      <div class="roadmap-tl-fill" style="width:20%"></div>
+      <div class="roadmap-tl-markers">
+        <div class="roadmap-tl-marker">開始</div>
+        <div class="roadmap-tl-marker">4週</div>
+        <div class="roadmap-tl-marker">12週</div>
+        <div class="roadmap-tl-marker">16週</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COMPARISON ===== -->
+<section class="section" id="comparison">
+  <div class="container">
+    <div class="section-header">
+      <h2>既存ツールとの違い</h2>
+    </div>
+    <div class="comparison-table-wrap">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>一般的な法務SaaS</th>
+            <th>Googleフォーム +<br>スプレッドシート</th>
+            <th class="highlight-col">法務CRM<br>（本システム）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>会社ごとに独立した環境</td>
+            <td><span class="cmp-icon" style="color:var(--warning)">&#9650;</span><span class="cmp-note">オプション対応が多い</span></td>
+            <td><span class="cmp-icon" style="color:var(--danger)">&#10005;</span><span class="cmp-note">シートの分離のみ</span></td>
+            <td class="highlight-col"><span class="cmp-icon" style="color:var(--done)">&#10003;</span><span class="cmp-note">設計段階から対応</span></td>
+          </tr>
+          <tr>
+            <td>BPOワークフロー最適化</td>
+            <td><span class="cmp-icon" style="color:var(--danger)">&#10005;</span><span class="cmp-note">企業法務部向け設計</span></td>
+            <td><span class="cmp-icon" style="color:var(--warning)">&#9650;</span><span class="cmp-note">自由だが属人的</span></td>
+            <td class="highlight-col"><span class="cmp-icon" style="color:var(--done)">&#10003;</span><span class="cmp-note">BPO業務に特化</span></td>
+          </tr>
+          <tr>
+            <td>メンバーワークロード管理</td>
+            <td><span class="cmp-icon" style="color:var(--warning)">&#9650;</span><span class="cmp-note">限定的</span></td>
+            <td><span class="cmp-icon" style="color:var(--danger)">&#10005;</span><span class="cmp-note">手動集計が必要</span></td>
+            <td class="highlight-col"><span class="cmp-icon" style="color:var(--done)">&#10003;</span><span class="cmp-note">リアルタイム可視化</span></td>
+          </tr>
+          <tr>
+            <td>クライアントへの白ラベル提供</td>
+            <td><span class="cmp-icon" style="color:var(--danger)">&#10005;</span><span class="cmp-note">再販不可が多い</span></td>
+            <td><span class="cmp-icon" style="color:var(--danger)">&#10005;</span><span class="cmp-note">ブランド表現が困難</span></td>
+            <td class="highlight-col"><span class="cmp-icon" style="color:var(--done)">&#10003;</span><span class="cmp-note">ロゴ・カラー変更可</span></td>
+          </tr>
+          <tr>
+            <td>導入コスト</td>
+            <td><span class="cmp-icon" style="color:var(--danger)">&#10005;</span><span class="cmp-note">年間100-500万円</span></td>
+            <td><span class="cmp-icon" style="color:var(--done)">&#10003;</span><span class="cmp-note">実質無料</span></td>
+            <td class="highlight-col"><span class="cmp-icon" style="color:var(--done)">&#10003;</span><span class="cmp-note">自社開発で柔軟</span></td>
+          </tr>
+          <tr>
+            <td>カスタマイズ性</td>
+            <td><span class="cmp-icon" style="color:var(--warning)">&#9650;</span><span class="cmp-note">設定範囲内のみ</span></td>
+            <td><span class="cmp-icon" style="color:var(--done)">&#10003;</span><span class="cmp-note">完全自由</span></td>
+            <td class="highlight-col"><span class="cmp-icon" style="color:var(--done)">&#10003;</span><span class="cmp-note">業務に合わせて進化</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="comparison-note">既存SaaSを否定するものではなく、BPO事業者が自社の業務フローに合わせて使えるツールが市場に存在しないことが出発点です。</p>
+  </div>
+</section>
+
+<!-- ===== NEXT STEPS ===== -->
+<section class="section section-alt" id="next-step">
+  <div class="container">
+    <div class="section-header">
+      <h2>次のステップ</h2>
+    </div>
+    <div class="next-steps-list">
+      <div class="next-step-card">
+        <div class="next-step-circle">1</div>
+        <div class="next-step-text">
+          <h3>プロトタイプを触ってみませんか</h3>
+          <p>佐藤さんが作り上げたプロトタイプは、既に動く状態です。実際に操作して、日常業務のどこにフィットするか確認しましょう。気になった点や「ここはこうしたい」をフィードバックしてください。</p>
+        </div>
+      </div>
+      <div class="next-step-card">
+        <div class="next-step-circle">2</div>
+        <div class="next-step-text">
+          <h3>Phase 1 の優先機能を一緒に決めましょう</h3>
+          <p>66機能のうち、最初の3-4週で何を優先するか。「これがないと始まらない」という機能を一緒に選定しましょう。いきなり全部作らず、使いながら育てるアプローチで進めます。</p>
+        </div>
+      </div>
+      <div class="next-step-card">
+        <div class="next-step-circle">3</div>
+        <div class="next-step-text">
+          <h3>パイロット導入先を選定しましょう</h3>
+          <p>最初に使ってもらうクライアント企業を1社決めて、具体的な要件をヒアリングしましょう。実際の業務データで動かすことで、見えてくる改善点があります。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <p>本資料に関するお問い合わせ: BPIO / セブンリッチグループ</p>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+// Navigation scroll effect
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// Active nav link
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+function setActiveNav() {
+  const scrollY = window.scrollY + 100;
+  sections.forEach(s => {
+    const top = s.offsetTop;
+    const height = s.offsetHeight;
+    const id = s.getAttribute('id');
+    if (scrollY >= top && scrollY < top + height) {
+      navLinks.forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}
+window.addEventListener('scroll', setActiveNav);
+setActiveNav();
+
+// Tabs
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
