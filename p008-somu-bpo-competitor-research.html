@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>総務BPO 競合調査レポート 2026-06-24 | BPIO</title>
+  <style>
+    body {
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color: #1a1a1a; background: #fff; line-height: 1.7;
+    }
+    html { font-size: 15px; }
+
+    #sticky-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.97);
+      border-bottom: 1px solid #ccc;
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    #sticky-nav .nav-label {
+      font-size: 0.72rem; font-weight: 700; color: #777;
+      letter-spacing: 0.05em; margin-right: 4px; white-space: nowrap;
+    }
+    .pill {
+      display: inline-block; padding: 5px 16px;
+      font-size: 0.78rem; font-weight: 600; color: #555;
+      text-decoration: none; border: 1px solid #ccc;
+      border-radius: 999px; transition: all 0.2s ease; white-space: nowrap;
+    }
+    .pill:hover, .pill.active {
+      background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+    }
+
+    #main { max-width: 920px; margin: 0 auto; padding: 40px 48px 80px; }
+
+    .report-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 20px; margin-bottom: 32px; }
+    .report-header h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+    .report-header .subtitle { font-size: 0.9rem; color: #555; margin-bottom: 16px; }
+    .report-header .summary-box {
+      background: #f7f7f7; border: 1px solid #ddd; padding: 16px 20px; margin-top: 16px;
+    }
+    .report-header .summary-box h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; }
+    .report-header .summary-box ul, .report-header .summary-box ol {
+      padding-left: 20px; font-size: 0.82rem;
+    }
+    .report-header .summary-box li { margin-bottom: 4px; }
+
+    h2.section-title {
+      font-size: 1.2rem; font-weight: 700;
+      border-bottom: 1px solid #999; padding-bottom: 6px;
+      margin-top: 48px; margin-bottom: 20px;
+    }
+    h3.subsection-title {
+      font-size: 1.0rem; font-weight: 700;
+      margin-top: 32px; margin-bottom: 12px;
+      padding-left: 10px; border-left: 3px solid #555;
+    }
+    h4 { font-size: 0.9rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; }
+
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.82rem; }
+    table th, table td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
+    table th { background: #f0f0f0; font-weight: 700; white-space: nowrap; }
+    table td { background: #fff; }
+    table tr:nth-child(even) td { background: #fafafa; }
+
+    p { margin-bottom: 10px; font-size: 0.88rem; }
+    ul, ol { margin-bottom: 10px; padding-left: 22px; font-size: 0.88rem; }
+    ul li, ol li { margin-bottom: 3px; }
+
+    .highlight-box {
+      background: #f7f7f7; border: 1px solid #ddd;
+      padding: 14px 18px; margin: 12px 0 20px; font-size: 0.85rem;
+    }
+
+    .note-box {
+      background: #fffbeb; border-left: 4px solid #f59e0b;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #78350f;
+    }
+
+    .info-box {
+      background: #eff6ff; border-left: 4px solid #3b82f6;
+      padding: 10px 16px; margin: 12px 0 20px; font-size: 0.82rem; color: #1e3a5f;
+    }
+
+    .badge {
+      display: inline-block; padding: 2px 10px;
+      font-size: 0.72rem; font-weight: 700;
+      border-radius: 999px; letter-spacing: 0.03em;
+    }
+    .badge-ok { background: #d4edda; color: #155724; }
+    .badge-warn { background: #fff3cd; color: #856404; }
+    .badge-info { background: #d1ecf1; color: #0c5460; }
+    .badge-pending { background: #e2e3e5; color: #383d41; }
+
+    .report-footer {
+      border-top: 1px solid #999; margin-top: 48px; padding-top: 16px;
+      font-size: 0.78rem; color: #777;
+    }
+
+    /* 競合マップ専用スタイル */
+    .quadrant-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto auto;
+      border: 1px solid #bbb;
+      margin: 12px 0 20px;
+      font-size: 0.82rem;
+    }
+    .quadrant-axis-label {
+      background: #f0f0f0;
+      font-weight: 700;
+      font-size: 0.78rem;
+      text-align: center;
+      padding: 6px 10px;
+      border: 1px solid #bbb;
+    }
+    .quadrant-cell {
+      border: 1px solid #bbb;
+      padding: 14px 16px;
+      vertical-align: top;
+      min-height: 120px;
+    }
+    .quadrant-cell h4 {
+      font-size: 0.78rem; font-weight: 700; margin: 0 0 8px 0;
+      color: #555;
+    }
+    .quadrant-cell ul {
+      margin: 0; padding-left: 16px; font-size: 0.80rem;
+    }
+    .quadrant-cell ul li { margin-bottom: 2px; }
+    .quadrant-bpio {
+      background: #f0f0f0;
+      border: 2px solid #1a1a1a;
+    }
+    .quadrant-bpio h4 { color: #1a1a1a; }
+    .quadrant-row-label {
+      background: #f7f7f7;
+      font-weight: 700;
+      font-size: 0.78rem;
+      text-align: center;
+      padding: 8px 6px;
+      border: 1px solid #bbb;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      letter-spacing: 0.1em;
+    }
+    .quadrant-container {
+      display: grid;
+      grid-template-columns: 32px 1fr 1fr;
+      grid-template-rows: auto auto auto;
+      border: 1px solid #bbb;
+      margin: 12px 0 20px;
+      font-size: 0.82rem;
+    }
+    .quadrant-corner { background: #f0f0f0; border: 1px solid #bbb; }
+    .quadrant-top-label {
+      background: #f0f0f0; font-weight: 700; font-size: 0.78rem;
+      text-align: center; padding: 7px 10px; border: 1px solid #bbb;
+    }
+
+    /* SWOT 専用スタイル */
+    .swot-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid #bbb;
+      margin: 12px 0 20px;
+      font-size: 0.82rem;
+    }
+    .swot-cell {
+      border: 1px solid #bbb;
+      padding: 14px 16px;
+    }
+    .swot-cell h4 {
+      font-size: 0.85rem; font-weight: 700; margin: 0 0 10px 0;
+    }
+    .swot-cell ul { margin: 0; padding-left: 18px; font-size: 0.82rem; }
+    .swot-cell ul li { margin-bottom: 4px; }
+    .swot-s { background: #f7f7f7; }
+    .swot-w { background: #fff; }
+    .swot-o { background: #fff; }
+    .swot-t { background: #f7f7f7; }
+
+    @media (max-width: 640px) {
+      #main { padding: 24px 20px 60px; }
+      .report-header h1 { font-size: 1.3rem; }
+      h2.section-title { font-size: 1.05rem; }
+      table { font-size: 0.78rem; }
+      table th, table td { padding: 5px 7px; }
+      #sticky-nav { padding: 10px 12px; gap: 6px; }
+      .pill { padding: 4px 12px; font-size: 0.72rem; }
+      .quadrant-container { grid-template-columns: 24px 1fr 1fr; }
+      .swot-grid { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      #sticky-nav { display: none; }
+      #main { padding: 0; max-width: 100%; }
+      body { font-size: 10pt; }
+      .report-header h1 { font-size: 16pt; }
+      h2.section-title { font-size: 13pt; page-break-after: avoid; }
+      h3.subsection-title { font-size: 11pt; page-break-after: avoid; }
+      table { font-size: 8pt; page-break-inside: avoid; }
+      table th, table td { padding: 3px 5px; }
+      .highlight-box, .note-box, .info-box {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+      table th {
+        background: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="sticky-nav">
+  <span class="nav-label">総務BPO競合調査</span>
+  <a href="#summary" class="pill">エグゼクティブサマリー</a>
+  <a href="#market" class="pill">市場概況</a>
+  <a href="#map" class="pill">競合マップ</a>
+  <a href="#competitors" class="pill">主要競合12社</a>
+  <a href="#swot" class="pill">ポジショニング分析</a>
+  <a href="#threats" class="pill">脅威度ランキング</a>
+  <a href="#strategy" class="pill">戦略的提言</a>
+</nav>
+
+<div id="main">
+
+  <div class="report-header">
+    <h1>総務BPO 競合調査レポート</h1>
+    <div class="subtitle">調査日: 2026-06-24 | 発見企業: 56社（深掘り対象12社）| 調査手法: 6切り口並行調査</div>
+    <div class="summary-box">
+      <h3>調査概要</h3>
+      <ul>
+        <li>発見企業数: 56社（直接競合15社 / 部分競合27社 / 間接競合14社）</li>
+        <li>調査切り口: 大手BPO・情シス特化・オンラインアシスタント・BPaaS・SaaSベンダー・施設系の6軸並行</li>
+        <li>深掘り対象: 上位12社（各社別テーブル・vs BPIO比較含む）</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 1. エグゼクティブサマリー -->
+  <!-- ============================================================ -->
+  <section id="summary">
+    <h2 class="section-title">1. エグゼクティブサマリー</h2>
+
+    <div class="highlight-box">
+      <strong>結論:</strong> 「総合総務BPO × 中小特化 × テック活用」の完全競合は市場に存在しない。BPIOは戦略的空白地帯を占拠しており、競合優位は維持可能だが、SaaSベンダーの垂直統合と情シス特化勢のスコープ拡張には早期対処が必要。
+    </div>
+
+    <h3 class="subsection-title">市場ポジション</h3>
+    <p>市場は「大手常駐型BPO」「オンラインアシスタント型」「BPaaS型」の三極構造へ移行中。BPIOは中小〜中堅（50–500名）× 総務9カテゴリ200+業務 × 経理クロスセル × Slack窓口 × ポータル可視化で、いずれの極にも属さない独自ポジションを確立している。</p>
+
+    <h3 class="subsection-title">主要プレイヤー3層</h3>
+    <table>
+      <thead>
+        <tr><th>層</th><th>代表プレイヤー</th><th>特徴</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>① 総合人材大手BPO部門</td>
+          <td>マンパワー、アデコ</td>
+          <td>スケール・ブランド大。中小より大企業向け。コスト高。</td>
+        </tr>
+        <tr>
+          <td>② 情シス特化BPaaS</td>
+          <td>シスクル、クラウドSE、シェアード社員</td>
+          <td>IT管理領域が主軸。スコープ拡張リスク最大。</td>
+        </tr>
+        <tr>
+          <td>③ 不動産・施設系</td>
+          <td>三井不動産BM</td>
+          <td>物理資産を活かした施設管理から総務へ拡張。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">BPIO の優位性と課題</h3>
+    <table>
+      <thead>
+        <tr><th>観点</th><th>内容</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>最大の強み</td>
+          <td>業務スコープの広さ（9カテゴリ200+業務）と料金透明性</td>
+        </tr>
+        <tr>
+          <td>最大の課題</td>
+          <td>IT管理領域の専門深度、SaaSベンダーの垂直統合脅威</td>
+        </tr>
+        <tr>
+          <td>独自ポジション</td>
+          <td>「総合総務BPO × 中小特化 × テック活用」の完全競合ゼロ</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 2. 市場概況 -->
+  <!-- ============================================================ -->
+  <section id="market">
+    <h2 class="section-title">2. 市場概況</h2>
+
+    <h3 class="subsection-title">市場規模</h3>
+    <table>
+      <thead>
+        <tr><th>指標</th><th>数値</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>人事・総務関連業務アウトソーシング市場（2025年）</td>
+          <td>11.7兆円（前年比 +5.9%）</td>
+        </tr>
+        <tr>
+          <td>総務単体推計規模</td>
+          <td>約3,040億円</td>
+        </tr>
+        <tr>
+          <td>年率成長率</td>
+          <td>5〜6%</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">成長ドライバー</h3>
+    <ol>
+      <li>働き方改革・リモートワーク定着による間接業務の外部委託ニーズ増加</li>
+      <li>人材不足を背景とした中小企業の専門人材採用困難</li>
+      <li>DX推進によるSaaS導入増加と、運用管理負荷の増大</li>
+    </ol>
+
+    <h3 class="subsection-title">市場トレンド</h3>
+    <table>
+      <thead>
+        <tr><th>トレンド</th><th>概要</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>三極化の加速</td>
+          <td>大手常駐型・オンラインアシスタント型・BPaaS型の三極構造へ移行。境界線の溶解も進む。</td>
+        </tr>
+        <tr>
+          <td>SaaSベンダーの垂直統合</td>
+          <td>MFクラウド・freee等がBPO参入（2025年6月〜）。既存SaaSユーザー基盤からのアップセル展開。</td>
+        </tr>
+        <tr>
+          <td>AIによる業務自動化</td>
+          <td>AI構想を掲げるプレイヤーが増加。業務処理の高度化とコスト削減が同時進行。</td>
+        </tr>
+        <tr>
+          <td>偽装請負規制強化</td>
+          <td>労働者派遣法の厳格化により、準委任・業務委託モデルが正規ルートとして定着。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-box">
+      総務アウトソーシングの初回導入障壁は低下傾向。月額1〜10万円のエントリープランを設けるプレイヤーが増加しており、「まず試す」層の獲得競争が激化している。
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 3. 競合マップ -->
+  <!-- ============================================================ -->
+  <section id="map">
+    <h2 class="section-title">3. 競合マップ（4象限）</h2>
+
+    <p>縦軸: 企業規模（大手 / 中小）、横軸: サービス範囲（汎用 / 特化）</p>
+
+    <div class="quadrant-container">
+      <!-- 左上コーナー（空白） -->
+      <div class="quadrant-corner" style="grid-column:1; grid-row:1;"></div>
+      <!-- 上部ラベル -->
+      <div class="quadrant-top-label" style="grid-column:2; grid-row:1;">汎用（総務全般）</div>
+      <div class="quadrant-top-label" style="grid-column:3; grid-row:1;">特化（IT管理・施設等）</div>
+
+      <!-- 大手行 -->
+      <div class="quadrant-row-label" style="grid-column:1; grid-row:2;">大手</div>
+      <div class="quadrant-cell" style="grid-column:2; grid-row:2;">
+        <h4>第1象限 — 大手 × 汎用</h4>
+        <ul>
+          <li>マンパワーグループ</li>
+          <li>アデコ</li>
+        </ul>
+      </div>
+      <div class="quadrant-cell" style="grid-column:3; grid-row:2;">
+        <h4>第2象限 — 大手 × 特化</h4>
+        <ul>
+          <li>三井不動産ビルマネジメント</li>
+          <li>EY Japan BPaaS</li>
+        </ul>
+      </div>
+
+      <!-- 中小行 -->
+      <div class="quadrant-row-label" style="grid-column:1; grid-row:3;">中小</div>
+      <div class="quadrant-cell quadrant-bpio" style="grid-column:2; grid-row:3;">
+        <h4>第4象限 — 中小 × 汎用 ★BPIO独自ポジション</h4>
+        <ul>
+          <li><strong>BPIO 総務BPO（戦略的空白地帯）</strong></li>
+          <li>オンラインアシスタント型（一部重複）</li>
+        </ul>
+      </div>
+      <div class="quadrant-cell" style="grid-column:3; grid-row:3;">
+        <h4>第3象限 — 中小 × 特化</h4>
+        <ul>
+          <li>シスクル</li>
+          <li>クラウドSE</li>
+          <li>シェアード社員</li>
+          <li>エイネット</li>
+          <li>トータルITヘルパー</li>
+          <li>情シスSAMURAI</li>
+          <li>フレクシーサポート</li>
+          <li>情シスフォースLite</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="note-box">
+      第4象限（中小 × 汎用）は戦略的空白地帯。BPIOがほぼ唯一の本格プレイヤー。ただし情シス特化勢（第3象限）が横展開でこの象限に進入するリスクが最大。
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 4. 主要競合12社 -->
+  <!-- ============================================================ -->
+  <section id="competitors">
+    <h2 class="section-title">4. 主要競合12社 詳細</h2>
+
+    <!-- 1. 三井不動産BM -->
+    <h3 class="subsection-title">1. 三井不動産ビルマネジメント</h3>
+    <table>
+      <tbody>
+        <tr><th style="width:28%;">カテゴリ</th><td>大手 × 特化（施設・設備管理中心）</td></tr>
+        <tr><th>主要サービス</th><td>ビル管理・施設管理・総務代行（物理対応）</td></tr>
+        <tr><th>ターゲット</th><td>オフィスビルを保有・テナントする中堅〜大企業</td></tr>
+        <tr><th>強み</th><td>物理資産・現場対応力。三井不動産グループのブランド信頼性</td></tr>
+        <tr><th>弱み</th><td>デジタル業務・ペーパーレス対応が主軸外。地理的範囲に制約</td></tr>
+        <tr><th>料金感</th><td>非公開（規模別カスタム）</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box">
+      <strong>vs BPIO:</strong> 施設管理の物理対応はBPIOの弱点領域。ただし総務9カテゴリへの展開力はなく、デジタル系業務で優位を保てる。競合より「補完候補」として協業検討も余地あり。
+    </div>
+
+    <!-- 2. EY Japan -->
+    <h3 class="subsection-title">2. EY Japan BPaaS — BackOffice4Startups</h3>
+    <table>
+      <tbody>
+        <tr><th style="width:28%;">カテゴリ</th><td>大手 × 特化（スタートアップ向け管理系一括）</td></tr>
+        <tr><th>主要サービス</th><td>経理・人事・法務・総務をセットアウトソース（BPaaS）</td></tr>
+        <tr><th>ターゲット</th><td>シリーズA〜C スタートアップ（30〜200名規模）</td></tr>
+        <tr><th>強み</th><td>EYブランド・監査法人連携。IPO準備向け体制整備。ワンストップ</td></tr>
+        <tr><th>弱み</th><td>コスト高（小規模企業には重い）。大企業文化による柔軟性低下</td></tr>
+        <tr><th>料金感</th><td>月額50〜100万円以上（推定）</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box">
+      <strong>vs BPIO:</strong> IPO準備スタートアップで重複。BPIOの料金優位・総務特化の深さで差別化。EYが手が届かない30〜80名層が主要ターゲットゾーン。
+    </div>
+
+    <!-- 3. マンパワー -->
+    <h3 class="subsection-title">3. マンパワーグループ</h3>
+    <table>
+      <tbody>
+        <tr><th style="width:28%;">カテゴリ</th><td>大手 × 汎用（人材派遣・BPO複合）</td></tr>
+        <tr><th>主要サービス</th><td>アウトソーシング（給与計算・人事・総務）、派遣・紹介</td></tr>
+        <tr><th>ターゲット</th><td>中堅〜大企業（300名以上）</td></tr>
+        <tr><th>強み</th><td>圧倒的な人材プール・全国展開・ブランド認知度</td></tr>
+        <tr><th>弱み</th><td>中小企業向けの柔軟・低コスト対応が苦手。標準化されすぎ</td></tr>
+        <tr><th>料金感</th><td>月額30〜100万円以上</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box">
+      <strong>vs BPIO:</strong> 直接競合は限定的（規模帯が異なる）。中小企業でのブランド比較時に登場するが、コスト・柔軟性でBPIOが優位。
+    </div>
+
+    <!-- 4. アデコ -->
+    <h3 class="subsection-title">4. アデコ</h3>
+    <table>
+      <tbody>
+        <tr><th style="width:28%;">カテゴリ</th><td>大手 × 汎用（人材サービス・BPO）</td></tr>
+        <tr><th>主要サービス</th><td>総務アウトソーシング、バックオフィスBPO、人材派遣</td></tr>
+        <tr><th>ターゲット</th><td>中堅〜大企業</td></tr>
+        <tr><th>強み</th><td>Adecco Group 世界60カ国のグローバルネットワーク。多言語対応</td></tr>
+        <tr><th>弱み</th><td>日本中小市場への専門性・機動力が低い。価格高め</td></tr>
+        <tr><th>料金感</th><td>非公開（規模別）</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box">
+      <strong>vs BPIO:</strong> マンパワー同様、規模帯差異で直接競合は限定的。外資系企業や海外展開企業での比較検討に留まる。
+    </div>
+
+    <!-- 5. シスクル -->
+    <h3 class="subsection-title">5. シスクル <span class="badge badge-warn">脅威度 HIGH</span></h3>
+    <table>
+      <tbody>
+        <tr><th style="width:28%;">カテゴリ</th><td>中小 × 特化（情シスBPaaS）</td></tr>
+        <tr><th>主要サービス</th><td>IT管理（ヘルプデスク・PC管理・セキュリティ・SaaS管理）のBPaaS</td></tr>
+        <tr><th>ターゲット</th><td>情シス不在の中小企業（20〜200名）</td></tr>
+        <tr><th>強み</th><td>Slack連携・チャット対応・BPaaSモデル・価格帯がBPIOと最も重複</td></tr>
+        <tr><th>弱み</th><td>総務9カテゴリ全体への展開は未着手（現状IT特化）</td></tr>
+        <tr><th>料金感</th><td>月額5〜20万円（プラン別）</td></tr>
+        <tr><th>AI動向</th><td>AI構想を公表。スコープ拡張リスク高</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box">
+      <strong>vs BPIO:</strong> Slack連携・BPaaSモデル・価格帯が最も類似。AI構想でBPIO領域への進入が現実的リスク。IT管理での連携ニーズを持つBPIO顧客を奪われる可能性あり。最優先ウォッチ対象。
+    </div>
+
+    <!-- 6. エイネット -->
+    <h3 class="subsection-title">6. エイネット</h3>
+    <table>
+      <tbody>
+        <tr><th style="width:28%;">カテゴリ</th><td>中小 × 特化（情シス・ヘルプデスク）</td></tr>
+        <tr><th>主要サービス</th><td>社内ITサポート、PCキッティング、ネットワーク管理、ヘルプデスク</td></tr>
+        <tr><th>ターゲット</th><td>IT担当者不在の中小企業</td></tr>
+        <tr><th>強み</th><td>現場常駐〜リモート対応の柔軟性。長期契約実績</td></tr>
+        <tr><th>弱み</th><td>総務業務（庶務・備品・福利厚生等）の対応範囲外</td></tr>
+        <tr><th>料金感</th><td>月額5〜15万円（規模別）</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box">
+      <strong>vs BPIO:</strong> IT管理領域で競合するが、総務全体への展開力は低い。BPIOがIT対応を強化すれば取込可能な顧客層を保有。
+    </div>
+
+    <!-- 7. トータルITヘルパー -->
+    <h3 class="subsection-title">7. トータルITヘルパー</h3>
+    <table>
+      <tbody>
+        <tr><th style="width:28%;">カテゴリ</th><td>中小 × 特化（IT総合サポート）</td></tr>
+        <tr><th>主要サービス</th><td>IT機器管理・セキュリティ対応・クラウド導入支援・ヘルプデスク</td></tr>
+        <tr><th>ターゲット</th><td>中小企業全般（業種不問）</td></tr>
+        <tr><th>強み</th><td>「ITの何でも屋」として幅広く対応。地方対応あり</td></tr>
+        <tr><th>弱み</th><td>スケーラビリティ・体制の薄さ。人材品質が属人的</td></tr>
+        <tr><th>料金感</th><td>月額3〜10万円</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box">
+      <strong>vs BPIO:</strong> IT特化のため直接競合は限定的。BPIOの総務スコープへの類似案件なし。ただし価格帯で低所得顧客の入口として機能。
+    </div>
+
+    <!-- 8. 情シスSAMURAI -->
+    <h3 class="subsection-title">8. 情シスSAMURAI</h3>
+    <table>
+      <tbody>
+        <tr><th style="width:28%;">カテゴリ</th><td>中小 × 特化（情報システム部代行）</td></tr>
+        <tr><th>主要サービス</th><td>IT戦略立案・システム選定・IT資産管理・セキュリティポリシー策定</td></tr>
+        <tr><th>ターゲット</th><td>IT責任者不在の中小〜中堅（30〜300名）</td></tr>
+        <tr><th>強み</th><td>IT戦略レベルの上流支援。CIO的役割を担える専門性</td></tr>
+        <tr><th>弱み</th><td>価格帯が高め。オペレーション業務（日常IT作業）は範囲外傾向</td></tr>
+        <tr><th>料金感</th><td>月額10〜30万円</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box">
+      <strong>vs BPIO:</strong> IT戦略支援での上位概念的競合。BPIOのIT管理強化の際に参照すべきポジション。顧客紹介・連携の余地あり。
+    </div>
+
+    <!-- 9. クラウドSE -->
+    <h3 class="subsection-title">9. クラウドSE <span class="badge badge-info">脅威度 MEDIUM</span></h3>
+    <table>
+      <tbody>
+        <tr><th style="width:28%;">カテゴリ</th><td>中小 × 特化（クラウドIT管理）</td></tr>
+        <tr><th>主要サービス</th><td>クラウドサービス導入・運用代行・IT統合管理</td></tr>
+        <tr><th>ターゲット</th><td>クラウド移行済みまたは移行予定の中小企業</td></tr>
+        <tr><th>強み</th><td>BOXIL 1位の認知度。月額5.4万円〜で中小顧客を急速獲得中</td></tr>
+        <tr><th>弱み</th><td>クラウド以外の物理・アナログ業務への対応力が低い</td></tr>
+        <tr><th>料金感</th><td>月額5.4万円〜</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box">
+      <strong>vs BPIO:</strong> BOXIL等の比較サイト流入でBPIOと同一ページに並ぶ可能性が高い。SaaS管理・IT業務でのクロスオーバーが起きやすい。価格訴求で先手を打たれるリスク。
+    </div>
+
+    <!-- 10. シェアード社員 -->
+    <h3 class="subsection-title">10. シェアード社員 <span class="badge badge-warn">脅威度 HIGH</span></h3>
+    <table>
+      <tbody>
+        <tr><th style="width:28%;">カテゴリ</th><td>中小 × 特化（IT/情シス専門家シェアリング）</td></tr>
+        <tr><th>主要サービス</th><td>情シス・IT担当者を複数社でシェア（準委任モデル）</td></tr>
+        <tr><th>ターゲット</th><td>50〜300名規模の中小企業（BPIOと同一ターゲット層）</td></tr>
+        <tr><th>強み</th><td>上場企業。600社以上の導入実績。準委任の深い統合度。信頼性高</td></tr>
+        <tr><th>弱み</th><td>IT特化のため総務全体BPOには未対応</td></tr>
+        <tr><th>料金感</th><td>月額8〜25万円</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box">
+      <strong>vs BPIO:</strong> ターゲット層が最も一致。上場・600社実績のブランド力はBPIOに対して優位。スコープ拡大で総務全般に進出した場合の破壊力が最大。営業チャンネルでの競合が既に発生中とみられる。
+    </div>
+
+    <!-- 11. フレクシーサポート -->
+    <h3 class="subsection-title">11. フレクシーサポート <span class="badge badge-info">脅威度 MEDIUM</span></h3>
+    <table>
+      <tbody>
+        <tr><th style="width:28%;">カテゴリ</th><td>中小 × 特化（オンラインITサポート）</td></tr>
+        <tr><th>主要サービス</th><td>ITヘルプデスク・SaaS導入支援・リモートIT対応</td></tr>
+        <tr><th>ターゲット</th><td>リモートワーク企業・スタートアップ〜中小</td></tr>
+        <tr><th>強み</th><td>ITトレンドW受賞。月額1万円〜のエントリー。低価格で顧客接点を獲得</td></tr>
+        <tr><th>弱み</th><td>高度・専門的なIT案件への対応力に限界</td></tr>
+        <tr><th>料金感</th><td>月額1万円〜（エントリー）</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box">
+      <strong>vs BPIO:</strong> 月額1万円〜のエントリーが顧客接点を先取りするリスク。「まず安価なITサポートから」という顧客が、BPIOの検討前にフレクシーサポートに定着してしまう経路が存在。
+    </div>
+
+    <!-- 12. 情シスフォースLite -->
+    <h3 class="subsection-title">12. 情シスフォースLite</h3>
+    <table>
+      <tbody>
+        <tr><th style="width:28%;">カテゴリ</th><td>中小 × 特化（情シス代行）</td></tr>
+        <tr><th>主要サービス</th><td>IT管理・ヘルプデスク・ネットワーク管理のライトプラン</td></tr>
+        <tr><th>ターゲット</th><td>小規模企業（〜50名）の情シス初期導入層</td></tr>
+        <tr><th>強み</th><td>低コスト・導入障壁の低さ。小規模向けパッケージ化</td></tr>
+        <tr><th>弱み</th><td>スケールアウト後のサービス品質維持に課題。総務対応なし</td></tr>
+        <tr><th>料金感</th><td>月額2〜8万円</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box">
+      <strong>vs BPIO:</strong> 小規模企業（〜50名）での入口競合。BPIOの最小顧客規模下限を検討する際の参照点。現状、直接競合より「前段階の顧客層」に位置。
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 5. ポジショニング分析 (SWOT) -->
+  <!-- ============================================================ -->
+  <section id="swot">
+    <h2 class="section-title">5. ポジショニング分析（SWOT）</h2>
+
+    <div class="swot-grid">
+      <div class="swot-cell swot-s">
+        <h4>S — 強み（5項目）</h4>
+        <ul>
+          <li>業務スコープの広さ（9カテゴリ200+業務）</li>
+          <li>料金の透明性（公開価格・明確な工数定義）</li>
+          <li>経理BPOとのクロスセル（p039連携）</li>
+          <li>Slack窓口 + ポータルによる可視化</li>
+          <li>偽装請負リスク回避（準委任モデルの確立）</li>
+        </ul>
+      </div>
+      <div class="swot-cell swot-w">
+        <h4>W — 弱み（3項目）</h4>
+        <ul>
+          <li>IT管理領域の専門深度（情シス特化勢に劣後）</li>
+          <li>ブランド認知度（上場・大手勢と比較）</li>
+          <li>物理対応体制（施設・設備管理の限界）</li>
+        </ul>
+      </div>
+      <div class="swot-cell swot-o">
+        <h4>O — 機会（3項目）</h4>
+        <ul>
+          <li>BPaaS市場拡大（年率5〜6%成長継続）</li>
+          <li>福利厚生実行支援の空白（企画→実行まで担う競合不在）</li>
+          <li>中小企業のBPO初回利用増加（DX・人材不足が後押し）</li>
+        </ul>
+      </div>
+      <div class="swot-cell swot-t">
+        <h4>T — 脅威（3項目）</h4>
+        <ul>
+          <li>SaaSベンダーの垂直統合（MF・freeeのBPO参入）</li>
+          <li>情シス特化勢のスコープ拡張（シスクル・シェアード社員）</li>
+          <li>オンラインアシスタント型との価格競争（エントリー価格の低下）</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="subsection-title">ポジショニング総括</h3>
+    <table>
+      <thead>
+        <tr><th>比較軸</th><th>BPIO</th><th>情シス特化勢</th><th>大手BPO</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>対象規模</td>
+          <td>50〜500名</td>
+          <td>20〜300名</td>
+          <td>300名以上</td>
+        </tr>
+        <tr>
+          <td>業務スコープ</td>
+          <td>総務9カテゴリ（広）</td>
+          <td>IT管理特化（狭・深）</td>
+          <td>汎用バックオフィス（広・浅）</td>
+        </tr>
+        <tr>
+          <td>料金透明性</td>
+          <td>高（公開）</td>
+          <td>中（プラン別）</td>
+          <td>低（非公開・カスタム）</td>
+        </tr>
+        <tr>
+          <td>テック活用</td>
+          <td>Slack・ポータル（高）</td>
+          <td>SaaS管理ツール（高）</td>
+          <td>独自システム（中）</td>
+        </tr>
+        <tr>
+          <td>経理連携</td>
+          <td>あり（強み）</td>
+          <td>なし</td>
+          <td>一部あり</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 6. 脅威度ランキング -->
+  <!-- ============================================================ -->
+  <section id="threats">
+    <h2 class="section-title">6. 脅威度ランキング TOP5</h2>
+
+    <div class="note-box">
+      脅威度は「ターゲット顧客の重複度 × スコープ拡張リスク × 成長速度」で評価。2026年6月時点。
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width:5%;">順位</th>
+          <th style="width:22%;">企業名</th>
+          <th style="width:12%;">脅威度</th>
+          <th>脅威の根拠と対策方針</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><strong>シスクル</strong></td>
+          <td><span class="badge badge-warn">HIGH</span></td>
+          <td>Slack連携・BPaaSモデル・価格帯がBPIOと最も重複。AI構想でスコープ拡張リスクが現実化しつつある。動向を四半期ごとにモニタリングし、IT管理分野での差別化ポイントを明確化。</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><strong>シェアード社員</strong></td>
+          <td><span class="badge badge-warn">HIGH</span></td>
+          <td>上場・600社・同ターゲット層。準委任の深い統合度でブランド力が高い。スコープ拡大で総務全般に進出した場合のインパクト最大。商談競合を定期的に集計・追跡。</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><strong>クラウドSE</strong></td>
+          <td><span class="badge badge-info">MEDIUM</span></td>
+          <td>BOXIL 1位の認知度。月額5.4万円〜で中小顧客を急速獲得中。比較サイト流入での露出競合。SEO・レビュー対策を強化し、比較ページでの訴求を改善。</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><strong>マネーフォワード</strong></td>
+          <td><span class="badge badge-info">MEDIUM</span></td>
+          <td>2025年6月BPO参入。既存SaaSユーザー基盤からのアップセルが容易。会計・給与SaaS利用顧客がそのままBPO契約へ移行するリスク。MF連携の深化で逆に協業の余地も。</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td><strong>フレクシーサポート</strong></td>
+          <td><span class="badge badge-info">MEDIUM</span></td>
+          <td>ITトレンドW受賞。月額1万円〜のエントリーが顧客接点を先取り。「まず安価に」層のファーストタッチを奪われるリスク。エントリープラン新設でカウンター（後述）。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">中長期ウォッチリスト</h3>
+    <table>
+      <thead>
+        <tr><th>企業</th><th>ウォッチポイント</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>freee</td>
+          <td>2025年以降のBPO/アドバイザリーサービス展開状況</td>
+        </tr>
+        <tr>
+          <td>エイネット</td>
+          <td>総務業務への横展開の兆候（採用・サービスページの変化）</td>
+        </tr>
+        <tr>
+          <td>情シスSAMURAI</td>
+          <td>オペレーション業務への下展開（戦略→実行への拡張）</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 7. 戦略的提言 -->
+  <!-- ============================================================ -->
+  <section id="strategy">
+    <h2 class="section-title">7. 戦略的提言</h2>
+
+    <h3 class="subsection-title">差別化戦略</h3>
+    <table>
+      <thead>
+        <tr><th>戦略</th><th>具体施策</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>課題提起型マーケティング</td>
+          <td>「情シス不在で総務も崩壊している中小企業」へのメッセージ発信。競合の「IT特化」に対して「IT含む総務全体を解決」を訴求。BPIOの200+業務カバレッジを数値で可視化。</td>
+        </tr>
+        <tr>
+          <td>ROI可視化シミュレーター</td>
+          <td>「社員が総務業務に費やす時間 × 時給 = 機会損失額」を算出するWebツール。比較サイト経由の検討顧客に対してコスト優位性を定量的に提示。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">ターゲティング</h3>
+    <table>
+      <thead>
+        <tr><th>優先度</th><th>ターゲット層</th><th>理由</th><th>推奨業種</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>第一優先</strong></td>
+          <td>80〜300名 成長企業</td>
+          <td>人事・総務担当の採用コストが高く、アウトソースへの意思決定が早い。BPIOのスイートスポット。</td>
+          <td>IT・SaaS・コンサル</td>
+        </tr>
+        <tr>
+          <td><strong>第二優先</strong></td>
+          <td>IPO準備スタートアップ</td>
+          <td>内部統制整備ニーズ×総務整備が同時発生。EY BPaaSとの価格差で獲得余地大。</td>
+          <td>フィンテック・HR tech</td>
+        </tr>
+        <tr>
+          <td>第三優先</td>
+          <td>50〜80名 初期導入層</td>
+          <td>エントリープラン新設で先取り。競合参入前の顧客接点確保。</td>
+          <td>業種不問</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">料金戦略</h3>
+    <table>
+      <thead>
+        <tr><th>プラン</th><th>月額目安</th><th>対象</th><th>目的</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>エントリープラン（新設）</td>
+          <td>10〜15万円</td>
+          <td>50〜80名・総務初回導入層</td>
+          <td>フレクシーサポート等への顧客流出防止。ファーストタッチ獲得。</td>
+        </tr>
+        <tr>
+          <td>スタンダードプラン（現行維持）</td>
+          <td>20〜40万円</td>
+          <td>80〜300名・主力ターゲット</td>
+          <td>業務スコープの広さ・料金透明性で差別化継続。</td>
+        </tr>
+        <tr>
+          <td>エンタープライズプラン</td>
+          <td>50万円以上（カスタム）</td>
+          <td>300〜500名・IPO準備企業</td>
+          <td>EY BPaaSとの価格差訴求。経理クロスセルを前提とした提案。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">テクノロジー活用</h3>
+    <table>
+      <thead>
+        <tr><th>テクノロジー</th><th>施策内容</th><th>優先度</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Slack Bot 自動受付</td>
+          <td>総務問い合わせの自動振り分け・ステータス通知。シスクルとの差別化ポイントを強化。</td>
+          <td>高（既存強化）</td>
+        </tr>
+        <tr>
+          <td>月次レポートダッシュボード</td>
+          <td>業務処理件数・対応時間・顧客別ROI指標の自動生成。ポータル可視化の深化。</td>
+          <td>高（既存強化）</td>
+        </tr>
+        <tr>
+          <td>SaaS連携自動化</td>
+          <td>MF・freee・SmartHR等との連携フロー自動化。SaaSベンダーBPO参入への対抗策として深いSaaS接続を維持。</td>
+          <td>中（新規開発）</td>
+        </tr>
+        <tr>
+          <td>AI業務補助</td>
+          <td>繰り返し業務の半自動化（問い合わせ回答・書類生成等）。処理能力の拡張でスケール対応。</td>
+          <td>中（検討）</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="subsection-title">アライアンス戦略</h3>
+    <table>
+      <thead>
+        <tr><th>連携先カテゴリ</th><th>具体候補</th><th>期待効果</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>情シス特化勢との相互送客</td>
+          <td>シスクル・エイネット・情シスSAMURAI</td>
+          <td>「IT管理はパートナー、総務全体はBPIO」の分担で補完関係を構築。競合リスクを協業に転換。</td>
+        </tr>
+        <tr>
+          <td>SaaS型福利厚生</td>
+          <td>ベネフィット・ワン・リロクラブ等</td>
+          <td>福利厚生実行支援の空白を埋める。総務9カテゴリの強化に直結。</td>
+        </tr>
+        <tr>
+          <td>士業（社労士・税理士）</td>
+          <td>中小企業向け顧問事務所</td>
+          <td>顧問先への総務BPO紹介チャネル。信頼性担保と顧客紹介の双方向フロー。</td>
+        </tr>
+        <tr>
+          <td>SaaSベンダー</td>
+          <td>マネーフォワード・freee・SmartHR</td>
+          <td>SaaS導入後の運用代行として紹介。BPO参入リスクを逆手に取り、公認パートナーとして連携。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-box">
+      <strong>最優先アクション（3ヶ月以内）:</strong><br>
+      1. エントリープラン（月額10〜15万円）の設計・価格テスト<br>
+      2. シスクル・シェアード社員のサービス変化の四半期モニタリング開始<br>
+      3. ROI可視化シミュレーターの企画・ランディングページへの実装<br>
+      4. 情シス特化勢1社との相互送客アライアンス打診
+    </div>
+  </section>
+
+  <div class="report-footer">
+    <p>作成日: 2026-06-24 | 作成者: BPIO Document Writer | プロジェクト: p008（総務BPO事業）</p>
+    <p>本レポートは56社の競合調査（6切り口並行）に基づく。市場規模数値は公開データより引用。料金情報は各社公開情報・推定値を含む。</p>
+  </div>
+
+</div>
+
+<script>
+  const pills = document.querySelectorAll('.pill');
+  const sections = document.querySelectorAll('[id]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        pills.forEach(p => p.classList.remove('active'));
+        const active = document.querySelector(`.pill[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-80px 0px -80% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
