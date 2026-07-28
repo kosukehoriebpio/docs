@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1360">
+<title>SmartHR設定代行 説明会</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700;900&family=IBM+Plex+Sans+JP:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#000919; --ink-soft:#545454; --paper:#FFFFFF;
+  --mist:#F3F3F3; --line:#DBDBDB;
+  --signal:#DBB52F; --signal-ink:#8F7212; --signal-soft:#FBF4DC; --teal:#60B6B2;
+  --display:'Zen Kaku Gothic New',sans-serif;
+  --body:'IBM Plex Sans JP',sans-serif;
+  --mono:'IBM Plex Mono','IBM Plex Sans JP',monospace;
+}
+body{background:#0B1626;display:flex;flex-direction:column;align-items:center;gap:28px;padding:36px;font-family:var(--body);-webkit-font-smoothing:antialiased}
+
+/* ---- slide shell ---- */
+.slide{width:1280px;height:720px;background:var(--paper);display:flex;overflow:hidden;position:relative;flex-shrink:0}
+.slide.is-dark{background:var(--ink)}
+
+/* ---- spine ---- */
+.spine{width:92px;flex-shrink:0;background:var(--ink);color:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:30px 0 26px}
+.is-dark .spine{border-right:1px solid #101B2E}
+.spine-mark{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:#7C8698}
+.spine-key{margin-top:auto;text-align:center;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:#7C8698;line-height:1.6}
+.spine-key b{display:block;font-size:26px;font-weight:500;color:var(--paper);letter-spacing:.02em}
+.ticks{margin:0 0 auto;display:flex;flex-direction:column;gap:7px;align-items:center}
+.spine-key + .ticks{margin-top:18px}
+.spine-mark + .ticks{margin-top:auto}
+.tick{width:22px;height:3px;background:#1E2A3D}
+.tick.on{width:36px;background:var(--signal)}
+.spine-page{font-family:var(--mono);font-size:14px;color:#7C8698}
+
+/* ---- main ---- */
+.main{flex:1;padding:46px 56px 34px;display:flex;flex-direction:column;position:relative}
+.rule{width:48px;height:3px;background:var(--signal);margin-bottom:16px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--signal-ink);margin-bottom:12px}
+h1{font-family:var(--display);font-weight:900;font-size:46px;line-height:1.2;color:var(--ink);letter-spacing:.005em}
+.is-dark h1{color:var(--paper)}
+.lead{font-size:20px;line-height:1.6;color:var(--ink-soft);margin-top:14px;font-weight:500;max-width:940px}
+.is-dark .lead{color:#9BA5B4}
+.body-area{margin-top:30px;flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;padding-bottom:26px}
+.copyright{position:absolute;left:56px;bottom:22px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:#A9A9A9}
+
+/* ---- P3 rows ---- */
+.rows{display:flex;flex-direction:column}
+.row{display:grid;grid-template-columns:118px 1fr;gap:26px;padding:17px 0;border-top:1px solid var(--line)}
+.rows .row:last-child{border-bottom:1px solid var(--line)}
+.row-key{font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--signal-ink);padding-top:5px}
+.row-title{font-family:var(--display);font-weight:700;font-size:21px;color:var(--ink);margin-bottom:5px;line-height:1.35}
+.row-text{font-size:16px;line-height:1.75;color:var(--ink-soft)}
+
+/* ---- P4 panels ---- */
+.panels{display:grid;gap:14px}
+.panels.c2{grid-template-columns:repeat(2,1fr)}
+.panels.c3{grid-template-columns:repeat(3,1fr)}
+.panels.c4{grid-template-columns:repeat(4,1fr)}
+.panel{background:var(--mist);border:1px solid var(--line);border-radius:2px;padding:20px 20px 22px;display:flex;flex-direction:column}
+.panel-key{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--signal-ink);margin-bottom:12px}
+.panel-title{font-family:var(--display);font-weight:700;font-size:19px;color:var(--ink);margin-bottom:8px;line-height:1.35}
+.panel-text{font-size:15px;line-height:1.7;color:var(--ink-soft)}
+.panel.is-ink{background:var(--ink);border-color:var(--ink)}
+.panel.is-ink .panel-title{color:var(--paper)}
+.panel.is-ink .panel-text{color:#9BA5B4}
+
+/* ---- P5 flow ---- */
+.flow{display:flex}
+.flow-step{flex:1;border:1px solid var(--line);border-right:none;padding:20px 17px;min-height:132px}
+.flow-step:last-child{border-right:1px solid var(--line)}
+.flow-key{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--signal-ink);margin-bottom:9px}
+.flow-title{font-family:var(--display);font-weight:700;font-size:17px;color:var(--ink);line-height:1.4}
+.flow-text{font-size:13px;line-height:1.6;color:var(--ink-soft);margin-top:6px}
+.flow-step.is-ink{background:var(--ink);border-color:var(--ink)}
+.flow-step.is-ink .flow-title{color:var(--paper)}
+.flow-step.is-ink .flow-text{color:#9BA5B4}
+.flow-step.is-ink .flow-key{color:#E8CE6B}
+.loopback{margin-top:10px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--ink-soft);border-top:1px dashed var(--line);padding-top:9px}
+
+/* ---- P6 compare ---- */
+.compare{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.cmp{border:1px solid var(--line);border-radius:2px;padding:22px;display:flex;flex-direction:column;gap:8px}
+.cmp-mark{font-family:var(--mono);font-size:26px;line-height:1}
+.cmp.deny{background:var(--ink);border-color:var(--ink)}
+.cmp.deny .cmp-mark{color:var(--signal)}
+.cmp.deny .cmp-title{color:var(--paper)}
+.cmp.deny .cmp-text{color:#9BA5B4}
+.cmp.allow .cmp-mark{color:var(--teal)}
+.cmp-title{font-family:var(--display);font-weight:700;font-size:20px;color:var(--ink)}
+.cmp-text{font-size:15px;line-height:1.7;color:var(--ink-soft)}
+
+/* ---- P7 checklist ---- */
+.checks{display:flex;flex-direction:column;gap:24px}
+.check{display:grid;grid-template-columns:22px 1fr;gap:20px;align-items:start}
+.check-box{width:16px;height:16px;background:var(--signal);margin-top:11px}
+.check-text{font-family:var(--display);font-weight:700;font-size:31px;line-height:1.45;color:var(--ink)}
+
+/* ---- signature: empty field ---- */
+.field{border:1.5px dashed var(--signal);background:var(--signal-soft);border-radius:2px;padding:13px 15px}
+.field-tag{font-family:var(--mono);font-size:11px;letter-spacing:.13em;color:var(--signal-ink);display:block;margin-bottom:6px}
+.field-text{font-size:14px;line-height:1.65;color:#6E5710}
+.caret{display:inline-block;width:2px;height:14px;background:var(--signal-ink);vertical-align:-2px;margin-left:5px}
+
+/* ---- P0 cover / P2 divider ---- */
+.cover-meta{margin-top:auto;display:flex;gap:44px}
+.meta-item{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:#7C8698}
+.meta-item b{display:block;color:var(--paper);font-weight:400;font-size:15px;margin-top:6px;font-family:var(--body)}
+.divider-key{font-family:var(--mono);font-size:15px;letter-spacing:.22em;color:var(--signal);margin-bottom:20px}
+h1.jumbo{font-size:62px}
+
+/* ---- additional minimal helpers (allowed: not modifying existing defs) ---- */
+.rows.compact .row{padding:9px 0}
+.flow-arrow{display:flex;align-items:center;justify-content:center;width:0;font-family:var(--mono);color:var(--ink-soft);font-size:16px}
+.body-two{display:grid;grid-template-columns:1fr 1fr;gap:40px;height:100%}
+.body-two .col{display:flex;flex-direction:column;justify-content:center}
+.mini-list{display:flex;flex-direction:column;gap:14px}
+.mini-list li{list-style:none;font-size:16px;line-height:1.7;color:var(--ink-soft);padding-left:18px;position:relative}
+.mini-list li::before{content:"→";position:absolute;left:0;color:var(--signal);font-family:var(--mono)}
+.diagram-box{border:1px solid var(--line);border-radius:2px;padding:18px;display:flex;flex-direction:column;gap:10px;justify-content:center;min-height:280px}
+.diagram-node{background:var(--mist);border:1px solid var(--line);border-radius:2px;padding:12px 16px;font-family:var(--display);font-weight:700;font-size:16px;color:var(--ink);text-align:center}
+.diagram-node.is-ink{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.diagram-arrow-down{align-self:center;font-family:var(--mono);color:var(--ink-soft);font-size:14px}
+.diagram-return{margin-top:4px;font-family:var(--mono);font-size:11px;color:var(--signal);text-align:center;letter-spacing:.08em}
+.stair{display:flex;align-items:flex-end;gap:10px;height:250px}
+.stair-step{flex:1;background:var(--mist);border:1px solid var(--line);border-radius:2px;display:flex;flex-direction:column;justify-content:flex-end;padding:12px 10px}
+.stair-step.s1{height:55%}
+.stair-step.s2{height:78%}
+.stair-step.s3{height:100%;background:var(--ink);border-color:var(--ink)}
+.stair-step.s3 .stair-title,.stair-step.s3 .stair-text{color:var(--paper)}
+.stair-title{font-family:var(--display);font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px}
+.stair-text{font-size:11px;line-height:1.5;color:var(--ink-soft)}
+.radial{display:flex;flex-direction:column;align-items:center;gap:10px;justify-content:center;height:100%}
+.radial-center{background:var(--ink);color:var(--paper);border-radius:2px;padding:16px 24px;font-family:var(--display);font-weight:700;font-size:17px;text-align:center}
+.radial-row{display:flex;gap:8px}
+.radial-item{flex:1;background:var(--mist);border:1px solid var(--line);border-radius:2px;padding:9px 8px;font-size:12px;text-align:center;color:var(--ink-soft);font-weight:500}
+
+/* ---- P10 split (figure + notes) ---- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.figure{width:100%}
+.notes{display:flex;flex-direction:column;gap:17px}
+.note{position:relative;padding-left:26px;font-size:16px;line-height:1.75;color:var(--ink-soft)}
+.note::before{content:"→";position:absolute;left:0;top:0;color:var(--signal-ink);font-family:var(--mono)}
+/* ---- foundation band ---- */
+.band{background:var(--ink);border-radius:2px;padding:20px 22px;text-align:center}
+.band-key{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:#E8CE6B;margin-bottom:7px}
+.band-title{font-family:var(--display);font-weight:700;font-size:22px;color:var(--paper)}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.tile{background:var(--mist);border:1px solid var(--line);border-radius:2px;padding:14px 8px;text-align:center;font-size:14px;font-weight:500;color:var(--ink);white-space:nowrap}
+
+/* ---- dark slide overrides ---- */
+.is-dark .check-text{color:var(--paper)}
+.is-dark .row-title{color:var(--paper)}
+.is-dark .row-text,.is-dark .note{color:#9BA5B4}
+.is-dark .row,.is-dark .rows .row:last-child{border-color:#172236}
+
+/* ---- key message (goal slide) ---- */
+.keymsg{font-family:var(--display);font-weight:900;font-size:44px;line-height:1.45;color:var(--ink);border-left:6px solid var(--signal);padding-left:30px}
+.is-dark .keymsg{color:var(--paper)}
+/* ---- large TODO field ---- */
+.field-lg{padding:26px 28px}
+.field-lg .field-tag{font-size:12px;margin-bottom:13px}
+.field-lg .field-text{font-size:17px;line-height:1.95}
+</style>
+</head>
+<body>
+<!-- ====== 1: 表紙 ====== -->
+<section class="slide is-dark">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">01</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Briefing</div>
+        <h1 class="jumbo">SmartHR設定代行<br>説明会</h1>
+        <p class="lead">3ヶ月で「1人でできる」状態へ</p>
+        <div class="cover-meta">
+            <span class="meta-item">FOR<b>設定代行を担当するメンバー</b></span>
+            <span class="meta-item">DURATION<b>60分</b></span>
+            <span class="meta-item">ISSUED BY<b>株式会社BPIO</b></span>
+        </div>
+    </div>
+</section>
+
+<!-- ====== 2: アジェンダ ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">02</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Agenda</div>
+        <h1>本日の流れ</h1>
+        <p class="lead">この順番で、案件の全体像から日々の動き方までをお話しします</p>
+        <div class="body-area">
+            <div class="rows compact">
+                <div class="row">
+                    <span class="row-key">CH.01</span>
+                    <div>
+                        <p class="row-title">プロジェクト概要</p>
+                        <p class="row-text">仕事の出どころとお願いすること</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <span class="row-key">CH.02</span>
+                    <div>
+                        <p class="row-title">SmartHRとは</p>
+                        <p class="row-text">仕組みと案件の種類</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <span class="row-key">CH.03</span>
+                    <div>
+                        <p class="row-title">プロジェクトの進め方</p>
+                        <p class="row-text">案件の流れと体制・役割</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <span class="row-key">CH.04</span>
+                    <div>
+                        <p class="row-title">作業の流れ</p>
+                        <p class="row-text">Day 0から日々の作業サイクル</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <span class="row-key">CH.05</span>
+                    <div>
+                        <p class="row-title">分からないときの動き方</p>
+                        <p class="row-text">止まらないための3ステップ</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <span class="row-key">CH.06</span>
+                    <div>
+                        <p class="row-title">育成と評価</p>
+                        <p class="row-text">「1人でできる」までの見える化</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 3: ゴール ====== -->
+<section class="slide is-dark">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">03</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Goal</div>
+        <h1>この説明会が終わったときの状態</h1>
+        <p class="lead">「自分が、なぜ・何を・どんな流れで・いつから・どのクライアントに対してやるのか」が分かる状態を目指します</p>
+        <div class="body-area">
+            <p class="keymsg">初日に何をすればいいか<br>イメージできていれば、<br>この説明会は成功です</p>
+        </div>
+    </div>
+</section>
+
+<!-- ====== 4: 第1章 章扉 ====== -->
+<section class="slide is-dark">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>01</b></span>
+        <div class="ticks">
+            <i class="tick on"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">04</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="divider-key">CHAPTER 01</div>
+        <h1 class="jumbo">プロジェクト概要</h1>
+        <p class="lead">この仕事がどこから来て、皆さんに何をお願いするのか</p>
+    </div>
+</section>
+
+<!-- ====== 5: 仕事はどこから来るのか ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>01</b></span>
+        <div class="ticks">
+            <i class="tick on"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">05</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Ch.01 — 01</div>
+        <h1>仕事はどこから来るのか</h1>
+        <p class="lead">この仕事がどこから来ているのかを整理します</p>
+        <div class="body-area">
+            <div class="field field-lg">
+                <span class="field-tag">TODO — 澤田さん記入</span>
+                <span class="field-text">案件がBPIOに届くまでの流れ。次の点を確認して埋める。<br>
+                ・SmartHR社とBPIOはどういう関係か（紹介／代理店／業務委託など）<br>
+                ・設定代行の依頼は誰から、どういう経緯で来るのか<br>
+                ・導入企業・SmartHR社・BPIOの三者がそれぞれ何を担うのか<span class="caret"></span></span>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 6: BPIOの役割 ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>01</b></span>
+        <div class="ticks">
+            <i class="tick on"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">06</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Ch.01 — 02</div>
+        <h1>BPIOの役割</h1>
+        <p class="lead">BPIOがどこからどこまでを担うのかを整理します</p>
+        <div class="body-area">
+            <div class="field field-lg">
+                <span class="field-tag">TODO — 澤田さん記入</span>
+                <span class="field-text">BPIOの担当範囲。次の点を確認して埋める。<br>
+                ・受託の起点から引き渡しまで、実際にどんな順番で進むのか<br>
+                ・要件の整理は誰がやるのか（BPIO側か、クライアント側か）<br>
+                ・「ここまでやったら完了」と言える状態は何か<span class="caret"></span></span>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 7: 皆さんにお願いすること ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>01</b></span>
+        <div class="ticks">
+            <i class="tick on"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">07</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Ch.01 — 03</div>
+        <h1>皆さんにお願いすること</h1>
+        <p class="lead">指示に基づいて、SmartHR上の設定作業を担っていただきます</p>
+        <div class="body-area">
+            <div class="panels c3">
+                <div class="panel">
+                    <span class="panel-key">ROLE</span>
+                    <p class="panel-title">担当業務</p>
+                    <p class="panel-text">指示された設定をSmartHR上で実施する</p>
+                </div>
+                <div class="panel">
+                    <span class="panel-key">VOLUME</span>
+                    <p class="panel-title">担当件数</p>
+                    <p class="panel-text">1人あたり1件以上の案件を担当</p>
+                    <div class="field" style="margin-top:10px">
+                        <span class="field-tag">TODO — 澤田さん記入</span>
+                        <span class="field-text">件数の目安を確定<span class="caret"></span></span>
+                    </div>
+                </div>
+                <div class="panel">
+                    <span class="panel-key">DURATION</span>
+                    <p class="panel-title">期間の目安</p>
+                    <p class="panel-text">1案件あたりおおむね3ヶ月</p>
+                    <div class="field" style="margin-top:10px">
+                        <span class="field-tag">TODO — 澤田さん記入</span>
+                        <span class="field-text">案件により変動する場合は補足<span class="caret"></span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 8: 3ヶ月後に目指す状態 ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>01</b></span>
+        <div class="ticks">
+            <i class="tick on"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">08</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Ch.01 — 04</div>
+        <h1>3ヶ月後に目指す状態</h1>
+        <p class="lead">このプロジェクトのゴールは「1人でできるようになること」です</p>
+        <div class="body-area">
+            <div class="split">
+                <div class="figure">
+                    <div class="stair">
+                        <div class="stair-step s1">
+                            <p class="stair-title">1ヶ月目</p>
+                            <p class="stair-text">作業に集中</p>
+                        </div>
+                        <div class="stair-step s2">
+                            <p class="stair-title">2ヶ月目</p>
+                            <p class="stair-text">自分の範囲を説明できる</p>
+                        </div>
+                        <div class="stair-step s3">
+                            <p class="stair-title">3ヶ月目</p>
+                            <p class="stair-text">1人で完結</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="notes">
+                    <p class="note">指示された設定を1人で完結できる</p>
+                    <p class="note">分からないことを自分でクライアントに質問できる</p>
+                    <p class="note">設定した箇所の周辺（どこに影響するか）まで理解している</p>
+                </div>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 9: 第1章まとめ ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>01</b></span>
+        <div class="ticks">
+            <i class="tick on"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">09</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Chapter 01 Summary</div>
+        <h1>この章のまとめ</h1>
+        <div class="body-area" style="display:flex;align-items:center">
+            <div class="checks">
+                <div class="check"><span class="check-box"></span><p class="check-text">仕事はSmartHR社経由でBPIOに来ている</p></div>
+                <div class="check"><span class="check-box"></span><p class="check-text">BPIOは要件整理から引き渡しまでを担う</p></div>
+                <div class="check"><span class="check-box"></span><p class="check-text">皆さんの担当は「指示に基づく設定作業」から始まる</p></div>
+                <div class="check"><span class="check-box"></span><p class="check-text">3ヶ月後のゴールは「1人でできる」状態</p></div>
+            </div>
+            <div class="field" style="margin-top:22px">
+                <span class="field-tag">TODO — 澤田さん記入</span>
+                <span class="field-text">上の1・2番目は5・6ページの内容を前提にしている。5・6ページが固まったら、ここも実態に合わせて直す<span class="caret"></span></span>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 10: 第2章 章扉 ====== -->
+<section class="slide is-dark">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>02</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick on"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">10</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="divider-key">CHAPTER 02</div>
+        <h1 class="jumbo">SmartHRとは</h1>
+        <p class="lead">設定対象であるSmartHRの仕組みと案件の種類</p>
+    </div>
+</section>
+
+<!-- ====== 11: SmartHRは人事データベース ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>02</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick on"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">11</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Ch.02 — 01</div>
+        <h1>SmartHRは「人事データベース」</h1>
+        <p class="lead">従業員情報を一元管理し、そこから各業務がつながっていく仕組みです</p>
+        <div class="body-area">
+            <div class="band">
+                <div class="band-key">FOUNDATION</div>
+                <div class="band-title">従業員データベース</div>
+            </div>
+            <div class="tiles">
+                <div class="tile">入退社手続き</div>
+                <div class="tile">社会保険</div>
+                <div class="tile">給与計算</div>
+                <div class="tile">年末調整</div>
+            </div>
+            <div class="notes" style="margin-top:26px">
+                <p class="note">まず従業員の情報が入っている「土台」がある</p>
+                <p class="note">その土台の情報を使って、各業務の手続きが動く</p>
+                <p class="note">だから土台の設定を間違えると、後ろの業務すべてに影響する</p>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 12: SmartHRでできること ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>02</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick on"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">12</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Ch.02 — 02</div>
+        <h1>SmartHRでできること</h1>
+        <p class="lead">労務業務のうち、SmartHRがカバーする範囲を押さえておきます</p>
+        <div class="body-area">
+            <div class="panels c4">
+                <div class="panel">
+                    <span class="panel-key">01</span>
+                    <p class="panel-title">入退社手続き</p>
+                    <p class="panel-text">従業員の入社・退社に伴う手続きができます</p>
+                </div>
+                <div class="panel">
+                    <span class="panel-key">02</span>
+                    <p class="panel-title">社会保険の手続き</p>
+                    <p class="panel-text">各種保険の届出に関する手続きができます</p>
+                </div>
+                <div class="panel">
+                    <span class="panel-key">03</span>
+                    <p class="panel-title">給与計算</p>
+                    <p class="panel-text">給与計算に関する処理ができます</p>
+                </div>
+                <div class="panel">
+                    <span class="panel-key">04</span>
+                    <p class="panel-title">年末調整</p>
+                    <p class="panel-text">年末調整に関する処理ができます</p>
+                </div>
+            </div>
+            <div class="field" style="margin-top:16px">
+                <span class="field-tag">TODO — 澤田さん記入</span>
+                <span class="field-text">説明会で紹介する機能を確定（説明する粒度は「〜ができます」まで。カスタム項目などの細かい設定はこの場では扱わない）<span class="caret"></span></span>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 13: 案件は2種類 ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>02</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick on"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">13</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Ch.02 — 03</div>
+        <h1>案件は2種類あります</h1>
+        <p class="lead">担当する案件はどちらかに分かれます。違いを押さえておきましょう</p>
+        <div class="body-area">
+            <div class="panels c2">
+                <div class="panel">
+                    <span class="panel-key">TYPE A</span>
+                    <p class="panel-title">人事労務プロジェクト</p>
+                    <div class="field" style="margin-top:8px">
+                        <span class="field-tag">TODO — 澤田さん記入</span>
+                        <span class="field-text">対象範囲・主な設定内容・進み方の特徴<span class="caret"></span></span>
+                    </div>
+                </div>
+                <div class="panel">
+                    <span class="panel-key">TYPE B</span>
+                    <p class="panel-title">給与計算プロジェクト</p>
+                    <div class="field" style="margin-top:8px">
+                        <span class="field-tag">TODO — 澤田さん記入</span>
+                        <span class="field-text">対象範囲・主な設定内容・進み方の特徴<span class="caret"></span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="field" style="margin-top:14px">
+                <span class="field-tag">TODO — 澤田さん記入</span>
+                <span class="field-text">2つの違いをひと言で表すと何か<span class="caret"></span></span>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 14: 第2章まとめ ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>02</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick on"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">14</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Chapter 02 Summary</div>
+        <h1>この章のまとめ</h1>
+        <div class="body-area" style="display:flex;align-items:center">
+            <div class="checks">
+                <div class="check"><span class="check-box"></span><p class="check-text">SmartHRは従業員情報の「土台」となるデータベース</p></div>
+                <div class="check"><span class="check-box"></span><p class="check-text">その土台の上で入退社・社会保険・給与計算などが動く</p></div>
+                <div class="check"><span class="check-box"></span><p class="check-text">案件は「人事労務」と「給与計算」の2種類</p></div>
+                <div class="check"><span class="check-box"></span><p class="check-text">土台の設定ミスは後続業務すべてに影響する</p></div>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 15: 第3章 章扉 ====== -->
+<section class="slide is-dark">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>03</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick on"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">15</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="divider-key">CHAPTER 03</div>
+        <h1 class="jumbo">プロジェクトの進め方</h1>
+        <p class="lead">案件全体の流れと、体制・役割分担</p>
+    </div>
+</section>
+
+<!-- ====== 16: 案件全体の流れ ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>03</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick on"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">16</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Ch.03 — 01</div>
+        <h1>案件全体の流れ</h1>
+        <p class="lead">案件は Day 0 から始まり、フェーズを追って完了まで進みます</p>
+        <div class="body-area">
+            <div class="body-two">
+                <div class="col">
+                    <div class="flow">
+                        <div class="flow-step is-ink">
+                            <span class="flow-key">DAY 0</span>
+                            <p class="flow-title">開始</p>
+                        </div>
+                        <div class="flow-step">
+                            <span class="flow-key">PHASE</span>
+                            <p class="flow-title">フェーズ1</p>
+                        </div>
+                        <div class="flow-step">
+                            <span class="flow-key">PHASE</span>
+                            <p class="flow-title">フェーズ2</p>
+                        </div>
+                        <div class="flow-step">
+                            <span class="flow-key">GOAL</span>
+                            <p class="flow-title">完了</p>
+                        </div>
+                    </div>
+                    <div class="field" style="margin-top:10px">
+                        <span class="field-tag">TODO — 澤田さん記入</span>
+                        <span class="field-text">フェーズの名称・区切りを確定<span class="caret"></span></span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="field">
+                        <span class="field-tag">TODO — 澤田さん記入</span>
+                        <span class="field-text">Day 0 から完了までのフェーズ名と、それぞれの期間の目安。キックオフで合意した「全タスクの洗い出し」の結果をここに反映する<span class="caret"></span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 17: 体制と役割 ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>03</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick on"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">17</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Ch.03 — 02</div>
+        <h1>体制と役割</h1>
+        <p class="lead">皆さんの連絡先は、原則としてPLです</p>
+        <div class="body-area">
+            <div class="rows">
+                <div class="row">
+                    <span class="row-key">CLIENT</span>
+                    <div>
+                        <p class="row-title">クライアント</p>
+                        <p class="row-text">やり取りは、まずPLが窓口に立つ</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <span class="row-key">PL</span>
+                    <div>
+                        <p class="row-title">PL</p>
+                        <p class="row-text">クライアントとの窓口。メンバーからの報告・相談を受ける</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <span class="row-key">MEMBER</span>
+                    <div>
+                        <p class="row-title">メンバー（皆さん）</p>
+                        <p class="row-text">自分の作業範囲に集中し、PLに報告・相談する。困ったこと・確認したいことはPLに投げてよい（抱え込まない）</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 18: 3ヶ月のステップアップ ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>03</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick on"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">18</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Ch.03 — 03</div>
+        <h1>3ヶ月のステップアップ</h1>
+        <p class="lead">「作業だけ」で終わらせず、段階的に前に出ていただきます</p>
+        <div class="body-area">
+            <div class="split">
+                <div class="figure">
+                    <div class="flow">
+                        <div class="flow-step">
+                            <span class="flow-key">STEP 01</span>
+                            <p class="flow-title">PLがフロントに立つ</p>
+                            <p class="flow-text">メンバーは作業に集中</p>
+                        </div>
+                        <div class="flow-step">
+                            <span class="flow-key">STEP 02</span>
+                            <p class="flow-title">自分の範囲を説明</p>
+                            <p class="flow-text">設定した範囲は自分で説明</p>
+                        </div>
+                        <div class="flow-step is-ink">
+                            <span class="flow-key">STEP 03</span>
+                            <p class="flow-title">1人で完結</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="notes">
+                    <p class="note">クライアントとの打ち合わせは品質担保のためPLが対応する</p>
+                    <p class="note">ただし毎回「自分ならどう答えたか」を考えてPLとすり合わせる</p>
+                </div>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 19: 第3章まとめ ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>03</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick on"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">19</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Chapter 03 Summary</div>
+        <h1>この章のまとめ</h1>
+        <div class="body-area" style="display:flex;align-items:center">
+            <div class="checks">
+                <div class="check"><span class="check-box"></span><p class="check-text">案件は Day 0 から始まり、フェーズを追って完了まで進む</p></div>
+                <div class="check"><span class="check-box"></span><p class="check-text">窓口はPL。メンバーはPLに報告・相談する</p></div>
+                <div class="check"><span class="check-box"></span><p class="check-text">3ヶ月で「作業だけ」から「1人で完結」へ段階的に前に出る</p></div>
+                <div class="check"><span class="check-box"></span><p class="check-text">打ち合わせはPL対応。ただし「自分ならどう答えるか」は毎回考える</p></div>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 20: 章扉 CH04 作業の流れ ====== -->
+<section class="slide is-dark">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>04</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick on"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">20</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="divider-key">CHAPTER 04</div>
+        <h1 class="jumbo">作業の流れ</h1>
+        <p class="lead">1件の作業は5つのステップの繰り返しです</p>
+    </div>
+</section>
+
+<!-- ====== 21: 1件の作業サイクル ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>04</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick on"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">21</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Work Cycle</div>
+        <h1>1件の作業サイクル</h1>
+        <p class="lead">実際の作業は、この5ステップの繰り返しです</p>
+        <div class="body-area">
+            <div class="flow">
+                <div class="flow-step">
+                    <div class="flow-key">STEP 01</div>
+                    <div class="flow-title">環境を確認</div>
+                    <p class="flow-text">作業できる環境を整える（Day 0）</p>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-key">STEP 02</div>
+                    <div class="flow-title">指示を受ける</div>
+                    <p class="flow-text">PLから指示が来る</p>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-key">STEP 03</div>
+                    <div class="flow-title">設定する</div>
+                    <p class="flow-text">指示された設定を行う</p>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-key">STEP 04</div>
+                    <div class="flow-title">完了を報告</div>
+                    <p class="flow-text">完了をPLに報告する</p>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-key">STEP 05</div>
+                    <div class="flow-title">次の指示</div>
+                    <p class="flow-text">次の指示を受け取る</p>
+                </div>
+            </div>
+            <div class="loopback">STEP 05 → STEP 02 へ戻る（この繰り返しが日々の作業）</div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 22: Day 0 環境の確認 ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>04</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick on"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">22</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Day 0</div>
+        <h1>環境の確認</h1>
+        <p class="lead">最初にやることは「作業できる状態を作る」ことです</p>
+        <div class="body-area">
+            <div class="rows">
+                <div class="row">
+                    <span class="row-key">DRIVE</span>
+                    <div>
+                        <p class="row-title">案件フォルダにアクセスできるか</p>
+                        <p class="row-text">Google Driveの案件フォルダを開き、資料を閲覧できることを確認する</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <span class="row-key">SMARTHR</span>
+                    <div>
+                        <p class="row-title">対象環境にログインできるか</p>
+                        <p class="row-text">SmartHRの対象環境（クライアント環境）にログインできることを確認する</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <span class="row-key">SLACK</span>
+                    <div>
+                        <p class="row-title">案件チャンネルに参加できているか</p>
+                        <p class="row-text">連絡・指示のやり取りに使うSlackの案件チャンネルに参加済みか確認する</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <span class="row-key">OTHER</span>
+                    <div class="field">
+                        <span class="field-tag">TODO — 澤田さん記入</span>
+                        <span class="field-text">上記以外に初日に必要なアカウント・権限があれば追記<span class="caret"></span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 23: 指示の受け取り方 ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>04</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick on"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">23</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Instructions</div>
+        <h1>指示の受け取り方</h1>
+        <p class="lead">指示はSlackの案件チャンネルでPLから届きます</p>
+        <div class="body-area">
+            <div class="rows">
+                <div class="row">
+                    <span class="row-key">FORMAT</span>
+                    <div>
+                        <p class="row-title">「参照する資料」＋「実施する設定」で届く</p>
+                        <p class="row-text">例: 「この資料とこの資料を参考に、この設定をお願いします」という形式でSlackに投稿される</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <span class="row-key">BEFORE</span>
+                    <div>
+                        <p class="row-title">資料を読んでから作業に入る</p>
+                        <p class="row-text">指示に添付・リンクされた資料に先に目を通してから設定作業を始める</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <span class="row-key">UNCLEAR</span>
+                    <div>
+                        <p class="row-title">意味が分からないときは着手前に確認する</p>
+                        <p class="row-text">分からないまま作業を始めず、PLに確認してから進める</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 24: 設定の具体例 ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>04</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick on"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">24</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Example</div>
+        <h1>設定の具体例</h1>
+        <p class="lead">実際の指示から設定完了まで、1本通して見てみましょう</p>
+        <div class="body-area">
+            <div class="flow">
+                <div class="flow-step">
+                    <div class="flow-key">01 指示</div>
+                    <div class="field">
+                        <span class="field-tag">TODO — 澤田さん記入</span>
+                        <span class="field-text">どんな指示が来たか<span class="caret"></span></span>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-key">02 見る資料</div>
+                    <div class="field">
+                        <span class="field-tag">TODO — 澤田さん記入</span>
+                        <span class="field-text">どの資料を見たか<span class="caret"></span></span>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-key">03 設定手順</div>
+                    <div class="field">
+                        <span class="field-tag">TODO — 澤田さん記入</span>
+                        <span class="field-text">SmartHRのどこをどう設定したか<span class="caret"></span></span>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-key">04 完了の状態</div>
+                    <div class="field">
+                        <span class="field-tag">TODO — 澤田さん記入</span>
+                        <span class="field-text">何が完了状態か<span class="caret"></span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 25: 完了報告と次の指示 ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>04</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick on"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">25</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Report</div>
+        <h1>完了報告と次の指示</h1>
+        <p class="lead">作業が終わったら、PLに報告して次の指示を受け取ります</p>
+        <div class="body-area">
+            <div class="flow">
+                <div class="flow-step">
+                    <div class="flow-key">STEP 01</div>
+                    <div class="flow-title">作業完了</div>
+                    <p class="flow-text">指示された設定が終わる</p>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-key">STEP 02</div>
+                    <div class="flow-title">PLへ報告</div>
+                    <div class="field">
+                        <span class="field-tag">TODO — 澤田さん記入</span>
+                        <span class="field-text">報告フォーマット・報告先チャンネル<span class="caret"></span></span>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-key">STEP 03</div>
+                    <div class="flow-title">次の指示</div>
+                    <p class="flow-text">次の作業はPLから指示が来る（自分で取りに行く必要はない）</p>
+                </div>
+            </div>
+            <div class="loopback">STEP 03 → STEP 02（1件の作業サイクル）へ戻る</div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 26: 第4章のまとめ ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>04</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick on"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">26</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Chapter 04 Summary</div>
+        <h1>この章のまとめ</h1>
+        <div class="body-area">
+            <div class="checks">
+                <div class="check"><i class="check-box"></i><p class="check-text">作業は「環境確認 → 指示 → 設定 → 報告 → 次の指示」の繰り返し</p></div>
+                <div class="check"><i class="check-box"></i><p class="check-text">Day 0でDrive・SmartHR環境・Slackの3点を確認する</p></div>
+                <div class="check"><i class="check-box"></i><p class="check-text">指示には「参照資料」と「実施内容」が含まれる</p></div>
+                <div class="check"><i class="check-box"></i><p class="check-text">完了報告はPLへ。次の指示もPLから来る</p></div>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 27: 章扉 CH05 分からないときの動き方 ====== -->
+<section class="slide is-dark">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>05</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick on"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">27</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="divider-key">CHAPTER 05</div>
+        <h1 class="jumbo">分からないときの<br>動き方</h1>
+        <p class="lead">止まってしまう前に、決まった順番で動きましょう</p>
+    </div>
+</section>
+
+<!-- ====== 28: 分からないときの3ステップ ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>05</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick on"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">28</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">If Stuck</div>
+        <h1>分からないときの3ステップ</h1>
+        <p class="lead">止まってしまう前に、この順番で動いてください</p>
+        <div class="body-area">
+            <div class="flow">
+                <div class="flow-step">
+                    <div class="flow-key">STEP 01</div>
+                    <div class="flow-title">ヘルプページ</div>
+                    <p class="flow-text">まずSmartHRの公式ヘルプページで調べる</p>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-key">STEP 02</div>
+                    <div class="flow-title">PLに質問</div>
+                    <p class="flow-text">分からなければSlackの案件チャンネルでPLに質問する</p>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-key">STEP 03</div>
+                    <div class="flow-title">案件担当者へ</div>
+                    <p class="flow-text">PLでも判断できない場合はPLから案件担当者へ確認する</p>
+                </div>
+            </div>
+            <div class="loopback">「指示の内容が分からない」「操作方法が分からない」どちらもこの流れで解決する</div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 29: 公式ヘルプページの使い方 ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>05</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick on"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">29</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Help Center</div>
+        <h1>公式ヘルプページの使い方</h1>
+        <p class="lead">調べ方を知っているだけで、自力で解決できる範囲が大きく変わります</p>
+        <div class="body-area">
+            <div class="flow">
+                <div class="flow-step">
+                    <div class="flow-key">STEP 01</div>
+                    <div class="flow-title">検索窓</div>
+                    <div class="field">
+                        <span class="field-tag">TODO — 澤田さん記入</span>
+                        <span class="field-text">公式ヘルプページのURL<span class="caret"></span></span>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-key">STEP 02</div>
+                    <div class="flow-title">該当記事</div>
+                    <div class="field">
+                        <span class="field-tag">TODO — 澤田さん記入</span>
+                        <span class="field-text">検索のコツ・よく使う記事<span class="caret"></span></span>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-key">STEP 03</div>
+                    <div class="flow-title">手順</div>
+                    <div class="field">
+                        <span class="field-tag">TODO — 澤田さん記入</span>
+                        <span class="field-text">見つからないときの切り口<span class="caret"></span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 30: 【重要】クライアント環境でやってはいけないこと ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>05</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick on"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">30</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">重要</div>
+        <h1>クライアント環境でやってはいけないこと</h1>
+        <p class="lead">SmartHRの有人サポート（問い合わせチャット）は、クライアント環境から利用しないでください</p>
+        <div class="body-area">
+            <div class="compare">
+                <div class="cmp deny">
+                    <span class="cmp-mark">✕</span>
+                    <p class="cmp-title">クライアント環境</p>
+                    <p class="cmp-text">有人サポート（問い合わせチャット）の利用は禁止</p>
+                </div>
+                <div class="cmp allow">
+                    <span class="cmp-mark">✓</span>
+                    <p class="cmp-title">社内テスト環境・デモ環境</p>
+                    <p class="cmp-text">試したいこと・確認したいことはこちらで行う</p>
+                </div>
+            </div>
+            <div class="rows">
+                <div class="row">
+                    <span class="row-key">理由</span>
+                    <p class="row-text">クライアント環境に問い合わせのログを残さないよう、SmartHR社から要請を受けている</p>
+                </div>
+            </div>
+            <div class="field" style="margin-top:10px">
+                <span class="field-tag">TODO — 要確認</span>
+                <span class="field-text">AIチャットボットのクライアント環境での可否（キックオフでは結論が出ていない）<span class="caret"></span></span>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 31: 第5章のまとめ ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>05</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick on"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">31</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Chapter 05 Summary</div>
+        <h1>この章のまとめ</h1>
+        <div class="body-area">
+            <div class="checks">
+                <div class="check"><i class="check-box"></i><p class="check-text">分からないときは「ヘルプページ → PL → 案件担当者」の順</p></div>
+                <div class="check"><i class="check-box"></i><p class="check-text">指示内容も操作方法も、同じ流れで解決する</p></div>
+                <div class="check"><i class="check-box"></i><p class="check-text">クライアント環境では有人サポートを使わない</p></div>
+                <div class="check"><i class="check-box"></i><p class="check-text">試したいことは社内テスト環境／デモ環境で</p></div>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 32: 章扉 CH06 育成と評価 ====== -->
+<section class="slide is-dark">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>06</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick on"></i>
+        </div>
+        <span class="spine-page">32</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="divider-key">CHAPTER 06</div>
+        <h1 class="jumbo">育成と評価</h1>
+        <p class="lead">「1人でできる」までの道のりを見える形にします</p>
+    </div>
+</section>
+
+<!-- ====== 33: 「1人でできる」までのロードマップ ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>06</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick on"></i>
+        </div>
+        <span class="spine-page">33</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Roadmap</div>
+        <h1>「1人でできる」までのロードマップ</h1>
+        <p class="lead">何ができれば「1人でできる」と言えるのかを、あらかじめ見える形にします</p>
+        <div class="body-area">
+            <div class="flow">
+                <div class="flow-step">
+                    <div class="flow-key">STEP 01</div>
+                    <div class="flow-title">タスクの洗い出し</div>
+                    <p class="flow-text">Day 0〜完了までのタスクを洗い出す</p>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-key">STEP 02</div>
+                    <div class="flow-title">評価項目に分解</div>
+                    <p class="flow-text">タスクを評価項目に分解する</p>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-key">STEP 03</div>
+                    <div class="flow-title">チェック</div>
+                    <p class="flow-text">できる／できないをチェックする</p>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-key">STEP 04</div>
+                    <div class="flow-title">OJTで埋める</div>
+                    <p class="flow-text">できていない部分をOJTで埋める</p>
+                </div>
+            </div>
+            <div class="loopback">評価項目は案件をまたいで使えるテンプレートにしていく</div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 34: 育成進捗シート ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>06</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick on"></i>
+        </div>
+        <span class="spine-page">34</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Progress Sheet</div>
+        <h1>育成進捗シート</h1>
+        <p class="lead">自分の現在地が見える形で共有されます</p>
+        <div class="body-area">
+            <div class="rows">
+                <div class="row">
+                    <span class="row-key">形式</span>
+                    <p class="row-text">評価項目 × できる／できない のチェックシート形式（整備中）</p>
+                </div>
+                <div class="row">
+                    <span class="row-key">運用</span>
+                    <div class="field">
+                        <span class="field-tag">TODO — 堀江・澤田さん記入</span>
+                        <span class="field-text">育成進捗シートの様式と運用（誰がいつ更新するか）。キックオフでタスク管理と一体で整備する方針で合意済み・現在整備中<span class="caret"></span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 35: 自習の進め方 ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>06</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick on"></i>
+        </div>
+        <span class="spine-page">35</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Self-training</div>
+        <h1>自習の進め方</h1>
+        <p class="lead">案件と並行して、手を動かして覚える時間を取ります</p>
+        <div class="body-area">
+            <div class="flow">
+                <div class="flow-step">
+                    <div class="flow-key">STEP 01</div>
+                    <div class="flow-title">再現する</div>
+                    <p class="flow-text">社内テスト環境で、既存の設定を自分で再現してみる</p>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-key">STEP 02</div>
+                    <div class="flow-title">レビューを受ける</div>
+                    <p class="flow-text">できた／できなかったをレビューしてもらう</p>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-key">STEP 03</div>
+                    <div class="flow-title">案件で実践</div>
+                    <p class="flow-text">案件の作業と並行して進める</p>
+                </div>
+            </div>
+            <div class="field" style="margin-top:14px">
+                <span class="field-tag">TODO — 要確認</span>
+                <span class="field-text">1人1環境を用意できるかはSmartHR社に確認中<span class="caret"></span></span>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 36: 第6章のまとめ ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <span class="spine-key">CH<b>06</b></span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick on"></i>
+        </div>
+        <span class="spine-page">36</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Chapter 06 Summary</div>
+        <h1>この章のまとめ</h1>
+        <div class="body-area">
+            <div class="checks">
+                <div class="check"><i class="check-box"></i><p class="check-text">「1人でできる」は評価項目に分解して見える化する</p></div>
+                <div class="check"><i class="check-box"></i><p class="check-text">できていない部分はOJTで埋める</p></div>
+                <div class="check"><i class="check-box"></i><p class="check-text">育成進捗シートで現在地を共有する</p></div>
+                <div class="check"><i class="check-box"></i><p class="check-text">社内テスト環境での再現練習を並行して行う</p></div>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 37: まず、ここから始めましょう（締め） ====== -->
+<section class="slide is-dark">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">37</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Get Started</div>
+        <h1 class="jumbo">まず、ここから<br>始めましょう</h1>
+        <p class="lead">環境の確認（Day 0）→ 最初の指示 → 分からなければPLへ</p>
+        <div class="body-area">
+            <div class="checks">
+                <div class="check"><i class="check-box"></i><p class="check-text">質問は「Slackの案件チャンネル」へ。抱え込まずに聞いてください</p></div>
+            </div>
+            <div class="field" style="margin-top:20px;max-width:940px">
+                <span class="field-tag">TODO — 澤田さん記入</span>
+                <span class="field-text">具体的な初日のアクションと期限、質問先チャンネル名<span class="caret"></span></span>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+
+<!-- ====== 38: 【社内用】未確定・確認事項一覧（付録） ====== -->
+<section class="slide">
+    <aside class="spine">
+        <span class="spine-mark">BPIO</span>
+        <div class="ticks">
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+            <i class="tick"></i><i class="tick"></i><i class="tick"></i>
+        </div>
+        <span class="spine-page">38</span>
+    </aside>
+    <div class="main">
+        <div class="rule"></div>
+        <div class="eyebrow">Appendix — 説明会では使用しません</div>
+        <h1>【社内用】未確定・確認事項一覧</h1>
+        <div class="body-area">
+            <div class="rows">
+                <div class="row">
+                    <span class="row-key">澤田さん</span>
+                    <p class="row-text">紹介する機能の確定（S12）／案件2種類の違い（S13）／フェーズと期間（S16）／初日に必要な権限（S22）／設定の具体例（S24）／完了報告フォーマット（S25）／ヘルプページの使い方（S29）／初日アクション・質問先（S37）</p>
+                </div>
+                <div class="row">
+                    <span class="row-key">要確認</span>
+                    <p class="row-text">AIチャットボットのクライアント環境での可否（S30）／1人1環境の可否（S35、SmartHR社へ確認中）</p>
+                </div>
+                <div class="row">
+                    <span class="row-key">堀江・澤田</span>
+                    <p class="row-text">育成進捗シートの様式と運用（S34）</p>
+                </div>
+                <div class="row">
+                    <span class="row-key">その他</span>
+                    <p class="row-text">担当件数・期間の目安の確定（S07）</p>
+                </div>
+            </div>
+        </div>
+        <span class="copyright">© 2026 BPIO</span>
+    </div>
+</section>
+</body>
+</html>
