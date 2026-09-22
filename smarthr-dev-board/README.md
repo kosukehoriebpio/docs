@@ -1,3 +1,4 @@
-# smarthr-case-crm DEV board (mobile)
+﻿# Claude Hub (GitHub Pages)
 
-View-only. Auto-synced from Claude hub.
+セッション＋開発タブ。Windows hub からのスナップショット。
+

@@ -1,9 +1,9 @@
 {
-  "updated": "2026-09-22 19:01:46 JST",
-  "updated_iso": "2026-09-22T19:01:46+09:00",
+  "updated": "2026-09-22 19:10:11 JST",
+  "updated_iso": "2026-09-22T19:10:11+09:00",
   "repo": "smarthr-case-crm",
   "repo_path": "C:\\smarthr-case-crm",
-  "branch": "master",
+  "branch": "feat/standard-task-tab",
   "layers": [
     {
       "id": "ui",

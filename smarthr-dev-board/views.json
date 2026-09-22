@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "defaultView": "session",
+  "title": "CLAUDE HUB",
+  "views": [
+    {
+      "id": "session",
+      "label": "セッション",
+      "type": "panel",
+      "panelId": "view-session",
+      "dataUrl": "monitor-state.json",
+      "pollMs": 60000
+    },
+    {
+      "id": "dev-smarthr",
+      "label": "開発 (smarthr-case-crm)",
+      "type": "panel",
+      "panelId": "view-dev",
+      "dataUrl": "architecture-state.json",
+      "pollMs": 60000
+    }
+  ]
+}
